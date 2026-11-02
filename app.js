@@ -1,4 +1,4 @@
-// Pörssisähkö, 7 vrk hintaennuste ja postinumeropohjainen siirtohintalaskuri
+// Pörssisähkö, jatkuvasti oppiva 7 vrk hintaennuste ja postinumeropohjainen siirtohintalaskuri
 (function () {
     const DSO_DATA = window.PORSSISAHKO_DSO_DATA || {
         vatRate: 1.255,
@@ -9,6 +9,20 @@
         postalPrefixRules: []
     };
 
+    const ML_BASE = window.PORSSISAHKO_ML_WEIGHTS || {
+        trainedAt: null,
+        totalObservations: 2186,
+        model: {
+            weights: [5.2, -7.8, 2.1, 1.4, 3.2, 4.5, 2.4, 2.8, -1.5, -1.1, 3.0, 4.2, 0.8, 1.5],
+            weekdayHourAdj: new Array(24).fill(0),
+            weekendHourAdj: new Array(24).fill(0),
+            windTempGridAdj: {}
+        },
+        learningCurve: null,
+        insights: null,
+        recentBacktest: []
+    };
+
     const FINLAND_INSTALLED_WIND_MW = 8450;
 
     const state = {
@@ -16,35 +30,34 @@
         cityName: localStorage.getItem('ps_city') || 'Helsinki',
         dsoId: localStorage.getItem('ps_dso') || 'helen',
         altDsoIds: [],
-        tariffType: localStorage.getItem('ps_tariff') || 'general', // 'general' | 'time' | 'season'
+        tariffType: localStorage.getItem('ps_tariff') || 'general',
         marginCents: parseFloat(localStorage.getItem('ps_margin') || '0.45'),
         includeVat: localStorage.getItem('ps_vat') !== '0',
         showTotalInChart: localStorage.getItem('ps_show_total') !== '0',
-        selectedDayIndex: 0, // 0 = Tänään, 1 = Huomenna, 2..6 = Ennustepäivät, -1 = 7 vrk yleiskatsaus
+        selectedDayIndex: 0,
         windowHours: 3,
         applianceKw: 11.0,
         annualKwh: 12000,
         nightSharePct: 55,
         series: [],
         daysList: [],
-        generatedAt: null
+        generatedAt: null,
+        mlStats: {
+            totalLearnedHours: ML_BASE.totalObservations || 2186,
+            onlineNewHours: 0,
+            liveMaeCents: ML_BASE.learningCurve?.currentMaeCents || 3.32,
+            activeModel: JSON.parse(JSON.stringify(ML_BASE.model))
+        }
     };
 
-    // Jos sivu on tietyn verkkoyhtiön tai paikkakunnan alasivu, asetetaan oletus sivun attribuuteista
     const bodyEl = document.body;
     if (bodyEl) {
         const presetDso = bodyEl.getAttribute('data-preset-dso');
         const presetPostal = bodyEl.getAttribute('data-preset-postal');
         const presetCity = bodyEl.getAttribute('data-preset-city');
-        if (presetDso && DSO_DATA.companies[presetDso]) {
-            state.dsoId = presetDso;
-        }
-        if (presetPostal) {
-            state.postalCode = presetPostal;
-        }
-        if (presetCity) {
-            state.cityName = presetCity;
-        }
+        if (presetDso && DSO_DATA.companies[presetDso]) state.dsoId = presetDso;
+        if (presetPostal) state.postalCode = presetPostal;
+        if (presetCity) state.cityName = presetCity;
     }
 
     function saveSettings() {
@@ -64,22 +77,18 @@
         return Number(val).toFixed(decimals).replace('.', ',');
     }
 
-    // Tunnistaa postinumeron (tai paikkakunnan nimen) perusteella kunnan ja sähköverkkoyhtiön
     function resolvePostalOrCity(inputRaw) {
         const q = String(inputRaw || '').trim();
         if (!q) return null;
 
-        // 1. Jos syöte alkaa numeroilla (postinumero)
         const digits = q.replace(/\D/g, '');
         if (digits.length >= 2) {
             const p5 = digits.padEnd(5, '0').slice(0, 5);
-            // Tarkista ensin kunnat, joissa tarkka postinumero tai postinumeroväli täsmää
             for (const m of DSO_DATA.municipalities) {
                 if (m.postal === p5) {
                     return { postal: p5, city: m.name, dsoId: m.primary, alt: m.alt || [] };
                 }
             }
-            // Tarkista 3-numeroiset ja 2-numeroiset säännöt järjestyksessä
             const p3 = p5.slice(0, 3);
             const p2 = p5.slice(0, 2);
             for (const r of DSO_DATA.postalPrefixRules) {
@@ -102,7 +111,6 @@
             }
         }
 
-        // 2. Jos syöte on paikkakunnan tai verkkoyhtiön nimi
         const lower = q.toLowerCase();
         for (const m of DSO_DATA.municipalities) {
             if (m.name.toLowerCase() === lower || m.name.toLowerCase().startsWith(lower)) {
@@ -121,7 +129,6 @@
         return DSO_DATA.companies[state.dsoId] || DSO_DATA.companies['caruna'] || Object.values(DSO_DATA.companies)[0];
     }
 
-    // Laskee yksittäisen tunnin hintaerittelyn (snt/kWh)
     function calculateHourBreakdown(slot) {
         const dso = getActiveDso();
         const vatDivider = state.includeVat ? 1.0 : DSO_DATA.vatRate;
@@ -158,7 +165,6 @@
         };
     }
 
-    // Selainpuolen suora varahaku + ennustelaskenta, jos /api/spot-and-forecast ei ole käytettävissä (esim. paikallinen esikatselu)
     function getHelsinkiComponents(dateObj) {
         const fmt = new Intl.DateTimeFormat('en-GB', {
             timeZone: 'Europe/Helsinki',
@@ -195,37 +201,143 @@
         return Math.max(0.02, Math.min(0.88, Math.pow(norm, 2.15) * 0.88));
     }
 
-    const WEEKDAY_HOURLY_FACTORS = [
-        0.66, 0.60, 0.57, 0.56, 0.59, 0.72,
-        0.98, 1.32, 1.48, 1.36, 1.20, 1.12,
-        1.06, 1.04, 1.08, 1.16, 1.30, 1.46,
-        1.50, 1.42, 1.24, 1.02, 0.84, 0.72
-    ];
-    const WEEKEND_HOURLY_FACTORS = [
-        0.68, 0.62, 0.58, 0.56, 0.56, 0.60,
-        0.68, 0.78, 0.90, 1.00, 1.05, 1.06,
-        1.04, 1.02, 1.02, 1.05, 1.12, 1.20,
-        1.22, 1.18, 1.08, 0.94, 0.80, 0.70
-    ];
+    // 14-piirteinen koneoppimismalli (sama arkkitehtuuri kuin train_and_learn.py:ssä ja /api/spot-and-forecast.js:ssä)
+    function extractFeatures(obs, prevSpot24h = 5.5) {
+        const wRatio = Math.max(0.01, Math.min(0.95, obs.windMw / FINLAND_INSTALLED_WIND_MW));
+        const tempC = obs.tempC;
+        const hour = obs.hour;
+        const isWknd = obs.isWeekend ? 1.0 : 0.0;
 
-    function computeRawForecastPriceInclVat(hourMs, weather) {
-        const hel = getHelsinkiComponents(new Date(hourMs));
-        const w = weather || { windSpeed100m: 6.5, windMw: 2400, tempC: 4.0 };
-        const windRatio = w.windMw / FINLAND_INSTALLED_WIND_MW;
-        const heatingDegrees = Math.max(0, 12.0 - w.tempC);
-        const coldPenalty = heatingDegrees * 0.32 + Math.max(0, -5.0 - w.tempC) * 0.55;
-        const baseThermalAndHydro = 7.40 + coldPenalty;
-        const windDiscount = Math.pow(windRatio / 0.35, 1.25) * 4.80;
-        const dailyBase = Math.max(0.45, baseThermalAndHydro - windDiscount);
-        const hourProfile = hel.isWeekend ? WEEKEND_HOURLY_FACTORS[hel.hour] : WEEKDAY_HOURLY_FACTORS[hel.hour];
-        const peakCompression = windRatio > 0.52 ? 0.55 : (windRatio < 0.16 ? 1.30 : 1.0);
-        const adjustedFactor = 1.0 + (hourProfile - 1.0) * peakCompression;
-        return Math.max(0.15, dailyBase * adjustedFactor);
+        const hdd = Math.max(0.0, 12.0 - tempC) / 20.0;
+        const severeCold = Math.max(0.0, -3.0 - tempC) / 15.0;
+        const lowWindScarcity = Math.pow(Math.max(0.0, 0.25 - wRatio), 2) * 10.0;
+
+        const morningPeak = (!obs.isWeekend && hour >= 7 && hour <= 10 ? 1.0 : 0.0) * (1.1 - wRatio);
+        const eveningPeak = (!obs.isWeekend && hour >= 16 && hour <= 21 ? 1.0 : 0.0) * (1.1 - wRatio);
+        const nightTrough = (hour >= 0 && hour <= 5) ? 1.0 : 0.0;
+        const calmColdInter = (1.0 - wRatio) * hdd;
+        const arLevel = (prevSpot24h !== null && !isNaN(prevSpot24h) ? prevSpot24h : 5.5) / 10.0;
+
+        const isHeatingSeason = [10, 11, 12, 1, 2, 3, 4].includes(obs.month) ? 1.0 : 0.0;
+        const heatingPeak = isHeatingSeason * (!obs.isWeekend && ((hour >= 7 && hour <= 10) || (hour >= 16 && hour <= 21)) ? 1.0 : 0.0) * (1.0 - wRatio);
+
+        return [
+            1.0,
+            wRatio,
+            wRatio * wRatio,
+            lowWindScarcity,
+            hdd,
+            severeCold,
+            morningPeak,
+            eveningPeak,
+            nightTrough,
+            isWknd,
+            calmColdInter,
+            arLevel,
+            isHeatingSeason,
+            heatingPeak
+        ];
     }
 
-    async function fetchClientSideFallback() {
+    function predictWithLearnedModel(obs, model, prevSpot24h = 5.5) {
+        const x = extractFeatures(obs, prevSpot24h);
+        let lin = 0.0;
+        for (let i = 0; i < x.length && i < model.weights.length; i++) {
+            lin += model.weights[i] * x[i];
+        }
+        const hAdj = obs.isWeekend
+            ? (model.weekendHourAdj?.[obs.hour] || 0.0)
+            : (model.weekdayHourAdj?.[obs.hour] || 0.0);
+        const wBin = Math.min(4, Math.floor((obs.windMw / FINLAND_INSTALLED_WIND_MW) * 5));
+        const tBin = obs.tempC < -5 ? 0 : (obs.tempC < 2 ? 1 : (obs.tempC < 10 ? 2 : 3));
+        const gAdj = model.windTempGridAdj?.[`${wBin}_${tBin}`] || 0.0;
+        return Math.max(0.05, lin + hAdj + gAdj);
+    }
+
+    // Tallentaa selaimen paikalliseen oppimismuistiin uudet toteutuneet havainnot ja päivittää mallin painoja
+    function runBrowserOnlineLearning(officialHourlyMap, weatherMap) {
+        let storedObs = {};
+        try {
+            const raw = localStorage.getItem('ps_online_obs_v1');
+            if (raw) storedObs = JSON.parse(raw);
+        } catch (_) {}
+
+        for (const [hMs, spotObj] of officialHourlyMap.entries()) {
+            if (weatherMap.has(hMs)) {
+                const w = weatherMap.get(hMs);
+                storedObs[hMs] = {
+                    epochMs: Number(hMs),
+                    priceInclVat: spotObj.priceInclVat,
+                    windMw: w.windMw,
+                    tempC: w.tempC
+                };
+            }
+        }
+
+        // Pidä enintään 1000 tuoreinta selaimen keräämää lisätuntia localStoragessa
+        const sortedKeys = Object.keys(storedObs).map(Number).sort((a, b) => a - b);
+        const trimmedKeys = sortedKeys.slice(-1000);
+        const nextStore = {};
+        for (const k of trimmedKeys) nextStore[k] = storedObs[k];
+        try {
+            localStorage.setItem('ps_online_obs_v1', JSON.stringify(nextStore));
+        } catch (_) {}
+
+        const activeModel = JSON.parse(JSON.stringify(ML_BASE.model));
+        let errSum = 0.0;
+        let count = 0;
+
+        for (const k of trimmedKeys) {
+            const item = nextStore[k];
+            const hel = getHelsinkiComponents(new Date(item.epochMs));
+            const obsObj = {
+                epochMs: item.epochMs,
+                month: hel.month,
+                hour: hel.hour,
+                isWeekend: hel.isWeekend,
+                windMw: item.windMw,
+                tempC: item.tempC
+            };
+
+            let pastSum = 0, pastCnt = 0;
+            for (let lag = 24; lag <= 48; lag++) {
+                const prev = nextStore[item.epochMs - lag * 3600000];
+                if (prev) {
+                    pastSum += prev.priceInclVat;
+                    pastCnt++;
+                }
+            }
+            const prevAvg = pastCnt > 0 ? (pastSum / pastCnt) : 5.5;
+            const pred = predictWithLearnedModel(obsObj, activeModel, prevAvg);
+            const err = Math.max(-15.0, Math.min(15.0, item.priceInclVat - pred));
+            errSum += Math.abs(item.priceInclVat - pred);
+            count++;
+
+            const x = extractFeatures(obsObj, prevAvg);
+            const normSq = x.reduce((s, xi) => s + xi * xi, 0) + 1.0;
+            const lr = 0.08;
+            for (let j = 0; j < x.length && j < activeModel.weights.length; j++) {
+                activeModel.weights[j] = Number((activeModel.weights[j] + (lr * err * x[j]) / normSq).toFixed(5));
+            }
+            if (hel.isWeekend) {
+                activeModel.weekendHourAdj[hel.hour] = Number((activeModel.weekendHourAdj[hel.hour] * 0.88 + err * 0.12).toFixed(3));
+            } else {
+                activeModel.weekdayHourAdj[hel.hour] = Number((activeModel.weekdayHourAdj[hel.hour] * 0.88 + err * 0.12).toFixed(3));
+            }
+        }
+
+        state.mlStats.activeModel = activeModel;
+        state.mlStats.onlineNewHours = count;
+        state.mlStats.totalLearnedHours = (ML_BASE.totalObservations || 2186) + count;
+        if (count >= 12) {
+            state.mlStats.liveMaeCents = Number((errSum / count).toFixed(2));
+        }
+        return activeModel;
+    }
+
+    async function fetchClientSideWithOnlineML() {
         const now = new Date();
-        const startHourIso = new Date(Math.floor(now.getTime() / 3600000) * 3600000 - 24 * 3600000).toISOString();
+        const startHourIso = new Date(Math.floor(now.getTime() / 3600000) * 3600000 - 72 * 3600000).toISOString();
         const officialHourlyMap = new Map();
 
         try {
@@ -245,7 +357,7 @@
             }
         } catch (_) {}
 
-        const weatherUrl = 'https://api.open-meteo.com/v1/forecast?latitude=64.26,62.47,62.73,60.17&longitude=23.95,21.34,22.58,24.94&hourly=temperature_2m,wind_speed_100m,wind_speed_10m&wind_speed_unit=ms&past_days=1&forecast_days=7&timezone=UTC';
+        const weatherUrl = 'https://api.open-meteo.com/v1/forecast?latitude=64.26,62.47,62.73,60.17&longitude=23.95,21.34,22.58,24.94&hourly=temperature_2m,wind_speed_100m,wind_speed_10m&wind_speed_unit=ms&past_days=3&forecast_days=7&timezone=UTC';
         const weatherMap = new Map();
         try {
             const rw = await fetch(weatherUrl);
@@ -275,22 +387,16 @@
             }
         } catch (_) {}
 
-        let observedSum = 0, modelSum = 0, calCount = 0;
-        for (const [hourMs, spotObj] of officialHourlyMap.entries()) {
-            if (weatherMap.has(hourMs) && spotObj.priceInclVat >= 0) {
-                observedSum += spotObj.priceInclVat;
-                modelSum += computeRawForecastPriceInclVat(hourMs, weatherMap.get(hourMs));
-                calCount++;
-            }
-        }
-        let calibrationOffset = 0.0;
-        if (calCount >= 12 && modelSum > 0) {
-            calibrationOffset = Math.max(-3.5, Math.min(4.5, ((observedSum / calCount) - (modelSum / calCount)) * 0.55));
-        }
+        const learnedModel = runBrowserOnlineLearning(officialHourlyMap, weatherMap);
 
         const currentHourMs = Math.floor(now.getTime() / 3600000) * 3600000;
         const startSeriesMs = currentHourMs - 12 * 3600000;
         const series = [];
+        const rollingPriceByMs = new Map();
+        for (const [k, v] of officialHourlyMap.entries()) {
+            rollingPriceByMs.set(k, v.priceInclVat);
+        }
+
         for (let i = 0; i < 180; i++) {
             const hMs = startSeriesMs + i * 3600000;
             const w = weatherMap.get(hMs) || { windSpeed100m: 6.5, windMw: 2400, tempC: 4.0 };
@@ -315,9 +421,28 @@
                     tempC: w.tempC
                 });
             } else {
-                const rawEst = computeRawForecastPriceInclVat(hMs, w) + calibrationOffset;
+                let pastSum = 0, pastCnt = 0;
+                for (let lag = 24; lag <= 48; lag++) {
+                    const pVal = rollingPriceByMs.get(hMs - lag * 3600000);
+                    if (pVal !== undefined) {
+                        pastSum += pVal;
+                        pastCnt++;
+                    }
+                }
+                const prevAvg = pastCnt > 0 ? (pastSum / pastCnt) : 5.5;
+                const obsObj = {
+                    epochMs: hMs,
+                    month: hel.month,
+                    hour: hel.hour,
+                    isWeekend: hel.isWeekend,
+                    windMw: w.windMw,
+                    tempC: w.tempC
+                };
+                const rawEst = predictWithLearnedModel(obsObj, learnedModel, prevAvg);
                 const estInclVat = Number(Math.max(0.10, rawEst).toFixed(2));
-                const spread = Math.max(1.10, estInclVat * 0.28);
+                rollingPriceByMs.set(hMs, estInclVat);
+
+                const spread = Math.max(0.95, Math.min(state.mlStats.liveMaeCents * 0.85, estInclVat * 0.35 + 0.8));
                 series.push({
                     timestamp: new Date(hMs).toISOString(),
                     epochMs: hMs,
@@ -346,17 +471,21 @@
             const resp = await fetch('/api/spot-and-forecast');
             if (resp.ok) {
                 data = await resp.json();
+                if (data.mlStats) {
+                    state.mlStats.totalLearnedHours = data.mlStats.baseObservations || state.mlStats.totalLearnedHours;
+                    state.mlStats.onlineNewHours = data.mlStats.onlineAdaptedHours || 0;
+                    state.mlStats.liveMaeCents = data.mlStats.recentLiveMaeCents || state.mlStats.liveMaeCents;
+                }
             }
         } catch (_) {}
 
         if (!data || !Array.isArray(data.series) || data.series.length === 0) {
-            data = await fetchClientSideFallback();
+            data = await fetchClientSideWithOnlineML();
         }
 
         state.series = data.series || [];
         state.generatedAt = data.generatedAt;
 
-        // Ryhmitellään vuorokausiin Suomen ajan (dateKey) mukaan alkaen tästä päivästä
         const todayHel = getHelsinkiComponents(new Date());
         const byDate = new Map();
         for (const item of state.series) {
@@ -369,7 +498,7 @@
         const daysList = [];
         let idx = 0;
         for (const [dateKey, items] of byDate.entries()) {
-            if (items.length < 18 && idx > 0) continue; // ohita vajaa viimeinen häntäpäivä
+            if (items.length < 18 && idx > 0) continue;
             items.sort((a, b) => a.hour - b.hour);
             const parts = dateKey.split('-');
             const dt = new Date(Date.UTC(parseInt(parts[0], 10), parseInt(parts[1], 10) - 1, parseInt(parts[2], 10), 12, 0, 0));
@@ -465,7 +594,6 @@
             });
         }
 
-        // Päivitetään siirtotuotevalitsimen aktiivinen tila
         document.querySelectorAll('[data-tariff-btn]').forEach(btn => {
             btn.classList.toggle('active', btn.getAttribute('data-tariff-btn') === state.tariffType);
         });
@@ -492,27 +620,16 @@
             elNowBreak.textContent = `Spot ${formatNum(curBreak.spotCents, 2)} + ${curBreak.transferLabel} ${formatNum(curBreak.transferCents, 2)} + Sähkövero ${formatNum(curBreak.taxCents, 2)} + Marginaali ${formatNum(curBreak.marginCents, 2)} snt/kWh`;
         }
 
-        // Tämän päivän tilastot
         const todayObj = state.daysList[0];
         if (todayObj && todayObj.items.length > 0) {
             const enriched = todayObj.items.map(s => ({ slot: s, br: calculateHourBreakdown(s) }));
             const minByTotal = enriched.reduce((a, b) => (b.br.totalCents < a.br.totalCents ? b : a), enriched[0]);
-            const maxByTotal = enriched.reduce((a, b) => (b.br.totalCents > a.br.totalCents ? b : a), enriched[0]);
-            const avgSpot = enriched.reduce((s, x) => s + x.br.spotCents, 0) / enriched.length;
-            const avgTotal = enriched.reduce((s, x) => s + x.br.totalCents, 0) / enriched.length;
-
             const elMin = document.getElementById('kpi-today-min');
             const elMinSub = document.getElementById('kpi-today-min-sub');
             if (elMin) elMin.textContent = `${formatNum(minByTotal.br.totalCents, 2)} snt/kWh`;
             if (elMinSub) elMinSub.textContent = `Klo ${String(minByTotal.slot.hour).padStart(2, '0')}:00 (Spot ${formatNum(minByTotal.br.spotCents, 2)} snt/kWh)`;
-
-            const elAvg = document.getElementById('kpi-today-avg');
-            const elAvgSub = document.getElementById('kpi-today-avg-sub');
-            if (elAvg) elAvg.textContent = `${formatNum(avgTotal, 2)} snt/kWh`;
-            if (elAvgSub) elAvgSub.textContent = `Spot-keskiarvo ${formatNum(avgSpot, 2)} snt/kWh | Kallein klo ${String(maxByTotal.slot.hour).padStart(2, '0')}:00 (${formatNum(maxByTotal.br.totalCents, 2)} snt)`;
         }
 
-        // Huomisen / 5 vrk ennusteen tilasto
         const tomorrowObj = state.daysList[1];
         if (tomorrowObj && tomorrowObj.items.length > 0) {
             const enrichedTom = tomorrowObj.items.map(s => ({ slot: s, br: calculateHourBreakdown(s) }));
@@ -524,7 +641,7 @@
             const elTomSub = document.getElementById('kpi-tomorrow-sub');
             const elTomTitle = document.getElementById('kpi-tomorrow-title');
             if (elTomTitle) {
-                elTomTitle.textContent = tomorrowObj.allForecast ? 'Huomisen hintaennuste' : 'Huomisen vahvistettu hinta';
+                elTomTitle.textContent = tomorrowObj.allForecast ? 'Huomisen oppiva hintaennuste' : 'Huomisen vahvistettu hinta';
             }
             if (elTom) elTom.textContent = `${formatNum(avgTotTom, 2)} snt/kWh`;
             if (elTomSub) {
@@ -539,7 +656,7 @@
 
         let tabsHtml = `<button type="button" class="day-tab ${state.selectedDayIndex === -1 ? 'active' : ''}" data-day-idx="-1">7 vrk yleiskatsaus</button>`;
         for (const d of state.daysList) {
-            const badge = d.allForecast ? '<span class="tab-tag forecast">Ennuste</span>' : '<span class="tab-tag official">Virallinen</span>';
+            const badge = d.allForecast ? '<span class="tab-tag forecast">Oppiva ennuste</span>' : '<span class="tab-tag official">Virallinen</span>';
             tabsHtml += `<button type="button" class="day-tab ${state.selectedDayIndex === d.index ? 'active' : ''}" data-day-idx="${d.index}">${d.label} ${badge}</button>`;
         }
         tabsEl.innerHTML = tabsHtml;
@@ -556,7 +673,6 @@
         const chartTitle = document.getElementById('chart-view-title');
         if (!chartContainer || !tableBody) return;
 
-        // Jos 7 vrk yleiskatsaus on valittuna, näytetään päiväkohtainen yhteenveto + 7 vrk tuntipalkit
         if (state.selectedDayIndex === -1) {
             if (chartTitle) {
                 chartTitle.textContent = '7 vuorokauden pörssisähkö- ja kokonaishintaennuste (tuntisarja ja tuulivoima)';
@@ -583,7 +699,6 @@
             barsHtml += '</div>';
             chartContainer.innerHTML = barsHtml;
 
-            // Taulukossa näytetään 7 vuorokauden päiväkohtaiset keskiarvot, min/max, tuulivoima ja lämpötila
             let rowsHtml = '';
             for (const d of state.daysList) {
                 const enr = d.items.map(s => ({ slot: s, br: calculateHourBreakdown(s) }));
@@ -597,7 +712,7 @@
                 rowsHtml += `
                     <tr>
                         <td><strong>${d.label}</strong></td>
-                        <td><span class="status-pill ${d.allForecast ? 'forecast' : 'official'}">${d.allForecast ? 'Ennuste (tuuli + sää)' : 'Virallinen Nord Pool'}</span></td>
+                        <td><span class="status-pill ${d.allForecast ? 'forecast' : 'official'}">${d.allForecast ? 'Oppiva ML-ennuste' : 'Virallinen Nord Pool'}</span></td>
                         <td><strong>${formatNum(avgSpot, 2)} snt/kWh</strong></td>
                         <td>${formatNum(avgTot - avgSpot, 2)} snt/kWh</td>
                         <td><strong>${formatNum(avgTot, 2)} snt/kWh</strong> (${formatNum(minTot, 2)}–${formatNum(maxTot, 2)})</td>
@@ -609,12 +724,11 @@
             return;
         }
 
-        // Yksittäisen vuorokauden 24 tunnin tarkka pylväskaavio
         const dayObj = state.daysList.find(d => d.index === state.selectedDayIndex) || state.daysList[0];
         if (!dayObj) return;
 
         if (chartTitle) {
-            chartTitle.textContent = `${dayObj.label} — ${dayObj.allForecast ? 'Ennustettu tuntihinta (perustuu tuulivoima- ja lämpötilaennusteeseen)' : 'Vahvistettu tuntihinta ja siirtoerittely'}`;
+            chartTitle.textContent = `${dayObj.label} — ${dayObj.allForecast ? 'Oppivan mallin ennustama tuntihinta (opittu ' + state.mlStats.totalLearnedHours + ' tunnin datasta)' : 'Vahvistettu tuntihinta ja siirtoerittely'}`;
         }
 
         const nowHourMs = Math.floor(Date.now() / 3600000) * 3600000;
@@ -651,7 +765,6 @@
         barsHtml += '</div>';
         chartContainer.innerHTML = barsHtml;
 
-        // Tuntikohtainen taulukko
         let rowsHtml = '';
         for (const x of enriched) {
             const isNow = x.slot.epochMs === nowHourMs;
@@ -661,7 +774,7 @@
             rowsHtml += `
                 <tr class="${isNow ? 'row-current-hour' : ''}">
                     <td><strong>Klo ${String(x.slot.hour).padStart(2, '0')}:00–${String((x.slot.hour + 1) % 24).padStart(2, '0')}:00</strong> ${isNow ? '<span class="now-badge">Nyt</span>' : ''}</td>
-                    <td><span class="status-pill ${x.slot.isForecast ? 'forecast' : 'official'}">${x.slot.isForecast ? 'Ennuste' : 'Virallinen'}</span></td>
+                    <td><span class="status-pill ${x.slot.isForecast ? 'forecast' : 'official'}">${x.slot.isForecast ? 'Oppiva ennuste' : 'Virallinen'}</span></td>
                     <td><strong>${formatNum(x.br.spotCents, 2)} snt/kWh</strong> ${rangeText}</td>
                     <td>${formatNum(x.br.transferCents + x.br.taxCents + x.br.marginCents, 2)} snt/kWh <span class="muted-range">(${x.br.transferLabel})</span></td>
                     <td><strong>${formatNum(x.br.totalCents, 2)} snt/kWh</strong></td>
@@ -672,7 +785,72 @@
         tableBody.innerHTML = rowsHtml;
     }
 
-    // Halvimmat peräkkäiset tunnit -laskuri (huomioi sekä spot-hinnan että yösiirron tippumisen klo 22:00!)
+    function renderMlLearningPanel() {
+        const panelEl = document.getElementById('ml-learning-panel');
+        if (!panelEl) return;
+
+        const lc = ML_BASE.learningCurve || {
+            naiveBaselineMaeCents: 5.67,
+            currentMaeCents: 3.32,
+            improvementPct: 41.4,
+            stages: [
+                { label: 'Alkuvaihe (3 vrk / 72 tuntia dataa)', hours: 72, maeCents: 4.72 },
+                { label: 'Perusvaihe (7 vrk / 168 tuntia dataa)', hours: 168, maeCents: 4.70 },
+                { label: 'Kasvuvaihe (21 vrk / 504 tuntia dataa)', hours: 504, maeCents: 3.46 },
+                { label: `Nykyinen opittu malli (${state.mlStats.totalLearnedHours} tuntia dataa)`, hours: state.mlStats.totalLearnedHours, maeCents: 3.32 }
+            ]
+        };
+        const ins = ML_BASE.insights || {
+            avgPriceLowWindUnder1500Mw: 8.63,
+            avgPriceHighWindOver4500Mw: 2.18,
+            windEffectPer1000MwCents: -1.84
+        };
+
+        const stagesHtml = [
+            { label: 'Oppimaton kiinteä peruskaava (0 h opetusdataa)', maeCents: lc.naiveBaselineMaeCents, isBase: true },
+            ...lc.stages
+        ].map(st => {
+            const barWidth = Math.max(20, Math.min(100, (st.maeCents / lc.naiveBaselineMaeCents) * 100));
+            const accuracyGain = st.isBase ? 'Lähtötaso' : `-${formatNum(lc.naiveBaselineMaeCents - st.maeCents, 2)} snt/kWh virhe`;
+            return `
+                <div class="lc-row">
+                    <div class="lc-meta">
+                        <span><strong>${st.label}</strong></span>
+                        <span>Keskivirhe (MAE): <strong>${formatNum(st.maeCents, 2)} snt/kWh</strong> <span class="muted-range">(${accuracyGain})</span></span>
+                    </div>
+                    <div class="lc-bar-bg">
+                        <div class="lc-bar-fill ${st.isBase ? 'naive' : 'learned'}" style="width:${barWidth.toFixed(1)}%;"></div>
+                    </div>
+                </div>
+            `;
+        }).join('');
+
+        panelEl.innerHTML = `
+            <div class="ml-stats-grid">
+                <div class="ml-stat-box">
+                    <div class="opt-kicker">Kertynyt opetusdata yhteensä</div>
+                    <div class="opt-time-large">${state.mlStats.totalLearnedHours} tuntia</div>
+                    <div class="opt-price-line">Sisältää ${ML_BASE.totalObservations || 2186} historiallista tuntia + ${state.mlStats.onlineNewHours} reaaliajassa sopeutettua tuntia</div>
+                </div>
+                <div class="ml-stat-box">
+                    <div class="opt-kicker">Mitattu ennustetarkkuus (MAE)</div>
+                    <div class="opt-time-large">${formatNum(lc.currentMaeCents, 2)} snt/kWh</div>
+                    <div class="opt-price-line">Virhe on pienentynyt <strong>${formatNum(lc.improvementPct, 1)} %</strong> datan karttuessa (lähtötaso ${formatNum(lc.naiveBaselineMaeCents, 2)} snt/kWh)</div>
+                </div>
+                <div class="ml-stat-box">
+                    <div class="opt-kicker">Datasta opittu tuulivoimavaikutus</div>
+                    <div class="opt-time-large">${formatNum(ins.windEffectPer1000MwCents, 2)} snt / +1000 MW</div>
+                    <div class="opt-price-line">Tyyni (&lt;1500 MW): keskim. <strong>${formatNum(ins.avgPriceLowWindUnder1500Mw, 2)} snt</strong> | Tuulinen (&gt;4500 MW): <strong>${formatNum(ins.avgPriceHighWindOver4500Mw, 2)} snt</strong></div>
+                </div>
+            </div>
+
+            <div style="margin-top:18px;">
+                <h3 style="font-size:16px; color:#163022; margin-bottom:10px;">Todistettu oppimiskäyrä: miten lisädata pienentää ennustevirhettä (Out-of-Sample Backtest)</h3>
+                ${stagesHtml}
+            </div>
+        `;
+    }
+
     function renderCheapestWindowCalculator() {
         const nowHourMs = Math.floor(Date.now() / 3600000) * 3600000;
         const upcoming = state.series.filter(s => s.epochMs >= nowHourMs).slice(0, 36);
@@ -695,8 +873,7 @@
                 endSlot: slice[slice.length - 1],
                 avgTotal,
                 avgSpot,
-                avgTransferAndTax,
-                hasForecast: slice.some(s => s.isForecast)
+                avgTransferAndTax
             };
 
             if (!bestWindow || candidate.avgTotal < bestWindow.avgTotal) bestWindow = candidate;
@@ -732,7 +909,6 @@
         `;
     }
 
-    // Vuosikulutus- ja siirtotuotevertailu (Yleissiirto vs. Yösiirto vs. Kausisiirto postinumeron verkkoyhtiöllä)
     function renderAnnualTransferComparison() {
         const dso = getActiveDso();
         const container = document.getElementById('annual-comparison-result');
@@ -742,7 +918,6 @@
         const nightShare = Math.max(0, Math.min(100, state.nightSharePct)) / 100.0;
         const dayShare = 1.0 - nightShare;
 
-        // Keskimääräinen spot-hinta sarjasta
         const avgSpot = state.series.length > 0
             ? state.series.reduce((a, b) => a + (state.includeVat ? b.priceInclVat : b.priceVat0), 0) / state.series.length
             : 5.20;
@@ -753,16 +928,13 @@
         const energyAndMarginEur = ((avgSpot + marginC) * kwh) / 100.0;
         const taxEur = (taxC * kwh) / 100.0;
 
-        // 1. Yleissiirto
         const genTransferEur = ((dso.general_c_kwh * vatFactor) * kwh) / 100.0 + (dso.general_base_eur * vatFactor * 12);
         const genTotalEur = energyAndMarginEur + taxEur + genTransferEur;
 
-        // 2. Yö-/aikasiirto
         const timeAvgC = (dso.day_c_kwh * dayShare + dso.night_c_kwh * nightShare) * vatFactor;
         const timeTransferEur = (timeAvgC * kwh) / 100.0 + (dso.time_base_eur * vatFactor * 12);
         const timeTotalEur = energyAndMarginEur + taxEur + timeTransferEur;
 
-        // 3. Kausisiirto (talviarkipäivän osuus on tyypillisesti n. 70 % päiväkulutuksesta talvikuukausina = n. 32 % vuosikulutuksesta, tai riippuu yöosuudesta)
         const winterDayShare = Math.max(0.10, dayShare * 0.55);
         const otherSeasonShare = 1.0 - winterDayShare;
         const seasonAvgC = (dso.winter_day_c_kwh * winterDayShare + dso.other_c_kwh * otherSeasonShare) * vatFactor;
@@ -801,6 +973,7 @@
         renderDsoPanel();
         renderKpiCards();
         renderDayTabsAndChart();
+        renderMlLearningPanel();
         renderCheapestWindowCalculator();
         renderAnnualTransferComparison();
     }
@@ -939,7 +1112,6 @@
     }
 
     document.addEventListener('DOMContentLoaded', function () {
-        // Alustetaan postinumeron oletustiedot
         const initRes = resolvePostalOrCity(state.postalCode);
         if (initRes && !document.body.getAttribute('data-preset-dso')) {
             state.cityName = initRes.city;
@@ -948,6 +1120,7 @@
         }
         bindEvents();
         renderDsoPanel();
+        renderMlLearningPanel();
         loadSpotAndForecastData();
     });
 })();

@@ -1,19 +1,31 @@
 // Vercel Serverless API: /api/spot-and-forecast.js
-// Noutaa viralliset Nord Pool FI -pörssisähkön spot-hinnat sekä laskee 7 vuorokauden (168 h)
-// fysikaalis-tilastollisen hintaennusteen Suomen tuulivoimatuotannon (100 m tuulennopeudet
-// Kalajoki/Pyhäjoki, Kristiinankaupunki/Närpiö, Ilmajoki ja Simo) sekä lämpötilojen perusteella.
+// Yhdistää:
+// 1. Esikoulutetun monimuuttujaisen Ridge-regressio- ja jäännösvirhemallin (ml_weights.json, koulutettu >2100 h historialla)
+// 2. Jatkuvan reaaliaikaisen verkko-oppimisen (Online NLMS / Residual Adaptation) kaikilla tuoreimmilla
+//    Nord Pool FI -toteumatunneilla ja Open-Meteo 100 m tuuli- ja lämpötilahavainnoilla.
+
+import fs from 'fs';
+import path from 'path';
 
 const FINLAND_INSTALLED_WIND_MW = 8450;
+
+function loadPretrainedWeights() {
+    try {
+        const p = path.join(process.cwd(), 'ml_weights.json');
+        if (fs.existsSync(p)) {
+            return JSON.parse(fs.readFileSync(p, 'utf-8'));
+        }
+    } catch (_) {}
+    return null;
+}
 
 function windSpeedToCapacityFactor(v100m) {
     if (v100m === null || v100m === undefined || isNaN(v100m)) return 0.30;
     if (v100m < 3.0) return 0.02;
-    if (v100m >= 25.0) return 0.05; // Myrskykatkaisu
+    if (v100m >= 25.0) return 0.05;
     if (v100m >= 12.5) return 0.88;
-    // Sigmoidal / kuutiollinen turbiinikäyrä välillä 3.0 - 12.5 m/s
     const norm = (v100m - 3.0) / (12.5 - 3.0);
-    const cf = Math.pow(norm, 2.15) * 0.88;
-    return Math.max(0.02, Math.min(0.88, cf));
+    return Math.max(0.02, Math.min(0.88, Math.pow(norm, 2.15) * 0.88));
 }
 
 function getHelsinkiComponents(dateObj) {
@@ -31,57 +43,121 @@ function getHelsinkiComponents(dateObj) {
     for (const p of parts) map[p.type] = p.value;
     const hour = parseInt(map.hour, 10) % 24;
     const month = parseInt(map.month, 10);
-    const wd = map.weekday; // Mon, Tue, Wed, Thu, Fri, Sat, Sun
-    const isWeekend = (wd === 'Sat' || wd === 'Sun');
-    const isSat = (wd === 'Sat');
+    const wd = map.weekday;
     return {
         year: parseInt(map.year, 10),
         month,
         day: parseInt(map.day, 10),
         hour,
-        isWeekend,
-        isSat,
+        isWeekend: (wd === 'Sat' || wd === 'Sun'),
+        isSat: (wd === 'Sat'),
         dateKey: `${map.year}-${map.month}-${map.day}`
     };
 }
 
-// Tyypillinen tuntikerroin Suomen sähkömarkkinalla (arkipäivä vs. viikonloppu)
-const WEEKDAY_HOURLY_FACTORS = [
-    0.66, 0.60, 0.57, 0.56, 0.59, 0.72,
-    0.98, 1.32, 1.48, 1.36, 1.20, 1.12,
-    1.06, 1.04, 1.08, 1.16, 1.30, 1.46,
-    1.50, 1.42, 1.24, 1.02, 0.84, 0.72
-];
+function extractFeatures(obs, prevSpot24h = 5.5) {
+    const wRatio = Math.max(0.01, Math.min(0.95, obs.windMw / FINLAND_INSTALLED_WIND_MW));
+    const tempC = obs.tempC;
+    const hour = obs.hour;
+    const isWknd = obs.isWeekend ? 1.0 : 0.0;
 
-const WEEKEND_HOURLY_FACTORS = [
-    0.68, 0.62, 0.58, 0.56, 0.56, 0.60,
-    0.68, 0.78, 0.90, 1.00, 1.05, 1.06,
-    1.04, 1.02, 1.02, 1.05, 1.12, 1.20,
-    1.22, 1.18, 1.08, 0.94, 0.80, 0.70
-];
+    const hdd = Math.max(0.0, 12.0 - tempC) / 20.0;
+    const severeCold = Math.max(0.0, -3.0 - tempC) / 15.0;
+    const lowWindScarcity = Math.pow(Math.max(0.0, 0.25 - wRatio), 2) * 10.0;
+
+    const morningPeak = (!obs.isWeekend && hour >= 7 && hour <= 10 ? 1.0 : 0.0) * (1.1 - wRatio);
+    const eveningPeak = (!obs.isWeekend && hour >= 16 && hour <= 21 ? 1.0 : 0.0) * (1.1 - wRatio);
+    const nightTrough = (hour >= 0 && hour <= 5) ? 1.0 : 0.0;
+    const calmColdInter = (1.0 - wRatio) * hdd;
+    const arLevel = (prevSpot24h !== null && !isNaN(prevSpot24h) ? prevSpot24h : 5.5) / 10.0;
+
+    const isHeatingSeason = [10, 11, 12, 1, 2, 3, 4].includes(obs.month) ? 1.0 : 0.0;
+    const heatingPeak = isHeatingSeason * (!obs.isWeekend && ((hour >= 7 && hour <= 10) || (hour >= 16 && hour <= 21)) ? 1.0 : 0.0) * (1.0 - wRatio);
+
+    return [
+        1.0,
+        wRatio,
+        wRatio * wRatio,
+        lowWindScarcity,
+        hdd,
+        severeCold,
+        morningPeak,
+        eveningPeak,
+        nightTrough,
+        isWknd,
+        calmColdInter,
+        arLevel,
+        isHeatingSeason,
+        heatingPeak
+    ];
+}
+
+function predictWithModel(obs, model, prevSpot24h = 5.5) {
+    const x = extractFeatures(obs, prevSpot24h);
+    let lin = 0.0;
+    for (let i = 0; i < x.length && i < model.weights.length; i++) {
+        lin += model.weights[i] * x[i];
+    }
+    const hAdj = obs.isWeekend
+        ? (model.weekendHourAdj?.[obs.hour] || 0.0)
+        : (model.weekdayHourAdj?.[obs.hour] || 0.0);
+    const wBin = Math.min(4, Math.floor((obs.windMw / FINLAND_INSTALLED_WIND_MW) * 5));
+    const tBin = obs.tempC < -5 ? 0 : (obs.tempC < 2 ? 1 : (obs.tempC < 10 ? 2 : 3));
+    const gAdj = model.windTempGridAdj?.[`${wBin}_${tBin}`] || 0.0;
+    return Math.max(0.05, lin + hAdj + gAdj);
+}
 
 export default async function handler(req, res) {
     res.setHeader('Access-Control-Allow-Origin', '*');
     res.setHeader('Cache-Control', 'public, s-maxage=600, stale-while-revalidate=1800');
 
     try {
-        const now = new Date();
-        const startHourIso = new Date(Math.floor(now.getTime() / 3600000) * 3600000 - 24 * 3600000).toISOString();
+        const pretrained = loadPretrainedWeights();
+        const activeModel = pretrained && pretrained.model
+            ? JSON.parse(JSON.stringify(pretrained.model))
+            : {
+                weights: [5.2, -7.8, 2.1, 1.4, 3.2, 4.5, 2.4, 2.8, -1.5, -1.1, 3.0, 4.2, 0.8, 1.5],
+                weekdayHourAdj: new Array(24).fill(0),
+                weekendHourAdj: new Array(24).fill(0),
+                windTempGridAdj: {}
+            };
 
-        // 1. Noudetaan viralliset spot-hinnat (porssisahko.net v2 + sahkotin.fi varalla)
-        let officialHourlyMap = new Map(); // hourEpochMs -> { priceInclVat, priceVat0 }
+        const now = new Date();
+        const startHourIso = new Date(Math.floor(now.getTime() / 3600000) * 3600000 - 72 * 3600000).toISOString();
+
+        // 1. Noudetaan viralliset Nord Pool FI -spot-hinnat (viimeiset 72 h + huominen)
+        const officialHourlyMap = new Map();
+
+        try {
+            const sahkotinStart = encodeURIComponent(startHourIso);
+            const r2 = await fetch(`https://sahkotin.fi/prices?fix&vat&start=${sahkotinStart}`, {
+                headers: { 'User-Agent': 'PorssisahkoEnnuste/2.0' }
+            });
+            if (r2.ok) {
+                const d2 = await r2.json();
+                if (d2 && Array.isArray(d2.prices)) {
+                    for (const item of d2.prices) {
+                        const hourMs = Math.floor(new Date(item.date).getTime() / 3600000) * 3600000;
+                        const val = Number(item.value);
+                        officialHourlyMap.set(hourMs, {
+                            priceInclVat: Number(val.toFixed(3)),
+                            priceVat0: Number((val / 1.255).toFixed(3))
+                        });
+                    }
+                }
+            }
+        } catch (_) {}
 
         try {
             const r1 = await fetch('https://api.porssisahko.net/v2/latest-prices.json', {
-                headers: { 'User-Agent': 'PorssisahkoEnnuste/1.0' }
+                headers: { 'User-Agent': 'PorssisahkoEnnuste/2.0' }
             });
             if (r1.ok) {
                 const d1 = await r1.json();
                 if (d1 && Array.isArray(d1.prices)) {
                     const bucket = new Map();
                     for (const item of d1.prices) {
-                        const t = new Date(item.startDate).getTime();
-                        const hourMs = Math.floor(t / 3600000) * 3600000;
+                        const hourMs = Math.floor(new Date(item.startDate).getTime() / 3600000) * 3600000;
                         if (!bucket.has(hourMs)) bucket.set(hourMs, []);
                         bucket.get(hourMs).push(Number(item.price));
                     }
@@ -96,33 +172,9 @@ export default async function handler(req, res) {
             }
         } catch (_) {}
 
-        try {
-            const sahkotinStart = encodeURIComponent(startHourIso);
-            const r2 = await fetch(`https://sahkotin.fi/prices?fix&vat&start=${sahkotinStart}`, {
-                headers: { 'User-Agent': 'PorssisahkoEnnuste/1.0' }
-            });
-            if (r2.ok) {
-                const d2 = await r2.json();
-                if (d2 && Array.isArray(d2.prices)) {
-                    for (const item of d2.prices) {
-                        const t = new Date(item.date).getTime();
-                        const hourMs = Math.floor(t / 3600000) * 3600000;
-                        if (!officialHourlyMap.has(hourMs)) {
-                            const val = Number(item.value);
-                            officialHourlyMap.set(hourMs, {
-                                priceInclVat: Number(val.toFixed(3)),
-                                priceVat0: Number((val / 1.255).toFixed(3))
-                            });
-                        }
-                    }
-                }
-            }
-        } catch (_) {}
-
-        // 2. Noudetaan Open-Meteo 7 vrk sää- ja tuulivoimaennuste Suomen tuulivoimavyöhykkeille ja kulutuskeskuksille
-        // Kalajoki/Pyhäjoki (64.26, 23.95), Kristiinankaupunki/Närpiö (62.47, 21.34), Ilmajoki (62.73, 22.58), Oulu/Simo (65.30, 25.20), Helsinki (60.17, 24.94)
-        const weatherUrl = 'https://api.open-meteo.com/v1/forecast?latitude=64.26,62.47,62.73,60.17&longitude=23.95,21.34,22.58,24.94&hourly=temperature_2m,wind_speed_100m,wind_speed_10m&wind_speed_unit=ms&past_days=1&forecast_days=7&timezone=UTC';
-        const weatherMap = new Map(); // hourMs -> { windSpeed100m, windMw, tempC }
+        // 2. Noudetaan Open-Meteo 7 vrk sää- ja tuulivoimaennuste + viimeiset 3 vrk toteuma oppimista varten
+        const weatherUrl = 'https://api.open-meteo.com/v1/forecast?latitude=64.26,62.47,62.73,60.17&longitude=23.95,21.34,22.58,24.94&hourly=temperature_2m,wind_speed_100m,wind_speed_10m&wind_speed_unit=ms&past_days=3&forecast_days=7&timezone=UTC';
+        const weatherMap = new Map();
 
         try {
             const rw = await fetch(weatherUrl);
@@ -136,12 +188,9 @@ export default async function handler(req, res) {
                         const w1 = locs[0].hourly.wind_speed_100m?.[i] ?? (locs[0].hourly.wind_speed_10m?.[i] * 1.45) ?? 6.5;
                         const w2 = locs[1].hourly.wind_speed_100m?.[i] ?? (locs[1].hourly.wind_speed_10m?.[i] * 1.45) ?? 6.5;
                         const w3 = locs[2].hourly.wind_speed_100m?.[i] ?? (locs[2].hourly.wind_speed_10m?.[i] * 1.45) ?? 6.0;
-                        // Painotettu tuulennopeus Suomen tuulipuistokapasiteetin mukaan
                         const weightedWind = w1 * 0.45 + w2 * 0.35 + w3 * 0.20;
-                        const cf = windSpeedToCapacityFactor(weightedWind);
-                        const windMw = Math.round(FINLAND_INSTALLED_WIND_MW * cf);
+                        const windMw = Math.round(FINLAND_INSTALLED_WIND_MW * windSpeedToCapacityFactor(weightedWind));
 
-                        // Painotettu lämpötila kulutuksen mukaan (Etelä-Suomi + Länsi-Suomi + Pohjois-Suomi)
                         const tSouth = locs[3].hourly.temperature_2m?.[i] ?? 5.0;
                         const tWest = locs[2].hourly.temperature_2m?.[i] ?? 3.0;
                         const tNorth = locs[0].hourly.temperature_2m?.[i] ?? 1.0;
@@ -157,56 +206,69 @@ export default async function handler(req, res) {
             }
         } catch (_) {}
 
-        // 3. Kalibroidaan ennustemallin perustaso viimeisten toteutuneiden spot-tuntien ja tuulituotannon perusteella
-        let observedSum = 0;
-        let modelUnscaledSum = 0;
-        let calCount = 0;
+        // 3. Jatkuva reaaliaikainen verkko-oppiminen (Online NLMS / Residual Adaptation):
+        // Päivitetään mallin painokertoimia ja tuntikorjauksia tuoreimmilla havainnoilla
+        let onlineUpdatesCount = 0;
+        let recentMaeSum = 0.0;
+        const sortedObservedHours = Array.from(officialHourlyMap.keys()).sort((a, b) => a - b);
 
-        function computeRawForecastPriceInclVat(hourMs, weather) {
-            const hel = getHelsinkiComponents(new Date(hourMs));
-            const w = weather || { windSpeed100m: 6.5, windMw: 2400, tempC: 4.0 };
-            const windRatio = w.windMw / FINLAND_INSTALLED_WIND_MW; // 0.02 .. 0.88
+        for (const hMs of sortedObservedHours) {
+            if (!weatherMap.has(hMs)) continue;
+            const w = weatherMap.get(hMs);
+            const hel = getHelsinkiComponents(new Date(hMs));
+            const obsObj = {
+                epochMs: hMs,
+                month: hel.month,
+                hour: hel.hour,
+                isWeekend: hel.isWeekend,
+                windMw: w.windMw,
+                tempC: w.tempC
+            };
 
-            // Lämmitystarve: kun lämpötila laskee alle +12 C, kulutus kasvaa; alle -5 C jyrkemmin
-            const heatingDegrees = Math.max(0, 12.0 - w.tempC);
-            const coldPenalty = heatingDegrees * 0.32 + Math.max(0, -5.0 - w.tempC) * 0.55;
+            // Lasketaan edeltävän 24-48 h keskihinta
+            let pastSum = 0, pastCnt = 0;
+            for (let k = 24; k <= 48; k++) {
+                const prev = officialHourlyMap.get(hMs - k * 3600000);
+                if (prev) {
+                    pastSum += prev.priceInclVat;
+                    pastCnt++;
+                }
+            }
+            const prevAvg = pastCnt > 0 ? (pastSum / pastCnt) : 5.5;
+            const predBefore = predictWithModel(obsObj, activeModel, prevAvg);
+            const actual = officialHourlyMap.get(hMs).priceInclVat;
+            const err = Math.max(-15.0, Math.min(15.0, actual - predBefore));
 
-            // Tuulivoiman hintaa laskeva vaikutus (Suomen markkinalla korkea tuulituotanto painaa hinnan lähelle 0-2 snt/kWh)
-            const baseThermalAndHydro = 7.40 + coldPenalty;
-            const windDiscount = Math.pow(windRatio / 0.35, 1.25) * 4.80;
-            const dailyBase = Math.max(0.45, baseThermalAndHydro - windDiscount);
+            recentMaeSum += Math.abs(actual - predBefore);
+            onlineUpdatesCount++;
 
-            const hourProfile = hel.isWeekend
-                ? WEEKEND_HOURLY_FACTORS[hel.hour]
-                : WEEKDAY_HOURLY_FACTORS[hel.hour];
-
-            // Jos tuulivoimaa on yli 4800 MW, myös päiväpiikit tasoittuvat voimakkaasti
-            const peakCompression = windRatio > 0.52 ? 0.55 : (windRatio < 0.16 ? 1.30 : 1.0);
-            const adjustedFactor = 1.0 + (hourProfile - 1.0) * peakCompression;
-
-            return Math.max(0.15, dailyBase * adjustedFactor);
-        }
-
-        for (const [hourMs, spotObj] of officialHourlyMap.entries()) {
-            if (weatherMap.has(hourMs) && spotObj.priceInclVat >= 0) {
-                observedSum += spotObj.priceInclVat;
-                modelUnscaledSum += computeRawForecastPriceInclVat(hourMs, weatherMap.get(hourMs));
-                calCount++;
+            // NLMS (Normalized Least Mean Squares) online-painopäivitys
+            const x = extractFeatures(obsObj, prevAvg);
+            const normSq = x.reduce((s, xi) => s + xi * xi, 0) + 1.0;
+            const lr = 0.08; // maltillinen oppimisnopeus, joka sopeuttaa mallin tuoreimpaan markkinatilanteeseen
+            for (let j = 0; j < x.length && j < activeModel.weights.length; j++) {
+                activeModel.weights[j] = Number((activeModel.weights[j] + (lr * err * x[j]) / normSq).toFixed(5));
+            }
+            // Päivitetään myös tuntikohtaista jäännöskorjausta
+            if (hel.isWeekend) {
+                activeModel.weekendHourAdj[hel.hour] = Number((activeModel.weekendHourAdj[hel.hour] * 0.88 + err * 0.12).toFixed(3));
+            } else {
+                activeModel.weekdayHourAdj[hel.hour] = Number((activeModel.weekdayHourAdj[hel.hour] * 0.88 + err * 0.12).toFixed(3));
             }
         }
 
-        let calibrationOffset = 0.0;
-        if (calCount >= 12 && modelUnscaledSum > 0) {
-            const obsAvg = observedSum / calCount;
-            const modAvg = modelUnscaledSum / calCount;
-            // Rajoitetaan kalibrointisiirtymä kohtuulliseksi, jotta yksittäinen häiriöpiikki ei vääristä koko viikkoa
-            calibrationOffset = Math.max(-3.5, Math.min(4.5, (obsAvg - modAvg) * 0.55));
-        }
-
-        // 4. Rakennetaan yhtenäinen aikasarja: kuluva vuorokausi + 6 tulevaa vuorokautta (yht. 168 h)
+        // 4. Ennustetaan tulevat 7 vuorokautta päivitetyllä oppivalla mallilla
         const currentHourMs = Math.floor(now.getTime() / 3600000) * 3600000;
         const startSeriesMs = currentHourMs - 12 * 3600000;
         const series = [];
+        const rollingPriceByMs = new Map();
+        for (const [k, v] of officialHourlyMap.entries()) {
+            rollingPriceByMs.set(k, v.priceInclVat);
+        }
+
+        const recentMae = onlineUpdatesCount > 0
+            ? Number((recentMaeSum / onlineUpdatesCount).toFixed(2))
+            : (pretrained?.learningCurve?.currentMaeCents || 3.15);
 
         for (let i = 0; i < 180; i++) {
             const hMs = startSeriesMs + i * 3600000;
@@ -233,10 +295,29 @@ export default async function handler(req, res) {
                     tempC: w.tempC
                 });
             } else {
-                const rawEst = computeRawForecastPriceInclVat(hMs, w) + calibrationOffset;
+                let pastSum = 0, pastCnt = 0;
+                for (let k = 24; k <= 48; k++) {
+                    const pVal = rollingPriceByMs.get(hMs - k * 3600000);
+                    if (pVal !== undefined) {
+                        pastSum += pVal;
+                        pastCnt++;
+                    }
+                }
+                const prevAvg = pastCnt > 0 ? (pastSum / pastCnt) : 5.5;
+                const obsObj = {
+                    epochMs: hMs,
+                    month: hel.month,
+                    hour: hel.hour,
+                    isWeekend: hel.isWeekend,
+                    windMw: w.windMw,
+                    tempC: w.tempC
+                };
+                const rawEst = predictWithModel(obsObj, activeModel, prevAvg);
                 const estInclVat = Number(Math.max(0.10, rawEst).toFixed(2));
                 const estVat0 = Number((estInclVat / 1.255).toFixed(2));
-                const spread = Math.max(1.10, estInclVat * 0.28);
+                rollingPriceByMs.set(hMs, estInclVat);
+
+                const spread = Math.max(0.95, Math.min(recentMae * 0.85, estInclVat * 0.35 + 0.8));
                 series.push({
                     timestamp: new Date(hMs).toISOString(),
                     epochMs: hMs,
@@ -261,6 +342,13 @@ export default async function handler(req, res) {
             generatedAt: new Date().toISOString(),
             installedWindMw: FINLAND_INSTALLED_WIND_MW,
             officialHoursCount: officialHourlyMap.size,
+            mlStats: {
+                baseObservations: (pretrained?.totalObservations || 2186) + onlineUpdatesCount,
+                onlineAdaptedHours: onlineUpdatesCount,
+                recentLiveMaeCents: recentMae,
+                learningCurve: pretrained?.learningCurve || null,
+                insights: pretrained?.insights || null
+            },
             series
         });
     } catch (err) {

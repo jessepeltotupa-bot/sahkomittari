@@ -14,7 +14,7 @@ import html
 import json
 import os
 import re
-from datetime import datetime
+from datetime import datetime, timezone
 from dso_data import (
     DSO_COMPANIES,
     MUNICIPALITIES,
@@ -47,6 +47,7 @@ def render_header(prefix: str = "") -> str:
             </a>
             <nav class="main-nav" aria-label="Päävalikko">
                 <a href="{prefix}index.html">Spot &amp; Ennuste</a>
+                <a href="{prefix}index.html#oppiva-malli">Oppiva tekoälymalli</a>
                 <a href="{prefix}index.html#optimoija">Halvimmat tunnit</a>
                 <a href="{prefix}index.html#vuosivertailu">Yleissiirto vs. Yösiirto</a>
                 <a href="{prefix}verkkoyhtiot/index.html">Sähköverkkoyhtiöt</a>
@@ -188,6 +189,16 @@ def render_interactive_dashboard_block(
                         <tr><td colspan="6">Ladataan tuntitietoja...</td></tr>
                     </tbody>
                 </table>
+            </div>
+        </section>
+
+        <section class="section-card" id="oppiva-malli">
+            <h2>Jatkuvasti oppiva hintaennustemalli (Ridge-regressio + Online NLMS -sopeutus)</h2>
+            <p class="hero-lead" style="margin-top:6px;">
+                Ennustemalli ei käytä kiinteitä arvauksia, vaan oppii jatkuvasti lisää jokaisesta toteutuneesta Nord Pool -tunnista, Suomen tuulipuistojen 100 metrin tuulennopeuksista ja lämpötiloista. Mitä enemmän tunteja tietokantaan (<code>data/historical_observations.json</code>) ja reaaliaikaiseen verkko-oppijaan kertyy, sitä tarkemmin malli tuntee tuulivoiman, pakkasen ja kulutuspiikkien yhteisvaikutuksen.
+            </p>
+            <div id="ml-learning-panel">
+                Ladataan oppivan mallin tarkkuustilastoja...
             </div>
         </section>
 
@@ -373,6 +384,7 @@ def build_index_page() -> str:
 
 {render_footer("")}
     <script src="dso_data.js"></script>
+    <script src="ml_weights.js"></script>
     <script src="app.js"></script>
 </body>
 </html>
@@ -481,6 +493,7 @@ def build_dso_page(comp: dict) -> str:
 
 {render_footer("../")}
     <script src="../dso_data.js"></script>
+    <script src="../ml_weights.js"></script>
     <script src="../app.js"></script>
 </body>
 </html>
@@ -536,6 +549,7 @@ def build_municipality_page(m: dict) -> str:
 
 {render_footer("../")}
     <script src="../dso_data.js"></script>
+    <script src="../ml_weights.js"></script>
     <script src="../app.js"></script>
 </body>
 </html>
@@ -704,7 +718,7 @@ def main():
         urls.append(f"{SITE_URL}/oppaat/{gslug}.html")
 
     # 5. Sitemap, robots.txt, llms.txt, vercel.json
-    today_str = datetime.utcnow().strftime("%Y-%m-%d")
+    today_str = datetime.now(timezone.utc).strftime("%Y-%m-%d")
     sitemap_items = "\n".join(
         f"  <url>\n    <loc>{u}</loc>\n    <lastmod>{today_str}</lastmod>\n  </url>" for u in urls
     )

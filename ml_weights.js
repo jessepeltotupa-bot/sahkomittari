@@ -1,0 +1,556 @@
+window.PORSSISAHKO_ML_WEIGHTS = {
+  "trainedAt": "2026-11-02T21:14:04Z",
+  "totalObservations": 2186,
+  "firstObservationDate": "2026-08-05",
+  "lastObservationDate": "2026-11-04",
+  "model": {
+    "weights": [
+      1.72987,
+      -3.83736,
+      1.24227,
+      22.48435,
+      2.60024,
+      0.0,
+      2.40673,
+      1.58899,
+      -2.5542,
+      -3.57599,
+      7.14039,
+      1.12739,
+      0.00762,
+      2.41286
+    ],
+    "weekdayHourAdj": [
+      -1.017,
+      -0.373,
+      -0.758,
+      -0.987,
+      -0.828,
+      -0.7,
+      -0.747,
+      -1.554,
+      -0.337,
+      0.141,
+      0.109,
+      2.377,
+      2.17,
+      1.739,
+      1.363,
+      1.222,
+      -0.538,
+      -0.039,
+      0.679,
+      0.435,
+      -0.322,
+      -1.322,
+      0.357,
+      -0.672
+    ],
+    "weekendHourAdj": [
+      1.51,
+      1.312,
+      1.369,
+      1.366,
+      1.05,
+      0.603,
+      -0.368,
+      -0.061,
+      -0.246,
+      -0.061,
+      -0.094,
+      -0.315,
+      -0.359,
+      -0.908,
+      -1.26,
+      -1.18,
+      -0.567,
+      0.26,
+      0.261,
+      0.503,
+      -0.303,
+      -0.643,
+      -1.123,
+      -1.371
+    ],
+    "windTempGridAdj": {
+      "0_2": 0.268,
+      "0_3": -0.993,
+      "1_3": -0.111,
+      "2_3": 0.132,
+      "3_3": 0.141,
+      "4_3": 0.147,
+      "1_2": 0.085,
+      "2_2": -0.049,
+      "3_2": -0.259,
+      "4_2": 0.008,
+      "0_1": -0.479,
+      "1_1": -0.252
+    }
+  },
+  "learningCurve": {
+    "naiveBaselineMaeCents": 5.67,
+    "stages": [
+      {
+        "label": "Alkuvaihe (3 vrk / 72 tuntia dataa)",
+        "hours": 72,
+        "maeCents": 4.72
+      },
+      {
+        "label": "Perusvaihe (7 vrk / 168 tuntia dataa)",
+        "hours": 168,
+        "maeCents": 4.7
+      },
+      {
+        "label": "Kasvuvaihe (21 vrk / 504 tuntia dataa)",
+        "hours": 504,
+        "maeCents": 3.46
+      },
+      {
+        "label": "Nykyinen opittu malli (2186 tuntia dataa)",
+        "hours": 2186,
+        "maeCents": 3.32
+      }
+    ],
+    "currentMaeCents": 3.32,
+    "improvementPct": 41.4
+  },
+  "insights": {
+    "avgPriceLowWindUnder1500Mw": 7.49,
+    "avgPriceHighWindOver4500Mw": 0.7,
+    "windEffectPer1000MwCents": -1.94
+  },
+  "recentBacktest": [
+    {
+      "epochMs": 1793574000000,
+      "dateKey": "2026-11-02",
+      "hour": 1,
+      "actual": 7.094,
+      "predicted": 9.84,
+      "windMw": 538,
+      "tempC": 7.4
+    },
+    {
+      "epochMs": 1793577600000,
+      "dateKey": "2026-11-02",
+      "hour": 2,
+      "actual": 5.424,
+      "predicted": 11.02,
+      "windMw": 399,
+      "tempC": 7.2
+    },
+    {
+      "epochMs": 1793581200000,
+      "dateKey": "2026-11-02",
+      "hour": 3,
+      "actual": 4.008,
+      "predicted": 10.57,
+      "windMw": 425,
+      "tempC": 6.9
+    },
+    {
+      "epochMs": 1793584800000,
+      "dateKey": "2026-11-02",
+      "hour": 4,
+      "actual": 4.54,
+      "predicted": 11.0,
+      "windMw": 421,
+      "tempC": 6.3
+    },
+    {
+      "epochMs": 1793588400000,
+      "dateKey": "2026-11-02",
+      "hour": 5,
+      "actual": 4.035,
+      "predicted": 13.39,
+      "windMw": 239,
+      "tempC": 6.0
+    },
+    {
+      "epochMs": 1793592000000,
+      "dateKey": "2026-11-02",
+      "hour": 6,
+      "actual": 13.282,
+      "predicted": 16.44,
+      "windMw": 204,
+      "tempC": 5.7
+    },
+    {
+      "epochMs": 1793595600000,
+      "dateKey": "2026-11-02",
+      "hour": 7,
+      "actual": 22.285,
+      "predicted": 21.1,
+      "windMw": 169,
+      "tempC": 5.5
+    },
+    {
+      "epochMs": 1793599200000,
+      "dateKey": "2026-11-02",
+      "hour": 8,
+      "actual": 42.034,
+      "predicted": 22.35,
+      "windMw": 169,
+      "tempC": 5.3
+    },
+    {
+      "epochMs": 1793602800000,
+      "dateKey": "2026-11-02",
+      "hour": 9,
+      "actual": 43.925,
+      "predicted": 22.68,
+      "windMw": 169,
+      "tempC": 5.5
+    },
+    {
+      "epochMs": 1793606400000,
+      "dateKey": "2026-11-02",
+      "hour": 10,
+      "actual": 45.395,
+      "predicted": 22.45,
+      "windMw": 169,
+      "tempC": 5.8
+    },
+    {
+      "epochMs": 1793610000000,
+      "dateKey": "2026-11-02",
+      "hour": 11,
+      "actual": 47.217,
+      "predicted": 19.61,
+      "windMw": 169,
+      "tempC": 6.0
+    },
+    {
+      "epochMs": 1793613600000,
+      "dateKey": "2026-11-02",
+      "hour": 12,
+      "actual": 48.999,
+      "predicted": 19.21,
+      "windMw": 169,
+      "tempC": 6.3
+    },
+    {
+      "epochMs": 1793617200000,
+      "dateKey": "2026-11-02",
+      "hour": 13,
+      "actual": 50.511,
+      "predicted": 18.4,
+      "windMw": 169,
+      "tempC": 7.0
+    },
+    {
+      "epochMs": 1793620800000,
+      "dateKey": "2026-11-02",
+      "hour": 14,
+      "actual": 48.382,
+      "predicted": 17.76,
+      "windMw": 169,
+      "tempC": 7.5
+    },
+    {
+      "epochMs": 1793624400000,
+      "dateKey": "2026-11-02",
+      "hour": 15,
+      "actual": 37.274,
+      "predicted": 17.7,
+      "windMw": 169,
+      "tempC": 7.3
+    },
+    {
+      "epochMs": 1793628000000,
+      "dateKey": "2026-11-02",
+      "hour": 16,
+      "actual": 43.453,
+      "predicted": 20.11,
+      "windMw": 169,
+      "tempC": 7.1
+    },
+    {
+      "epochMs": 1793631600000,
+      "dateKey": "2026-11-02",
+      "hour": 17,
+      "actual": 50.761,
+      "predicted": 20.44,
+      "windMw": 185,
+      "tempC": 7.0
+    },
+    {
+      "epochMs": 1793635200000,
+      "dateKey": "2026-11-02",
+      "hour": 18,
+      "actual": 34.63,
+      "predicted": 18.43,
+      "windMw": 417,
+      "tempC": 6.6
+    },
+    {
+      "epochMs": 1793638800000,
+      "dateKey": "2026-11-02",
+      "hour": 19,
+      "actual": 22.27,
+      "predicted": 17.88,
+      "windMw": 472,
+      "tempC": 5.9
+    },
+    {
+      "epochMs": 1793642400000,
+      "dateKey": "2026-11-02",
+      "hour": 20,
+      "actual": 20.544,
+      "predicted": 14.65,
+      "windMw": 722,
+      "tempC": 5.5
+    },
+    {
+      "epochMs": 1793646000000,
+      "dateKey": "2026-11-02",
+      "hour": 21,
+      "actual": 10.693,
+      "predicted": 11.9,
+      "windMw": 936,
+      "tempC": 5.0
+    },
+    {
+      "epochMs": 1793649600000,
+      "dateKey": "2026-11-02",
+      "hour": 22,
+      "actual": 6.675,
+      "predicted": 9.01,
+      "windMw": 1071,
+      "tempC": 4.6
+    },
+    {
+      "epochMs": 1793653200000,
+      "dateKey": "2026-11-02",
+      "hour": 23,
+      "actual": 2.887,
+      "predicted": 8.0,
+      "windMw": 1094,
+      "tempC": 4.2
+    },
+    {
+      "epochMs": 1793656800000,
+      "dateKey": "2026-11-03",
+      "hour": 0,
+      "actual": 0.877,
+      "predicted": 2.98,
+      "windMw": 1452,
+      "tempC": 4.1
+    },
+    {
+      "epochMs": 1793660400000,
+      "dateKey": "2026-11-03",
+      "hour": 1,
+      "actual": 0.724,
+      "predicted": 2.1,
+      "windMw": 1868,
+      "tempC": 3.8
+    },
+    {
+      "epochMs": 1793664000000,
+      "dateKey": "2026-11-03",
+      "hour": 2,
+      "actual": 0.641,
+      "predicted": 1.77,
+      "windMw": 2021,
+      "tempC": 3.0
+    },
+    {
+      "epochMs": 1793667600000,
+      "dateKey": "2026-11-03",
+      "hour": 3,
+      "actual": 0.599,
+      "predicted": 1.49,
+      "windMw": 2179,
+      "tempC": 2.8
+    },
+    {
+      "epochMs": 1793671200000,
+      "dateKey": "2026-11-03",
+      "hour": 4,
+      "actual": 0.595,
+      "predicted": 1.02,
+      "windMw": 2874,
+      "tempC": 3.1
+    },
+    {
+      "epochMs": 1793674800000,
+      "dateKey": "2026-11-03",
+      "hour": 5,
+      "actual": 0.62,
+      "predicted": 0.4,
+      "windMw": 3695,
+      "tempC": 3.2
+    },
+    {
+      "epochMs": 1793678400000,
+      "dateKey": "2026-11-03",
+      "hour": 6,
+      "actual": 0.67,
+      "predicted": 2.01,
+      "windMw": 5024,
+      "tempC": 3.4
+    },
+    {
+      "epochMs": 1793682000000,
+      "dateKey": "2026-11-03",
+      "hour": 7,
+      "actual": 1.08,
+      "predicted": 2.65,
+      "windMw": 5460,
+      "tempC": 3.8
+    },
+    {
+      "epochMs": 1793685600000,
+      "dateKey": "2026-11-03",
+      "hour": 8,
+      "actual": 1.89,
+      "predicted": 4.24,
+      "windMw": 5274,
+      "tempC": 3.9
+    },
+    {
+      "epochMs": 1793689200000,
+      "dateKey": "2026-11-03",
+      "hour": 9,
+      "actual": 2.183,
+      "predicted": 5.31,
+      "windMw": 4994,
+      "tempC": 4.4
+    },
+    {
+      "epochMs": 1793692800000,
+      "dateKey": "2026-11-03",
+      "hour": 10,
+      "actual": 1.868,
+      "predicted": 4.81,
+      "windMw": 5248,
+      "tempC": 5.0
+    },
+    {
+      "epochMs": 1793696400000,
+      "dateKey": "2026-11-03",
+      "hour": 11,
+      "actual": 2.021,
+      "predicted": 5.52,
+      "windMw": 4720,
+      "tempC": 5.7
+    },
+    {
+      "epochMs": 1793700000000,
+      "dateKey": "2026-11-03",
+      "hour": 12,
+      "actual": 2.133,
+      "predicted": 5.81,
+      "windMw": 4050,
+      "tempC": 6.0
+    },
+    {
+      "epochMs": 1793703600000,
+      "dateKey": "2026-11-03",
+      "hour": 13,
+      "actual": 2.005,
+      "predicted": 5.8,
+      "windMw": 3449,
+      "tempC": 6.4
+    },
+    {
+      "epochMs": 1793707200000,
+      "dateKey": "2026-11-03",
+      "hour": 14,
+      "actual": 2.869,
+      "predicted": 5.96,
+      "windMw": 2995,
+      "tempC": 6.6
+    },
+    {
+      "epochMs": 1793710800000,
+      "dateKey": "2026-11-03",
+      "hour": 15,
+      "actual": 3.098,
+      "predicted": 6.62,
+      "windMw": 2111,
+      "tempC": 6.3
+    },
+    {
+      "epochMs": 1793714400000,
+      "dateKey": "2026-11-03",
+      "hour": 16,
+      "actual": 3.639,
+      "predicted": 10.47,
+      "windMw": 1505,
+      "tempC": 5.7
+    },
+    {
+      "epochMs": 1793718000000,
+      "dateKey": "2026-11-03",
+      "hour": 17,
+      "actual": 7.06,
+      "predicted": 13.09,
+      "windMw": 1236,
+      "tempC": 4.9
+    },
+    {
+      "epochMs": 1793721600000,
+      "dateKey": "2026-11-03",
+      "hour": 18,
+      "actual": 17.367,
+      "predicted": 16.08,
+      "windMw": 985,
+      "tempC": 4.3
+    },
+    {
+      "epochMs": 1793725200000,
+      "dateKey": "2026-11-03",
+      "hour": 19,
+      "actual": 29.539,
+      "predicted": 20.91,
+      "windMw": 512,
+      "tempC": 3.5
+    },
+    {
+      "epochMs": 1793728800000,
+      "dateKey": "2026-11-03",
+      "hour": 20,
+      "actual": 33.288,
+      "predicted": 24.62,
+      "windMw": 180,
+      "tempC": 2.9
+    },
+    {
+      "epochMs": 1793732400000,
+      "dateKey": "2026-11-03",
+      "hour": 21,
+      "actual": 33.226,
+      "predicted": 23.97,
+      "windMw": 169,
+      "tempC": 2.5
+    },
+    {
+      "epochMs": 1793736000000,
+      "dateKey": "2026-11-03",
+      "hour": 22,
+      "actual": 33.079,
+      "predicted": 21.71,
+      "windMw": 169,
+      "tempC": 2.2
+    },
+    {
+      "epochMs": 1793739600000,
+      "dateKey": "2026-11-03",
+      "hour": 23,
+      "actual": 27.571,
+      "predicted": 20.71,
+      "windMw": 169,
+      "tempC": 2.1
+    },
+    {
+      "epochMs": 1793743200000,
+      "dateKey": "2026-11-04",
+      "hour": 0,
+      "actual": 16.955,
+      "predicted": 17.8,
+      "windMw": 169,
+      "tempC": 2.1
+    }
+  ]
+};

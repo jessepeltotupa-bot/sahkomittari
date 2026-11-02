@@ -1,0 +1,35 @@
+name: Daily ML Spot Forecast Training & Data Accumulation
+
+on:
+  schedule:
+    # Ajetaan päivittäin klo 13:30 UTC (n. klo 15:30/16:30 Suomen aikaa, kun seuraavan päivän Nord Pool -hinnat on julkaistu)
+    - cron: '30 13 * * *'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  train-and-update:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Fetch new Nord Pool & weather observations and retrain ML model
+        run: |
+          python train_and_learn.py
+          python seo_generator.py
+
+      - name: Commit accumulated observations and updated ML weights
+        run: |
+          git config user.name "Porssisahko ML Bot"
+          git config user.email "bot@porssisahko.local"
+          git add data/historical_observations.json ml_weights.json ml_weights.js
+          git diff --staged --quiet || git commit -m "Auto-learn: accumulate new spot/weather observations and retrain ML forecast weights"
+          git push

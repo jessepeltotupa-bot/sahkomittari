@@ -17,6 +17,7 @@
             </a>
             <nav class="main-nav" aria-label="Päävalikko">
                 <a href="../index.html">Spot &amp; Ennuste</a>
+                <a href="../index.html#oppiva-malli">Oppiva tekoälymalli</a>
                 <a href="../index.html#optimoija">Halvimmat tunnit</a>
                 <a href="../index.html#vuosivertailu">Yleissiirto vs. Yösiirto</a>
                 <a href="../verkkoyhtiot/index.html">Sähköverkkoyhtiöt</a>
@@ -134,6 +135,16 @@
             </div>
         </section>
 
+        <section class="section-card" id="oppiva-malli">
+            <h2>Jatkuvasti oppiva hintaennustemalli (Ridge-regressio + Online NLMS -sopeutus)</h2>
+            <p class="hero-lead" style="margin-top:6px;">
+                Ennustemalli ei käytä kiinteitä arvauksia, vaan oppii jatkuvasti lisää jokaisesta toteutuneesta Nord Pool -tunnista, Suomen tuulipuistojen 100 metrin tuulennopeuksista ja lämpötiloista. Mitä enemmän tunteja tietokantaan (<code>data/historical_observations.json</code>) ja reaaliaikaiseen verkko-oppijaan kertyy, sitä tarkemmin malli tuntee tuulivoiman, pakkasen ja kulutuspiikkien yhteisvaikutuksen.
+            </p>
+            <div id="ml-learning-panel">
+                Ladataan oppivan mallin tarkkuustilastoja...
+            </div>
+        </section>
+
         <section class="section-card" id="optimoija">
             <h2>Halvimmat peräkkäiset tunnit kokonaishinnalla (huomioi myös yösiirron klo 22 jälkeen)</h2>
             <p class="hero-lead" style="margin-top:6px;">
@@ -221,6 +232,7 @@
         </div>
     </footer>
     <script src="../dso_data.js"></script>
+    <script src="../ml_weights.js"></script>
     <script src="../app.js"></script>
 </body>
 </html>

@@ -1,0 +1,700 @@
+<!DOCTYPE html>
+<html lang="fi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pörssisähkö nyt, 7 vrk Ennuste &amp; Siirtohintalaskuri Postinumerolla | Todellinen Kokonaishinta</title>
+    <meta name="description" content="Tarkista pörssisähkön spot-hinta tänään, huomenna ja 7 vrk hintaennuste. Syötä postinumero, niin laskuri hakee automaattisesti sähköverkkoyhtiösi siirtohinnan (Caruna, Elenia, Helen, Vantaa, Tampere, Oulu ym.) ja laskee todellisen kokonaishinnan.">
+    <link rel="canonical" href="https://porssisahko-ennuste.vercel.app/" />
+    <link rel="stylesheet" href="styles.css">
+    <script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "mainEntity": [
+    {
+      "@type": "Question",
+      "name": "Miten pörssisähkön 7 vuorokauden hintaennuste lasketaan?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Ennustemalli yhdistää Suomen keskeisten tuulivoima-alueiden (Kalajoki-Pyhäjoki, Pohjanmaan rannikko, Etelä-Pohjanmaa ja Perämeri) 100 metrin korkeuden tuulennopeusennusteet, kulutuskeskusten lämpötilaennusteet (lämmitystarveluku) sekä arkipäivien ja viikonloppujen tuntikulutusprofiilin kalibroituna tuoreimpiin Nord Pool -toteumiin."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Miten postinumero vaikuttaa pörssisähkön kokonaishintaan?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Suomessa sähkönsiirto on paikallinen luonnollinen monopoli, joka määräytyy käyttöpaikan postinumeron ja kunnan mukaan. Pistorasiasta tulevan sähkön kokonaishinta on pörssisähkön spot-hinta + myyjän marginaali + paikallisen sähköverkkoyhtiön siirtohinta + sähkövero (2,83 snt/kWh sis. ALV 25,5 %)."
+      }
+    }
+  ]
+}
+    </script>
+</head>
+<body>
+    <header class="site-header">
+        <div class="header-inner">
+            <a href="index.html" class="brand-link">
+                <span class="brand-title">Pörssisähkö &amp; Siirtohintalaskuri</span>
+                <span class="brand-subtitle">Reaaliaikainen spot-hinta, 7 vrk tuulivoimaennuste ja todellinen kokonaishinta postinumerolla</span>
+            </a>
+            <nav class="main-nav" aria-label="Päävalikko">
+                <a href="index.html">Spot &amp; Ennuste</a>
+                <a href="index.html#optimoija">Halvimmat tunnit</a>
+                <a href="index.html#vuosivertailu">Yleissiirto vs. Yösiirto</a>
+                <a href="verkkoyhtiot/index.html">Sähköverkkoyhtiöt</a>
+                <a href="paikkakunnat/index.html">Kunnat &amp; Postinumerot</a>
+            </nav>
+        </div>
+    </header>
+
+    <main class="container">
+        <section class="hero-card">
+            <h1>Pörssisähkö nyt, 7 vrk hintaennuste ja siirtohintalaskuri postinumerolla</h1>
+            <p class="hero-lead">Syötä postinumerosi nähdäksesi pörssisähkön todellisen kokonaishinnan (Spot + paikallisen sähköverkkoyhtiön siirtohinta + sähkövero 2,83 snt/kWh) sekä tuulivoima- ja lämpötilaennusteeseen perustuvan 7 vuorokauden hintaennusteen.</p>
+
+            <div class="postal-control-bar">
+                <div class="postal-grid">
+                    <form id="postal-search-form" onsubmit="return false;">
+                        <label for="postal-input" class="field-label">Postinumero tai paikkakunta</label>
+                        <div class="postal-input-group">
+                            <input type="text" id="postal-input" class="input-control" value="00100" placeholder="Esim. 00100, 33100, 60100 tai Oulu">
+                            <button type="submit" class="btn-primary">Hae siirtohinta</button>
+                        </div>
+                    </form>
+
+                    <div>
+                        <span class="field-label">Valitse siirtotuote</span>
+                        <div class="seg-group">
+                            <button type="button" class="seg-btn active" data-tariff-btn="general">Yleissiirto</button>
+                            <button type="button" class="seg-btn" data-tariff-btn="time">Yösiirto (07–22 / 22–07)</button>
+                            <button type="button" class="seg-btn" data-tariff-btn="season">Kausisiirto</button>
+                        </div>
+                    </div>
+
+                    <div>
+                        <label for="margin-input" class="field-label">Myyjän marginaali (snt/kWh)</label>
+                        <input type="number" id="margin-input" class="input-control" step="0.01" min="0" max="3" value="0.45">
+                    </div>
+
+                    <div>
+                        <label for="vat-select" class="field-label">Arvonlisävero</label>
+                        <select id="vat-select" class="select-control">
+                            <option value="1" selected>Sis. ALV 25,5 %</option>
+                            <option value="0">Veroton (ALV 0 %)</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+
+            <div id="detected-dso-banner" class="detected-dso-banner">
+                Haetaan postinumeron verkkoyhtiötä...
+            </div>
+        </section>
+
+        <section class="kpi-grid" aria-label="Hintayhteenveto">
+            <div class="kpi-card highlight">
+                <div class="kpi-label">Kokonaishinta juuri nyt (sis. siirto + vero)</div>
+                <div class="kpi-value" id="kpi-now-total">— snt/kWh</div>
+                <div class="kpi-sub" id="kpi-now-breakdown">Lasketaan tuntikohtaista kokonaishintaa...</div>
+            </div>
+            <div class="kpi-card">
+                <div class="kpi-label">Pelkkä pörssisähkön spot-hinta nyt</div>
+                <div class="kpi-value" id="kpi-now-spot">— snt/kWh</div>
+                <div class="kpi-sub">Nord Pool FI tuntihinta</div>
+            </div>
+            <div class="kpi-card">
+                <div class="kpi-label">Päivän edullisin tunti (kokonaishinta)</div>
+                <div class="kpi-value" id="kpi-today-min">— snt/kWh</div>
+                <div class="kpi-sub" id="kpi-today-min-sub">—</div>
+            </div>
+            <div class="kpi-card">
+                <div class="kpi-label" id="kpi-tomorrow-title">Huomisen hintaennuste</div>
+                <div class="kpi-value" id="kpi-tomorrow-avg">— snt/kWh</div>
+                <div class="kpi-sub" id="kpi-tomorrow-sub">—</div>
+            </div>
+        </section>
+
+        <section class="section-card">
+            <div class="section-header-row">
+                <h2 id="chart-view-title">Pörssisähkön tuntihinnat, siirtohinta ja 7 vrk ennuste</h2>
+                <div class="seg-group" style="min-width:290px;">
+                    <button type="button" class="seg-btn active" data-mode-btn="total">Kokonaishinta (Spot + Siirto + Vero)</button>
+                    <button type="button" class="seg-btn" data-mode-btn="spot">Pelkkä Spot-hinta</button>
+                </div>
+            </div>
+
+            <div id="day-tabs" class="day-tabs"></div>
+
+            <div class="chart-legend">
+                <span class="legend-item"><span class="legend-swatch" style="background:#2b7a4b;"></span> Edullinen spot (&lt; 3 snt/kWh)</span>
+                <span class="legend-item"><span class="legend-swatch" style="background:#2b5b84;"></span> Normaali spot (3–8 snt/kWh)</span>
+                <span class="legend-item"><span class="legend-swatch" style="background:#b5452a;"></span> Korkea spot (&gt; 8 snt/kWh)</span>
+                <span class="legend-item"><span class="legend-swatch" style="background:#94a398;"></span> Paikallinen siirtohinta + sähkövero + marginaali</span>
+                <span class="legend-item"><span class="legend-swatch" style="background:#4c6ef5;"></span> Ennustetunti (tuulivoima + lämpötila)</span>
+            </div>
+
+            <div id="price-chart" class="price-chart-box">
+                Ladataan pörssisähkön hintoja ja 7 vuorokauden tuulivoimaennustetta...
+            </div>
+
+            <div class="table-wrap">
+                <table class="data-table">
+                    <thead>
+                        <tr>
+                            <th>Aikajakso</th>
+                            <th>Tyyppi</th>
+                            <th>Spot-hinta</th>
+                            <th>Siirto + Sähkövero + Marg.</th>
+                            <th>Kokonaishinta yhteensä</th>
+                            <th>Tuulivoima / Sää</th>
+                        </tr>
+                    </thead>
+                    <tbody id="hourly-table-body">
+                        <tr><td colspan="6">Ladataan tuntitietoja...</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+        <section class="section-card" id="optimoija">
+            <h2>Halvimmat peräkkäiset tunnit kokonaishinnalla (huomioi myös yösiirron klo 22 jälkeen)</h2>
+            <p class="hero-lead" style="margin-top:6px;">
+                Pelkän spot-hinnan tuijottaminen voi johtaa väärään latausaikaan, jos käytössäsi on yösiirto tai kausisiirto: kello 22:00 alkava edullisempi yösiirto laskee siirtohintaa tyypillisesti 1,5–2,6 snt/kWh. Tämä laskuri etsii aidosti halvimman jakson yhdistämällä spot-hinnan ja postinumerosi siirtohinnan.
+            </p>
+
+            <div class="preset-pills">
+                <button type="button" class="preset-pill" data-preset-kw="11" data-preset-hrs="4">Sähköauton lataus (11 kW, 4 h)</button>
+                <button type="button" class="preset-pill" data-preset-kw="3.6" data-preset-hrs="6">Hybridin lataus (3,6 kW, 6 h)</button>
+                <button type="button" class="preset-pill" data-preset-kw="3" data-preset-hrs="3">Lämminvesivaraaja (3 kW, 3 h)</button>
+                <button type="button" class="preset-pill" data-preset-kw="8" data-preset-hrs="1">Sähkökiuas (8 kW, 1 h)</button>
+                <button type="button" class="preset-pill" data-preset-kw="2" data-preset-hrs="2">Pyykin- tai astianpesukone (2 kW, 2 h)</button>
+            </div>
+
+            <div class="opt-controls-row">
+                <div style="flex:1; min-width:240px;">
+                    <span class="field-label">Tarvittava yhtäjaksoinen kesto</span>
+                    <div class="seg-group">
+                        <button type="button" class="seg-btn" data-win-hours="1">1 h</button>
+                        <button type="button" class="seg-btn" data-win-hours="2">2 h</button>
+                        <button type="button" class="seg-btn active" data-win-hours="3">3 h</button>
+                        <button type="button" class="seg-btn" data-win-hours="4">4 h</button>
+                        <button type="button" class="seg-btn" data-win-hours="6">6 h</button>
+                        <button type="button" class="seg-btn" data-win-hours="8">8 h</button>
+                    </div>
+                </div>
+                <div style="width:200px;">
+                    <label for="appliance-kw-input" class="field-label">Laitteen teho (kW)</label>
+                    <input type="number" id="appliance-kw-input" class="input-control" step="0.1" min="0.1" max="50" value="11">
+                </div>
+            </div>
+
+            <div id="cheapest-window-result"></div>
+        </section>
+
+        <section class="section-card" id="vuosivertailu">
+            <h2>Yleissiirto, Yösiirto vai Kausisiirto? Vuosikustannuslaskuri postinumerollesi</h2>
+            <p class="hero-lead" style="margin-top:6px;">
+                Vaikka et voi kilpailuttaa paikallista sähköverkkoyhtiötäsi, voit vaihtaa verkkoyhtiön sisällä siirtotuotetta (Yleissiirto, Yösiirto tai Kausisiirto). Syötä vuosikulutuksesi ja arvioitu yöajan (klo 22–07) kulutusosuus nähdäksesi, mikä siirtotuote on postinumerossasi edullisin.
+            </p>
+
+            <div class="opt-controls-row">
+                <div style="width:240px;">
+                    <label for="annual-kwh-input" class="field-label">Vuosikulutus (kWh / vuosi)</label>
+                    <input type="number" id="annual-kwh-input" class="input-control" step="500" min="1000" max="60000" value="12000">
+                </div>
+                <div style="flex:1; min-width:240px;">
+                    <label for="night-share-input" class="field-label">Yöajan (klo 22–07) osuus kulutuksesta: <span id="night-share-label">55 %</span></label>
+                    <input type="range" id="night-share-input" style="width:100%; margin-top:8px;" min="10" max="90" step="5" value="55">
+                </div>
+            </div>
+
+            <div id="annual-comparison-result" class="comp-grid"></div>
+        </section>
+
+        <section class="section-card">
+            <h2>Suomen sähköverkkoyhtiöiden siirtohinnat 2026 (edullisimmasta kalleimpaan)</h2>
+            <p class="hero-lead" style="margin-top:6px;">
+                Alla olevassa taulukossa on vertailtu Suomen jakeluverkkoyhtiöiden yleissiirron ja yösiirron energiamaksuja (sis. ALV 25,5 %) sekä kiinteää siirto-osuutta sähköveron (2,83 snt/kWh) kanssa. Klikkaa verkkoyhtiön nimeä avataksesi kyseisen yhtiön oman laskurin.
+            </p>
+            <div class="table-wrap">
+                <table class="data-table">
+                    <thead>
+                        <tr>
+                            <th>Sähköverkkoyhtiö ja toiminta-alue</th>
+                            <th>Yleissiirto</th>
+                            <th>Yösiirto (Päivä / Yö)</th>
+                            <th>Perusmaksu (3x25A)</th>
+                            <th>Siirto + Sähkövero yht.</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><a href="verkkoyhtiot/seinajoen-energia.html"><strong>Seinäjoen Energia Oy (Sähköverkko)</strong></a><br><span class="muted-range">Seinäjoen kantakaupunki</span></td>
+                            <td><strong>3,38 snt/kWh</strong></td>
+                            <td>3,95 / 2,48 snt/kWh</td>
+                            <td>10,50 €/kk</td>
+                            <td><strong>6,21 snt/kWh</strong> + spot</td>
+                        </tr>
+                        <tr>
+                            <td><a href="verkkoyhtiot/oulun-energia-sahkoverkko.html"><strong>Oulun Energia Sähköverkko Oy</strong></a><br><span class="muted-range">Oulun kantakaupunki, Kiiminki ja Ylikiiminki</span></td>
+                            <td><strong>3,45 snt/kWh</strong></td>
+                            <td>4,05 / 2,55 snt/kWh</td>
+                            <td>11,20 €/kk</td>
+                            <td><strong>6,28 snt/kWh</strong> + spot</td>
+                        </tr>
+                        <tr>
+                            <td><a href="verkkoyhtiot/tampereen-energia-sahkoverkko.html"><strong>Tampereen Energia Sähköverkko Oy</strong></a><br><span class="muted-range">Tampere, Pirkkala ja Nokian lähialueet</span></td>
+                            <td><strong>3,52 snt/kWh</strong></td>
+                            <td>4,12 / 2,64 snt/kWh</td>
+                            <td>10,90 €/kk</td>
+                            <td><strong>6,35 snt/kWh</strong> + spot</td>
+                        </tr>
+                        <tr>
+                            <td><a href="verkkoyhtiot/vaasan-sahkoverkko.html"><strong>Vaasan Sähköverkko Oy</strong></a><br><span class="muted-range">Vaasa, Mustasaari, Maalahti, Korsnäs, Laihia ja Vöyri</span></td>
+                            <td><strong>3,58 snt/kWh</strong></td>
+                            <td>4,15 / 2,62 snt/kWh</td>
+                            <td>12,10 €/kk</td>
+                            <td><strong>6,41 snt/kWh</strong> + spot</td>
+                        </tr>
+                        <tr>
+                            <td><a href="verkkoyhtiot/caruna-espoo.html"><strong>Caruna Espoo Oy</strong></a><br><span class="muted-range">Espoo, Kauniainen, Kirkkonummi ja Joensuun kantakaupunki</span></td>
+                            <td><strong>3,59 snt/kWh</strong></td>
+                            <td>4,18 / 2,68 snt/kWh</td>
+                            <td>17,40 €/kk</td>
+                            <td><strong>6,42 snt/kWh</strong> + spot</td>
+                        </tr>
+                        <tr>
+                            <td><a href="verkkoyhtiot/neve-rovaniemi.html"><strong>Rovaniemen Verkko Oy (Neve)</strong></a><br><span class="muted-range">Rovaniemen keskusta-alue</span></td>
+                            <td><strong>3,62 snt/kWh</strong></td>
+                            <td>4,18 / 2,68 snt/kWh</td>
+                            <td>12,20 €/kk</td>
+                            <td><strong>6,45 snt/kWh</strong> + spot</td>
+                        </tr>
+                        <tr>
+                            <td><a href="verkkoyhtiot/kuopion-sahkoverkko.html"><strong>Kuopion Sähköverkko Oy</strong></a><br><span class="muted-range">Kuopion kaupunkialue</span></td>
+                            <td><strong>3,65 snt/kWh</strong></td>
+                            <td>4,22 / 2,75 snt/kWh</td>
+                            <td>11,80 €/kk</td>
+                            <td><strong>6,48 snt/kWh</strong> + spot</td>
+                        </tr>
+                        <tr>
+                            <td><a href="verkkoyhtiot/kokkolan-energiaverkot.html"><strong>Kokkolan Energiaverkot Oy</strong></a><br><span class="muted-range">Kokkola</span></td>
+                            <td><strong>3,65 snt/kWh</strong></td>
+                            <td>4,22 / 2,70 snt/kWh</td>
+                            <td>12,50 €/kk</td>
+                            <td><strong>6,48 snt/kWh</strong> + spot</td>
+                        </tr>
+                        <tr>
+                            <td><a href="verkkoyhtiot/vantaan-energia-sahkoverkot.html"><strong>Vantaan Energia Sähköverkot Oy</strong></a><br><span class="muted-range">Vantaa</span></td>
+                            <td><strong>3,68 snt/kWh</strong></td>
+                            <td>4,25 / 2,72 snt/kWh</td>
+                            <td>9,80 €/kk</td>
+                            <td><strong>6,51 snt/kWh</strong> + spot</td>
+                        </tr>
+                        <tr>
+                            <td><a href="verkkoyhtiot/rauman-energia.html"><strong>Rauman Energia Sähköverkko Oy</strong></a><br><span class="muted-range">Rauma</span></td>
+                            <td><strong>3,68 snt/kWh</strong></td>
+                            <td>4,25 / 2,72 snt/kWh</td>
+                            <td>12,40 €/kk</td>
+                            <td><strong>6,51 snt/kWh</strong> + spot</td>
+                        </tr>
+                        <tr>
+                            <td><a href="verkkoyhtiot/turku-energia-sahkoverkot.html"><strong>Turku Energia Sähköverkot Oy</strong></a><br><span class="muted-range">Turku</span></td>
+                            <td><strong>3,74 snt/kWh</strong></td>
+                            <td>4,35 / 2,78 snt/kWh</td>
+                            <td>11,40 €/kk</td>
+                            <td><strong>6,57 snt/kWh</strong> + spot</td>
+                        </tr>
+                        <tr>
+                            <td><a href="verkkoyhtiot/keravan-sipoon-energia.html"><strong>Keravan Energia / Sipoon Energia Sähköverkko</strong></a><br><span class="muted-range">Kerava ja Sipoo</span></td>
+                            <td><strong>3,76 snt/kWh</strong></td>
+                            <td>4,35 / 2,78 snt/kWh</td>
+                            <td>12,80 €/kk</td>
+                            <td><strong>6,59 snt/kWh</strong> + spot</td>
+                        </tr>
+                        <tr>
+                            <td><a href="verkkoyhtiot/ese-verkko-mikkeli.html"><strong>ESE-Verkko Oy (Etelä-Savon Energia)</strong></a><br><span class="muted-range">Mikkelin kaupunkialue</span></td>
+                            <td><strong>3,78 snt/kWh</strong></td>
+                            <td>4,38 / 2,80 snt/kWh</td>
+                            <td>13,10 €/kk</td>
+                            <td><strong>6,61 snt/kWh</strong> + spot</td>
+                        </tr>
+                        <tr>
+                            <td><a href="verkkoyhtiot/pori-energia-sahkoverkot.html"><strong>Pori Energia Sähköverkot Oy</strong></a><br><span class="muted-range">Pori ja Ulvila</span></td>
+                            <td><strong>3,79 snt/kWh</strong></td>
+                            <td>4,38 / 2,82 snt/kWh</td>
+                            <td>13,20 €/kk</td>
+                            <td><strong>6,62 snt/kWh</strong> + spot</td>
+                        </tr>
+                        <tr>
+                            <td><a href="verkkoyhtiot/kotkan-energiaverkot.html"><strong>Kotkan Energiaverkot Oy</strong></a><br><span class="muted-range">Kotka</span></td>
+                            <td><strong>3,85 snt/kWh</strong></td>
+                            <td>4,45 / 2,85 snt/kWh</td>
+                            <td>13,80 €/kk</td>
+                            <td><strong>6,68 snt/kWh</strong> + spot</td>
+                        </tr>
+                        <tr>
+                            <td><a href="verkkoyhtiot/lahti-energia-sahkoverkko.html"><strong>Lahti Energia Sähköverkko Oy</strong></a><br><span class="muted-range">Lahti, Hollola ja Asikkala</span></td>
+                            <td><strong>3,88 snt/kWh</strong></td>
+                            <td>4,48 / 2,88 snt/kWh</td>
+                            <td>13,90 €/kk</td>
+                            <td><strong>6,71 snt/kWh</strong> + spot</td>
+                        </tr>
+                        <tr>
+                            <td><a href="verkkoyhtiot/alva-sahkoverkko.html"><strong>Alva Sähköverkko Oy</strong></a><br><span class="muted-range">Jyväskylän kantakaupunki</span></td>
+                            <td><strong>3,92 snt/kWh</strong></td>
+                            <td>4,55 / 2,92 snt/kWh</td>
+                            <td>13,60 €/kk</td>
+                            <td><strong>6,75 snt/kWh</strong> + spot</td>
+                        </tr>
+                        <tr>
+                            <td><a href="verkkoyhtiot/nurmijarven-sahkoverkko.html"><strong>Nurmijärven Sähköverkko Oy</strong></a><br><span class="muted-range">Nurmijärvi (Klaukkala, Kirkonkylä, Rajamäki)</span></td>
+                            <td><strong>3,95 snt/kWh</strong></td>
+                            <td>4,58 / 2,92 snt/kWh</td>
+                            <td>15,60 €/kk</td>
+                            <td><strong>6,78 snt/kWh</strong> + spot</td>
+                        </tr>
+                        <tr>
+                            <td><a href="verkkoyhtiot/kss-verkko.html"><strong>KSS Verkko Oy</strong></a><br><span class="muted-range">Kouvolan kantakaupunki, Kuusankoski ja Valkeala</span></td>
+                            <td><strong>4,05 snt/kWh</strong></td>
+                            <td>4,68 / 2,98 snt/kWh</td>
+                            <td>15,20 €/kk</td>
+                            <td><strong>6,88 snt/kWh</strong> + spot</td>
+                        </tr>
+                        <tr>
+                            <td><a href="verkkoyhtiot/helen-sahkoverkko.html"><strong>Helen Sähköverkko Oy</strong></a><br><span class="muted-range">Helsinki</span></td>
+                            <td><strong>4,07 snt/kWh</strong></td>
+                            <td>4,55 / 2,95 snt/kWh</td>
+                            <td>5,51 €/kk</td>
+                            <td><strong>6,90 snt/kWh</strong> + spot</td>
+                        </tr>
+                        <tr>
+                            <td><a href="verkkoyhtiot/herrfors-nat-verkko.html"><strong>Herrfors Nät-Verkko Oy Ab</strong></a><br><span class="muted-range">Pietarsaari, Pedersöre, Uusikaarlepyy, Kruunupyy, Luoto ja Alavieska</span></td>
+                            <td><strong>4,08 snt/kWh</strong></td>
+                            <td>4,72 / 3,02 snt/kWh</td>
+                            <td>16,20 €/kk</td>
+                            <td><strong>6,91 snt/kWh</strong> + spot</td>
+                        </tr>
+                        <tr>
+                            <td><a href="verkkoyhtiot/porvoon-sahkoverkko.html"><strong>Porvoon Sähköverkko Oy (Borgå Elnät)</strong></a><br><span class="muted-range">Porvoo</span></td>
+                            <td><strong>4,12 snt/kWh</strong></td>
+                            <td>4,78 / 3,05 snt/kWh</td>
+                            <td>16,90 €/kk</td>
+                            <td><strong>6,95 snt/kWh</strong> + spot</td>
+                        </tr>
+                        <tr>
+                            <td><a href="verkkoyhtiot/oulun-seudun-sahko.html"><strong>Oulun Seudun Sähkö Verkkopalvelut Oy</strong></a><br><span class="muted-range">Kempele, Liminka, Lumijoki, Muhos, Tyrnävä, Utajärvi ja Vaala</span></td>
+                            <td><strong>4,15 snt/kWh</strong></td>
+                            <td>4,85 / 3,05 snt/kWh</td>
+                            <td>19,50 €/kk</td>
+                            <td><strong>6,98 snt/kWh</strong> + spot</td>
+                        </tr>
+                        <tr>
+                            <td><a href="verkkoyhtiot/lappeenrannan-energiaverkot.html"><strong>Lappeenrannan Energiaverkot Oy</strong></a><br><span class="muted-range">Lappeenranta, Lemi, Taipalsaari ja Savitaipale</span></td>
+                            <td><strong>4,18 snt/kWh</strong></td>
+                            <td>4,82 / 3,08 snt/kWh</td>
+                            <td>16,40 €/kk</td>
+                            <td><strong>7,01 snt/kWh</strong> + spot</td>
+                        </tr>
+                        <tr>
+                            <td><a href="verkkoyhtiot/imatran-seudun-sahkonsiirto.html"><strong>Imatran Seudun Sähkönsiirto Oy</strong></a><br><span class="muted-range">Imatra, Ruokolahti, Rautjärvi ja Parikkala</span></td>
+                            <td><strong>4,45 snt/kWh</strong></td>
+                            <td>5,15 / 3,25 snt/kWh</td>
+                            <td>19,80 €/kk</td>
+                            <td><strong>7,28 snt/kWh</strong> + spot</td>
+                        </tr>
+                        <tr>
+                            <td><a href="verkkoyhtiot/vakka-suomen-voima.html"><strong>Vakka-Suomen Voima Oy</strong></a><br><span class="muted-range">Uusikaupunki, Laitila, Mynämäki, Masku ja Vakka-Suomi</span></td>
+                            <td><strong>4,48 snt/kWh</strong></td>
+                            <td>5,18 / 3,28 snt/kWh</td>
+                            <td>20,40 €/kk</td>
+                            <td><strong>7,31 snt/kWh</strong> + spot</td>
+                        </tr>
+                        <tr>
+                            <td><a href="verkkoyhtiot/tornionlaakson-sahko.html"><strong>Tornionlaakson Sähkö Oy</strong></a><br><span class="muted-range">Tornio, Ylitornio, Pello, Kolari, Muonio ja Enontekiö</span></td>
+                            <td><strong>4,55 snt/kWh</strong></td>
+                            <td>5,25 / 3,28 snt/kWh</td>
+                            <td>21,50 €/kk</td>
+                            <td><strong>7,38 snt/kWh</strong> + spot</td>
+                        </tr>
+                        <tr>
+                            <td><a href="verkkoyhtiot/leppakosken-sahko.html"><strong>Leppäkosken Sähkö Oy</strong></a><br><span class="muted-range">Ikaalinen, Parkano, Hämeenkyrö, Jämijärvi ja Karvia</span></td>
+                            <td><strong>4,68 snt/kWh</strong></td>
+                            <td>5,40 / 3,38 snt/kWh</td>
+                            <td>22,40 €/kk</td>
+                            <td><strong>7,51 snt/kWh</strong> + spot</td>
+                        </tr>
+                        <tr>
+                            <td><a href="verkkoyhtiot/koillis-satakunnan-sahko.html"><strong>Koillis-Satakunnan Sähkö Oy</strong></a><br><span class="muted-range">Virrat, Ähtäri, Alavus, Keuruu ja Ruovesi</span></td>
+                            <td><strong>4,72 snt/kWh</strong></td>
+                            <td>5,45 / 3,42 snt/kWh</td>
+                            <td>22,80 €/kk</td>
+                            <td><strong>7,55 snt/kWh</strong> + spot</td>
+                        </tr>
+                        <tr>
+                            <td><a href="verkkoyhtiot/rovakaira.html"><strong>Rovakaira Oy</strong></a><br><span class="muted-range">Rovaniemen ympäristö, Kittilä, Sodankylä, Kemijärvi ja Itä-Lappi</span></td>
+                            <td><strong>4,88 snt/kWh</strong></td>
+                            <td>5,62 / 3,45 snt/kWh</td>
+                            <td>24,20 €/kk</td>
+                            <td><strong>7,71 snt/kWh</strong> + spot</td>
+                        </tr>
+                        <tr>
+                            <td><a href="verkkoyhtiot/kymenlaakson-sahkoverkko.html"><strong>Kymenlaakson Sähköverkko Oy</strong></a><br><span class="muted-range">Kymenlaakso, Itä-Uusimaa ja Päijät-Hämeen eteläosat</span></td>
+                            <td><strong>4,92 snt/kWh</strong></td>
+                            <td>5,65 / 3,48 snt/kWh</td>
+                            <td>24,50 €/kk</td>
+                            <td><strong>7,75 snt/kWh</strong> + spot</td>
+                        </tr>
+                        <tr>
+                            <td><a href="verkkoyhtiot/elenia.html"><strong>Elenia Verkko Oyj</strong></a><br><span class="muted-range">Kanta- ja Päijät-Häme, Pirkanmaa, Keski-Suomi sekä Etelä- ja Pohjois-Pohjanmaa</span></td>
+                            <td><strong>5,09 snt/kWh</strong></td>
+                            <td>5,82 / 3,58 snt/kWh</td>
+                            <td>25,60 €/kk</td>
+                            <td><strong>7,92 snt/kWh</strong> + spot</td>
+                        </tr>
+                        <tr>
+                            <td><a href="verkkoyhtiot/caruna.html"><strong>Caruna Oy</strong></a><br><span class="muted-range">Etelä-, Lounais-, Länsi- ja Pohjois-Suomen haja- ja taajama-alueet</span></td>
+                            <td><strong>5,18 snt/kWh</strong></td>
+                            <td>5,95 / 3,65 snt/kWh</td>
+                            <td>27,90 €/kk</td>
+                            <td><strong>8,01 snt/kWh</strong> + spot</td>
+                        </tr>
+                        <tr>
+                            <td><a href="verkkoyhtiot/kajave-loiste.html"><strong>Kajave Oy (Loiste Sähköverkko)</strong></a><br><span class="muted-range">Kainuu (Kajaani, Sotkamo, Kuhmo, Suomussalmi) ja Pyhäntä/Siikalatva</span></td>
+                            <td><strong>5,28 snt/kWh</strong></td>
+                            <td>6,08 / 3,72 snt/kWh</td>
+                            <td>28,40 €/kk</td>
+                            <td><strong>8,11 snt/kWh</strong> + spot</td>
+                        </tr>
+                        <tr>
+                            <td><a href="verkkoyhtiot/pks-sahkonsiirto.html"><strong>PKS Sähkönsiirto Oy</strong></a><br><span class="muted-range">Pohjois-Karjala ja Koillis-Savo</span></td>
+                            <td><strong>5,38 snt/kWh</strong></td>
+                            <td>6,18 / 3,78 snt/kWh</td>
+                            <td>28,90 €/kk</td>
+                            <td><strong>8,21 snt/kWh</strong> + spot</td>
+                        </tr>
+                        <tr>
+                            <td><a href="verkkoyhtiot/savon-voima-verkko.html"><strong>Savon Voima Verkko Oy</strong></a><br><span class="muted-range">Pohjois-Savo, Etelä-Savo ja osa Keski-Suomea</span></td>
+                            <td><strong>5,42 snt/kWh</strong></td>
+                            <td>6,25 / 3,85 snt/kWh</td>
+                            <td>29,80 €/kk</td>
+                            <td><strong>8,25 snt/kWh</strong> + spot</td>
+                        </tr>
+                        <tr>
+                            <td><a href="verkkoyhtiot/jarvi-suomen-energia.html"><strong>Järvi-Suomen Energia Oy</strong></a><br><span class="muted-range">Etelä-Savo, Itä-Häme ja Keski-Suomen itäosat</span></td>
+                            <td><strong>5,65 snt/kWh</strong></td>
+                            <td>6,48 / 4,02 snt/kWh</td>
+                            <td>31,20 €/kk</td>
+                            <td><strong>8,48 snt/kWh</strong> + spot</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+        <section class="section-card">
+            <h2>Paikkakunta- ja postinumerokohtaiset pörssisähkö- ja siirtohintasivut</h2>
+            <p class="hero-lead" style="margin-top:6px;">
+                Valitse paikkakuntasi alta tarkistaaksesi suoraan alueesi verkkoyhtiön siirtohinnat ja pörssisähkön kokonaishinnan:
+            </p>
+            <div class="directory-grid">
+                <a href="paikkakunnat/akaa.html" class="dir-pill"><span>Akaa (37800)</span><span class="dir-pill-sub">Elenia</span></a>
+<a href="paikkakunnat/alavus.html" class="dir-pill"><span>Alavus (63300)</span><span class="dir-pill-sub">Koillis-Satakunnan Sähkö</span></a>
+<a href="paikkakunnat/asikkala.html" class="dir-pill"><span>Asikkala (17200)</span><span class="dir-pill-sub">Lahti Energia Sähköverkko</span></a>
+<a href="paikkakunnat/askola.html" class="dir-pill"><span>Askola (07500)</span><span class="dir-pill-sub">Porvoon Sähköverkko</span></a>
+<a href="paikkakunnat/enontekio.html" class="dir-pill"><span>Enontekiö (99400)</span><span class="dir-pill-sub">Tornionlaakson Sähkö</span></a>
+<a href="paikkakunnat/espoo.html" class="dir-pill"><span>Espoo (02100)</span><span class="dir-pill-sub">Caruna Espoo</span></a>
+<a href="paikkakunnat/eura.html" class="dir-pill"><span>Eura (27510)</span><span class="dir-pill-sub">Caruna</span></a>
+<a href="paikkakunnat/eurajoki.html" class="dir-pill"><span>Eurajoki (27100)</span><span class="dir-pill-sub">Caruna</span></a>
+<a href="paikkakunnat/forssa.html" class="dir-pill"><span>Forssa (30100)</span><span class="dir-pill-sub">Elenia</span></a>
+<a href="paikkakunnat/haapajarvi.html" class="dir-pill"><span>Haapajärvi (85800)</span><span class="dir-pill-sub">Elenia</span></a>
+<a href="paikkakunnat/hamina.html" class="dir-pill"><span>Hamina (49400)</span><span class="dir-pill-sub">Kymenlaakson Sähköverkko</span></a>
+<a href="paikkakunnat/hanko.html" class="dir-pill"><span>Hanko (10900)</span><span class="dir-pill-sub">Caruna</span></a>
+<a href="paikkakunnat/harjavalta.html" class="dir-pill"><span>Harjavalta (29200)</span><span class="dir-pill-sub">Caruna</span></a>
+<a href="paikkakunnat/hattula.html" class="dir-pill"><span>Hattula (13720)</span><span class="dir-pill-sub">Elenia</span></a>
+<a href="paikkakunnat/hausjarvi.html" class="dir-pill"><span>Hausjärvi (12100)</span><span class="dir-pill-sub">Elenia</span></a>
+<a href="paikkakunnat/heinola.html" class="dir-pill"><span>Heinola (18100)</span><span class="dir-pill-sub">Järvi-Suomen Energia</span></a>
+<a href="paikkakunnat/helsinki.html" class="dir-pill"><span>Helsinki (00100)</span><span class="dir-pill-sub">Helen Sähköverkko</span></a>
+<a href="paikkakunnat/hollola.html" class="dir-pill"><span>Hollola (15870)</span><span class="dir-pill-sub">Lahti Energia Sähköverkko</span></a>
+<a href="paikkakunnat/huittinen.html" class="dir-pill"><span>Huittinen (32700)</span><span class="dir-pill-sub">Caruna</span></a>
+<a href="paikkakunnat/hyvinkaa.html" class="dir-pill"><span>Hyvinkää (05800)</span><span class="dir-pill-sub">Caruna</span></a>
+<a href="paikkakunnat/hameenkyro.html" class="dir-pill"><span>Hämeenkyrö (39100)</span><span class="dir-pill-sub">Leppäkosken Sähkö</span></a>
+<a href="paikkakunnat/hameenlinna.html" class="dir-pill"><span>Hämeenlinna (13100)</span><span class="dir-pill-sub">Elenia</span></a>
+<a href="paikkakunnat/ii.html" class="dir-pill"><span>Ii (91100)</span><span class="dir-pill-sub">Caruna</span></a>
+<a href="paikkakunnat/iisalmi.html" class="dir-pill"><span>Iisalmi (74100)</span><span class="dir-pill-sub">Savon Voima Verkko</span></a>
+<a href="paikkakunnat/ikaalinen.html" class="dir-pill"><span>Ikaalinen (39500)</span><span class="dir-pill-sub">Leppäkosken Sähkö</span></a>
+<a href="paikkakunnat/ilmajoki.html" class="dir-pill"><span>Ilmajoki (60800)</span><span class="dir-pill-sub">Elenia</span></a>
+<a href="paikkakunnat/ilomantsi.html" class="dir-pill"><span>Ilomantsi (82900)</span><span class="dir-pill-sub">PKS Sähkönsiirto</span></a>
+<a href="paikkakunnat/imatra.html" class="dir-pill"><span>Imatra (55100)</span><span class="dir-pill-sub">Imatran Seudun Sähkönsiirto</span></a>
+<a href="paikkakunnat/inari.html" class="dir-pill"><span>Inari (99800)</span><span class="dir-pill-sub">Rovakaira</span></a>
+<a href="paikkakunnat/inkoo.html" class="dir-pill"><span>Inkoo (10210)</span><span class="dir-pill-sub">Caruna</span></a>
+<a href="paikkakunnat/janakkala.html" class="dir-pill"><span>Janakkala (14200)</span><span class="dir-pill-sub">Elenia</span></a>
+<a href="paikkakunnat/joensuu.html" class="dir-pill"><span>Joensuu (80100)</span><span class="dir-pill-sub">Caruna Espoo</span></a>
+<a href="paikkakunnat/juva.html" class="dir-pill"><span>Juva (51900)</span><span class="dir-pill-sub">Järvi-Suomen Energia</span></a>
+<a href="paikkakunnat/jyvaskyla.html" class="dir-pill"><span>Jyväskylä (40100)</span><span class="dir-pill-sub">Alva Sähköverkko</span></a>
+<a href="paikkakunnat/jamsa.html" class="dir-pill"><span>Jämsä (42100)</span><span class="dir-pill-sub">Elenia</span></a>
+<a href="paikkakunnat/jarvenpaa.html" class="dir-pill"><span>Järvenpää (04400)</span><span class="dir-pill-sub">Caruna</span></a>
+<a href="paikkakunnat/kaarina.html" class="dir-pill"><span>Kaarina (20780)</span><span class="dir-pill-sub">Caruna</span></a>
+<a href="paikkakunnat/kajaani.html" class="dir-pill"><span>Kajaani (87100)</span><span class="dir-pill-sub">Kajave / Loiste</span></a>
+<a href="paikkakunnat/kalajoki.html" class="dir-pill"><span>Kalajoki (85100)</span><span class="dir-pill-sub">Elenia</span></a>
+<a href="paikkakunnat/kangasala.html" class="dir-pill"><span>Kangasala (36200)</span><span class="dir-pill-sub">Elenia</span></a>
+<a href="paikkakunnat/kangasniemi.html" class="dir-pill"><span>Kangasniemi (51200)</span><span class="dir-pill-sub">Järvi-Suomen Energia</span></a>
+<a href="paikkakunnat/kankaanpaa.html" class="dir-pill"><span>Kankaanpää (38700)</span><span class="dir-pill-sub">Caruna</span></a>
+<a href="paikkakunnat/karkkila.html" class="dir-pill"><span>Karkkila (03600)</span><span class="dir-pill-sub">Caruna</span></a>
+<a href="paikkakunnat/kauhajoki.html" class="dir-pill"><span>Kauhajoki (61800)</span><span class="dir-pill-sub">Caruna</span></a>
+<a href="paikkakunnat/kauhava.html" class="dir-pill"><span>Kauhava (62200)</span><span class="dir-pill-sub">Elenia</span></a>
+<a href="paikkakunnat/kauniainen.html" class="dir-pill"><span>Kauniainen (02700)</span><span class="dir-pill-sub">Caruna Espoo</span></a>
+<a href="paikkakunnat/kemi.html" class="dir-pill"><span>Kemi (94100)</span><span class="dir-pill-sub">Rovakaira</span></a>
+<a href="paikkakunnat/kemijarvi.html" class="dir-pill"><span>Kemijärvi (98100)</span><span class="dir-pill-sub">Rovakaira</span></a>
+<a href="paikkakunnat/kempele.html" class="dir-pill"><span>Kempele (90440)</span><span class="dir-pill-sub">Oulun Seudun Sähkö</span></a>
+<a href="paikkakunnat/kerava.html" class="dir-pill"><span>Kerava (04200)</span><span class="dir-pill-sub">Keravan &amp; Sipoon Energia</span></a>
+<a href="paikkakunnat/keuruu.html" class="dir-pill"><span>Keuruu (42700)</span><span class="dir-pill-sub">Koillis-Satakunnan Sähkö</span></a>
+<a href="paikkakunnat/kirkkonummi.html" class="dir-pill"><span>Kirkkonummi (02400)</span><span class="dir-pill-sub">Caruna Espoo</span></a>
+<a href="paikkakunnat/kitee.html" class="dir-pill"><span>Kitee (82500)</span><span class="dir-pill-sub">PKS Sähkönsiirto</span></a>
+<a href="paikkakunnat/kittila.html" class="dir-pill"><span>Kittilä (99100)</span><span class="dir-pill-sub">Rovakaira</span></a>
+<a href="paikkakunnat/kiuruvesi.html" class="dir-pill"><span>Kiuruvesi (74700)</span><span class="dir-pill-sub">Savon Voima Verkko</span></a>
+<a href="paikkakunnat/kokemaki.html" class="dir-pill"><span>Kokemäki (32800)</span><span class="dir-pill-sub">Caruna</span></a>
+<a href="paikkakunnat/kokkola.html" class="dir-pill"><span>Kokkola (67100)</span><span class="dir-pill-sub">Kokkolan Energiaverkot</span></a>
+<a href="paikkakunnat/kolari.html" class="dir-pill"><span>Kolari (95900)</span><span class="dir-pill-sub">Tornionlaakson Sähkö</span></a>
+<a href="paikkakunnat/kontiolahti.html" class="dir-pill"><span>Kontiolahti (81100)</span><span class="dir-pill-sub">PKS Sähkönsiirto</span></a>
+<a href="paikkakunnat/kotka.html" class="dir-pill"><span>Kotka (48100)</span><span class="dir-pill-sub">Kotkan Energiaverkot</span></a>
+<a href="paikkakunnat/kouvola.html" class="dir-pill"><span>Kouvola (45100)</span><span class="dir-pill-sub">KSS Verkko</span></a>
+<a href="paikkakunnat/kristiinankaupunki.html" class="dir-pill"><span>Kristiinankaupunki (64100)</span><span class="dir-pill-sub">Caruna</span></a>
+<a href="paikkakunnat/kuhmo.html" class="dir-pill"><span>Kuhmo (88900)</span><span class="dir-pill-sub">Kajave / Loiste</span></a>
+<a href="paikkakunnat/kuopio.html" class="dir-pill"><span>Kuopio (70100)</span><span class="dir-pill-sub">Kuopion Sähköverkko</span></a>
+<a href="paikkakunnat/kurikka.html" class="dir-pill"><span>Kurikka (61300)</span><span class="dir-pill-sub">Caruna</span></a>
+<a href="paikkakunnat/kuusamo.html" class="dir-pill"><span>Kuusamo (93600)</span><span class="dir-pill-sub">Caruna</span></a>
+<a href="paikkakunnat/lahti.html" class="dir-pill"><span>Lahti (15100)</span><span class="dir-pill-sub">Lahti Energia Sähköverkko</span></a>
+<a href="paikkakunnat/laitila.html" class="dir-pill"><span>Laitila (23800)</span><span class="dir-pill-sub">Vakka-Suomen Voima</span></a>
+<a href="paikkakunnat/lapinlahti.html" class="dir-pill"><span>Lapinlahti (73100)</span><span class="dir-pill-sub">Savon Voima Verkko</span></a>
+<a href="paikkakunnat/lappeenranta.html" class="dir-pill"><span>Lappeenranta (53100)</span><span class="dir-pill-sub">Lappeenrannan Energiaverkot</span></a>
+<a href="paikkakunnat/lapua.html" class="dir-pill"><span>Lapua (62100)</span><span class="dir-pill-sub">Elenia</span></a>
+<a href="paikkakunnat/laukaa.html" class="dir-pill"><span>Laukaa (41340)</span><span class="dir-pill-sub">Elenia</span></a>
+<a href="paikkakunnat/lempaala.html" class="dir-pill"><span>Lempäälä (37500)</span><span class="dir-pill-sub">Elenia</span></a>
+<a href="paikkakunnat/leppavirta.html" class="dir-pill"><span>Leppävirta (79100)</span><span class="dir-pill-sub">Savon Voima Verkko</span></a>
+<a href="paikkakunnat/lieksa.html" class="dir-pill"><span>Lieksa (81700)</span><span class="dir-pill-sub">PKS Sähkönsiirto</span></a>
+<a href="paikkakunnat/lieto.html" class="dir-pill"><span>Lieto (21420)</span><span class="dir-pill-sub">Caruna</span></a>
+<a href="paikkakunnat/liminka.html" class="dir-pill"><span>Liminka (91900)</span><span class="dir-pill-sub">Oulun Seudun Sähkö</span></a>
+<a href="paikkakunnat/liperi.html" class="dir-pill"><span>Liperi (83100)</span><span class="dir-pill-sub">PKS Sähkönsiirto</span></a>
+<a href="paikkakunnat/lohja.html" class="dir-pill"><span>Lohja (08100)</span><span class="dir-pill-sub">Caruna</span></a>
+<a href="paikkakunnat/loimaa.html" class="dir-pill"><span>Loimaa (32200)</span><span class="dir-pill-sub">Caruna</span></a>
+<a href="paikkakunnat/loppi.html" class="dir-pill"><span>Loppi (12700)</span><span class="dir-pill-sub">Elenia</span></a>
+<a href="paikkakunnat/loviisa.html" class="dir-pill"><span>Loviisa (07900)</span><span class="dir-pill-sub">Kymenlaakson Sähköverkko</span></a>
+<a href="paikkakunnat/masku.html" class="dir-pill"><span>Masku (21250)</span><span class="dir-pill-sub">Vakka-Suomen Voima</span></a>
+<a href="paikkakunnat/mikkeli.html" class="dir-pill"><span>Mikkeli (50100)</span><span class="dir-pill-sub">ESE-Verkko (Mikkeli)</span></a>
+<a href="paikkakunnat/muhos.html" class="dir-pill"><span>Muhos (91500)</span><span class="dir-pill-sub">Oulun Seudun Sähkö</span></a>
+<a href="paikkakunnat/muonio.html" class="dir-pill"><span>Muonio (99300)</span><span class="dir-pill-sub">Tornionlaakson Sähkö</span></a>
+<a href="paikkakunnat/mustasaari.html" class="dir-pill"><span>Mustasaari (65610)</span><span class="dir-pill-sub">Vaasan Sähköverkko</span></a>
+<a href="paikkakunnat/muurame.html" class="dir-pill"><span>Muurame (40950)</span><span class="dir-pill-sub">Elenia</span></a>
+<a href="paikkakunnat/mynamaki.html" class="dir-pill"><span>Mynämäki (23100)</span><span class="dir-pill-sub">Vakka-Suomen Voima</span></a>
+<a href="paikkakunnat/mantsala.html" class="dir-pill"><span>Mäntsälä (04600)</span><span class="dir-pill-sub">Caruna</span></a>
+<a href="paikkakunnat/mantta-vilppula.html" class="dir-pill"><span>Mänttä-Vilppula (35800)</span><span class="dir-pill-sub">Elenia</span></a>
+<a href="paikkakunnat/mantyharju.html" class="dir-pill"><span>Mäntyharju (52700)</span><span class="dir-pill-sub">Järvi-Suomen Energia</span></a>
+<a href="paikkakunnat/naantali.html" class="dir-pill"><span>Naantali (21100)</span><span class="dir-pill-sub">Caruna</span></a>
+<a href="paikkakunnat/nivala.html" class="dir-pill"><span>Nivala (85500)</span><span class="dir-pill-sub">Elenia</span></a>
+<a href="paikkakunnat/nokia.html" class="dir-pill"><span>Nokia (37100)</span><span class="dir-pill-sub">Elenia</span></a>
+<a href="paikkakunnat/nurmes.html" class="dir-pill"><span>Nurmes (75500)</span><span class="dir-pill-sub">PKS Sähkönsiirto</span></a>
+<a href="paikkakunnat/nurmijarvi.html" class="dir-pill"><span>Nurmijärvi (01900)</span><span class="dir-pill-sub">Nurmijärven Sähköverkko</span></a>
+<a href="paikkakunnat/narpio.html" class="dir-pill"><span>Närpiö (64200)</span><span class="dir-pill-sub">Caruna</span></a>
+<a href="paikkakunnat/orimattila.html" class="dir-pill"><span>Orimattila (16300)</span><span class="dir-pill-sub">Kymenlaakson Sähköverkko</span></a>
+<a href="paikkakunnat/orivesi.html" class="dir-pill"><span>Orivesi (35300)</span><span class="dir-pill-sub">Elenia</span></a>
+<a href="paikkakunnat/oulainen.html" class="dir-pill"><span>Oulainen (86300)</span><span class="dir-pill-sub">Elenia</span></a>
+<a href="paikkakunnat/oulu.html" class="dir-pill"><span>Oulu (90100)</span><span class="dir-pill-sub">Oulun Energia Sähköverkko</span></a>
+<a href="paikkakunnat/outokumpu.html" class="dir-pill"><span>Outokumpu (83500)</span><span class="dir-pill-sub">PKS Sähkönsiirto</span></a>
+<a href="paikkakunnat/paimio.html" class="dir-pill"><span>Paimio (21530)</span><span class="dir-pill-sub">Caruna</span></a>
+<a href="paikkakunnat/parainen.html" class="dir-pill"><span>Parainen (21600)</span><span class="dir-pill-sub">Caruna</span></a>
+<a href="paikkakunnat/parikkala.html" class="dir-pill"><span>Parikkala (59100)</span><span class="dir-pill-sub">Imatran Seudun Sähkönsiirto</span></a>
+<a href="paikkakunnat/parkano.html" class="dir-pill"><span>Parkano (39700)</span><span class="dir-pill-sub">Leppäkosken Sähkö</span></a>
+<a href="paikkakunnat/pedersore.html" class="dir-pill"><span>Pedersöre (68800)</span><span class="dir-pill-sub">Herrfors Nät-Verkko</span></a>
+<a href="paikkakunnat/pieksamaki.html" class="dir-pill"><span>Pieksämäki (76100)</span><span class="dir-pill-sub">Savon Voima Verkko</span></a>
+<a href="paikkakunnat/pietarsaari.html" class="dir-pill"><span>Pietarsaari (68600)</span><span class="dir-pill-sub">Herrfors Nät-Verkko</span></a>
+<a href="paikkakunnat/pirkkala.html" class="dir-pill"><span>Pirkkala (33960)</span><span class="dir-pill-sub">Tampereen Energia Sähköverkko</span></a>
+<a href="paikkakunnat/pori.html" class="dir-pill"><span>Pori (28100)</span><span class="dir-pill-sub">Pori Energia Sähköverkot</span></a>
+<a href="paikkakunnat/pornainen.html" class="dir-pill"><span>Pornainen (07170)</span><span class="dir-pill-sub">Caruna</span></a>
+<a href="paikkakunnat/porvoo.html" class="dir-pill"><span>Porvoo (06100)</span><span class="dir-pill-sub">Porvoon Sähköverkko</span></a>
+<a href="paikkakunnat/pudasjarvi.html" class="dir-pill"><span>Pudasjärvi (93100)</span><span class="dir-pill-sub">Caruna</span></a>
+<a href="paikkakunnat/pyhtaa.html" class="dir-pill"><span>Pyhtää (49220)</span><span class="dir-pill-sub">Kymenlaakson Sähköverkko</span></a>
+<a href="paikkakunnat/raahe.html" class="dir-pill"><span>Raahe (92100)</span><span class="dir-pill-sub">Elenia</span></a>
+<a href="paikkakunnat/raasepori.html" class="dir-pill"><span>Raasepori (10600)</span><span class="dir-pill-sub">Caruna</span></a>
+<a href="paikkakunnat/raisio.html" class="dir-pill"><span>Raisio (21200)</span><span class="dir-pill-sub">Caruna</span></a>
+<a href="paikkakunnat/rauma.html" class="dir-pill"><span>Rauma (26100)</span><span class="dir-pill-sub">Rauman Energia</span></a>
+<a href="paikkakunnat/riihimaki.html" class="dir-pill"><span>Riihimäki (11100)</span><span class="dir-pill-sub">Elenia</span></a>
+<a href="paikkakunnat/rovaniemi.html" class="dir-pill"><span>Rovaniemi (96100)</span><span class="dir-pill-sub">Neve (Rovaniemi)</span></a>
+<a href="paikkakunnat/ruokolahti.html" class="dir-pill"><span>Ruokolahti (56100)</span><span class="dir-pill-sub">Imatran Seudun Sähkönsiirto</span></a>
+<a href="paikkakunnat/saarijarvi.html" class="dir-pill"><span>Saarijärvi (43100)</span><span class="dir-pill-sub">Elenia</span></a>
+<a href="paikkakunnat/salo.html" class="dir-pill"><span>Salo (24100)</span><span class="dir-pill-sub">Caruna</span></a>
+<a href="paikkakunnat/sastamala.html" class="dir-pill"><span>Sastamala (38200)</span><span class="dir-pill-sub">Elenia</span></a>
+<a href="paikkakunnat/savonlinna.html" class="dir-pill"><span>Savonlinna (57100)</span><span class="dir-pill-sub">Järvi-Suomen Energia</span></a>
+<a href="paikkakunnat/seinajoki.html" class="dir-pill"><span>Seinäjoki (60100)</span><span class="dir-pill-sub">Seinäjoen Energia</span></a>
+<a href="paikkakunnat/siilinjarvi.html" class="dir-pill"><span>Siilinjärvi (71800)</span><span class="dir-pill-sub">Savon Voima Verkko</span></a>
+<a href="paikkakunnat/sipoo.html" class="dir-pill"><span>Sipoo (04130)</span><span class="dir-pill-sub">Keravan &amp; Sipoon Energia</span></a>
+<a href="paikkakunnat/siuntio.html" class="dir-pill"><span>Siuntio (02580)</span><span class="dir-pill-sub">Caruna</span></a>
+<a href="paikkakunnat/sodankyla.html" class="dir-pill"><span>Sodankylä (99600)</span><span class="dir-pill-sub">Rovakaira</span></a>
+<a href="paikkakunnat/somero.html" class="dir-pill"><span>Somero (31400)</span><span class="dir-pill-sub">Caruna</span></a>
+<a href="paikkakunnat/sotkamo.html" class="dir-pill"><span>Sotkamo (88600)</span><span class="dir-pill-sub">Kajave / Loiste</span></a>
+<a href="paikkakunnat/suomussalmi.html" class="dir-pill"><span>Suomussalmi (89600)</span><span class="dir-pill-sub">Kajave / Loiste</span></a>
+<a href="paikkakunnat/suonenjoki.html" class="dir-pill"><span>Suonenjoki (77600)</span><span class="dir-pill-sub">Savon Voima Verkko</span></a>
+<a href="paikkakunnat/tampere.html" class="dir-pill"><span>Tampere (33100)</span><span class="dir-pill-sub">Tampereen Energia Sähköverkko</span></a>
+<a href="paikkakunnat/tornio.html" class="dir-pill"><span>Tornio (95400)</span><span class="dir-pill-sub">Tornionlaakson Sähkö</span></a>
+<a href="paikkakunnat/turku.html" class="dir-pill"><span>Turku (20100)</span><span class="dir-pill-sub">Turku Energia Sähköverkot</span></a>
+<a href="paikkakunnat/tuusula.html" class="dir-pill"><span>Tuusula (04300)</span><span class="dir-pill-sub">Caruna</span></a>
+<a href="paikkakunnat/ulvila.html" class="dir-pill"><span>Ulvila (28400)</span><span class="dir-pill-sub">Pori Energia Sähköverkot</span></a>
+<a href="paikkakunnat/uusikaarlepyy.html" class="dir-pill"><span>Uusikaarlepyy (66900)</span><span class="dir-pill-sub">Herrfors Nät-Verkko</span></a>
+<a href="paikkakunnat/uusikaupunki.html" class="dir-pill"><span>Uusikaupunki (23500)</span><span class="dir-pill-sub">Vakka-Suomen Voima</span></a>
+<a href="paikkakunnat/vaasa.html" class="dir-pill"><span>Vaasa (65100)</span><span class="dir-pill-sub">Vaasan Sähköverkko</span></a>
+<a href="paikkakunnat/valkeakoski.html" class="dir-pill"><span>Valkeakoski (37600)</span><span class="dir-pill-sub">Elenia</span></a>
+<a href="paikkakunnat/vantaa.html" class="dir-pill"><span>Vantaa (01300)</span><span class="dir-pill-sub">Vantaan Energia Sähköverkot</span></a>
+<a href="paikkakunnat/varkaus.html" class="dir-pill"><span>Varkaus (78200)</span><span class="dir-pill-sub">Savon Voima Verkko</span></a>
+<a href="paikkakunnat/vihti.html" class="dir-pill"><span>Vihti (03100)</span><span class="dir-pill-sub">Caruna</span></a>
+<a href="paikkakunnat/viitasaari.html" class="dir-pill"><span>Viitasaari (44500)</span><span class="dir-pill-sub">Elenia</span></a>
+<a href="paikkakunnat/virrat.html" class="dir-pill"><span>Virrat (34800)</span><span class="dir-pill-sub">Koillis-Satakunnan Sähkö</span></a>
+<a href="paikkakunnat/ylivieska.html" class="dir-pill"><span>Ylivieska (84100)</span><span class="dir-pill-sub">Elenia</span></a>
+<a href="paikkakunnat/ylojarvi.html" class="dir-pill"><span>Ylöjärvi (33470)</span><span class="dir-pill-sub">Elenia</span></a>
+<a href="paikkakunnat/ahtari.html" class="dir-pill"><span>Ähtäri (63700)</span><span class="dir-pill-sub">Koillis-Satakunnan Sähkö</span></a>
+<a href="paikkakunnat/aanekoski.html" class="dir-pill"><span>Äänekoski (44100)</span><span class="dir-pill-sub">Elenia</span></a>
+            </div>
+        </section>
+
+        <section class="section-card">
+            <h2>Oppaat pörssisähkön ennustamiseen ja siirtohinnan optimointiin</h2>
+            <div class="directory-grid">
+                <a href="oppaat/porssisahko-ennuste-7-vrk-tuulivoima-ja-lampotila.html" class="dir-pill">
+                    <span>Miten 7 vrk pörssisähköennuste toimii?</span>
+                </a>
+                <a href="oppaat/sahkon-siirtohinta-postinumerolla-kaikki-verkkoyhtiot.html" class="dir-pill">
+                    <span>Sähkön siirtohinta postinumerolla</span>
+                </a>
+                <a href="oppaat/yleissiirto-yosiirto-vai-kausisiirto-vertailu.html" class="dir-pill">
+                    <span>Yleissiirto, yösiirto vai kausisiirto?</span>
+                </a>
+                <a href="oppaat/sahkoauton-lataus-ja-lamminvesivaraaja-porssisahkolla.html" class="dir-pill">
+                    <span>Sähköauton ja varaajan optimointi</span>
+                </a>
+            </div>
+        </section>
+    </main>
+
+    <footer class="site-footer">
+        <div class="footer-inner">
+            <div>
+                <strong>Pörssisähkö & Siirtohintalaskuri</strong>
+                <p style="margin-top:6px; color:#b7c6bd; max-width:540px;">
+                    Palvelu yhdistää Nord Pool FI -pörssisähkön spot-hinnat, Suomen tuulipuistojen ja lämpötilojen 7 vuorokauden ennustemallin sekä kaikkien Suomen jakeluverkkoyhtiöiden siirtohinnat ja sähköveron.
+                </p>
+            </div>
+            <div class="footer-links">
+                <a href="index.html">Etusivu</a>
+                <a href="verkkoyhtiot/index.html">Sähköverkkoyhtiöt</a>
+                <a href="paikkakunnat/index.html">Paikkakunnat</a>
+                <a href="oppaat/porssisahko-ennuste-7-vrk-tuulivoima-ja-lampotila.html">Ennustemalli</a>
+                <a href="oppaat/sahkon-siirtohinta-postinumerolla-kaikki-verkkoyhtiot.html">Siirtohinnat</a>
+                <a href="oppaat/yleissiirto-yosiirto-vai-kausisiirto-vertailu.html">Siirtotuotteiden vertailu</a>
+            </div>
+        </div>
+    </footer>
+    <script src="dso_data.js"></script>
+    <script src="app.js"></script>
+</body>
+</html>

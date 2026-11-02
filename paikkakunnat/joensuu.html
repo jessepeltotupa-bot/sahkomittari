@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html lang="fi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pörssisähkö &amp; Sähkön Siirtohinta Joensuu (80100) | Caruna Espoo</title>
+    <meta name="description" content="Paljonko pörssisähkö maksaa siirtohinnan kanssa paikkakunnalla Joensuu (80100-82980)? Verkkoyhtiö: Caruna Espoo Oy, yleissiirto 3,59 snt/kWh + sähkövero 2,83 snt/kWh. Katso tuntihinnat ja 7 vrk ennuste.">
+    <link rel="canonical" href="https://porssisahko-ennuste.vercel.app/paikkakunnat/joensuu.html" />
+    <link rel="stylesheet" href="../styles.css">
+</head>
+<body data-preset-dso="caruna_espoo" data-preset-postal="80100" data-preset-city="Joensuu">
+    <header class="site-header">
+        <div class="header-inner">
+            <a href="../index.html" class="brand-link">
+                <span class="brand-title">Pörssisähkö &amp; Siirtohintalaskuri</span>
+                <span class="brand-subtitle">Reaaliaikainen spot-hinta, 7 vrk tuulivoimaennuste ja todellinen kokonaishinta postinumerolla</span>
+            </a>
+            <nav class="main-nav" aria-label="Päävalikko">
+                <a href="../index.html">Spot &amp; Ennuste</a>
+                <a href="../index.html#optimoija">Halvimmat tunnit</a>
+                <a href="../index.html#vuosivertailu">Yleissiirto vs. Yösiirto</a>
+                <a href="../verkkoyhtiot/index.html">Sähköverkkoyhtiöt</a>
+                <a href="../paikkakunnat/index.html">Kunnat &amp; Postinumerot</a>
+            </nav>
+        </div>
+    </header>
+
+    <main class="container">
+        <section class="hero-card">
+            <h1>Pörssisähkö ja sähkön siirtohinta Joensuu (80100-82980)</h1>
+            <p class="hero-lead">Paikkakunnalla Joensuu (Pohjois-Karjala) ensisijainen paikallinen sähköverkkoyhtiö on Caruna Espoo Oy. Kunnan reuna- tai haja-asutusalueilla verkosta vastaa osittain myös PKS Sähkönsiirto Oy. Yleissiirron ja sähköveron kiinteä osuus on yhteensä 6,42 snt/kWh pörssisähkön spot-hinnan päälle.</p>
+
+            <div class="postal-control-bar">
+                <div class="postal-grid">
+                    <form id="postal-search-form" onsubmit="return false;">
+                        <label for="postal-input" class="field-label">Postinumero tai paikkakunta</label>
+                        <div class="postal-input-group">
+                            <input type="text" id="postal-input" class="input-control" value="80100" placeholder="Esim. 00100, 33100, 60100 tai Oulu">
+                            <button type="submit" class="btn-primary">Hae siirtohinta</button>
+                        </div>
+                    </form>
+
+                    <div>
+                        <span class="field-label">Valitse siirtotuote</span>
+                        <div class="seg-group">
+                            <button type="button" class="seg-btn active" data-tariff-btn="general">Yleissiirto</button>
+                            <button type="button" class="seg-btn" data-tariff-btn="time">Yösiirto (07–22 / 22–07)</button>
+                            <button type="button" class="seg-btn" data-tariff-btn="season">Kausisiirto</button>
+                        </div>
+                    </div>
+
+                    <div>
+                        <label for="margin-input" class="field-label">Myyjän marginaali (snt/kWh)</label>
+                        <input type="number" id="margin-input" class="input-control" step="0.01" min="0" max="3" value="0.45">
+                    </div>
+
+                    <div>
+                        <label for="vat-select" class="field-label">Arvonlisävero</label>
+                        <select id="vat-select" class="select-control">
+                            <option value="1" selected>Sis. ALV 25,5 %</option>
+                            <option value="0">Veroton (ALV 0 %)</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+
+            <div id="detected-dso-banner" class="detected-dso-banner">
+                Haetaan postinumeron verkkoyhtiötä...
+            </div>
+        </section>
+
+        <section class="kpi-grid" aria-label="Hintayhteenveto">
+            <div class="kpi-card highlight">
+                <div class="kpi-label">Kokonaishinta juuri nyt (sis. siirto + vero)</div>
+                <div class="kpi-value" id="kpi-now-total">— snt/kWh</div>
+                <div class="kpi-sub" id="kpi-now-breakdown">Lasketaan tuntikohtaista kokonaishintaa...</div>
+            </div>
+            <div class="kpi-card">
+                <div class="kpi-label">Pelkkä pörssisähkön spot-hinta nyt</div>
+                <div class="kpi-value" id="kpi-now-spot">— snt/kWh</div>
+                <div class="kpi-sub">Nord Pool FI tuntihinta</div>
+            </div>
+            <div class="kpi-card">
+                <div class="kpi-label">Päivän edullisin tunti (kokonaishinta)</div>
+                <div class="kpi-value" id="kpi-today-min">— snt/kWh</div>
+                <div class="kpi-sub" id="kpi-today-min-sub">—</div>
+            </div>
+            <div class="kpi-card">
+                <div class="kpi-label" id="kpi-tomorrow-title">Huomisen hintaennuste</div>
+                <div class="kpi-value" id="kpi-tomorrow-avg">— snt/kWh</div>
+                <div class="kpi-sub" id="kpi-tomorrow-sub">—</div>
+            </div>
+        </section>
+
+        <section class="section-card">
+            <div class="section-header-row">
+                <h2 id="chart-view-title">Pörssisähkön tuntihinnat, siirtohinta ja 7 vrk ennuste</h2>
+                <div class="seg-group" style="min-width:290px;">
+                    <button type="button" class="seg-btn active" data-mode-btn="total">Kokonaishinta (Spot + Siirto + Vero)</button>
+                    <button type="button" class="seg-btn" data-mode-btn="spot">Pelkkä Spot-hinta</button>
+                </div>
+            </div>
+
+            <div id="day-tabs" class="day-tabs"></div>
+
+            <div class="chart-legend">
+                <span class="legend-item"><span class="legend-swatch" style="background:#2b7a4b;"></span> Edullinen spot (&lt; 3 snt/kWh)</span>
+                <span class="legend-item"><span class="legend-swatch" style="background:#2b5b84;"></span> Normaali spot (3–8 snt/kWh)</span>
+                <span class="legend-item"><span class="legend-swatch" style="background:#b5452a;"></span> Korkea spot (&gt; 8 snt/kWh)</span>
+                <span class="legend-item"><span class="legend-swatch" style="background:#94a398;"></span> Paikallinen siirtohinta + sähkövero + marginaali</span>
+                <span class="legend-item"><span class="legend-swatch" style="background:#4c6ef5;"></span> Ennustetunti (tuulivoima + lämpötila)</span>
+            </div>
+
+            <div id="price-chart" class="price-chart-box">
+                Ladataan pörssisähkön hintoja ja 7 vuorokauden tuulivoimaennustetta...
+            </div>
+
+            <div class="table-wrap">
+                <table class="data-table">
+                    <thead>
+                        <tr>
+                            <th>Aikajakso</th>
+                            <th>Tyyppi</th>
+                            <th>Spot-hinta</th>
+                            <th>Siirto + Sähkövero + Marg.</th>
+                            <th>Kokonaishinta yhteensä</th>
+                            <th>Tuulivoima / Sää</th>
+                        </tr>
+                    </thead>
+                    <tbody id="hourly-table-body">
+                        <tr><td colspan="6">Ladataan tuntitietoja...</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+        <section class="section-card" id="optimoija">
+            <h2>Halvimmat peräkkäiset tunnit kokonaishinnalla (huomioi myös yösiirron klo 22 jälkeen)</h2>
+            <p class="hero-lead" style="margin-top:6px;">
+                Pelkän spot-hinnan tuijottaminen voi johtaa väärään latausaikaan, jos käytössäsi on yösiirto tai kausisiirto: kello 22:00 alkava edullisempi yösiirto laskee siirtohintaa tyypillisesti 1,5–2,6 snt/kWh. Tämä laskuri etsii aidosti halvimman jakson yhdistämällä spot-hinnan ja postinumerosi siirtohinnan.
+            </p>
+
+            <div class="preset-pills">
+                <button type="button" class="preset-pill" data-preset-kw="11" data-preset-hrs="4">Sähköauton lataus (11 kW, 4 h)</button>
+                <button type="button" class="preset-pill" data-preset-kw="3.6" data-preset-hrs="6">Hybridin lataus (3,6 kW, 6 h)</button>
+                <button type="button" class="preset-pill" data-preset-kw="3" data-preset-hrs="3">Lämminvesivaraaja (3 kW, 3 h)</button>
+                <button type="button" class="preset-pill" data-preset-kw="8" data-preset-hrs="1">Sähkökiuas (8 kW, 1 h)</button>
+                <button type="button" class="preset-pill" data-preset-kw="2" data-preset-hrs="2">Pyykin- tai astianpesukone (2 kW, 2 h)</button>
+            </div>
+
+            <div class="opt-controls-row">
+                <div style="flex:1; min-width:240px;">
+                    <span class="field-label">Tarvittava yhtäjaksoinen kesto</span>
+                    <div class="seg-group">
+                        <button type="button" class="seg-btn" data-win-hours="1">1 h</button>
+                        <button type="button" class="seg-btn" data-win-hours="2">2 h</button>
+                        <button type="button" class="seg-btn active" data-win-hours="3">3 h</button>
+                        <button type="button" class="seg-btn" data-win-hours="4">4 h</button>
+                        <button type="button" class="seg-btn" data-win-hours="6">6 h</button>
+                        <button type="button" class="seg-btn" data-win-hours="8">8 h</button>
+                    </div>
+                </div>
+                <div style="width:200px;">
+                    <label for="appliance-kw-input" class="field-label">Laitteen teho (kW)</label>
+                    <input type="number" id="appliance-kw-input" class="input-control" step="0.1" min="0.1" max="50" value="11">
+                </div>
+            </div>
+
+            <div id="cheapest-window-result"></div>
+        </section>
+
+        <section class="section-card" id="vuosivertailu">
+            <h2>Yleissiirto, Yösiirto vai Kausisiirto? Vuosikustannuslaskuri postinumerollesi</h2>
+            <p class="hero-lead" style="margin-top:6px;">
+                Vaikka et voi kilpailuttaa paikallista sähköverkkoyhtiötäsi, voit vaihtaa verkkoyhtiön sisällä siirtotuotetta (Yleissiirto, Yösiirto tai Kausisiirto). Syötä vuosikulutuksesi ja arvioitu yöajan (klo 22–07) kulutusosuus nähdäksesi, mikä siirtotuote on postinumerossasi edullisin.
+            </p>
+
+            <div class="opt-controls-row">
+                <div style="width:240px;">
+                    <label for="annual-kwh-input" class="field-label">Vuosikulutus (kWh / vuosi)</label>
+                    <input type="number" id="annual-kwh-input" class="input-control" step="500" min="1000" max="60000" value="12000">
+                </div>
+                <div style="flex:1; min-width:240px;">
+                    <label for="night-share-input" class="field-label">Yöajan (klo 22–07) osuus kulutuksesta: <span id="night-share-label">55 %</span></label>
+                    <input type="range" id="night-share-input" style="width:100%; margin-top:8px;" min="10" max="90" step="5" value="55">
+                </div>
+            </div>
+
+            <div id="annual-comparison-result" class="comp-grid"></div>
+        </section>
+
+        <section class="section-card">
+            <h2>Sähkönsiirto ja verkkoyhtiö paikkakunnalla Joensuu</h2>
+            <p style="margin-top:8px;">
+                Kun asut paikkakunnalla <strong>Joensuu</strong> (postinumeroalue <code>80100-82980</code>, maakunta Pohjois-Karjala), paikallisesta jakeluverkosta vastaa ensisijaisesti <a href="../verkkoyhtiot/caruna-espoo.html"><strong>Caruna Espoo Oy</strong></a>. Kunnan reuna- tai haja-asutusalueilla verkosta vastaa osittain myös PKS Sähkönsiirto Oy.
+            </p>
+            <ul style="margin:12px 0 0 20px;">
+                <li><strong>Yleissiirto (Caruna Espoo):</strong> 3,59 snt/kWh (perusmaksu 17,40 €/kk)</li>
+                <li><strong>Yösiirto / Aikasiirto:</strong> Päivä klo 07–22 4,18 snt/kWh, Yö klo 22–07 2,68 snt/kWh (perusmaksu 24,90 €/kk)</li>
+                <li><strong>Valtion sähkövero ja huoltovarmuusmaksu:</strong> 2,83 snt/kWh (sis. ALV 25,5 %)</li>
+            </ul>
+        </section>
+    </main>
+
+    <footer class="site-footer">
+        <div class="footer-inner">
+            <div>
+                <strong>Pörssisähkö & Siirtohintalaskuri</strong>
+                <p style="margin-top:6px; color:#b7c6bd; max-width:540px;">
+                    Palvelu yhdistää Nord Pool FI -pörssisähkön spot-hinnat, Suomen tuulipuistojen ja lämpötilojen 7 vuorokauden ennustemallin sekä kaikkien Suomen jakeluverkkoyhtiöiden siirtohinnat ja sähköveron.
+                </p>
+            </div>
+            <div class="footer-links">
+                <a href="../index.html">Etusivu</a>
+                <a href="../verkkoyhtiot/index.html">Sähköverkkoyhtiöt</a>
+                <a href="../paikkakunnat/index.html">Paikkakunnat</a>
+                <a href="../oppaat/porssisahko-ennuste-7-vrk-tuulivoima-ja-lampotila.html">Ennustemalli</a>
+                <a href="../oppaat/sahkon-siirtohinta-postinumerolla-kaikki-verkkoyhtiot.html">Siirtohinnat</a>
+                <a href="../oppaat/yleissiirto-yosiirto-vai-kausisiirto-vertailu.html">Siirtotuotteiden vertailu</a>
+            </div>
+        </div>
+    </footer>
+    <script src="../dso_data.js"></script>
+    <script src="../app.js"></script>
+</body>
+</html>

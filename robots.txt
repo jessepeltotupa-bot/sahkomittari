@@ -1,0 +1,3 @@
+User-agent: *
+Allow: /
+Sitemap: https://porssisahko-ennuste.vercel.app/sitemap.xml

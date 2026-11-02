@@ -1,0 +1,8 @@
+# Pörssisähkö & Siirtohintalaskuri
+> Reaaliaikainen Suomen pörssisähkön spot-hintaseuranta, 7 vuorokauden tuulivoima- ja lämpötilaennuste sekä postinumeropohjainen sähkönsiirto- ja kokonaishintalaskuri.
+
+## Keskeiset ominaisuudet
+- Viralliset Nord Pool FI -spot-hinnat ja 7 vrk (168 h) tuntikohtainen hintaennuste (`/api/spot-and-forecast`)
+- Postinumerohaku, joka tunnistaa automaattisesti paikallisen sähköverkkoyhtiön (30+ verkkoyhtiötä ja 134+ Suomen kuntaa)
+- Todellinen tuntikohtainen kokonaishinta: Spot + Myyjän marginaali + Paikallinen siirtohinta (Yleissiirto, Yösiirto tai Kausisiirto) + Sähkövero (2,83 snt/kWh sis. ALV 25,5 %)
+- Halvimmat peräkkäiset tunnit -optimoija kokonaishinnalla (huomioi klo 22:00 alkavan yösiirron)

@@ -349,7 +349,7 @@ def build_country_page(cid: str, loc: dict) -> str:
     <link rel="icon" type="image/x-icon" href="/favicon.ico">
     <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
     <link rel="manifest" href="/site.webmanifest">
-    <link rel="stylesheet" href="/styles.css?v=24">
+    <link rel="stylesheet" href="/styles.css?v=25">
     <script type="application/ld+json">
 {json.dumps(schema, ensure_ascii=False, indent=2)}
     </script>
@@ -361,7 +361,7 @@ def build_country_page(cid: str, loc: dict) -> str:
     <header class="site-header">
         <div class="header-inner">
             <a href="./" class="brand-link">
-                <span class="brand-title"><img src="/favicon.svg?v=24" alt="" width="24" height="24" style="vertical-align:-5px; margin-right:8px;">{loc['siteName']}</span>
+                <span class="brand-title"><img src="/favicon.svg?v=25" alt="" width="24" height="24" style="vertical-align:-5px; margin-right:8px;">{loc['siteName']}</span>
                 <span class="brand-kicker">{loc['brandKicker']}</span>
                 <span class="brand-subtitle">{loc['brandSubtitle']}</span>
             </a>
@@ -532,7 +532,7 @@ def build_country_page(cid: str, loc: dict) -> str:
     <script src="/dso_data.js"></script>
     <script src="/ml_weights.js"></script>
     <script src="/nordpool_models.js"></script>
-    <script src="/app.js?v=24"></script>
+    <script src="/app.js?v=25"></script>
 </body>
 </html>
 """

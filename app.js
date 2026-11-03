@@ -377,23 +377,30 @@
         };
     }
 
+    const HELSINKI_FMT = new Intl.DateTimeFormat('en-GB', {
+        timeZone: 'Europe/Helsinki',
+        year: 'numeric',
+        month: '2-digit',
+        day: '2-digit',
+        hour: '2-digit',
+        weekday: 'short',
+        hour12: false
+    });
+    const helsinkiComponentsCache = new Map();
+
     function getHelsinkiComponents(dateObj) {
-        const fmt = new Intl.DateTimeFormat('en-GB', {
-            timeZone: 'Europe/Helsinki',
-            year: 'numeric',
-            month: '2-digit',
-            day: '2-digit',
-            hour: '2-digit',
-            weekday: 'short',
-            hour12: false
-        });
-        const parts = fmt.formatToParts(dateObj);
+        const ms = typeof dateObj === 'number' ? dateObj : dateObj.getTime();
+        const hourBucket = Math.floor(ms / 3600000) * 3600000;
+        const cached = helsinkiComponentsCache.get(hourBucket);
+        if (cached) return cached;
+
+        const parts = HELSINKI_FMT.formatToParts(new Date(hourBucket));
         const map = {};
         for (const p of parts) map[p.type] = p.value;
         const hour = parseInt(map.hour, 10) % 24;
         const month = parseInt(map.month, 10);
         const wd = map.weekday;
-        return {
+        const res = {
             year: parseInt(map.year, 10),
             month,
             day: parseInt(map.day, 10),
@@ -402,6 +409,8 @@
             isSat: (wd === 'Sat'),
             dateKey: `${map.year}-${map.month}-${map.day}`
         };
+        helsinkiComponentsCache.set(hourBucket, res);
+        return res;
     }
 
     function windSpeedToCapacityFactor(v100m) {
@@ -625,14 +634,22 @@
 
     async function fetchClientSideWithOnlineML() {
         const now = new Date();
-        // Haetaan viimeisen 30 vuorokauden (720 h) toteutuneet tuntihinnat liukuvan 30 pv keskiarvon laskentaan
+        // Haetaan viimeisen 30 vuorokauden (720 h) toteutuneet tuntihinnat ja säädata rinnakkain (Promise.all)
         const startHourIso = new Date(Math.floor(now.getTime() / 3600000) * 3600000 - 720 * 3600000).toISOString();
         const officialHourlyMap = new Map();
+        const weatherMap = new Map();
+
+        const pricesUrl = `https://sahkotin.fi/prices?fix&vat&start=${encodeURIComponent(startHourIso)}`;
+        const weatherUrl = 'https://api.open-meteo.com/v1/forecast?latitude=64.26,62.47,62.73,60.17,63.82,59.43&longitude=23.95,21.34,22.58,24.94,20.26,24.75&hourly=temperature_2m,wind_speed_100m,shortwave_radiation,surface_pressure&wind_speed_unit=ms&past_days=10&forecast_days=7&timezone=UTC';
+
+        const [pricesResp, weatherResp] = await Promise.all([
+            fetch(pricesUrl, { cache: 'no-store' }).catch(() => null),
+            fetch(weatherUrl).catch(() => null)
+        ]);
 
         try {
-            const r = await fetch(`https://sahkotin.fi/prices?fix&vat&start=${encodeURIComponent(startHourIso)}`, { cache: 'no-store' });
-            if (r.ok) {
-                const d = await r.json();
+            if (pricesResp && pricesResp.ok) {
+                const d = await pricesResp.json();
                 if (d && Array.isArray(d.prices)) {
                     let sum30d = 0.0;
                     let cnt30d = 0;
@@ -655,12 +672,9 @@
             }
         } catch (_) {}
 
-        const weatherUrl = 'https://api.open-meteo.com/v1/forecast?latitude=64.26,62.47,62.73,60.17,63.82,59.43&longitude=23.95,21.34,22.58,24.94,20.26,24.75&hourly=temperature_2m,wind_speed_100m,wind_speed_10m,shortwave_radiation,surface_pressure&wind_speed_unit=ms&past_days=14&forecast_days=7&timezone=UTC';
-        const weatherMap = new Map();
         try {
-            const rw = await fetch(weatherUrl);
-            if (rw.ok) {
-                const dw = await rw.json();
+            if (weatherResp && weatherResp.ok) {
+                const dw = await weatherResp.json();
                 const locs = Array.isArray(dw) ? dw : [dw];
                 if (locs.length >= 4 && locs[0].hourly && Array.isArray(locs[0].hourly.time)) {
                     const times = locs[0].hourly.time;
@@ -738,25 +752,42 @@
         }
 
         const sortedOfficialMs = Array.from(officialHourlyMap.keys()).sort((a, b) => a - b);
+        const kernelHistory = [];
+        for (let idx = 0; idx < sortedOfficialMs.length; idx++) {
+            const prevMs = sortedOfficialMs[idx];
+            const pw = weatherMap.get(prevMs);
+            if (!pw) continue;
+            const pHel = getHelsinkiComponents(prevMs);
+            kernelHistory.push({
+                ms: prevMs,
+                wind: pw.windSpeed100m || 6.5,
+                seWind: pw.seWindSpeed || pw.windSpeed100m || 6.5,
+                hour: pHel.hour,
+                temp: pw.tempC || 4.0,
+                isWeekend: pHel.isWeekend,
+                price: officialHourlyMap.get(prevMs).priceInclVat
+            });
+        }
+
         function kernelPredictHour(targetMs, wCand, targetHour, targetIsWeekend) {
             let num = 0.0;
             let den = 0.0;
             const cutoffMs = targetMs - 12 * 3600000;
-            for (let idx = 0; idx < sortedOfficialMs.length; idx++) {
-                const prevMs = sortedOfficialMs[idx];
-                if (prevMs > cutoffMs) break;
-                const pw = weatherMap.get(prevMs);
-                if (!pw) continue;
-                const pHel = getHelsinkiComponents(new Date(prevMs));
-                const dWind = ((wCand.windSpeed100m || 6.5) - (pw.windSpeed100m || 6.5)) / 1.10;
-                const dSe = ((wCand.seWindSpeed || wCand.windSpeed100m || 6.5) - (pw.seWindSpeed || pw.windSpeed100m || 6.5)) / 2.50;
-                const hrDiff = Math.abs(targetHour - pHel.hour);
+            const cWind = wCand.windSpeed100m || 6.5;
+            const cSe = wCand.seWindSpeed || cWind;
+            const cTemp = wCand.tempC || 4.0;
+            for (let idx = 0; idx < kernelHistory.length; idx++) {
+                const h = kernelHistory[idx];
+                if (h.ms > cutoffMs) break;
+                const dWind = (cWind - h.wind) / 1.10;
+                const dSe = (cSe - h.seWind) / 2.50;
+                const hrDiff = Math.abs(targetHour - h.hour);
                 const dHr = Math.min(hrDiff, 24 - hrDiff) / 1.90;
-                const dTemp = ((wCand.tempC || 4.0) - (pw.tempC || 4.0)) / 4.50;
-                const dWknd = (targetIsWeekend === pHel.isWeekend) ? 0.0 : 1.25;
-                const ageDays = Math.max(0.0, (targetMs - prevMs) / (24 * 3600000));
+                const dTemp = (cTemp - h.temp) / 4.50;
+                const dWknd = (targetIsWeekend === h.isWeekend) ? 0.0 : 1.25;
+                const ageDays = Math.max(0.0, (targetMs - h.ms) / 86400000);
                 const weight = Math.exp(-0.5 * (dWind * dWind + dSe * dSe + dHr * dHr + dTemp * dTemp + dWknd * dWknd) - ageDays / 12.0);
-                num += weight * officialHourlyMap.get(prevMs).priceInclVat;
+                num += weight * h.price;
                 den += weight;
             }
             return { est: den > 1e-6 ? (num / den) : null, weightSum: den };
@@ -956,13 +987,15 @@
         }
     }
 
-    async function loadSpotAndForecastData() {
-        const data = await fetchClientSideWithOnlineML();
-
-        state.series = data.series || [];
+    function applySeriesDataAndRender(data) {
+        if (!data || !Array.isArray(data.series) || data.series.length === 0) return;
+        state.series = data.series;
         state.generatedAt = data.generatedAt;
+        if (typeof data.rolling30dMeanInclVat === 'number' && data.rolling30dMeanInclVat > 0.5) {
+            state.rolling30dMeanInclVat = data.rolling30dMeanInclVat;
+        }
 
-        const todayHel = getHelsinkiComponents(new Date());
+        const todayHel = getHelsinkiComponents(Date.now());
         const byDate = new Map();
         for (const item of state.series) {
             if (item.dateKey < todayHel.dateKey) continue;
@@ -1002,6 +1035,26 @@
         }
         state.daysList = daysList;
         renderAll();
+    }
+
+    async function loadSpotAndForecastData() {
+        const fastCacheKey = storagePrefix + 'fast_series_cache_v2';
+        try {
+            const rawFast = localStorage.getItem(fastCacheKey);
+            if (rawFast) {
+                const cachedData = JSON.parse(rawFast);
+                if (cachedData && Array.isArray(cachedData.series) && cachedData.series.length > 24) {
+                    applySeriesDataAndRender(cachedData);
+                }
+            }
+        } catch (_) {}
+
+        const data = await fetchClientSideWithOnlineML();
+        data.rolling30dMeanInclVat = state.rolling30dMeanInclVat;
+        try {
+            localStorage.setItem(fastCacheKey, JSON.stringify(data));
+        } catch (_) {}
+        applySeriesDataAndRender(data);
     }
 
     function renderTelemetryAndDsoPanel() {

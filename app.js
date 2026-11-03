@@ -1757,20 +1757,31 @@
         const { avg30d, cheapThresh, highThresh } = getDynamicPriceThresholds();
 
         // Päivitetään ylälaidan värikoodiselitteeseen dynaamiset 30 vrk liukuvan keskiarvon rajat
+        const legendEl = document.querySelector('.chart-legend');
         const legendItems = document.querySelectorAll('.chart-legend .legend-item');
         if (legendItems.length >= 3) {
             const tierWordsMap = {
-                FI: ['Edullinen', 'Normaali', 'Korkea', '30 pv ka.'],
-                SE: ['Lågt pris', 'Normalt', 'Högt pris', '30 dgr snitt'],
-                NO: ['Lav pris', 'Normal', 'Høy pris', '30 d. snitt'],
-                DK: ['Lav pris', 'Normal', 'Høj pris', '30 d. snit'],
-                EE: ['Soodne', 'Tavapärane', 'Kõrge', '30 p keskm.'],
-                LV: ['Zema cena', 'Vidēja', 'Augsta cena', '30 d. vid.'],
-                LT: ['Žema kaina', 'Vidutinė', 'Aukšta kaina', '30 d. vid.'],
+                FI: ['Hintataso (30 pv keskihinnan perusteella', 'Edullinen', 'Normaali', 'Korkea'],
+                SE: ['Prisnivå (baserat på 30 dgr snittpris', 'Lågt pris', 'Normalt', 'Högt pris'],
+                NO: ['Prisnivå (basert på 30 d. snittpris', 'Lav pris', 'Normal', 'Høy pris'],
+                DK: ['Prisniveau (baseret på 30 d. snitpris', 'Lav pris', 'Normal', 'Høj pris'],
+                EE: ['Hinnatase (30 p keskmise hinna alusel', 'Soodne', 'Tavapärane', 'Kõrge'],
+                LV: ['Cenu līmenis (pēc 30 d. vidējās cenas', 'Zema cena', 'Vidēja', 'Augsta cena'],
+                LT: ['Kainų lygis (pagal 30 d. vidutinę kainą', 'Žema kaina', 'Vidutinė', 'Aukšta kaina'],
             };
-            const [wCheap, wNorm, wHigh, wAvg30] = tierWordsMap[ACTIVE_COUNTRY_ID] || tierWordsMap.FI;
+            const [wIntro, wCheap, wNorm, wHigh] = tierWordsMap[ACTIVE_COUNTRY_ID] || tierWordsMap.FI;
+            if (legendEl) {
+                let basisEl = legendEl.querySelector('.legend-basis-label');
+                if (!basisEl) {
+                    basisEl = document.createElement('span');
+                    basisEl.className = 'legend-basis-label';
+                    basisEl.style.cssText = 'font-family:var(--mono); font-size:11px; font-weight:700; color:var(--ink);';
+                    legendEl.insertBefore(basisEl, legendItems[0]);
+                }
+                basisEl.textContent = `${wIntro} ${formatNum(avg30d, 2)} ${UNIT_LABEL}):`;
+            }
             legendItems[0].innerHTML = `<span class="legend-swatch" style="background:#009e3d;"></span> ${wCheap} (&lt; ${formatNum(cheapThresh, 2)} ${UNIT_LABEL})`;
-            legendItems[1].innerHTML = `<span class="legend-swatch" style="background:#0038ff;"></span> ${wNorm} (${formatNum(cheapThresh, 2)}–${formatNum(highThresh, 2)} ${UNIT_SHORT} · ${wAvg30} ${formatNum(avg30d, 2)} ${UNIT_SHORT})`;
+            legendItems[1].innerHTML = `<span class="legend-swatch" style="background:#0038ff;"></span> ${wNorm} (${formatNum(cheapThresh, 2)}–${formatNum(highThresh, 2)} ${UNIT_LABEL})`;
             legendItems[2].innerHTML = `<span class="legend-swatch" style="background:#ff3b00;"></span> ${wHigh} (&gt; ${formatNum(highThresh, 2)} ${UNIT_LABEL})`;
         }
         let rowsHtml = '';

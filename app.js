@@ -774,6 +774,7 @@
 
         function kernelPredictHour(targetMs, wCand, targetHour, targetIsWeekend) {
             let num = 0.0;
+            let numSq = 0.0;
             let den = 0.0;
             const cutoffMs = targetMs - 12 * 3600000;
             const cWind = wCand.windSpeed100m || 6.5;
@@ -791,9 +792,13 @@
                 const ageDays = Math.max(0.0, (targetMs - h.ms) / 86400000);
                 const weight = Math.exp(-0.5 * (dWind * dWind + dSe * dSe + dHr * dHr + dTemp * dTemp + dWknd * dWknd) - ageDays / 12.0);
                 num += weight * h.price;
+                numSq += weight * h.price * h.price;
                 den += weight;
             }
-            return { est: den > 1e-6 ? (num / den) : null, weightSum: den };
+            if (den <= 1e-6) return { est: null, weightSum: 0, localStd: 0.4 };
+            const mean = num / den;
+            const variance = Math.max(0.0, (numSq / den) - mean * mean);
+            return { est: mean, weightSum: den, localStd: Math.sqrt(variance) };
         }
 
         for (let i = 0; i < 192; i++) {
@@ -852,11 +857,14 @@
                 ? (kernelAlpha * kpMain.est + (1.0 - kernelAlpha) * linEst)
                 : linEst;
 
-            // Lasketaan todennäköinen vaihteluväli [minInclVat, maxInclVat] sääennusteen
-            // epävarmuudesta (±tuulennopeus ja ±lämpötila) sekä ennustehorisontin pituudesta
+            // Lasketaan tiukka todennäköinen vaihteluväli [minInclVat, maxInclVat] 6 mittauspisteen
+            // alueellisesti keskiarvoistetusta sääepävarmuudesta (1/sqrt(6) hajonnan vaimennus)
+            // sekä saman tuuli- ja tuntitilanteen historiallisesta hajonnasta ilman keinotekoisia lisäkertoimia.
             const hoursAhead = Math.max(1, (hMs - currentHourMs) / 3600000);
-            const deltaWindMs = 0.85 + Math.min(1.40, (hoursAhead / 168.0) * 1.25);
-            const deltaTempC = 0.60 + Math.min(1.60, (hoursAhead / 168.0) * 1.40);
+            const horizonFrac = Math.min(1.0, Math.max(0.0, hoursAhead / 168.0));
+            const horizonCurve = Math.pow(horizonFrac, 1.35);
+            const deltaWindMs = 0.28 + horizonCurve * 0.65;
+            const deltaTempC = 0.25 + horizonCurve * 0.70;
 
             const wOpt = { ...w, windSpeed100m: (w.windSpeed100m || 6.5) + deltaWindMs, tempC: w.tempC + deltaTempC };
             const wPess = { ...w, windSpeed100m: Math.max(1.5, (w.windSpeed100m || 6.5) - deltaWindMs), tempC: w.tempC - deltaTempC };
@@ -866,7 +874,7 @@
             const linOpt = predictWithLearnedModel({
                 ...obsObj,
                 windMw: windHighMw,
-                rolling24hWindMw: Math.round((obsObj.rolling24hWindMw || w.windMw) * 0.4 + windHighMw * 0.6),
+                rolling24hWindMw: Math.round((obsObj.rolling24hWindMw || w.windMw) * 0.5 + windHighMw * 0.5),
                 tempC: wOpt.tempC
             }, learnedModel, prevAvg);
             const kpOpt = kernelPredictHour(hMs, wOpt, hel.hour, hel.isWeekend);
@@ -877,7 +885,7 @@
             const linPess = predictWithLearnedModel({
                 ...obsObj,
                 windMw: windLowMw,
-                rolling24hWindMw: Math.round((obsObj.rolling24hWindMw || w.windMw) * 0.4 + windLowMw * 0.6),
+                rolling24hWindMw: Math.round((obsObj.rolling24hWindMw || w.windMw) * 0.5 + windLowMw * 0.5),
                 tempC: wPess.tempC
             }, learnedModel, prevAvg);
             const kpPess = kernelPredictHour(hMs, wPess, hel.hour, hel.isWeekend);
@@ -886,9 +894,15 @@
                 : linPess;
 
             const estInclVat = Number(Math.max(0.05, rawEst).toFixed(2));
-            const relBand = 0.22 + Math.min(0.28, (hoursAhead / 168.0) * 0.24);
-            const minIncl = Number(Math.max(0.02, Math.min(estInclVat * (1.0 - relBand), estOptimistic * 0.88)).toFixed(2));
-            const maxIncl = Number(Math.max(estInclVat + 0.22, estInclVat * (1.0 + relBand * 1.25), estPessimistic * 1.12).toFixed(2));
+            const weatherHalfSpread = Math.abs(estPessimistic - estOptimistic) * 0.38;
+            const regimeHalfSpread = Math.min(estInclVat * 0.16, (kpMain.localStd || 0.30) * (0.24 + 0.22 * horizonCurve));
+            const rawHalfSpread = Math.hypot(weatherHalfSpread, regimeHalfSpread);
+            const minHalfSpread = Math.max(0.05, estInclVat * (0.06 + 0.08 * horizonCurve));
+            const maxHalfSpread = Math.max(0.22, estInclVat * (0.12 + 0.14 * horizonCurve));
+            const halfSpread = Math.max(minHalfSpread, Math.min(maxHalfSpread, rawHalfSpread));
+
+            const minIncl = Number(Math.max(0.02, estInclVat - halfSpread * 0.92).toFixed(2));
+            const maxIncl = Number(Math.max(estInclVat + 0.08, estInclVat + halfSpread * 1.08).toFixed(2));
 
             if (official) {
                 const savedPred = preConfirmStore[hMs];
@@ -1041,7 +1055,7 @@
     }
 
     async function loadSpotAndForecastData() {
-        const fastCacheKey = storagePrefix + 'fast_series_cache_v2';
+        const fastCacheKey = storagePrefix + 'fast_series_cache_v3';
         try {
             const rawFast = localStorage.getItem(fastCacheKey);
             if (rawFast) {

@@ -418,15 +418,36 @@ export default async function handler(req, res) {
                     lag24hSameHour: (last24ByHour[hel.hour] ?? prev24hMean) * arDecay + 5.2 * (1 - arDecay)
                 };
                 const predIncl = Math.round(predictHourWithModel(obsCandidate, activeModel) * 100) / 100;
-                const spread = Math.max(0.8, predIncl * (0.14 + Math.min(0.24, hoursAhead * 0.002)));
+                const deltaWindMs = 0.70 + Math.min(1.60, (hoursAhead / 168.0) * 1.50);
+                const deltaTempC = 0.60 + Math.min(1.80, (hoursAhead / 168.0) * 1.60);
+                const windHighMw = Math.round(FINLAND_INSTALLED_WIND_MW * windSpeedToCapacityFactor((w.windSpeed100m || 6.5) + deltaWindMs));
+                const windLowMw = Math.round(FINLAND_INSTALLED_WIND_MW * windSpeedToCapacityFactor(Math.max(1.5, (w.windSpeed100m || 6.5) - deltaWindMs)));
+
+                const estOpt = predictHourWithModel({
+                    ...obsCandidate,
+                    windMw: windHighMw,
+                    rolling24hWindMw: Math.round((obsCandidate.rolling24hWindMw || w.windMw) * 0.4 + windHighMw * 0.6),
+                    tempC: w.tempC + deltaTempC
+                }, activeModel);
+                const estPess = predictHourWithModel({
+                    ...obsCandidate,
+                    windMw: windLowMw,
+                    rolling24hWindMw: Math.round((obsCandidate.rolling24hWindMw || w.windMw) * 0.4 + windLowMw * 0.6),
+                    tempC: w.tempC - deltaTempC
+                }, activeModel);
+
+                const baseMargin = 0.55 + Math.min(1.65, (hoursAhead / 168.0) * 1.45);
+                const rawMin = Math.min(predIncl - baseMargin * 0.85, estOpt - baseMargin * 0.45);
+                const rawMax = Math.max(predIncl + baseMargin * 1.05, estPess + baseMargin * 0.55);
+
                 series.push({
                     epochMs: t,
                     iso: dObj.toISOString(),
                     hel,
                     priceInclVat: predIncl,
                     priceVat0: predIncl / 1.255,
-                    minInclVat: Math.max(0.0, Math.round((predIncl - spread) * 100) / 100),
-                    maxInclVat: Math.round((predIncl + spread * 1.25) * 100) / 100,
+                    minInclVat: Math.max(0.0, Math.round(rawMin * 100) / 100),
+                    maxInclVat: Math.round(Math.max(predIncl + 0.5, rawMax) * 100) / 100,
                     isForecast: true,
                     windMw: w.windMw,
                     windSpeed100m: w.windSpeed100m,

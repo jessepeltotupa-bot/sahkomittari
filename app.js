@@ -164,16 +164,28 @@
         }
 
         const transferCents = transferCentsInclVat / vatDivider;
-        const totalCents = spotCents + marginCents + transferCents + taxCents;
+        const fixedAdd = marginCents + transferCents + taxCents;
+        const totalCents = spotCents + fixedAdd;
+
+        const rawMinIncl = slot.minInclVat !== undefined ? slot.minInclVat : slot.priceInclVat;
+        const rawMaxIncl = slot.maxInclVat !== undefined ? slot.maxInclVat : slot.priceInclVat;
+        const minSpotCents = state.includeVat ? rawMinIncl : (rawMinIncl / DSO_DATA.vatRate);
+        const maxSpotCents = state.includeVat ? rawMaxIncl : (rawMaxIncl / DSO_DATA.vatRate);
+        const minTotalCents = minSpotCents + fixedAdd;
+        const maxTotalCents = maxSpotCents + fixedAdd;
 
         return {
             spotCents,
+            minSpotCents,
+            maxSpotCents,
             marginCents,
             transferCents,
             transferLabel,
             isNightRate,
             taxCents,
-            totalCents
+            totalCents,
+            minTotalCents,
+            maxTotalCents
         };
     }
 
@@ -579,10 +591,33 @@
                 const estInclVat = Number(Math.max(0.10, rawEst).toFixed(2));
                 rollingPriceByMs.set(hMs, estInclVat);
 
-                // Ennusteen epävarmuushaarukka kapenee automaattisesti, kun ajankohta lähestyy
+                // Lasketaan todennäköinen vaihteluväli [minInclVat, maxInclVat] sääennusteen
+                // epävarmuudesta (±tuulennopeus ja ±lämpötila) sekä ennustehorisontin pituudesta
                 const hoursAhead = Math.max(1, (hMs - currentHourMs) / 3600000);
-                const horizonFactor = 0.35 + Math.min(1.15, (hoursAhead / 168.0) * 1.15);
-                const spread = Math.max(0.45, (0.55 + estInclVat * 0.16) * horizonFactor);
+                const deltaWindMs = 0.70 + Math.min(1.60, (hoursAhead / 168.0) * 1.50);
+                const deltaTempC = 0.60 + Math.min(1.80, (hoursAhead / 168.0) * 1.60);
+
+                const windHighMw = Math.round(FINLAND_INSTALLED_WIND_MW * windSpeedToCapacityFactor((w.windSpeed100m || 6.5) + deltaWindMs));
+                const windLowMw = Math.round(FINLAND_INSTALLED_WIND_MW * windSpeedToCapacityFactor(Math.max(1.5, (w.windSpeed100m || 6.5) - deltaWindMs)));
+
+                const estOptimistic = predictWithLearnedModel({
+                    ...obsObj,
+                    windMw: windHighMw,
+                    rolling24hWindMw: Math.round((obsObj.rolling24hWindMw || w.windMw) * 0.4 + windHighMw * 0.6),
+                    tempC: w.tempC + deltaTempC
+                }, learnedModel, prevAvg);
+
+                const estPessimistic = predictWithLearnedModel({
+                    ...obsObj,
+                    windMw: windLowMw,
+                    rolling24hWindMw: Math.round((obsObj.rolling24hWindMw || w.windMw) * 0.4 + windLowMw * 0.6),
+                    tempC: w.tempC - deltaTempC
+                }, learnedModel, prevAvg);
+
+                const baseMargin = 0.55 + Math.min(1.65, (hoursAhead / 168.0) * 1.45);
+                const rawMin = Math.min(estInclVat - baseMargin * 0.85, estOptimistic - baseMargin * 0.45);
+                const rawMax = Math.max(estInclVat + baseMargin * 1.05, estPessimistic + baseMargin * 0.55);
+
                 series.push({
                     timestamp: new Date(hMs).toISOString(),
                     epochMs: hMs,
@@ -595,8 +630,8 @@
                     priceInclVat: estInclVat,
                     basePriceInclVat: estInclVat,
                     priceVat0: Number((estInclVat / 1.255).toFixed(2)),
-                    minInclVat: Number(Math.max(0.0, estInclVat - spread).toFixed(2)),
-                    maxInclVat: Number((estInclVat + spread * 1.10).toFixed(2)),
+                    minInclVat: Number(Math.max(0.0, rawMin).toFixed(2)),
+                    maxInclVat: Number(Math.max(estInclVat + 0.5, rawMax).toFixed(2)),
                     windMw: w.windMw,
                     windSpeed100m: w.windSpeed100m,
                     tempC: w.tempC,
@@ -806,7 +841,13 @@
         if (tomObj && tomObj.items.length > 0) {
             const enrT = tomObj.items.map(s => ({ slot: s, br: calculateHourBreakdown(s) }));
             const avgT = enrT.reduce((a, b) => a + b.br.totalCents, 0) / enrT.length;
-            tomText = `${formatNum(avgT, 2)} snt/kWh (${tomObj.allForecast ? 'oppiva ennuste' : 'vahvistettu'})`;
+            if (tomObj.hasForecast) {
+                const avgMinT = enrT.reduce((a, b) => a + b.br.minTotalCents, 0) / enrT.length;
+                const avgMaxT = enrT.reduce((a, b) => a + b.br.maxTotalCents, 0) / enrT.length;
+                tomText = `<strong>${formatNum(avgMinT, 1)}–${formatNum(avgMaxT, 1)} snt/kWh</strong> (odotus ${formatNum(avgT, 2)})`;
+            } else {
+                tomText = `${formatNum(avgT, 2)} snt/kWh (vahvistettu)`;
+            }
         }
 
         container.innerHTML = `
@@ -870,7 +911,12 @@
         const plotH = H - padT - padB;
 
         const n = Math.max(1, enrichedItems.length);
-        const vals = enrichedItems.map(x => state.showTotalInChart ? x.br.totalCents : x.br.spotCents);
+        const vals = enrichedItems.map(x => {
+            if (x.slot.isForecast) {
+                return state.showTotalInChart ? x.br.maxTotalCents : x.br.maxSpotCents;
+            }
+            return state.showTotalInChart ? x.br.totalCents : x.br.spotCents;
+        });
         const maxPrice = Math.max(16, Math.ceil(Math.max(...vals, 15) / 5) * 5);
         const maxWind = 8000;
 
@@ -935,6 +981,18 @@
                 svg += `<rect x="${x0.toFixed(1)}" y="${padT}" width="${colW.toFixed(1)}" height="${plotH}" fill="#1b4332" fill-opacity="0.12" />`;
             }
 
+            // Ennustetunnin todennäköinen vaihteluväli-varjostus (min-max) pylvään taustalla
+            if (xObj.slot.isForecast) {
+                const minChartVal = state.showTotalInChart ? xObj.br.minTotalCents : xObj.br.minSpotCents;
+                const maxChartVal = state.showTotalInChart ? xObj.br.maxTotalCents : xObj.br.maxSpotCents;
+                if (maxChartVal > minChartVal) {
+                    const yMin = yForPrice(minChartVal);
+                    const yMax = yForPrice(maxChartVal);
+                    const bandH = Math.max(2, yMin - yMax);
+                    svg += `<rect x="${barX.toFixed(1)}" y="${yMax.toFixed(1)}" width="${barW.toFixed(1)}" height="${bandH.toFixed(1)}" fill="#1e5638" fill-opacity="0.18" />`;
+                }
+            }
+
             // Kiinteä siirto+vero-osuus pohjalle
             if (state.showTotalInChart && fixedVal > 0) {
                 const hFixed = Math.max(0, yBottom - yTopFixed);
@@ -945,13 +1003,21 @@
             const hSpot = Math.max(1.5, yTopFixed - yTopTotal);
             svg += `<rect x="${barX.toFixed(1)}" y="${yTopTotal.toFixed(1)}" width="${barW.toFixed(1)}" height="${hSpot.toFixed(1)}" fill="${spotFill}" />`;
 
-            // Ennusteen vaihteluväli-viiksi (min-max) 24 h näkymässä
-            if (!isWeekView && xObj.slot.isForecast && xObj.slot.maxInclVat > xObj.slot.minInclVat) {
-                const addFixed = state.showTotalInChart ? fixedVal : 0;
-                const yMin = yForPrice(xObj.slot.minInclVat + addFixed);
-                const yMax = yForPrice(xObj.slot.maxInclVat + addFixed);
-                const cx = barX + barW / 2;
-                svg += `<line x1="${cx.toFixed(1)}" y1="${yMax.toFixed(1)}" x2="${cx.toFixed(1)}" y2="${yMin.toFixed(1)}" stroke="#161816" stroke-width="1.2" stroke-opacity="0.55" />`;
+            // Ennusteen todennäköinen vaihteluväli-viiksi (min-max) ja päätyviivat
+            if (xObj.slot.isForecast) {
+                const minChartVal = state.showTotalInChart ? xObj.br.minTotalCents : xObj.br.minSpotCents;
+                const maxChartVal = state.showTotalInChart ? xObj.br.maxTotalCents : xObj.br.maxSpotCents;
+                if (maxChartVal > minChartVal) {
+                    const yMin = yForPrice(minChartVal);
+                    const yMax = yForPrice(maxChartVal);
+                    const cx = barX + barW / 2;
+                    svg += `<line x1="${cx.toFixed(1)}" y1="${yMax.toFixed(1)}" x2="${cx.toFixed(1)}" y2="${yMin.toFixed(1)}" stroke="#161816" stroke-width="${isWeekView ? '1.0' : '1.4'}" stroke-opacity="0.72" />`;
+                    if (!isWeekView) {
+                        const capW = Math.min(5, barW * 0.35);
+                        svg += `<line x1="${(cx - capW).toFixed(1)}" y1="${yMax.toFixed(1)}" x2="${(cx + capW).toFixed(1)}" y2="${yMax.toFixed(1)}" stroke="#161816" stroke-width="1.4" stroke-opacity="0.8" />`;
+                        svg += `<line x1="${(cx - capW).toFixed(1)}" y1="${yMin.toFixed(1)}" x2="${(cx + capW).toFixed(1)}" y2="${yMin.toFixed(1)}" stroke="#161816" stroke-width="1.4" stroke-opacity="0.8" />`;
+                    }
+                }
             }
 
             // Aikaleimat ala-akselille
@@ -992,13 +1058,21 @@
         for (const d of state.daysList) {
             const enr = d.items.map(s => ({ slot: s, br: calculateHourBreakdown(s) }));
             const avgVal = enr.reduce((a, b) => a + (state.showTotalInChart ? b.br.totalCents : b.br.spotCents), 0) / enr.length;
+            const avgMin = enr.reduce((a, b) => a + (state.showTotalInChart ? b.br.minTotalCents : b.br.minSpotCents), 0) / enr.length;
+            const avgMax = enr.reduce((a, b) => a + (state.showTotalInChart ? b.br.maxTotalCents : b.br.maxSpotCents), 0) / enr.length;
             const avgWind = Math.round(d.items.reduce((a, b) => a + b.windMw, 0) / d.items.length);
-            const tag = d.allForecast ? 'ENNUSTE' : 'VIRALLINEN';
+            const tag = d.allForecast ? 'ENNUSTE' : (d.hasForecast ? 'OSIN ENNUSTE' : 'VAHVISTETTU');
+            const priceLabel = d.hasForecast
+                ? `${formatNum(avgMin, 1)}–${formatNum(avgMax, 1)} snt`
+                : `${formatNum(avgVal, 2)} snt/kWh`;
+            const metaLabel = d.hasForecast
+                ? `Odotus ${formatNum(avgVal, 1)} snt | ${avgWind} MW`
+                : `Tuuli ${avgWind} MW`;
             tabsHtml += `
                 <button type="button" class="day-tab ${state.selectedDayIndex === d.index ? 'active' : ''}" data-day-idx="${d.index}">
                     <span class="day-tab-name">${d.shortLabel} [${tag}]</span>
-                    <span class="day-tab-price">${formatNum(avgVal, 2)} snt/kWh</span>
-                    <span class="day-tab-meta">Tuuli ${avgWind} MW</span>
+                    <span class="day-tab-price">${priceLabel}</span>
+                    <span class="day-tab-meta">${metaLabel}</span>
                 </button>
             `;
         }
@@ -1006,7 +1080,7 @@
             <button type="button" class="day-tab ${state.selectedDayIndex === -1 ? 'active' : ''}" data-day-idx="-1">
                 <span class="day-tab-name">KOKO 7 VRK SARJA</span>
                 <span class="day-tab-price">168 TUNTIA</span>
-                <span class="day-tab-meta">Tuuli + Hinta</span>
+                <span class="day-tab-meta">Vaihteluväli + Tuuli</span>
             </button>
         `;
         tabsEl.innerHTML = tabsHtml;
@@ -1029,7 +1103,7 @@
 
         if (isWeekView) {
             if (chartTitle) {
-                chartTitle.textContent = '7 VUOROKAUDEN TUNTISARJA JA TUULIVOIMAENNUSTE (168 H)';
+                chartTitle.textContent = '7 VUOROKAUDEN TUNTISARJA, TODENNÄKÖINEN VAIHTELUVÄLI JA TUULIVOIMA (168 H)';
             }
             const rawAll = state.daysList.flatMap(d => d.items.map(it => ({ ...it, dayShort: d.shortLabel })));
             activeItems = rawAll.map(s => ({ slot: s, br: calculateHourBreakdown(s) }));
@@ -1037,7 +1111,7 @@
             const dayObj = state.daysList.find(d => d.index === state.selectedDayIndex) || state.daysList[0];
             if (!dayObj) return;
             if (chartTitle) {
-                chartTitle.textContent = `${dayObj.label.toUpperCase()} — ${dayObj.allForecast ? 'OPPIVAN MALLIN TUNTIENNUSTE' : 'VAHVISTETTU TUNTIHINTA & SIIRTO'}`;
+                chartTitle.textContent = `${dayObj.label.toUpperCase()} — ${dayObj.hasForecast ? 'ENNUSTETTU TODENNÄKÖINEN HINTA-ALUE & SIIRTO' : 'VAHVISTETTU TUNTIHINTA & SIIRTO'}`;
             }
             activeItems = dayObj.items.map(s => ({ slot: s, br: calculateHourBreakdown(s) }));
         }
@@ -1047,11 +1121,19 @@
         function updateReadout(xObj) {
             if (!readoutEl || !xObj) return;
             const dayPrefix = xObj.slot.dayShort ? `${xObj.slot.dayShort} ` : '';
-            readoutEl.innerHTML = `
-                <span><strong>VALITTU TUNTI:</strong> ${dayPrefix}klo ${String(xObj.slot.hour).padStart(2, '0')}:00–${String((xObj.slot.hour + 1) % 24).padStart(2, '0')}:00 (${xObj.slot.isForecast ? 'Oppiva ennuste' : 'Nord Pool vahvistettu'})</span>
-                <span><strong>KOKONAISHINTA:</strong> ${formatNum(xObj.br.totalCents, 2)} snt/kWh (Spot ${formatNum(xObj.br.spotCents, 2)} + Siirto ${formatNum(xObj.br.transferCents, 2)} + Vero ${formatNum(xObj.br.taxCents, 2)})</span>
-                <span><strong>TUULIVOIMA:</strong> ${xObj.slot.windMw} MW (${formatNum(xObj.slot.tempC, 1)} °C)</span>
-            `;
+            if (xObj.slot.isForecast) {
+                readoutEl.innerHTML = `
+                    <span><strong>VALITTU TUNTI:</strong> ${dayPrefix}klo ${String(xObj.slot.hour).padStart(2, '0')}:00–${String((xObj.slot.hour + 1) % 24).padStart(2, '0')}:00 (Ennuste)</span>
+                    <span><strong>TODENNÄKÖINEN HINTA:</strong> ${formatNum(xObj.br.minTotalCents, 2)}–${formatNum(xObj.br.maxTotalCents, 2)} snt/kWh (odotus ${formatNum(xObj.br.totalCents, 2)} snt | Spot ${formatNum(xObj.br.minSpotCents, 2)}–${formatNum(xObj.br.maxSpotCents, 2)} snt)</span>
+                    <span><strong>TUULIVOIMA:</strong> ${xObj.slot.windMw} MW (${formatNum(xObj.slot.tempC, 1)} °C)</span>
+                `;
+            } else {
+                readoutEl.innerHTML = `
+                    <span><strong>VALITTU TUNTI:</strong> ${dayPrefix}klo ${String(xObj.slot.hour).padStart(2, '0')}:00–${String((xObj.slot.hour + 1) % 24).padStart(2, '0')}:00 (Nord Pool vahvistettu)</span>
+                    <span><strong>KOKONAISHINTA:</strong> ${formatNum(xObj.br.totalCents, 2)} snt/kWh (Spot ${formatNum(xObj.br.spotCents, 2)} + Siirto ${formatNum(xObj.br.transferCents, 2)} + Vero ${formatNum(xObj.br.taxCents, 2)})</span>
+                    <span><strong>TUULIVOIMA:</strong> ${xObj.slot.windMw} MW (${formatNum(xObj.slot.tempC, 1)} °C)</span>
+                `;
+            }
         }
 
         const nowHourMs = Math.floor(Date.now() / 3600000) * 3600000;
@@ -1070,19 +1152,28 @@
             for (const d of state.daysList) {
                 const enr = d.items.map(s => ({ slot: s, br: calculateHourBreakdown(s) }));
                 const avgSpot = enr.reduce((acc, x) => acc + x.br.spotCents, 0) / enr.length;
+                const avgMinSpot = enr.reduce((acc, x) => acc + x.br.minSpotCents, 0) / enr.length;
+                const avgMaxSpot = enr.reduce((acc, x) => acc + x.br.maxSpotCents, 0) / enr.length;
                 const avgTot = enr.reduce((acc, x) => acc + x.br.totalCents, 0) / enr.length;
-                const minTot = Math.min(...enr.map(x => x.br.totalCents));
-                const maxTot = Math.max(...enr.map(x => x.br.totalCents));
+                const avgMinTot = enr.reduce((acc, x) => acc + x.br.minTotalCents, 0) / enr.length;
+                const avgMaxTot = enr.reduce((acc, x) => acc + x.br.maxTotalCents, 0) / enr.length;
                 const avgWind = Math.round(d.items.reduce((acc, x) => acc + x.windMw, 0) / d.items.length);
                 const avgTemp = d.items.reduce((acc, x) => acc + x.tempC, 0) / d.items.length;
+
+                const spotColHtml = d.hasForecast
+                    ? `<strong>${formatNum(avgMinSpot, 2)}–${formatNum(avgMaxSpot, 2)} snt</strong> <span class="muted-range">(odotus ${formatNum(avgSpot, 2)})</span>`
+                    : `<strong>${formatNum(avgSpot, 2)} snt/kWh</strong>`;
+                const totColHtml = d.hasForecast
+                    ? `<strong>${formatNum(avgMinTot, 2)}–${formatNum(avgMaxTot, 2)} snt/kWh</strong> <span class="muted-range">(odotus ${formatNum(avgTot, 2)})</span>`
+                    : `<strong>${formatNum(avgTot, 2)} snt/kWh</strong>`;
 
                 rowsHtml += `
                     <tr>
                         <td><strong>${d.label}</strong></td>
-                        <td><span class="status-pill ${d.allForecast ? 'forecast' : 'official'}">${d.allForecast ? 'Oppiva ML' : 'Nord Pool'}</span></td>
-                        <td><strong>${formatNum(avgSpot, 2)} snt/kWh</strong></td>
+                        <td><span class="status-pill ${d.hasForecast ? 'forecast' : 'official'}">${d.hasForecast ? 'Ennusteväli' : 'Nord Pool'}</span></td>
+                        <td>${spotColHtml}</td>
                         <td>${formatNum(avgTot - avgSpot, 2)} snt/kWh</td>
-                        <td><strong>${formatNum(avgTot, 2)} snt/kWh</strong> <span class="muted-range">(${formatNum(minTot, 2)}–${formatNum(maxTot, 2)})</span></td>
+                        <td>${totColHtml}</td>
                         <td>${avgWind} MW / ${formatNum(avgTemp, 1)} °C</td>
                     </tr>
                 `;
@@ -1091,25 +1182,30 @@
             return;
         }
 
-        const maxDayTotal = Math.max(15, ...activeItems.map(x => x.br.totalCents));
+        const maxDayTotal = Math.max(15, ...activeItems.map(x => x.slot.isForecast ? x.br.maxTotalCents : x.br.totalCents));
         let rowsHtml = '';
         for (const x of activeItems) {
             const isNow = x.slot.epochMs === nowHourMs;
-            const rangeText = x.slot.isForecast
-                ? `<span class="muted-range">[${formatNum(x.slot.minInclVat, 1)}–${formatNum(x.slot.maxInclVat, 1)}]</span>`
-                : '';
             const barPct = Math.max(4, Math.min(100, (x.br.totalCents / maxDayTotal) * 100));
+
+            const spotHtml = x.slot.isForecast
+                ? `<strong>${formatNum(x.br.minSpotCents, 2)}–${formatNum(x.br.maxSpotCents, 2)} snt</strong> <span class="muted-range">(odotus ${formatNum(x.br.spotCents, 2)})</span>`
+                : `<strong>${formatNum(x.br.spotCents, 2)} snt/kWh</strong>`;
+
+            const totalHtml = x.slot.isForecast
+                ? `<strong>${formatNum(x.br.minTotalCents, 2)}–${formatNum(x.br.maxTotalCents, 2)} snt/kWh</strong> <span class="muted-range">(odotus ${formatNum(x.br.totalCents, 2)})</span>`
+                : `<strong>${formatNum(x.br.totalCents, 2)} snt/kWh</strong>`;
 
             rowsHtml += `
                 <tr class="${isNow ? 'row-current-hour' : ''}">
                     <td><strong>${String(x.slot.hour).padStart(2, '0')}:00–${String((x.slot.hour + 1) % 24).padStart(2, '0')}:00</strong> ${isNow ? '<span class="now-badge">NYT</span>' : ''}</td>
-                    <td><span class="status-pill ${x.slot.isForecast ? 'forecast' : 'official'}">${x.slot.isForecast ? 'Ennuste' : 'Vahvistettu'}</span></td>
-                    <td><strong>${formatNum(x.br.spotCents, 2)}</strong> snt ${rangeText}</td>
+                    <td><span class="status-pill ${x.slot.isForecast ? 'forecast' : 'official'}">${x.slot.isForecast ? 'Vaihteluväli' : 'Vahvistettu'}</span></td>
+                    <td>${spotHtml}</td>
                     <td>${formatNum(x.br.transferCents + x.br.taxCents + x.br.marginCents, 2)} snt <span class="muted-range">(${x.br.transferLabel})</span></td>
                     <td>
                         <div class="inline-bar-wrap">
                             <span class="inline-bar-track"><span class="inline-bar-fill" style="width:${barPct.toFixed(0)}%;"></span></span>
-                            <strong>${formatNum(x.br.totalCents, 2)} snt/kWh</strong>
+                            ${totalHtml}
                         </div>
                     </td>
                     <td>${x.slot.windMw} MW / ${formatNum(x.slot.tempC, 1)} °C</td>
@@ -1337,15 +1433,21 @@
             const slice = upcoming.slice(i, i + wLen);
             const breakdowns = slice.map(s => calculateHourBreakdown(s));
             const avgTotal = breakdowns.reduce((a, b) => a + b.totalCents, 0) / wLen;
+            const avgMinTotal = breakdowns.reduce((a, b) => a + b.minTotalCents, 0) / wLen;
+            const avgMaxTotal = breakdowns.reduce((a, b) => a + b.maxTotalCents, 0) / wLen;
             const avgSpot = breakdowns.reduce((a, b) => a + b.spotCents, 0) / wLen;
             const avgTransferAndTax = avgTotal - avgSpot;
+            const hasFc = slice.some(s => s.isForecast);
 
             const candidate = {
                 startSlot: slice[0],
                 endSlot: slice[slice.length - 1],
                 avgTotal,
+                avgMinTotal,
+                avgMaxTotal,
                 avgSpot,
-                avgTransferAndTax
+                avgTransferAndTax,
+                hasFc
             };
 
             if (!bestWindow || candidate.avgTotal < bestWindow.avgTotal) bestWindow = candidate;
@@ -1356,21 +1458,30 @@
 
         const totalKwh = state.applianceKw * wLen;
         const bestEur = (bestWindow.avgTotal * totalKwh) / 100.0;
+        const minEur = (bestWindow.avgMinTotal * totalKwh) / 100.0;
+        const maxEur = (bestWindow.avgMaxTotal * totalKwh) / 100.0;
         const worstEur = (worstWindow.avgTotal * totalKwh) / 100.0;
         const savedEur = Math.max(0, worstEur - bestEur);
 
         const startHel = getHelsinkiComponents(new Date(bestWindow.startSlot.epochMs));
         const endHel = getHelsinkiComponents(new Date(bestWindow.endSlot.epochMs + 3600000));
 
+        const eurLabel = bestWindow.hasFc
+            ? `${formatNum(minEur, 2)}–${formatNum(maxEur, 2)} €`
+            : `${formatNum(bestEur, 2)} €`;
+        const priceDetailLabel = bestWindow.hasFc
+            ? `Todennäköinen kokonaishinta <strong>${formatNum(bestWindow.avgMinTotal, 2)}–${formatNum(bestWindow.avgMaxTotal, 2)} snt/kWh</strong> (odotus ${formatNum(bestWindow.avgTotal, 2)} snt | Siirto &amp; vero ${formatNum(bestWindow.avgTransferAndTax, 2)} snt)`
+            : `Kokonaiskeskihinta <strong>${formatNum(bestWindow.avgTotal, 2)} snt/kWh</strong> (Spot ${formatNum(bestWindow.avgSpot, 2)} + Siirto &amp; vero ${formatNum(bestWindow.avgTransferAndTax, 2)})`;
+
         resultEl.innerHTML = `
             <div class="opt-result-ledger">
                 <div class="opt-kicker">EDULLISIN ${wLen} TUNNIN KÄYTTÖIKKUNA (SEURAAVAT 36 H)</div>
                 <div style="display:flex; justify-content:space-between; align-items:baseline; flex-wrap:wrap; gap:8px; margin:4px 0;">
                     <div class="opt-time-large">Klo ${String(startHel.hour).padStart(2, '0')}:00–${String(endHel.hour).padStart(2, '0')}:00 (${startHel.day}.${startHel.month}.)</div>
-                    <div class="opt-eur-large">${formatNum(bestEur, 2)} €</div>
+                    <div class="opt-eur-large">${eurLabel}</div>
                 </div>
                 <div style="font-size:12px; color:#161816;">
-                    Kokonaiskeskihinta <strong>${formatNum(bestWindow.avgTotal, 2)} snt/kWh</strong> (Spot ${formatNum(bestWindow.avgSpot, 2)} + Siirto &amp; vero ${formatNum(bestWindow.avgTransferAndTax, 2)})
+                    ${priceDetailLabel}
                 </div>
                 <div style="font-size:11.5px; color:#4a4f4a; margin-top:4px;">
                     Kulutus ${formatNum(totalKwh, 1)} kWh | Säästö kalleimpaan jaksoon (${formatNum(worstEur, 2)} €) verrattuna: <strong>${formatNum(savedEur, 2)} €</strong>

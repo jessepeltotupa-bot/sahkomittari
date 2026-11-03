@@ -153,6 +153,7 @@ def render_interactive_dashboard_block(
                             <span class="legend-item"><span class="legend-swatch" style="background:#2b4c65;"></span> Normaali spot (3–8 snt)</span>
                             <span class="legend-item"><span class="legend-swatch" style="background:#a83820;"></span> Korkea spot (&gt; 8 snt)</span>
                             <span class="legend-item"><span class="legend-swatch" style="background:#9e9b90;"></span> Siirtohinta + sähkövero + marginaali</span>
+                            <span class="legend-item"><span class="legend-swatch" style="background:#1e5638; opacity:0.35; border:1px solid #161816;"></span> Ennusteen todennäköinen vaihteluväli (min–max)</span>
                             <span class="legend-item"><span class="legend-swatch" style="background:#b45309; height:3px;"></span> Suomen tuulivoimatuotanto (GW, oikea asteikko)</span>
                         </div>
 

@@ -46,7 +46,7 @@ def render_header(prefix: str = "") -> str:
         <div class="header-inner">
             <a href="{prefix}index.html" class="brand-link">
                 <span class="brand-kicker">SUOMEN SÄHKÖMARKKINA- JA JAKELUVERKKOLASKURI</span>
-                <span class="brand-title">Sähkömittari</span>
+                <span class="brand-title"><img src="{prefix}favicon.svg" alt="" width="24" height="24" style="vertical-align:-4px; margin-right:7px;">Sähkömittari</span>
                 <span class="brand-subtitle">Pörssisähkön spot-hinta, tarkentuva 7 vrk hintaennuste ja todellinen siirtohinta postinumerolla</span>
             </a>
             <nav class="main-nav" aria-label="Päävalikko">
@@ -333,6 +333,10 @@ def build_index_page() -> str:
     <meta name="geo.region" content="FI">
     <meta name="content-language" content="fi-FI">
     <link rel="canonical" href="{SITE_URL}/" />
+    <link rel="icon" type="image/svg+xml" href="favicon.svg">
+    <link rel="icon" type="image/x-icon" href="favicon.ico">
+    <link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon.png">
+    <link rel="manifest" href="site.webmanifest">
     <link rel="stylesheet" href="styles.css?v=22">
     <script type="application/ld+json">
 {json.dumps(faq_schema, ensure_ascii=False, indent=2)}
@@ -444,6 +448,10 @@ def build_dso_page(comp: dict) -> str:
     <link rel="canonical" href="{SITE_URL}/verkkoyhtiot/{slug}.html" />
     <meta name="geo.region" content="FI">
     <meta name="content-language" content="fi-FI">
+    <link rel="icon" type="image/svg+xml" href="../favicon.svg">
+    <link rel="icon" type="image/x-icon" href="../favicon.ico">
+    <link rel="apple-touch-icon" sizes="180x180" href="../apple-touch-icon.png">
+    <link rel="manifest" href="../site.webmanifest">
     <link rel="stylesheet" href="../styles.css?v=22">
 </head>
 <body data-preset-dso="{comp['id']}" data-preset-postal="{sample_postal}" data-preset-city="{html.escape(sample_city)}">
@@ -560,6 +568,10 @@ def build_municipality_page(m: dict) -> str:
     <link rel="canonical" href="{SITE_URL}/paikkakunnat/{mslug}.html" />
     <meta name="geo.region" content="FI">
     <meta name="content-language" content="fi-FI">
+    <link rel="icon" type="image/svg+xml" href="../favicon.svg">
+    <link rel="icon" type="image/x-icon" href="../favicon.ico">
+    <link rel="apple-touch-icon" sizes="180x180" href="../apple-touch-icon.png">
+    <link rel="manifest" href="../site.webmanifest">
     <link rel="stylesheet" href="../styles.css?v=22">
 </head>
 <body data-preset-dso="{comp['id']}" data-preset-postal="{m['postal']}" data-preset-city="{html.escape(m['name'])}">
@@ -606,6 +618,10 @@ def build_directory_page(title: str, lead: str, cards_html: str, canonical_path:
     <link rel="canonical" href="{SITE_URL}/{canonical_path}" />
     <meta name="geo.region" content="FI">
     <meta name="content-language" content="fi-FI">
+    <link rel="icon" type="image/svg+xml" href="../favicon.svg">
+    <link rel="icon" type="image/x-icon" href="../favicon.ico">
+    <link rel="apple-touch-icon" sizes="180x180" href="../apple-touch-icon.png">
+    <link rel="manifest" href="../site.webmanifest">
     <link rel="stylesheet" href="../styles.css?v=22">
 </head>
 <body>
@@ -640,6 +656,10 @@ def build_guide_page(slug: str, title: str, meta_desc: str, body_html: str) -> s
     <link rel="canonical" href="{SITE_URL}/oppaat/{slug}.html" />
     <meta name="geo.region" content="FI">
     <meta name="content-language" content="fi-FI">
+    <link rel="icon" type="image/svg+xml" href="../favicon.svg">
+    <link rel="icon" type="image/x-icon" href="../favicon.ico">
+    <link rel="apple-touch-icon" sizes="180x180" href="../apple-touch-icon.png">
+    <link rel="manifest" href="../site.webmanifest">
     <link rel="stylesheet" href="../styles.css?v=22">
 </head>
 <body>

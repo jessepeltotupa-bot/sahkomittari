@@ -345,6 +345,10 @@ def build_country_page(cid: str, loc: dict) -> str:
     <meta name="description" content="{loc['transferLead']}">
     <meta name="geo.region" content="{loc['geoRegion']}">
     <meta name="content-language" content="{loc['lang']}">
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg">
+    <link rel="icon" type="image/x-icon" href="/favicon.ico">
+    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+    <link rel="manifest" href="/site.webmanifest">
     <link rel="stylesheet" href="/styles.css?v=22">
     <script type="application/ld+json">
 {json.dumps(schema, ensure_ascii=False, indent=2)}
@@ -358,7 +362,7 @@ def build_country_page(cid: str, loc: dict) -> str:
         <div class="header-inner">
             <a href="./" class="brand-link">
                 <span class="brand-kicker">{loc['brandKicker']}</span>
-                <span class="brand-title">{loc['siteName']}</span>
+                <span class="brand-title"><img src="/favicon.svg" alt="" width="24" height="24" style="vertical-align:-4px; margin-right:7px;">{loc['siteName']}</span>
                 <span class="brand-subtitle">{loc['brandSubtitle']}</span>
             </a>
             <nav class="main-nav" aria-label="Navigation">

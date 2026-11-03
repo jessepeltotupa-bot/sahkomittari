@@ -640,7 +640,7 @@
         const weatherMap = new Map();
 
         const pricesUrl = `https://sahkotin.fi/prices?fix&vat&start=${encodeURIComponent(startHourIso)}`;
-        const weatherUrl = 'https://api.open-meteo.com/v1/forecast?latitude=64.26,62.47,62.73,60.17,63.82,59.43&longitude=23.95,21.34,22.58,24.94,20.26,24.75&hourly=temperature_2m,wind_speed_100m,shortwave_radiation,surface_pressure&wind_speed_unit=ms&past_days=10&forecast_days=7&timezone=UTC';
+        const weatherUrl = 'https://api.open-meteo.com/v1/forecast?latitude=64.26,62.47,62.73,60.17,63.82,59.43&longitude=23.95,21.34,22.58,24.94,20.26,24.75&hourly=temperature_2m,wind_speed_100m,shortwave_radiation,surface_pressure&wind_speed_unit=ms&past_days=10&forecast_days=8&timezone=UTC';
 
         const [pricesResp, weatherResp] = await Promise.all([
             fetch(pricesUrl, { cache: 'no-store' }).catch(() => null),
@@ -731,7 +731,10 @@
         const learnedModel = runBrowserOnlineLearning(officialHourlyMap, weatherMap);
 
         const currentHourMs = Math.floor(now.getTime() / 3600000) * 3600000;
-        const startSeriesMs = currentHourMs - 12 * 3600000;
+        const nowHel = getHelsinkiComponents(currentHourMs);
+        // Aloitetaan kuluvan vuorokauden klo 00:00:sta ja lasketaan 192 tuntia (8 täyttä vuorokautta) eteenpäin,
+        // jolloin aina täydet 7 vuorokautta on ennustettuna ja vuorokauden vaihtuessa uusi tuleva päivä tulee mukaan.
+        const startSeriesMs = currentHourMs - nowHel.hour * 3600000;
         const series = [];
         const rollingPriceByMs = new Map();
         for (const [k, v] of officialHourlyMap.entries()) {
@@ -793,7 +796,7 @@
             return { est: den > 1e-6 ? (num / den) : null, weightSum: den };
         }
 
-        for (let i = 0; i < 180; i++) {
+        for (let i = 0; i < 192; i++) {
             const hMs = startSeriesMs + i * 3600000;
             const w = weatherMap.get(hMs) || {
                 windSpeed100m: 6.5, windMw: 2400, tempC: 4.0, solarRadWm2: 0,
@@ -2259,7 +2262,7 @@
         renderMlLearningPanel();
         loadSpotAndForecastData();
 
-        // Haetaan uudet tiedot Nord Poolista automaattisesti joka tunti (tasatunnein + säännöllinen tuntipäivitys)
+        // Haetaan uudet tiedot Nord Poolista automaattisesti joka tunti (tasatunnein)
         function scheduleNextTopOfHourFetch() {
             const nowMs = Date.now();
             const msToNextHour = 3600000 - (nowMs % 3600000) + 4000;
@@ -2270,12 +2273,53 @@
         }
         scheduleNextTopOfHourFetch();
 
-        // Tarkistetaan lisäksi 15 minuutin välein (erityisesti klo 13–16 kun seuraavan päivän vahvistetut Nord Pool -hinnat julkaistaan)
+        // Kaksi vuorokausittaista tarkentavaa pääpäivitystä Suomen aikaa:
+        // 1) klo 13:45 (kun Nord Pool julkaisee uudet vahvistetut hinnat ja malli tarkentaa tulevien päivien ennusteet)
+        // 2) klo 01:45 (yöllä vuorokauden vaihduttua ja tuoreimman 00Z-säämalliajon valmistuttua, jolloin ennustetaan uusi päivä ja tarkennetaan aiempia)
+        function scheduleTwiceDailyRefinement() {
+            const now = new Date();
+            const fmtMin = new Intl.DateTimeFormat('en-GB', {
+                timeZone: 'Europe/Helsinki',
+                hour: '2-digit',
+                minute: '2-digit',
+                second: '2-digit',
+                hour12: false
+            });
+            const parts = fmtMin.formatToParts(now);
+            const map = {};
+            for (const p of parts) map[p.type] = p.value;
+            const h = parseInt(map.hour, 10) % 24;
+            const m = parseInt(map.minute, 10);
+            const s = parseInt(map.second, 10);
+            const curSecOfDay = h * 3600 + m * 60 + s;
+
+            const t0145 = 1 * 3600 + 45 * 60 + 5;  // 01:45:05
+            const t1345 = 13 * 3600 + 45 * 60 + 5; // 13:45:05
+
+            let secUntilNext;
+            if (curSecOfDay < t0145) {
+                secUntilNext = t0145 - curSecOfDay;
+            } else if (curSecOfDay < t1345) {
+                secUntilNext = t1345 - curSecOfDay;
+            } else {
+                secUntilNext = (24 * 3600 - curSecOfDay) + t0145;
+            }
+
+            setTimeout(function () {
+                loadSpotAndForecastData();
+                scheduleTwiceDailyRefinement();
+            }, Math.max(5000, secUntilNext * 1000));
+        }
+        scheduleTwiceDailyRefinement();
+
+        // Tarkistetaan lisäksi 15 minuutin välein (erityisesti klo 13–16 kun seuraavan päivän vahvistetut Nord Pool -hinnat julkaistaan sekä klo 01–02 yöpäivityksessä)
         setInterval(function () {
             const helNow = getHelsinkiComponents(new Date());
             const lastGenMs = state.generatedAt ? Date.parse(state.generatedAt) : 0;
             const ageMin = (Date.now() - lastGenMs) / 60000;
-            if ((helNow.hour >= 13 && helNow.hour <= 16 && ageMin >= 14) || ageMin >= 55) {
+            if (((helNow.hour >= 13 && helNow.hour <= 16) || helNow.hour === 1 || helNow.hour === 2) && ageMin >= 14) {
+                loadSpotAndForecastData();
+            } else if (ageMin >= 55) {
                 loadSpotAndForecastData();
             } else {
                 renderDayTabsAndChart();

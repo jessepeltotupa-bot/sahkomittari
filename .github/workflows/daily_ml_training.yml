@@ -2,8 +2,10 @@ name: Daily ML Spot Forecast Training & Data Accumulation
 
 on:
   schedule:
-    # Ajetaan päivittäin klo 13:30 UTC (n. klo 15:30/16:30 Suomen aikaa, kun seuraavan päivän Nord Pool -hinnat on julkaistu)
-    - cron: '30 13 * * *'
+    # Ajetaan kahdesti vuorokaudessa Suomen aikaa:
+    # 1) klo 13:45 (11:45 UTC): kun uudet vahvistetut Nord Pool -hinnat julkaistaan ja malli tarkentaa aiempia ennusteitaan
+    # 2) klo 01:45 (23:45 UTC): yöllä vuorokauden vaihduttua ja tuoreen yö-säämalliajon valmistuttua (uusi tuleva päivä + tarkennus)
+    - cron: '45 11,23 * * *'
   workflow_dispatch:
 
 permissions:

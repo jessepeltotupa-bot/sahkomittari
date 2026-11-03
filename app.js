@@ -1978,11 +1978,22 @@
         const nightShare = Math.max(0, Math.min(100, state.nightSharePct)) / 100.0;
         const dayShare = 1.0 - nightShare;
 
-        const base30dSpot = (state.rolling30dMeanInclVat && state.rolling30dMeanInclVat > 0.5)
-            ? state.rolling30dMeanInclVat
-            : 5.52;
+        // Koko vuoden kulutuspainotettu keskiarvo ("keskiarvojen keskiarvo"):
+        // Huomioi talvi-, väli- ja kesäkuukausien tyypillisen hintatason, sähkölämmityksen
+        // talvipainotuksen (suuremmalla vuosikulutuksella enemmän talvikulutusta) sekä yöpainotuksen.
+        const heatingWeight = Math.max(0.0, Math.min(1.0, (kwh - 2500) / 15500));
+        const winterShare = 0.44 + 0.18 * heatingWeight;     // tammi–maalis, marras–joulu
+        const shoulderShare = 0.31 - 0.06 * heatingWeight;   // huhti–touko, syys–loka
+        const summerShare = 1.0 - winterShare - shoulderShare; // kesä–elo
+
+        const winterAvgSpot = 7.65 * FX_SCALE;
+        const shoulderAvgSpot = 4.85 * FX_SCALE;
+        const summerAvgSpot = 3.45 * FX_SCALE;
+        const seasonalBaseSpot = winterShare * winterAvgSpot + shoulderShare * shoulderAvgSpot + summerShare * summerAvgSpot;
+        const profileFactor = 1.12 * dayShare + 0.84 * nightShare;
+
         const vatFactor = state.includeVat ? 1.0 : (1.0 / DSO_DATA.vatRate);
-        const avgSpot = base30dSpot * vatFactor;
+        const avgSpot = seasonalBaseSpot * profileFactor * vatFactor;
         const taxC = state.includeVat ? DSO_DATA.electricityTaxInclVat : DSO_DATA.electricityTaxVat0;
         const marginC = state.marginCents * vatFactor;
 
@@ -1997,16 +2008,16 @@
         const timeTransferEur = (timeAvgC * kwh) / 100.0 + (dso.time_base_eur * vatFactor * 12);
         const timeTotalEur = energyAndMarginEur + taxEur + timeTransferEur;
 
-        const winterDayShare = Math.max(0.10, dayShare * 0.55);
+        const winterDayShare = Math.max(0.10, dayShare * winterShare);
         const otherSeasonShare = 1.0 - winterDayShare;
         const seasonAvgC = (dso.winter_day_c_kwh * winterDayShare + dso.other_c_kwh * otherSeasonShare) * vatFactor;
         const seasonTransferEur = (seasonAvgC * kwh) / 100.0 + (dso.season_base_eur * vatFactor * 12);
         const seasonTotalEur = energyAndMarginEur + taxEur + seasonTransferEur;
 
         const options = [
-            { id: 'general', title: 'Yleissiirto', transferEur: genTransferEur, totalEur: genTotalEur, baseMonth: dso.general_base_eur * vatFactor, transferC: genAvgC, avgC: avgSpot + marginC + genAvgC + taxC },
-            { id: 'time', title: 'Yösiirto / Aikasiirto', transferEur: timeTransferEur, totalEur: timeTotalEur, baseMonth: dso.time_base_eur * vatFactor, transferC: timeAvgC, avgC: avgSpot + marginC + timeAvgC + taxC },
-            { id: 'season', title: 'Kausisiirto', transferEur: seasonTransferEur, totalEur: seasonTotalEur, baseMonth: dso.season_base_eur * vatFactor, transferC: seasonAvgC, avgC: avgSpot + marginC + seasonAvgC + taxC }
+            { id: 'general', title: 'Yleissiirto', transferEur: genTransferEur, totalEur: genTotalEur, transferC: genAvgC, avgC: avgSpot + marginC + genAvgC + taxC },
+            { id: 'time', title: 'Yösiirto / Aikasiirto', transferEur: timeTransferEur, totalEur: timeTotalEur, transferC: timeAvgC, avgC: avgSpot + marginC + timeAvgC + taxC },
+            { id: 'season', title: 'Kausisiirto', transferEur: seasonTransferEur, totalEur: seasonTotalEur, transferC: seasonAvgC, avgC: avgSpot + marginC + seasonAvgC + taxC }
         ];
 
         const cheapest = options.reduce((a, b) => (b.totalEur < a.totalEur ? b : a), options[0]);
@@ -2019,12 +2030,11 @@
                         <span class="comp-title">${opt.title}</span>
                         ${isBest ? '<span style="font-size:11px; font-weight:700; color:#ff3b00; text-transform:uppercase;">● Edullisin valinta</span>' : ''}
                     </div>
-                    <div class="comp-total-eur">${formatNum(opt.totalEur, 0)} €/v <span style="font-size:13px; font-weight:400;">(${formatNum(opt.totalEur / 12, 0)} €/kk)</span></div>
-                    <div>Siirron keskihinta: <strong>${formatNum(opt.transferC, 2)} snt/kWh</strong></div>
-                    <div style="font-size:12px; color:#4a4f4a;">Kokonaishinta (sis. spot ${formatNum(avgSpot, 2)} + siirto + vero): <strong>${formatNum(opt.avgC, 2)} snt/kWh</strong></div>
+                    <div class="comp-total-eur">~${formatNum(opt.totalEur, 0)} €/v <span style="font-size:13px; font-weight:400;">(${formatNum(opt.totalEur / 12, 0)} €/kk)</span></div>
+                    <div>Keskihinta: <strong>~${formatNum(opt.avgC, 2)} snt/kWh</strong></div>
                     <ul class="comp-list">
-                        <li>Sähkö (30 pv ka. ${formatNum(avgSpot, 2)} snt) + marg.: ${formatNum(energyAndMarginEur, 0)} €/v</li>
-                        <li>Siirto + kk-maksu (${formatNum(opt.baseMonth, 2)} €/kk): ${formatNum(opt.transferEur, 0)} €/v</li>
+                        <li>Sähköenergia: ~${formatNum(energyAndMarginEur, 0)} €/v</li>
+                        <li>Sähkönsiirto ja perusmaksut: ${formatNum(opt.transferEur, 0)} €/v</li>
                         <li>Sähkövero: ${formatNum(taxEur, 0)} €/v</li>
                     </ul>
                 </div>

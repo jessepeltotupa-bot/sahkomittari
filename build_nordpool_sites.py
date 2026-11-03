@@ -362,7 +362,6 @@ def build_country_page(cid: str, loc: dict) -> str:
         <div class="header-inner">
             <a href="./" class="brand-link">
                 <span class="brand-title"><img src="/favicon.svg?v=29" alt="" width="24" height="24" style="vertical-align:-5px; margin-right:8px;">{loc['siteName']}</span>
-                <span class="brand-kicker">{loc['brandKicker']}</span>
                 <span class="brand-subtitle">{loc['brandSubtitle']}</span>
             </a>
             <nav class="main-nav" aria-label="Navigation">

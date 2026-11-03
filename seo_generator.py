@@ -46,7 +46,6 @@ def render_header(prefix: str = "") -> str:
         <div class="header-inner">
             <a href="{prefix}index.html" class="brand-link">
                 <span class="brand-title"><img src="{prefix}favicon.svg?v=29" alt="" width="24" height="24" style="vertical-align:-5px; margin-right:8px;">Sähkömittari.fi</span>
-                <span class="brand-kicker">SUOMEN SÄHKÖMARKKINA- JA JAKELUVERKKOLASKURI</span>
                 <span class="brand-subtitle">Pörssisähkön spot-hinta, tarkentuva 7 vrk hintaennuste ja todellinen siirtohinta postinumerolla</span>
             </a>
             <nav class="main-nav" aria-label="Päävalikko">

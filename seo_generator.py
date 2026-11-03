@@ -15,7 +15,7 @@ from dso_data import (
     export_dso_js,
 )
 
-SITE_URL = "https://sähkömittari.fi"
+SITE_URL = "https://xn--shkmittari-q5a2t.fi"
 SITE_NAME = "Sähkömittari — Pörssisähkö & Siirtohintalaskuri"
 
 

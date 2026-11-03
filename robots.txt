@@ -1,4 +1,3 @@
 User-agent: *
 Allow: /
-Sitemap: https://sähkömittari.fi/sitemap.xml
-Sitemap: https://xn--shkmittari-55a4t.fi/sitemap.xml
+Sitemap: https://xn--shkmittari-q5a2t.fi/sitemap.xml

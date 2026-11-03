@@ -38,7 +38,6 @@ def render_header(prefix: str = "") -> str:
                 <span class="telemetry-item">SPOT NYT: <strong id="tel-spot">— snt/kWh</strong></span>
                 <span class="telemetry-item">SIIRTO + VERO: <strong id="tel-transfer">— snt/kWh</strong></span>
                 <span class="telemetry-item">TUULIVOIMA: <strong id="tel-wind">— MW</strong></span>
-                <span class="telemetry-item">OPETETTU HISTORIA: <strong id="tel-hours">— h</strong></span>
             </div>
             <div>AIKAVYÖHYKE: EUROPE/HELSINKI (ALV 25,5 %)</div>
         </div>
@@ -48,13 +47,12 @@ def render_header(prefix: str = "") -> str:
             <a href="{prefix}index.html" class="brand-link">
                 <span class="brand-kicker">SUOMEN SÄHKÖMARKKINA- JA JAKELUVERKKOLASKURI</span>
                 <span class="brand-title">Sähkömittari</span>
-                <span class="brand-subtitle">Pörssisähkön spot-hinta, historiadatasta oppiva 7 vrk tuulivoimaennuste ja todellinen siirtohinta postinumerolla</span>
+                <span class="brand-subtitle">Pörssisähkön spot-hinta, tarkentuva 7 vrk hintaennuste ja todellinen siirtohinta postinumerolla</span>
             </a>
             <nav class="main-nav" aria-label="Päävalikko">
                 <a href="{prefix}index.html">Spot &amp; 7 vrk ennuste</a>
                 <a href="{prefix}index.html#optimoija">Kuorman ajoitus</a>
                 <a href="{prefix}index.html#vuosivertailu">Yleissiirto vs. Yösiirto</a>
-                <a href="{prefix}index.html#oppiva-malli">Oppiva historiamalli</a>
                 <a href="{prefix}verkkoyhtiot/index.html">Jakeluverkkoyhtiöt</a>
                 <a href="{prefix}paikkakunnat/index.html">Postinumerot &amp; Kunnat</a>
             </nav>
@@ -123,17 +121,6 @@ def render_interactive_dashboard_block(
                     <select id="vat-select" class="select-control">
                         <option value="1" selected>Sis. ALV 25,5 %</option>
                         <option value="0">Veroton (ALV 0 %)</option>
-                    </select>
-                </div>
-
-                <div class="control-cell">
-                    <label for="nuclear-scenario-select" class="field-label">Ydinvoiman &amp; verkon tila (4 394 MW)</label>
-                    <select id="nuclear-scenario-select" class="select-control">
-                        <option value="auto" selected>Automaattinen (Huoltokalenteri)</option>
-                        <option value="ol3">Simulaatio: OL3 seisokki (-1 600 MW)</option>
-                        <option value="ol12">Simulaatio: OL1/OL2 seisokki (-890 MW)</option>
-                        <option value="loviisa">Simulaatio: Loviisa 1/2 seisokki (-507 MW)</option>
-                        <option value="major">Simulaatio: OL3 + OL2 seisokki (-2 490 MW)</option>
                     </select>
                 </div>
             </div>
@@ -260,15 +247,6 @@ def render_interactive_dashboard_block(
                     </div>
                 </div>
                 <div id="annual-comparison-result" class="comp-grid"></div>
-            </div>
-        </section>
-
-        <section class="panel-box" id="oppiva-malli">
-            <div class="panel-head">
-                <h2>HISTORIADATASTA OPPIVA ENNUSTEMALLI — TARKKUUSTELEMETRIA &amp; TUULI X LÄMPÖTILA -VASTEMATRIISI</h2>
-            </div>
-            <div class="panel-body" id="ml-learning-panel">
-                Ladataan oppivan mallin telemetriaa...
             </div>
         </section>"""
 

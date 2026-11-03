@@ -579,7 +579,10 @@
                 const estInclVat = Number(Math.max(0.10, rawEst).toFixed(2));
                 rollingPriceByMs.set(hMs, estInclVat);
 
-                const spread = Math.max(0.95, Math.min(state.mlStats.liveMaeCents * 0.85, estInclVat * 0.35 + 0.8));
+                // Ennusteen epävarmuushaarukka kapenee automaattisesti, kun ajankohta lähestyy
+                const hoursAhead = Math.max(1, (hMs - currentHourMs) / 3600000);
+                const horizonFactor = 0.35 + Math.min(1.15, (hoursAhead / 168.0) * 1.15);
+                const spread = Math.max(0.45, (0.55 + estInclVat * 0.16) * horizonFactor);
                 series.push({
                     timestamp: new Date(hMs).toISOString(),
                     epochMs: hMs,
@@ -593,7 +596,7 @@
                     basePriceInclVat: estInclVat,
                     priceVat0: Number((estInclVat / 1.255).toFixed(2)),
                     minInclVat: Number(Math.max(0.0, estInclVat - spread).toFixed(2)),
-                    maxInclVat: Number((estInclVat + spread * 1.15).toFixed(2)),
+                    maxInclVat: Number((estInclVat + spread * 1.10).toFixed(2)),
                     windMw: w.windMw,
                     windSpeed100m: w.windSpeed100m,
                     tempC: w.tempC,

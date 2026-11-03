@@ -374,17 +374,6 @@ def build_index_page() -> str:
 
         <section class="panel-box">
             <div class="panel-head">
-                <h2>PAIKKAKUNTA- JA POSTINUMEROKOHTAISET SIIRTOHINTA- JA PÖRSSISÄHKÖLASKURIT</h2>
-            </div>
-            <div class="panel-body">
-                <div class="directory-grid">
-                    {chr(10).join(muni_pills)}
-                </div>
-            </div>
-        </section>
-
-        <section class="panel-box">
-            <div class="panel-head">
                 <h2>MENETELMÄOPPAAT JA TAUSTA-ANALYYSI</h2>
             </div>
             <div class="panel-body">

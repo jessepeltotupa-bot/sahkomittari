@@ -5,8 +5,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Savon Voima Verkko Oy Siirtohinta 2026 &amp; Pörssisähkön Kokonaishintalaskuri</title>
     <meta name="description" content="Katso Savon Voima Verkko Oy yleissiirto (5,42 snt/kWh), yösiirto (6,25 / 3,85 snt/kWh), perusmaksut ja pörssisähkön reaaliaikainen kokonaishinta sekä 7 vrk ennuste.">
-    <link rel="canonical" href="https://porssisahko-ennuste.vercel.app/verkkoyhtiot/savon-voima-verkko.html" />
-    <link rel="stylesheet" href="../styles.css">
+    <link rel="canonical" href="https://sähkömittari.fi/verkkoyhtiot/savon-voima-verkko.html" />
+    <meta name="geo.region" content="FI">
+    <meta name="content-language" content="fi-FI">
+    <link rel="stylesheet" href="../styles.css?v=22">
 </head>
 <body data-preset-dso="savon_voima" data-preset-postal="76100" data-preset-city="Pieksämäki">
     <div class="telemetry-bar">
@@ -28,9 +30,10 @@
                 <span class="brand-subtitle">Pörssisähkön spot-hinta, tarkentuva 7 vrk hintaennuste ja todellinen siirtohinta postinumerolla</span>
             </a>
             <nav class="main-nav" aria-label="Päävalikko">
-                <a href="../index.html">Spot &amp; 7 vrk ennuste</a>
+                <a href="../index.html">Spot-kaavio</a>
+                <a href="../index.html#tuntitaulukko">Tuntitaulukko</a>
+                <a href="../index.html#siirtohintalaskuri">Siirtohintalaskuri</a>
                 <a href="../index.html#optimoija">Kuorman ajoitus</a>
-                <a href="../index.html#vuosivertailu">Yleissiirto vs. Yösiirto</a>
                 <a href="../verkkoyhtiot/index.html">Jakeluverkkoyhtiöt</a>
                 <a href="../paikkakunnat/index.html">Postinumerot &amp; Kunnat</a>
             </nav>
@@ -38,102 +41,119 @@
     </header>
 
     <main class="container">
-        <section class="instrument-strip">
-            <div class="instrument-strip-top">
-                <h1>Savon Voima Verkko Oy — Siirtohinta, pörssisähkön kokonaishinta ja 7 vrk ennuste</h1>
-                <p>Toiminta-alue: Pohjois-Savo, Etelä-Savo ja osa Keski-Suomea. Yleissiirto 5,42 snt/kWh (veron kanssa 8,25 snt/kWh) ja yösiirron yöhinta klo 22–07 3,85 snt/kWh (veron kanssa 6,68 snt/kWh).</p>
-            </div>
+        <div class="first-screen-stage">
+            <section class="hero-chart-box">
+                <div id="day-tabs" class="day-tabs"></div>
 
-            <div class="control-matrix">
-                <form id="postal-search-form" class="control-cell" onsubmit="return false;">
-                    <label for="postal-input" class="field-label">Postinumero tai kunta</label>
-                    <div class="postal-input-group">
-                        <input type="text" id="postal-input" class="input-control" value="76100" placeholder="00100, 33100, 90100...">
-                        <button type="submit" class="btn-primary">Aseta</button>
+                <div class="panel-body" style="padding:10px 14px; border-bottom:var(--border-heavy);">
+                    <div id="chart-readout-strip" class="chart-readout-strip" style="margin-bottom:8px;">
+                        Vie hiiri tuntipylvään päälle nähdäksesi tunnin hinnan ja todennäköisen vaihteluvälin.
                     </div>
-                </form>
 
-                <div class="control-cell">
-                    <span class="field-label">Verkkoyhtiön siirtotariffi</span>
-                    <div class="seg-group">
-                        <button type="button" class="seg-btn active" data-tariff-btn="general">Yleissiirto</button>
-                        <button type="button" class="seg-btn" data-tariff-btn="time">Yösiirto (07–22 / 22–07)</button>
-                        <button type="button" class="seg-btn" data-tariff-btn="season">Kausisiirto</button>
+                    <div class="chart-legend" style="padding-top:4px;">
+                        <span class="legend-item"><span class="legend-swatch" style="background:#009e3d;"></span> Edullinen (&lt; 3 snt/kWh)</span>
+                        <span class="legend-item"><span class="legend-swatch" style="background:#0038ff;"></span> Normaali (3–8 snt/kWh)</span>
+                        <span class="legend-item"><span class="legend-swatch" style="background:#ff3b00;"></span> Korkea (&gt; 8 snt/kWh)</span>
+                        <span class="legend-item"><span class="legend-swatch" style="background:#ffd000;"></span> Ennusteen vaihteluväli (min–max snt/kWh)</span>
+                        <h1 id="chart-view-title" style="font-family:var(--mono); font-size:11.5px; font-weight:700; text-transform:uppercase; margin-left:auto;">Pörssisähkön tuntihinta ja 7 vrk ennuste</h1>
                     </div>
                 </div>
 
-                <div class="control-cell">
-                    <label for="margin-input" class="field-label">Myyjän marginaali (snt/kWh)</label>
-                    <input type="number" id="margin-input" class="input-control" step="0.01" min="0" max="3" value="0.45">
+                <div class="scroll-down-bar" style="margin-top:0; border:none; border-bottom:var(--border-heavy);">
+                    <span>Vieritä alas: tuntikohtainen hintataulukko, postinumeron siirtohintalaskuri ja kuorman ajoitus</span>
+                    <div class="scroll-down-links">
+                        <a href="#tuntitaulukko">Tuntitaulukko</a>
+                        <a href="#siirtohintalaskuri">Siirtohintalaskuri</a>
+                        <a href="#optimoija">Kuorman ajoitus (36 h)</a>
+                    </div>
                 </div>
 
-                <div class="control-cell">
-                    <label for="vat-select" class="field-label">Arvonlisäverokanta</label>
-                    <select id="vat-select" class="select-control">
-                        <option value="1" selected>Sis. ALV 25,5 %</option>
-                        <option value="0">Veroton (ALV 0 %)</option>
-                    </select>
+                <div class="svg-chart-wrapper">
+                    <button type="button" id="chart-prev-day" class="chart-edge-arrow chart-edge-prev" aria-label="Edellinen päivä">
+                        <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="square" stroke-linejoin="miter"><polyline points="15 18 9 12 15 6"></polyline></svg>
+                    </button>
+                    <div id="chart-floating-tooltip" class="chart-floating-tooltip" aria-live="polite"></div>
+                    <div id="price-chart" class="svg-chart-container" style="border:none; padding:12px 8px 6px;">
+                        Ladataan pörssisähkökaaviota...
+                    </div>
+                    <button type="button" id="chart-next-day" class="chart-edge-arrow chart-edge-next" aria-label="Seuraava päivä">
+                        <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="square" stroke-linejoin="miter"><polyline points="9 18 15 12 9 6"></polyline></svg>
+                    </button>
                 </div>
-            </div>
+            </section>
 
-            <div id="detected-dso-banner" class="detected-dso-banner">
-                Haetaan postinumeron jakeluverkkoyhtiötä...
-            </div>
-        </section>
+            <div id="first-screen-summary-strip" class="first-screen-summary-strip" aria-live="polite"></div>
+        </div>
 
-        <div class="desk-grid">
-            <div class="desk-main-col">
-                <section class="panel-box">
-                    <div class="panel-head">
-                        <h2 id="chart-view-title">TUNTIHINNAT, SIIRTO-OSUUS JA 7 VRK TUULIVOIMAENNUSTE</h2>
-                        <div class="seg-group" style="min-width:270px;">
-                            <button type="button" class="seg-btn active" data-mode-btn="total">Kokonaishinta (sis. siirto)</button>
-                            <button type="button" class="seg-btn" data-mode-btn="spot">Pelkkä Spot-hinta</button>
+        <div class="below-fold-section">
+            <section class="panel-box" id="tuntitaulukko">
+                <div class="panel-head">
+                    <h2>Tuntikohtainen hinta-arvio ja todennäköinen vaihteluväli</h2>
+                </div>
+                <div class="panel-body">
+                    <div class="table-wrap">
+                        <table class="data-table">
+                            <thead>
+                                <tr>
+                                    <th>Kellonaika</th>
+                                    <th>Pörssisähkö (arvio / hinta)</th>
+                                    <th>Todennäköinen vaihteluväli</th>
+                                    <th>Kokonaishinta siirtoineen</th>
+                                    <th>Tuulivoima ja lämpötila</th>
+                                </tr>
+                            </thead>
+                            <tbody id="hourly-table-body">
+                                <tr><td colspan="5">Haetaan tuntikohtaista hintataulukkoa...</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </section>
+
+            <section class="instrument-strip" id="siirtohintalaskuri">
+                <div class="instrument-strip-top">
+                    <h2>Savon Voima Verkko Oy — Siirtohinta, pörssisähkön kokonaishinta ja 7 vrk ennuste</h2>
+                    <p>Toiminta-alue: Pohjois-Savo, Etelä-Savo ja osa Keski-Suomea. Yleissiirto 5,42 snt/kWh (veron kanssa 8,25 snt/kWh) ja yösiirron yöhinta klo 22–07 3,85 snt/kWh (veron kanssa 6,68 snt/kWh).</p>
+                </div>
+
+                <div class="control-matrix">
+                    <form id="postal-search-form" class="control-cell" onsubmit="return false;">
+                        <label for="postal-input" class="field-label">Postinumero tai kunta</label>
+                        <div class="postal-input-group">
+                            <input type="text" id="postal-input" class="input-control" value="76100" placeholder="00100, 33100, 90100...">
+                            <button type="submit" class="btn-primary">Aseta</button>
+                        </div>
+                    </form>
+
+                    <div class="control-cell">
+                        <span class="field-label">Verkkoyhtiön siirtotariffi</span>
+                        <div class="seg-group">
+                            <button type="button" class="seg-btn active" data-tariff-btn="general">Yleissiirto</button>
+                            <button type="button" class="seg-btn" data-tariff-btn="time">Yösiirto (07–22 / 22–07)</button>
+                            <button type="button" class="seg-btn" data-tariff-btn="season">Kausisiirto</button>
                         </div>
                     </div>
 
-                    <div id="day-tabs" class="day-tabs"></div>
-
-                    <div class="panel-body">
-                        <div id="chart-readout-strip" class="chart-readout-strip">
-                            Valitse tai osoita tuntipylvästä tarkastellaksesi tuntikohtaista hinta- ja tuulivoimaerittelyä.
-                        </div>
-
-                        <div class="chart-legend">
-                            <span class="legend-item"><span class="legend-swatch" style="background:#1e6b43;"></span> Edullinen spot (&lt; 3 snt)</span>
-                            <span class="legend-item"><span class="legend-swatch" style="background:#2b4c65;"></span> Normaali spot (3–8 snt)</span>
-                            <span class="legend-item"><span class="legend-swatch" style="background:#a83820;"></span> Korkea spot (&gt; 8 snt)</span>
-                            <span class="legend-item"><span class="legend-swatch" style="background:#9e9b90;"></span> Siirtohinta + sähkövero + marginaali</span>
-                            <span class="legend-item"><span class="legend-swatch" style="background:#1e5638; opacity:0.35; border:1px solid #161816;"></span> Ennusteen todennäköinen vaihteluväli (min–max)</span>
-                            <span class="legend-item"><span class="legend-swatch" style="background:#b45309; height:3px;"></span> Suomen tuulivoimatuotanto (GW, oikea asteikko)</span>
-                        </div>
-
-                        <div id="price-chart" class="svg-chart-container">
-                            Ladataan vektorikaaviota...
-                        </div>
-
-                        <div class="table-wrap">
-                            <table class="data-table">
-                                <thead>
-                                    <tr>
-                                        <th>Tunti / Jakso</th>
-                                        <th>Lähde</th>
-                                        <th>Spot-hinta</th>
-                                        <th>Siirto + Vero + Marg.</th>
-                                        <th>Kokonaishinta yhteensä</th>
-                                        <th>Tuulivoima / Lämpötila</th>
-                                    </tr>
-                                </thead>
-                                <tbody id="hourly-table-body">
-                                    <tr><td colspan="6">Haetaan tuntisarjaa...</td></tr>
-                                </tbody>
-                            </table>
-                        </div>
+                    <div class="control-cell">
+                        <label for="margin-input" class="field-label">Myyjän marginaali (snt/kWh)</label>
+                        <input type="number" id="margin-input" class="input-control" step="0.01" min="0" max="3" value="0.45">
                     </div>
-                </section>
-            </div>
 
-            <aside class="desk-side-col">
+                    <div class="control-cell">
+                        <label for="vat-select" class="field-label">Arvonlisäverokanta</label>
+                        <select id="vat-select" class="select-control">
+                            <option value="1" selected>Sis. ALV 25,5 %</option>
+                            <option value="0">Veroton (ALV 0 %)</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div id="detected-dso-banner" class="detected-dso-banner">
+                    Haetaan postinumeron jakeluverkkoyhtiötä...
+                </div>
+            </section>
+
+            <div class="desk-grid">
                 <section class="panel-box">
                     <div class="panel-head">
                         <h2>PISTORASIAHINNAN ERITTELY NYT</h2>
@@ -148,7 +168,7 @@
                         <h2>KUORMAN AJOITUSLASKURI (36 H)</h2>
                     </div>
                     <div class="panel-body">
-                        <p style="font-size:12.5px; color:#4a4f4a; margin-bottom:10px;">
+                        <p style="font-size:12.5px; color:var(--ink-secondary); margin-bottom:10px;">
                             Etsii edullisimman yhtäjaksoisen käyttöajan yhdistämällä pörssisähkön spot-hinnan ja kello 22:00 alkavan edullisemman yösiirron.
                         </p>
                         <div class="preset-pills">
@@ -180,27 +200,27 @@
                         <div id="cheapest-window-result"></div>
                     </div>
                 </section>
-            </aside>
-        </div>
+            </div>
 
-        <section class="panel-box" id="vuosivertailu">
-            <div class="panel-head">
-                <h2>SIIRTOSOPIMUKSEN VALINTALASKURI: YLEISSIIRTO, YÖSIIRTO VAI KAUSISIIRTO POSTINUMEROLLESI</h2>
-            </div>
-            <div class="panel-body">
-                <div class="opt-controls-row">
-                    <div style="width:240px;">
-                        <label for="annual-kwh-input" class="field-label">Vuosikulutus (kWh / vuosi)</label>
-                        <input type="number" id="annual-kwh-input" class="input-control" step="500" min="1000" max="60000" value="12000">
-                    </div>
-                    <div style="flex:1; min-width:240px;">
-                        <label for="night-share-input" class="field-label">Yöajan (klo 22–07) osuus kulutuksesta: <span id="night-share-label">55 %</span></label>
-                        <input type="range" id="night-share-input" style="width:100%; margin-top:8px;" min="10" max="90" step="5" value="55">
-                    </div>
+            <section class="panel-box" id="vuosivertailu">
+                <div class="panel-head">
+                    <h2>SIIRTOSOPIMUKSEN VALINTALASKURI: YLEISSIIRTO, YÖSIIRTO VAI KAUSISIIRTO POSTINUMEROLLESI</h2>
                 </div>
-                <div id="annual-comparison-result" class="comp-grid"></div>
-            </div>
-        </section>
+                <div class="panel-body">
+                    <div class="opt-controls-row">
+                        <div style="width:240px;">
+                            <label for="annual-kwh-input" class="field-label">Vuosikulutus (kWh / vuosi)</label>
+                            <input type="number" id="annual-kwh-input" class="input-control" step="500" min="1000" max="60000" value="12000">
+                        </div>
+                        <div style="flex:1; min-width:240px;">
+                            <label for="night-share-input" class="field-label">Yöajan (klo 22–07) osuus kulutuksesta: <span id="night-share-label">55 %</span></label>
+                            <input type="range" id="night-share-input" style="width:100%; margin-top:8px;" min="10" max="90" step="5" value="55">
+                        </div>
+                    </div>
+                    <div id="annual-comparison-result" class="comp-grid"></div>
+                </div>
+            </section>
+        </div>
 
         <section class="panel-box">
             <div class="panel-head">
@@ -292,6 +312,7 @@
     </footer>
     <script src="../dso_data.js"></script>
     <script src="../ml_weights.js"></script>
-    <script src="../app.js"></script>
+    <script src="../nordpool_models.js"></script>
+    <script src="../app.js?v=22"></script>
 </body>
 </html>

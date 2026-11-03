@@ -1,3 +1,4 @@
 User-agent: *
 Allow: /
-Sitemap: https://porssisahko-ennuste.vercel.app/sitemap.xml
+Sitemap: https://sähkömittari.fi/sitemap.xml
+Sitemap: https://xn--shkmittari-55a4t.fi/sitemap.xml

@@ -24,12 +24,14 @@ jobs:
       - name: Fetch new Nord Pool & weather observations and retrain ML model
         run: |
           python train_and_learn.py
+          python train_nordpool_countries.py
           python seo_generator.py
+          python build_nordpool_sites.py
 
       - name: Commit accumulated observations and updated ML weights
         run: |
-          git config user.name "Porssisahko ML Bot"
-          git config user.email "bot@porssisahko.local"
-          git add data/historical_observations.json ml_weights.json ml_weights.js
+          git config user.name "Sahkomittari ML Bot"
+          git config user.email "bot@sahkomittari.fi"
+          git add data/historical_observations.json data/nordpool_models.json ml_weights.json ml_weights.js nordpool_models.js
           git diff --staged --quiet || git commit -m "Auto-learn: accumulate new spot/weather observations and retrain ML forecast weights"
           git push

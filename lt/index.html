@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="lt-LT">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Elektros skaitiklis // LT-Spot — Elektros biržos kaina valandomis, 7 dienų prognozė ir ESO skaičiuoklė pagal pašto kodą</title>
+    <meta name="description" content="Įveskite savo 5 skaitmenų pašto kodą (pvz., 01100 Vilnius, 44248 Kaunas, 91246 Klaipėda, 76125 Šiauliai), kad apskaičiuotumėte galutinę elektros kainą su ESO persiuntimo tarifu.">
+    <meta name="geo.region" content="LT">
+    <meta name="content-language" content="lt-LT">
+    <link rel="stylesheet" href="/styles.css?v=22">
+    <script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "WebApplication",
+  "name": "Elektros skaitiklis // LT-Spot",
+  "description": "Elektros biržos kaina valandomis, 7 dienų prognozė ir ESO skaičiuoklė pagal pašto kodą",
+  "applicationCategory": "FinanceApplication",
+  "operatingSystem": "Web",
+  "inLanguage": "lt-LT",
+  "areaServed": {
+    "@type": "Country",
+    "name": "Lietuva",
+    "identifier": "LT"
+  }
+}
+    </script>
+    <script>
+    window.ACTIVE_COUNTRY_LOCALE = {"countryId": "lt", "lang": "lt-LT", "geoRegion": "LT", "countryName": "Lietuva", "siteName": "Elektros skaitiklis // LT-Spot", "brandKicker": "NORD POOL LIETUVA (LT)", "brandSubtitle": "Elektros biržos kaina valandomis, 7 dienų prognozė ir ESO skaičiuoklė pagal pašto kodą", "navChart": "Biržos grafikas", "navTable": "Valandų lentelė", "navTransfer": "ESO skaičiuoklė", "navOptimizer": "Vartojimo planavimas (36 val.)", "chartTitle": "Elektros biržos valandinė kaina ir 7 dienų prognozė (ct/kWh)", "hoverHint": "Užveskite pelę ant stulpelio, kad matytumėte kainą ir tikėtiną kainos intervalą", "legendCheap": "Žema kaina (< 4 ct/kWh)", "legendNorm": "Vidutinė (4–10 ct/kWh)", "legendHigh": "Aukšta kaina (> 10 ct/kWh)", "legendRange": "Prognozės kainos intervalas (min–max ct/kWh)", "legendWind": "Vėjo ir saulės gamyba (GW, punktyrinė linija)", "scrollDownText": "Slinkite žemyn: valandinė kainų lentelė, ESO persiuntimo skaičiuoklė ir apkrovos planavimas", "tableHeading": "Valandinė kainos prognozė ir tikėtinas kainos intervalas (24 val.)", "colTime": "Laikas (Valanda)", "colSpot": "Biržos kaina (prognozė / kaina)", "colRange": "Tikėtinas kainos intervalas", "colTotal": "Galutinė kaina su ESO ir PVM", "colWeather": "Vėjo galia ir temperatūra", "transferHeading": "AB „Energijos skirstymo operatorius“ (ESO) tarifų ir galutinės kainos skaičiuoklė Lietuvoje", "transferLead": "Įveskite savo 5 skaitmenų pašto kodą (pvz., 01100 Vilnius, 44248 Kaunas, 91246 Klaipėda, 76125 Šiauliai), kad apskaičiuotumėte galutinę elektros kainą su ESO persiuntimo tarifu.", "postalLabel": "Pašto kodas arba miestas", "postalPlaceholder": "01100, 44248, 91246...", "setBtn": "Nustatyti", "tariffLabel": "ESO persiuntimo planas", "tariffGeneral": "Standartinis (1 laiko zona)", "tariffTime": "Dviejų laiko zonų (Diena / Naktis)", "marginLabel": "Tiekėjo marža (ct/kWh)", "vatLabel": "PVM tarifas", "vatIncl": "Su PVM 21 %", "vatZero": "Be PVM (0 %)", "unit": "ct/kWh", "approxPrefix": "apie ", "rangePrefix": "Kainos intervalas", "fixedText": "Paskelbta fiksuota kaina", "defaultPostal": "01100", "defaultCity": "Vilnius (LT)", "taxInclVat": 0.65, "dsos": [{"id": "eso_lt", "name": "AB „Energijos skirstymo operatorius“ (ESO — Visa Lietuva)", "gen": 5.32, "day": 6.41, "night": 3.75, "zone": "LT", "postals": ["0", "1", "2", "3", "4", "5", "6", "7", "8", "9"]}]};
+    </script>
+</head>
+<body>
+    <header class="site-header">
+        <div class="header-inner">
+            <a href="./" class="brand-link">
+                <span class="brand-kicker">NORD POOL LIETUVA (LT)</span>
+                <span class="brand-title">Elektros skaitiklis // LT-Spot</span>
+                <span class="brand-subtitle">Elektros biržos kaina valandomis, 7 dienų prognozė ir ESO skaičiuoklė pagal pašto kodą</span>
+            </a>
+            <nav class="main-nav" aria-label="Navigation">
+                <a href="./">Biržos grafikas</a>
+                <a href="#tuntitaulukko">Valandų lentelė</a>
+                <a href="#siirtohintalaskuri">ESO skaičiuoklė</a>
+                <a href="#optimoija">Vartojimo planavimas (36 val.)</a>
+            </nav>
+        </div>
+    </header>
+
+    <main class="container">
+        <div class="first-screen-stage">
+            <section class="hero-chart-box">
+                <div id="day-tabs" class="day-tabs"></div>
+
+                <div class="panel-body" style="padding:10px 14px; border-bottom:var(--border-heavy);">
+                    <div id="chart-readout-strip" class="chart-readout-strip" style="margin-bottom:8px;">
+                        Užveskite pelę ant stulpelio, kad matytumėte kainą ir tikėtiną kainos intervalą
+                    </div>
+
+                    <div class="chart-legend" style="padding-top:4px;">
+                        <span class="legend-item"><span class="legend-swatch" style="background:#009e3d;"></span> Žema kaina (< 4 ct/kWh)</span>
+                        <span class="legend-item"><span class="legend-swatch" style="background:#0038ff;"></span> Vidutinė (4–10 ct/kWh)</span>
+                        <span class="legend-item"><span class="legend-swatch" style="background:#ff3b00;"></span> Aukšta kaina (> 10 ct/kWh)</span>
+                        <span class="legend-item"><span class="legend-swatch" style="background:#ffd000;"></span> Prognozės kainos intervalas (min–max ct/kWh)</span>
+                        <h1 id="chart-view-title" style="font-family:var(--mono); font-size:11.5px; font-weight:700; text-transform:uppercase; margin-left:auto;">Elektros biržos valandinė kaina ir 7 dienų prognozė (ct/kWh)</h1>
+                    </div>
+                </div>
+
+                <div class="scroll-down-bar" style="margin-top:0; border:none; border-bottom:var(--border-heavy);">
+                    <span>Slinkite žemyn: valandinė kainų lentelė, ESO persiuntimo skaičiuoklė ir apkrovos planavimas</span>
+                    <div class="scroll-down-links">
+                        <a href="#tuntitaulukko">Valandų lentelė</a>
+                        <a href="#siirtohintalaskuri">ESO skaičiuoklė</a>
+                        <a href="#optimoija">Vartojimo planavimas (36 val.)</a>
+                    </div>
+                </div>
+
+                <div class="svg-chart-wrapper">
+                    <button type="button" id="chart-prev-day" class="chart-edge-arrow chart-edge-prev" aria-label="Prev">
+                        <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="square" stroke-linejoin="miter"><polyline points="15 18 9 12 15 6"></polyline></svg>
+                    </button>
+                    <div id="chart-floating-tooltip" class="chart-floating-tooltip" aria-live="polite"></div>
+                    <div id="price-chart" class="svg-chart-container" style="border:none; padding:12px 8px 6px;">
+                        ...
+                    </div>
+                    <button type="button" id="chart-next-day" class="chart-edge-arrow chart-edge-next" aria-label="Next">
+                        <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="square" stroke-linejoin="miter"><polyline points="9 18 15 12 9 6"></polyline></svg>
+                    </button>
+                </div>
+            </section>
+
+            <div id="first-screen-summary-strip" class="first-screen-summary-strip" aria-live="polite"></div>
+        </div>
+
+        <div class="below-fold-section">
+            <section class="panel-box" id="tuntitaulukko">
+                <div class="panel-head">
+                    <h2>Valandinė kainos prognozė ir tikėtinas kainos intervalas (24 val.)</h2>
+                </div>
+                <div class="panel-body">
+                    <div class="table-wrap">
+                        <table class="data-table">
+                            <thead>
+                                <tr>
+                                    <th>Laikas (Valanda)</th>
+                                    <th>Biržos kaina (prognozė / kaina)</th>
+                                    <th>Tikėtinas kainos intervalas</th>
+                                    <th>Galutinė kaina su ESO ir PVM</th>
+                                    <th>Vėjo galia ir temperatūra</th>
+                                </tr>
+                            </thead>
+                            <tbody id="hourly-table-body">
+                                <tr><td colspan="5">...</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </section>
+
+            <section class="instrument-strip" id="siirtohintalaskuri">
+                <div class="instrument-strip-top">
+                    <h2>AB „Energijos skirstymo operatorius“ (ESO) tarifų ir galutinės kainos skaičiuoklė Lietuvoje</h2>
+                    <p>Įveskite savo 5 skaitmenų pašto kodą (pvz., 01100 Vilnius, 44248 Kaunas, 91246 Klaipėda, 76125 Šiauliai), kad apskaičiuotumėte galutinę elektros kainą su ESO persiuntimo tarifu.</p>
+                </div>
+
+                <div class="control-matrix">
+                    <form id="postal-search-form" class="control-cell" onsubmit="return false;">
+                        <label for="postal-input" class="field-label">Pašto kodas arba miestas</label>
+                        <div class="postal-input-group">
+                            <input type="text" id="postal-input" class="input-control" value="01100" placeholder="01100, 44248, 91246...">
+                            <button type="submit" class="btn-primary">Nustatyti</button>
+                        </div>
+                    </form>
+
+                    <div class="control-cell">
+                        <span class="field-label">ESO persiuntimo planas</span>
+                        <div class="seg-group">
+                            <button type="button" class="seg-btn active" data-tariff-btn="general">Standartinis (1 laiko zona)</button>
+                            <button type="button" class="seg-btn" data-tariff-btn="time">Dviejų laiko zonų (Diena / Naktis)</button>
+                        </div>
+                    </div>
+
+                    <div class="control-cell">
+                        <label for="margin-input" class="field-label">Tiekėjo marža (ct/kWh)</label>
+                        <input type="number" id="margin-input" class="input-control" step="0.05" min="0" max="50" value="0.45">
+                    </div>
+
+                    <div class="control-cell">
+                        <label for="vat-select" class="field-label">PVM tarifas</label>
+                        <select id="vat-select" class="select-control">
+                            <option value="1" selected>Su PVM 21 %</option>
+                            <option value="0">Be PVM (0 %)</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div id="detected-dso-banner" class="detected-dso-banner"></div>
+            </section>
+
+            <div class="desk-grid">
+                <section class="panel-box">
+                    <div class="panel-head">
+                        <h2>Galutinė kaina su ESO ir PVM</h2>
+                    </div>
+                    <div class="panel-body" id="receipt-ledger-body"></div>
+                </section>
+
+                <section class="panel-box" id="optimoija">
+                    <div class="panel-head">
+                        <h2>Vartojimo planavimas (36 val.)</h2>
+                    </div>
+                    <div class="panel-body">
+                        <div class="opt-controls-row">
+                            <div style="flex:1; min-width:180px;">
+                                <span class="field-label">Duration</span>
+                                <div class="seg-group">
+                                    <button type="button" class="seg-btn" data-win-hours="1">1h</button>
+                                    <button type="button" class="seg-btn" data-win-hours="2">2h</button>
+                                    <button type="button" class="seg-btn active" data-win-hours="3">3h</button>
+                                    <button type="button" class="seg-btn" data-win-hours="4">4h</button>
+                                    <button type="button" class="seg-btn" data-win-hours="6">6h</button>
+                                </div>
+                            </div>
+                            <div style="width:110px;">
+                                <label for="appliance-kw-input" class="field-label">kW</label>
+                                <input type="number" id="appliance-kw-input" class="input-control" step="0.1" min="0.1" max="50" value="11">
+                            </div>
+                        </div>
+                        <div id="cheapest-window-result"></div>
+                    </div>
+                </section>
+            </div>
+        </div>
+    </main>
+
+    <footer class="site-footer">
+        <div class="footer-inner">
+            <div>
+                <strong style="color:#ffffff;">Elektros skaitiklis // LT-Spot (Lietuva)</strong>
+                <p style="margin-top:6px; max-width:680px;">Elektros biržos kaina valandomis, 7 dienų prognozė ir ESO skaičiuoklė pagal pašto kodą</p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="/dso_data.js"></script>
+    <script src="/ml_weights.js"></script>
+    <script src="/nordpool_models.js"></script>
+    <script src="/app.js?v=22"></script>
+</body>
+</html>

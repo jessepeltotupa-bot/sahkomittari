@@ -15,7 +15,7 @@ from dso_data import (
     export_dso_js,
 )
 
-SITE_URL = "https://porssisahko-ennuste.vercel.app"
+SITE_URL = "https://sähkömittari.fi"
 SITE_NAME = "Sähkömittari — Pörssisähkö & Siirtohintalaskuri"
 
 
@@ -50,9 +50,10 @@ def render_header(prefix: str = "") -> str:
                 <span class="brand-subtitle">Pörssisähkön spot-hinta, tarkentuva 7 vrk hintaennuste ja todellinen siirtohinta postinumerolla</span>
             </a>
             <nav class="main-nav" aria-label="Päävalikko">
-                <a href="{prefix}index.html">Spot &amp; 7 vrk ennuste</a>
+                <a href="{prefix}index.html">Spot-kaavio</a>
+                <a href="{prefix}index.html#tuntitaulukko">Tuntitaulukko</a>
+                <a href="{prefix}index.html#siirtohintalaskuri">Siirtohintalaskuri</a>
                 <a href="{prefix}index.html#optimoija">Kuorman ajoitus</a>
-                <a href="{prefix}index.html#vuosivertailu">Yleissiirto vs. Yösiirto</a>
                 <a href="{prefix}verkkoyhtiot/index.html">Jakeluverkkoyhtiöt</a>
                 <a href="{prefix}paikkakunnat/index.html">Postinumerot &amp; Kunnat</a>
             </nav>
@@ -87,102 +88,119 @@ def render_interactive_dashboard_block(
     lead_text: str,
     default_postal: str = "00100",
 ) -> str:
-    return f"""        <section class="instrument-strip">
-            <div class="instrument-strip-top">
-                <h1>{html.escape(h1_text)}</h1>
-                <p>{html.escape(lead_text)}</p>
-            </div>
+    return f"""        <div class="first-screen-stage">
+            <section class="hero-chart-box">
+                <div id="day-tabs" class="day-tabs"></div>
 
-            <div class="control-matrix">
-                <form id="postal-search-form" class="control-cell" onsubmit="return false;">
-                    <label for="postal-input" class="field-label">Postinumero tai kunta</label>
-                    <div class="postal-input-group">
-                        <input type="text" id="postal-input" class="input-control" value="{html.escape(default_postal)}" placeholder="00100, 33100, 90100...">
-                        <button type="submit" class="btn-primary">Aseta</button>
+                <div class="panel-body" style="padding:10px 14px; border-bottom:var(--border-heavy);">
+                    <div id="chart-readout-strip" class="chart-readout-strip" style="margin-bottom:8px;">
+                        Vie hiiri tuntipylvään päälle nähdäksesi tunnin hinnan ja todennäköisen vaihteluvälin.
                     </div>
-                </form>
 
-                <div class="control-cell">
-                    <span class="field-label">Verkkoyhtiön siirtotariffi</span>
-                    <div class="seg-group">
-                        <button type="button" class="seg-btn active" data-tariff-btn="general">Yleissiirto</button>
-                        <button type="button" class="seg-btn" data-tariff-btn="time">Yösiirto (07–22 / 22–07)</button>
-                        <button type="button" class="seg-btn" data-tariff-btn="season">Kausisiirto</button>
+                    <div class="chart-legend" style="padding-top:4px;">
+                        <span class="legend-item"><span class="legend-swatch" style="background:#009e3d;"></span> Edullinen (&lt; 3 snt/kWh)</span>
+                        <span class="legend-item"><span class="legend-swatch" style="background:#0038ff;"></span> Normaali (3–8 snt/kWh)</span>
+                        <span class="legend-item"><span class="legend-swatch" style="background:#ff3b00;"></span> Korkea (&gt; 8 snt/kWh)</span>
+                        <span class="legend-item"><span class="legend-swatch" style="background:#ffd000;"></span> Ennusteen vaihteluväli (min–max snt/kWh)</span>
+                        <h1 id="chart-view-title" style="font-family:var(--mono); font-size:11.5px; font-weight:700; text-transform:uppercase; margin-left:auto;">Pörssisähkön tuntihinta ja 7 vrk ennuste</h1>
                     </div>
                 </div>
 
-                <div class="control-cell">
-                    <label for="margin-input" class="field-label">Myyjän marginaali (snt/kWh)</label>
-                    <input type="number" id="margin-input" class="input-control" step="0.01" min="0" max="3" value="0.45">
+                <div class="scroll-down-bar" style="margin-top:0; border:none; border-bottom:var(--border-heavy);">
+                    <span>Vieritä alas: tuntikohtainen hintataulukko, postinumeron siirtohintalaskuri ja kuorman ajoitus</span>
+                    <div class="scroll-down-links">
+                        <a href="#tuntitaulukko">Tuntitaulukko</a>
+                        <a href="#siirtohintalaskuri">Siirtohintalaskuri</a>
+                        <a href="#optimoija">Kuorman ajoitus (36 h)</a>
+                    </div>
                 </div>
 
-                <div class="control-cell">
-                    <label for="vat-select" class="field-label">Arvonlisäverokanta</label>
-                    <select id="vat-select" class="select-control">
-                        <option value="1" selected>Sis. ALV 25,5 %</option>
-                        <option value="0">Veroton (ALV 0 %)</option>
-                    </select>
+                <div class="svg-chart-wrapper">
+                    <button type="button" id="chart-prev-day" class="chart-edge-arrow chart-edge-prev" aria-label="Edellinen päivä">
+                        <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="square" stroke-linejoin="miter"><polyline points="15 18 9 12 15 6"></polyline></svg>
+                    </button>
+                    <div id="chart-floating-tooltip" class="chart-floating-tooltip" aria-live="polite"></div>
+                    <div id="price-chart" class="svg-chart-container" style="border:none; padding:12px 8px 6px;">
+                        Ladataan pörssisähkökaaviota...
+                    </div>
+                    <button type="button" id="chart-next-day" class="chart-edge-arrow chart-edge-next" aria-label="Seuraava päivä">
+                        <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="square" stroke-linejoin="miter"><polyline points="9 18 15 12 9 6"></polyline></svg>
+                    </button>
                 </div>
-            </div>
+            </section>
 
-            <div id="detected-dso-banner" class="detected-dso-banner">
-                Haetaan postinumeron jakeluverkkoyhtiötä...
-            </div>
-        </section>
+            <div id="first-screen-summary-strip" class="first-screen-summary-strip" aria-live="polite"></div>
+        </div>
 
-        <div class="desk-grid">
-            <div class="desk-main-col">
-                <section class="panel-box">
-                    <div class="panel-head">
-                        <h2 id="chart-view-title">TUNTIHINNAT, SIIRTO-OSUUS JA 7 VRK TUULIVOIMAENNUSTE</h2>
-                        <div class="seg-group" style="min-width:270px;">
-                            <button type="button" class="seg-btn active" data-mode-btn="total">Kokonaishinta (sis. siirto)</button>
-                            <button type="button" class="seg-btn" data-mode-btn="spot">Pelkkä Spot-hinta</button>
+        <div class="below-fold-section">
+            <section class="panel-box" id="tuntitaulukko">
+                <div class="panel-head">
+                    <h2>Tuntikohtainen hinta-arvio ja todennäköinen vaihteluväli</h2>
+                </div>
+                <div class="panel-body">
+                    <div class="table-wrap">
+                        <table class="data-table">
+                            <thead>
+                                <tr>
+                                    <th>Kellonaika</th>
+                                    <th>Pörssisähkö (arvio / hinta)</th>
+                                    <th>Todennäköinen vaihteluväli</th>
+                                    <th>Kokonaishinta siirtoineen</th>
+                                    <th>Tuulivoima ja lämpötila</th>
+                                </tr>
+                            </thead>
+                            <tbody id="hourly-table-body">
+                                <tr><td colspan="5">Haetaan tuntikohtaista hintataulukkoa...</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </section>
+
+            <section class="instrument-strip" id="siirtohintalaskuri">
+                <div class="instrument-strip-top">
+                    <h2>{html.escape(h1_text)}</h2>
+                    <p>{html.escape(lead_text)}</p>
+                </div>
+
+                <div class="control-matrix">
+                    <form id="postal-search-form" class="control-cell" onsubmit="return false;">
+                        <label for="postal-input" class="field-label">Postinumero tai kunta</label>
+                        <div class="postal-input-group">
+                            <input type="text" id="postal-input" class="input-control" value="{html.escape(default_postal)}" placeholder="00100, 33100, 90100...">
+                            <button type="submit" class="btn-primary">Aseta</button>
+                        </div>
+                    </form>
+
+                    <div class="control-cell">
+                        <span class="field-label">Verkkoyhtiön siirtotariffi</span>
+                        <div class="seg-group">
+                            <button type="button" class="seg-btn active" data-tariff-btn="general">Yleissiirto</button>
+                            <button type="button" class="seg-btn" data-tariff-btn="time">Yösiirto (07–22 / 22–07)</button>
+                            <button type="button" class="seg-btn" data-tariff-btn="season">Kausisiirto</button>
                         </div>
                     </div>
 
-                    <div id="day-tabs" class="day-tabs"></div>
-
-                    <div class="panel-body">
-                        <div id="chart-readout-strip" class="chart-readout-strip">
-                            Valitse tai osoita tuntipylvästä tarkastellaksesi tuntikohtaista hinta- ja tuulivoimaerittelyä.
-                        </div>
-
-                        <div class="chart-legend">
-                            <span class="legend-item"><span class="legend-swatch" style="background:#1e6b43;"></span> Edullinen spot (&lt; 3 snt)</span>
-                            <span class="legend-item"><span class="legend-swatch" style="background:#2b4c65;"></span> Normaali spot (3–8 snt)</span>
-                            <span class="legend-item"><span class="legend-swatch" style="background:#a83820;"></span> Korkea spot (&gt; 8 snt)</span>
-                            <span class="legend-item"><span class="legend-swatch" style="background:#9e9b90;"></span> Siirtohinta + sähkövero + marginaali</span>
-                            <span class="legend-item"><span class="legend-swatch" style="background:#1e5638; opacity:0.35; border:1px solid #161816;"></span> Ennusteen todennäköinen vaihteluväli (min–max)</span>
-                            <span class="legend-item"><span class="legend-swatch" style="background:#b45309; height:3px;"></span> Suomen tuulivoimatuotanto (GW, oikea asteikko)</span>
-                        </div>
-
-                        <div id="price-chart" class="svg-chart-container">
-                            Ladataan vektorikaaviota...
-                        </div>
-
-                        <div class="table-wrap">
-                            <table class="data-table">
-                                <thead>
-                                    <tr>
-                                        <th>Tunti / Jakso</th>
-                                        <th>Lähde</th>
-                                        <th>Spot-hinta</th>
-                                        <th>Siirto + Vero + Marg.</th>
-                                        <th>Kokonaishinta yhteensä</th>
-                                        <th>Tuulivoima / Lämpötila</th>
-                                    </tr>
-                                </thead>
-                                <tbody id="hourly-table-body">
-                                    <tr><td colspan="6">Haetaan tuntisarjaa...</td></tr>
-                                </tbody>
-                            </table>
-                        </div>
+                    <div class="control-cell">
+                        <label for="margin-input" class="field-label">Myyjän marginaali (snt/kWh)</label>
+                        <input type="number" id="margin-input" class="input-control" step="0.01" min="0" max="3" value="0.45">
                     </div>
-                </section>
-            </div>
 
-            <aside class="desk-side-col">
+                    <div class="control-cell">
+                        <label for="vat-select" class="field-label">Arvonlisäverokanta</label>
+                        <select id="vat-select" class="select-control">
+                            <option value="1" selected>Sis. ALV 25,5 %</option>
+                            <option value="0">Veroton (ALV 0 %)</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div id="detected-dso-banner" class="detected-dso-banner">
+                    Haetaan postinumeron jakeluverkkoyhtiötä...
+                </div>
+            </section>
+
+            <div class="desk-grid">
                 <section class="panel-box">
                     <div class="panel-head">
                         <h2>PISTORASIAHINNAN ERITTELY NYT</h2>
@@ -197,7 +215,7 @@ def render_interactive_dashboard_block(
                         <h2>KUORMAN AJOITUSLASKURI (36 H)</h2>
                     </div>
                     <div class="panel-body">
-                        <p style="font-size:12.5px; color:#4a4f4a; margin-bottom:10px;">
+                        <p style="font-size:12.5px; color:var(--ink-secondary); margin-bottom:10px;">
                             Etsii edullisimman yhtäjaksoisen käyttöajan yhdistämällä pörssisähkön spot-hinnan ja kello 22:00 alkavan edullisemman yösiirron.
                         </p>
                         <div class="preset-pills">
@@ -229,27 +247,27 @@ def render_interactive_dashboard_block(
                         <div id="cheapest-window-result"></div>
                     </div>
                 </section>
-            </aside>
-        </div>
+            </div>
 
-        <section class="panel-box" id="vuosivertailu">
-            <div class="panel-head">
-                <h2>SIIRTOSOPIMUKSEN VALINTALASKURI: YLEISSIIRTO, YÖSIIRTO VAI KAUSISIIRTO POSTINUMEROLLESI</h2>
-            </div>
-            <div class="panel-body">
-                <div class="opt-controls-row">
-                    <div style="width:240px;">
-                        <label for="annual-kwh-input" class="field-label">Vuosikulutus (kWh / vuosi)</label>
-                        <input type="number" id="annual-kwh-input" class="input-control" step="500" min="1000" max="60000" value="12000">
-                    </div>
-                    <div style="flex:1; min-width:240px;">
-                        <label for="night-share-input" class="field-label">Yöajan (klo 22–07) osuus kulutuksesta: <span id="night-share-label">55 %</span></label>
-                        <input type="range" id="night-share-input" style="width:100%; margin-top:8px;" min="10" max="90" step="5" value="55">
-                    </div>
+            <section class="panel-box" id="vuosivertailu">
+                <div class="panel-head">
+                    <h2>SIIRTOSOPIMUKSEN VALINTALASKURI: YLEISSIIRTO, YÖSIIRTO VAI KAUSISIIRTO POSTINUMEROLLESI</h2>
                 </div>
-                <div id="annual-comparison-result" class="comp-grid"></div>
-            </div>
-        </section>"""
+                <div class="panel-body">
+                    <div class="opt-controls-row">
+                        <div style="width:240px;">
+                            <label for="annual-kwh-input" class="field-label">Vuosikulutus (kWh / vuosi)</label>
+                            <input type="number" id="annual-kwh-input" class="input-control" step="500" min="1000" max="60000" value="12000">
+                        </div>
+                        <div style="flex:1; min-width:240px;">
+                            <label for="night-share-input" class="field-label">Yöajan (klo 22–07) osuus kulutuksesta: <span id="night-share-label">55 %</span></label>
+                            <input type="range" id="night-share-input" style="width:100%; margin-top:8px;" min="10" max="90" step="5" value="55">
+                        </div>
+                    </div>
+                    <div id="annual-comparison-result" class="comp-grid"></div>
+                </div>
+            </section>
+        </div>"""
 
 
 def build_index_page() -> str:
@@ -312,8 +330,10 @@ def build_index_page() -> str:
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Sähkömittari — Pörssisähkö nyt, 7 vrk Ennuste &amp; Siirtohintalaskuri Postinumerolla</title>
     <meta name="description" content="Tarkista pörssisähkön spot-hinta tänään, huomenna ja 7 vrk hintaennuste. Syötä postinumero, niin laskuri hakee automaattisesti sähköverkkoyhtiösi siirtohinnan (Caruna, Elenia, Helen, Vantaa, Tampere, Oulu ym.) ja laskee todellisen kokonaishinnan.">
+    <meta name="geo.region" content="FI">
+    <meta name="content-language" content="fi-FI">
     <link rel="canonical" href="{SITE_URL}/" />
-    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="styles.css?v=22">
     <script type="application/ld+json">
 {json.dumps(faq_schema, ensure_ascii=False, indent=2)}
     </script>
@@ -385,7 +405,8 @@ def build_index_page() -> str:
 {render_footer("")}
     <script src="dso_data.js"></script>
     <script src="ml_weights.js"></script>
-    <script src="app.js"></script>
+    <script src="nordpool_models.js"></script>
+    <script src="app.js?v=22"></script>
 </body>
 </html>
 """
@@ -421,7 +442,9 @@ def build_dso_page(comp: dict) -> str:
     <title>{html.escape(comp['name'])} Siirtohinta 2026 &amp; Pörssisähkön Kokonaishintalaskuri</title>
     <meta name="description" content="Katso {html.escape(comp['name'])} yleissiirto ({fmt_c(comp['general_c_kwh'])} snt/kWh), yösiirto ({fmt_c(comp['day_c_kwh'])} / {fmt_c(comp['night_c_kwh'])} snt/kWh), perusmaksut ja pörssisähkön reaaliaikainen kokonaishinta sekä 7 vrk ennuste.">
     <link rel="canonical" href="{SITE_URL}/verkkoyhtiot/{slug}.html" />
-    <link rel="stylesheet" href="../styles.css">
+    <meta name="geo.region" content="FI">
+    <meta name="content-language" content="fi-FI">
+    <link rel="stylesheet" href="../styles.css?v=22">
 </head>
 <body data-preset-dso="{comp['id']}" data-preset-postal="{sample_postal}" data-preset-city="{html.escape(sample_city)}">
 {render_header("../")}
@@ -502,7 +525,8 @@ def build_dso_page(comp: dict) -> str:
 {render_footer("../")}
     <script src="../dso_data.js"></script>
     <script src="../ml_weights.js"></script>
-    <script src="../app.js"></script>
+    <script src="../nordpool_models.js"></script>
+    <script src="../app.js?v=22"></script>
 </body>
 </html>
 """
@@ -534,7 +558,9 @@ def build_municipality_page(m: dict) -> str:
     <title>Pörssisähkö &amp; Sähkön Siirtohinta {html.escape(m['name'])} ({m['postal']}) | {html.escape(comp['short_name'])}</title>
     <meta name="description" content="Paljonko pörssisähkö maksaa siirtohinnan kanssa paikkakunnalla {html.escape(m['name'])} ({m['postal_range']})? Verkkoyhtiö: {html.escape(comp['name'])}, yleissiirto {fmt_c(comp['general_c_kwh'])} snt/kWh + sähkövero {fmt_c(ELECTRICITY_TAX_INCL_VAT)} snt/kWh. Katso tuntihinnat ja 7 vrk ennuste.">
     <link rel="canonical" href="{SITE_URL}/paikkakunnat/{mslug}.html" />
-    <link rel="stylesheet" href="../styles.css">
+    <meta name="geo.region" content="FI">
+    <meta name="content-language" content="fi-FI">
+    <link rel="stylesheet" href="../styles.css?v=22">
 </head>
 <body data-preset-dso="{comp['id']}" data-preset-postal="{m['postal']}" data-preset-city="{html.escape(m['name'])}">
 {render_header("../")}
@@ -562,7 +588,8 @@ def build_municipality_page(m: dict) -> str:
 {render_footer("../")}
     <script src="../dso_data.js"></script>
     <script src="../ml_weights.js"></script>
-    <script src="../app.js"></script>
+    <script src="../nordpool_models.js"></script>
+    <script src="../app.js?v=22"></script>
 </body>
 </html>
 """
@@ -577,7 +604,9 @@ def build_directory_page(title: str, lead: str, cards_html: str, canonical_path:
     <title>{html.escape(title)} | {SITE_NAME}</title>
     <meta name="description" content="{html.escape(lead)}">
     <link rel="canonical" href="{SITE_URL}/{canonical_path}" />
-    <link rel="stylesheet" href="../styles.css">
+    <meta name="geo.region" content="FI">
+    <meta name="content-language" content="fi-FI">
+    <link rel="stylesheet" href="../styles.css?v=22">
 </head>
 <body>
 {render_header("../")}
@@ -609,7 +638,9 @@ def build_guide_page(slug: str, title: str, meta_desc: str, body_html: str) -> s
     <title>{html.escape(title)} | {SITE_NAME}</title>
     <meta name="description" content="{html.escape(meta_desc)}">
     <link rel="canonical" href="{SITE_URL}/oppaat/{slug}.html" />
-    <link rel="stylesheet" href="../styles.css">
+    <meta name="geo.region" content="FI">
+    <meta name="content-language" content="fi-FI">
+    <link rel="stylesheet" href="../styles.css?v=22">
 </head>
 <body>
 {render_header("../")}
@@ -730,6 +761,9 @@ def main():
         with open(os.path.join(base_dir, "oppaat", f"{gslug}.html"), "w", encoding="utf-8") as f:
             f.write(build_guide_page(gslug, gtitle, gdesc, gbody))
         urls.append(f"{SITE_URL}/oppaat/{gslug}.html")
+
+    for cid in ["se", "no", "dk", "ee", "lv", "lt"]:
+        urls.append(f"{SITE_URL}/{cid}/")
 
     today_str = datetime.now(timezone.utc).strftime("%Y-%m-%d")
     sitemap_items = "\n".join(

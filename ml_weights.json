@@ -1,155 +1,319 @@
 {
-  "trainedAt": "2026-11-03T15:25:27Z",
+  "trainedAt": "2026-11-03T15:45:06Z",
   "totalObservations": 17552,
+  "featureCount": 24,
+  "featureNames": [
+    "Vakiotermi (Intercept)",
+    "Tuulivoima-aste (wRatio)",
+    "Tuulivoiman neliötermi (wRatio²)",
+    "Tuuliniukkuus (< 25 % kapasiteetista)",
+    "Lämmitystarveluku (HDD < +12 °C)",
+    "Kova pakkanen (< -3 °C)",
+    "Arkiaamun kulutushuippu x tuulivaje",
+    "Arki-illan kulutushuippu x tuulivaje",
+    "Yökuoppa (klo 00–05)",
+    "Viikonloppu tai arkipyhä (isFreeDay)",
+    "Tyynessä pakkasessa -yhdysvaikutus",
+    "Markkinamuisti: 24 h keskitaso",
+    "Lämmityskausi (loka–huhtikuu)",
+    "Talven kulutushuippu x tuulivaje",
+    "Rakennusten 72 h pakkasvaraus (rolling72hHdd)",
+    "Aurinkovoimatuotanto (solarMw / ankkakäyrä)",
+    "Ydinvoiman huoltovaje (nuclearDeficitMw)",
+    "Ydinvoimavaje x tuulivaje -niukkuuskerroin",
+    "Tuulikuivuuden 24 h kesto (rolling24hLowWind)",
+    "Tuulirampin 6 h pudotus (windDropRamp)",
+    "Ruotsin (SE1) tuulivoimatuonti-indeksi",
+    "Viron (EE) ja Estlink 2 -vientipaine",
+    "Korkeapainesulku (ilmanpaine > 1020 hPa talvella)",
+    "Markkinamuisti: sama tunti 24 h sitten + 7 vrk taso + volatiliteetti"
+  ],
   "firstObservationDate": "2024-11-03",
   "lastObservationDate": "2026-11-05",
+  "currentGridStatus": {
+    "nuclearMw": 4394,
+    "nuclearDeficitMw": 0,
+    "estlink2Online": 1.0,
+    "outageReasons": []
+  },
+  "nuclearOutageSchedule": [
+    {
+      "unit": "OL3",
+      "mw": 1600,
+      "start": "2024-03-02",
+      "end": "2024-04-29",
+      "reason": "OL3 vuosihuolto"
+    },
+    {
+      "unit": "OL2",
+      "mw": 890,
+      "start": "2024-04-28",
+      "end": "2024-05-14",
+      "reason": "OL2 vuosihuolto"
+    },
+    {
+      "unit": "OL1",
+      "mw": 890,
+      "start": "2024-05-16",
+      "end": "2024-06-02",
+      "reason": "OL1 vuosihuolto"
+    },
+    {
+      "unit": "LO1",
+      "mw": 507,
+      "start": "2024-08-17",
+      "end": "2024-09-14",
+      "reason": "Loviisa 1 vuosihuolto"
+    },
+    {
+      "unit": "OL2",
+      "mw": 890,
+      "start": "2024-09-09",
+      "end": "2024-10-06",
+      "reason": "OL2 generaattorin roottorihuolto"
+    },
+    {
+      "unit": "LO2",
+      "mw": 507,
+      "start": "2024-09-15",
+      "end": "2024-10-08",
+      "reason": "Loviisa 2 vuosihuolto"
+    },
+    {
+      "unit": "OL3",
+      "mw": 1600,
+      "start": "2024-11-17",
+      "end": "2024-11-20",
+      "reason": "OL3 turbiinihäiriö"
+    },
+    {
+      "unit": "OL3",
+      "mw": 1600,
+      "start": "2025-03-01",
+      "end": "2025-05-05",
+      "reason": "OL3 vuosihuolto (65 vrk)"
+    },
+    {
+      "unit": "OL1",
+      "mw": 890,
+      "start": "2025-05-11",
+      "end": "2025-05-23",
+      "reason": "OL1 vuosihuolto"
+    },
+    {
+      "unit": "OL2",
+      "mw": 890,
+      "start": "2025-05-25",
+      "end": "2025-06-15",
+      "reason": "OL2 vuosihuolto"
+    },
+    {
+      "unit": "LO1",
+      "mw": 507,
+      "start": "2025-08-16",
+      "end": "2025-09-10",
+      "reason": "Loviisa 1 vuosihuolto"
+    },
+    {
+      "unit": "LO2",
+      "mw": 507,
+      "start": "2025-09-14",
+      "end": "2025-10-06",
+      "reason": "Loviisa 2 vuosihuolto"
+    },
+    {
+      "unit": "OL3",
+      "mw": 1600,
+      "start": "2026-03-01",
+      "end": "2026-04-22",
+      "reason": "OL3 vuosihuolto"
+    },
+    {
+      "unit": "OL2",
+      "mw": 890,
+      "start": "2026-04-26",
+      "end": "2026-05-12",
+      "reason": "OL2 vuosihuolto"
+    },
+    {
+      "unit": "OL1",
+      "mw": 890,
+      "start": "2026-05-15",
+      "end": "2026-05-29",
+      "reason": "OL1 vuosihuolto"
+    },
+    {
+      "unit": "LO1",
+      "mw": 507,
+      "start": "2026-08-15",
+      "end": "2026-09-12",
+      "reason": "Loviisa 1 vuosihuolto"
+    },
+    {
+      "unit": "LO2",
+      "mw": 507,
+      "start": "2026-09-15",
+      "end": "2026-10-10",
+      "reason": "Loviisa 2 vuosihuolto"
+    }
+  ],
   "model": {
     "weights": [
-      6.87816,
-      -10.54256,
-      2.17747,
-      5.71309,
-      -0.91061,
-      0.01325,
-      3.40911,
-      2.48057,
-      -2.01243,
-      -1.78988,
-      6.8653,
-      1.68846,
-      1.21952,
-      3.13493
+      8.07654,
+      -10.44355,
+      0.09449,
+      5.1333,
+      0.9162,
+      2.23933,
+      3.52789,
+      2.92413,
+      -2.71331,
+      -2.06598,
+      4.59889,
+      0.11671,
+      2.07702,
+      1.87718,
+      -0.56861,
+      -6.43438,
+      0.0,
+      0.0,
+      -2.46082,
+      -0.89994,
+      -0.92451,
+      1.62607,
+      2.23736,
+      2.65381
     ],
     "weekdayHourAdj": [
+      0.126,
+      0.271,
+      -0.315,
+      -0.487,
+      -0.387,
+      -0.12,
+      -1.103,
+      -1.415,
+      0.089,
+      0.468,
+      0.007,
+      1.657,
+      1.355,
+      1.152,
+      0.765,
+      0.671,
+      -0.87,
+      -0.286,
+      0.408,
+      0.598,
+      -0.142,
+      -1.536,
       -0.084,
-      0.096,
-      -0.503,
-      -0.721,
-      -0.628,
-      -0.344,
-      -0.515,
-      -1.431,
-      0.116,
-      0.388,
-      -0.28,
-      1.857,
-      1.358,
-      1.01,
-      0.604,
-      0.583,
-      -1.308,
-      -0.489,
-      0.489,
-      0.837,
-      0.183,
-      -1.156,
-      0.616,
-      -0.616
+      -1.061
     ],
     "weekendHourAdj": [
-      1.075,
-      0.923,
-      0.83,
-      0.713,
-      0.631,
-      0.497,
-      -0.858,
-      -0.506,
-      -0.522,
-      -0.422,
-      -0.595,
-      -0.805,
-      -0.94,
-      -1.134,
-      -1.251,
-      -1.072,
-      -0.427,
-      0.529,
-      1.199,
-      1.472,
-      1.097,
-      0.266,
-      -0.176,
-      -0.707
+      1.432,
+      1.256,
+      1.121,
+      1.001,
+      0.943,
+      0.828,
+      -1.209,
+      -1.008,
+      -0.938,
+      -0.725,
+      -0.67,
+      -0.637,
+      -0.618,
+      -0.6,
+      -0.627,
+      -0.534,
+      -0.16,
+      0.498,
+      0.984,
+      1.136,
+      0.677,
+      -0.158,
+      -0.495,
+      -1.006
     ],
     "windTempGridAdj": {
-      "2_1": -0.821,
-      "3_1": -0.373,
-      "1_1": -0.487,
-      "1_2": -0.033,
-      "0_2": -0.055,
-      "0_1": -0.846,
-      "2_2": -0.764,
-      "3_2": -0.4,
-      "4_2": 0.135,
-      "4_1": 0.213,
-      "0_0": -0.574,
-      "1_0": 0.207,
-      "2_0": 0.233,
-      "3_0": 0.205,
-      "4_0": 0.636,
-      "3_3": -0.048,
-      "4_3": 0.197,
-      "0_3": -1.048,
-      "2_3": -0.2,
-      "1_3": -0.541
+      "2_1": -0.934,
+      "3_1": -0.278,
+      "1_1": -0.663,
+      "1_2": -0.121,
+      "0_2": -0.294,
+      "0_1": -1.235,
+      "2_2": -0.674,
+      "3_2": -0.109,
+      "4_2": 0.498,
+      "4_1": 0.455,
+      "0_0": -1.386,
+      "1_0": -0.294,
+      "2_0": -0.309,
+      "3_0": 0.025,
+      "4_0": 0.702,
+      "3_3": 0.739,
+      "4_3": 1.075,
+      "0_3": -0.857,
+      "2_3": 0.304,
+      "1_3": 0.017
     },
     "empiricalMatrix": {
       "2_1": {
         "avgPrice": 3.5,
-        "hoursCount": 743
+        "hoursCount": 742
       },
       "3_1": {
-        "avgPrice": 2.04,
-        "hoursCount": 516
+        "avgPrice": 2.05,
+        "hoursCount": 514
       },
       "1_1": {
         "avgPrice": 7.48,
-        "hoursCount": 916
+        "hoursCount": 909
       },
       "1_2": {
         "avgPrice": 5.73,
-        "hoursCount": 1994
+        "hoursCount": 1996
       },
       "0_2": {
-        "avgPrice": 10.53,
-        "hoursCount": 1376
+        "avgPrice": 10.54,
+        "hoursCount": 1377
       },
       "0_1": {
         "avgPrice": 12.06,
-        "hoursCount": 908
+        "hoursCount": 904
       },
       "2_2": {
         "avgPrice": 2.83,
-        "hoursCount": 874
+        "hoursCount": 875
       },
       "3_2": {
         "avgPrice": 1.41,
-        "hoursCount": 693
+        "hoursCount": 694
       },
       "4_2": {
         "avgPrice": 0.59,
-        "hoursCount": 1077
+        "hoursCount": 1080
       },
       "4_1": {
-        "avgPrice": 1.15,
-        "hoursCount": 658
+        "avgPrice": 1.16,
+        "hoursCount": 655
       },
       "0_0": {
-        "avgPrice": 18.59,
-        "hoursCount": 1059
+        "avgPrice": 18.56,
+        "hoursCount": 1062
       },
       "1_0": {
-        "avgPrice": 12.27,
-        "hoursCount": 495
+        "avgPrice": 12.23,
+        "hoursCount": 500
       },
       "2_0": {
         "avgPrice": 8.41,
         "hoursCount": 321
       },
       "3_0": {
-        "avgPrice": 5.89,
-        "hoursCount": 96
+        "avgPrice": 5.84,
+        "hoursCount": 97
       },
       "4_0": {
         "avgPrice": 3.65,
@@ -183,36 +347,4163 @@
       {
         "label": "Alkuvaihe (3 vrk / 72 tuntia)",
         "hours": 72,
-        "maeCents": 7.46
+        "maeCents": 7.36
       },
       {
         "label": "Viikkotaso (7 vrk / 168 tuntia)",
         "hours": 168,
-        "maeCents": 6.46
+        "maeCents": 4.94
       },
       {
         "label": "Kuukausitaso (30 vrk / 720 tuntia)",
         "hours": 720,
-        "maeCents": 2.87
+        "maeCents": 2.76
       },
       {
         "label": "Puolivuotistaso (180 vrk / 4 320 tuntia)",
         "hours": 4320,
-        "maeCents": 2.43
+        "maeCents": 3.98
       },
       {
-        "label": "Täysi opittu historia (17552 tuntia / 2 vuotta)",
+        "label": "Täysi 24 muuttujan historia (17552 tuntia / 2 vuotta)",
         "hours": 17552,
-        "maeCents": 1.71
+        "maeCents": 1.7
       }
     ],
-    "currentMaeCents": 1.71,
-    "improvementPct": 76.1
+    "currentMaeCents": 1.7,
+    "improvementPct": 76.3
   },
+  "ablationStudy": [
+    {
+      "level": 0,
+      "title": "Taso 0: Oppimaton peruskaava (pelkkä keskiarvo)",
+      "paramCount": 1,
+      "maeCents": 4.77,
+      "rmseCents": 6.09,
+      "corrR": 0.0,
+      "cheapest6hHitRatePct": 38.2,
+      "improvementStepCents": 0.0
+    },
+    {
+      "level": 1,
+      "title": "Taso 1: + Suomen tuulivoiman epälineaarinen tehokäyrä",
+      "paramCount": 4,
+      "maeCents": 3.42,
+      "rmseCents": 4.97,
+      "corrR": 0.578,
+      "cheapest6hHitRatePct": 43.8,
+      "improvementStepCents": 1.35
+    },
+    {
+      "level": 2,
+      "title": "Taso 2: + Lämpötila, 72 h pakkasvaraus & 5x4 säähintamatriisi",
+      "paramCount": 9,
+      "maeCents": 2.78,
+      "rmseCents": 4.3,
+      "corrR": 0.711,
+      "cheapest6hHitRatePct": 43.8,
+      "improvementStepCents": 0.64
+    },
+    {
+      "level": 3,
+      "title": "Taso 3: + Tuntiprofiili, arkipyhät & aurinkovoima (W/m²)",
+      "paramCount": 15,
+      "maeCents": 2.44,
+      "rmseCents": 3.78,
+      "corrR": 0.791,
+      "cheapest6hHitRatePct": 53.5,
+      "improvementStepCents": 0.34
+    },
+    {
+      "level": 4,
+      "title": "Taso 4: + Ydinvoimaloiden huoltoseisokit (OL1–OL3, LO1–LO2)",
+      "paramCount": 17,
+      "maeCents": 2.44,
+      "rmseCents": 3.78,
+      "corrR": 0.791,
+      "cheapest6hHitRatePct": 53.5,
+      "improvementStepCents": 0.0
+    },
+    {
+      "level": 5,
+      "title": "Taso 5: + Tuulikuivuus, SE1/EE-rajatuuli & ilmanpaine (hPa)",
+      "paramCount": 22,
+      "maeCents": 2.38,
+      "rmseCents": 3.71,
+      "corrR": 0.796,
+      "cheapest6hHitRatePct": 57.6,
+      "improvementStepCents": 0.06
+    },
+    {
+      "level": 6,
+      "title": "Taso 6: + Markkinamuisti & volatiliteetti (Täysi 24 muuttujan malli)",
+      "paramCount": 24,
+      "maeCents": 2.38,
+      "rmseCents": 3.71,
+      "corrR": 0.797,
+      "cheapest6hHitRatePct": 57.6,
+      "improvementStepCents": 0.0
+    }
+  ],
+  "walkForwardPeriods": [
+    {
+      "id": "recent_72h",
+      "label": "Tuoreimmat 72 tuntia (Reaaliaikainen verifiointi)",
+      "startDate": "2026-11-02",
+      "endDate": "2026-11-05",
+      "metrics": {
+        "maeCents": 7.34,
+        "rmseCents": 12.94,
+        "corrR": 0.928,
+        "cheapest6hHitRatePct": 66.7
+      },
+      "avgWindMw": 4339,
+      "avgTempC": 5.2,
+      "avgNuclearMw": 4394,
+      "avgSolarMw": 20,
+      "hours": [
+        {
+          "epochMs": 1793574000000,
+          "dateKey": "2026-11-02",
+          "hour": 1,
+          "actual": 7.09,
+          "predicted": 4.28,
+          "windMw": 2432,
+          "tempC": 7.4,
+          "nuclearMw": 4394,
+          "solarMw": 0
+        },
+        {
+          "epochMs": 1793577600000,
+          "dateKey": "2026-11-02",
+          "hour": 2,
+          "actual": 5.42,
+          "predicted": 5.3,
+          "windMw": 2038,
+          "tempC": 7.2,
+          "nuclearMw": 4394,
+          "solarMw": 0
+        },
+        {
+          "epochMs": 1793581200000,
+          "dateKey": "2026-11-02",
+          "hour": 3,
+          "actual": 4.01,
+          "predicted": 5.09,
+          "windMw": 2115,
+          "tempC": 6.9,
+          "nuclearMw": 4394,
+          "solarMw": 0
+        },
+        {
+          "epochMs": 1793584800000,
+          "dateKey": "2026-11-02",
+          "hour": 4,
+          "actual": 4.54,
+          "predicted": 5.37,
+          "windMw": 2102,
+          "tempC": 6.3,
+          "nuclearMw": 4394,
+          "solarMw": 0
+        },
+        {
+          "epochMs": 1793588400000,
+          "dateKey": "2026-11-02",
+          "hour": 5,
+          "actual": 4.04,
+          "predicted": 6.78,
+          "windMw": 1525,
+          "tempC": 6.0,
+          "nuclearMw": 4394,
+          "solarMw": 0
+        },
+        {
+          "epochMs": 1793592000000,
+          "dateKey": "2026-11-02",
+          "hour": 6,
+          "actual": 13.28,
+          "predicted": 8.57,
+          "windMw": 1401,
+          "tempC": 5.7,
+          "nuclearMw": 4394,
+          "solarMw": 0
+        },
+        {
+          "epochMs": 1793595600000,
+          "dateKey": "2026-11-02",
+          "hour": 7,
+          "actual": 22.29,
+          "predicted": 12.63,
+          "windMw": 1066,
+          "tempC": 5.5,
+          "nuclearMw": 4394,
+          "solarMw": 0
+        },
+        {
+          "epochMs": 1793599200000,
+          "dateKey": "2026-11-02",
+          "hour": 8,
+          "actual": 42.03,
+          "predicted": 15.52,
+          "windMw": 753,
+          "tempC": 5.3,
+          "nuclearMw": 4394,
+          "solarMw": 0
+        },
+        {
+          "epochMs": 1793602800000,
+          "dateKey": "2026-11-02",
+          "hour": 9,
+          "actual": 43.92,
+          "predicted": 15.86,
+          "windMw": 754,
+          "tempC": 5.5,
+          "nuclearMw": 4394,
+          "solarMw": 3
+        },
+        {
+          "epochMs": 1793606400000,
+          "dateKey": "2026-11-02",
+          "hour": 10,
+          "actual": 45.4,
+          "predicted": 16.12,
+          "windMw": 627,
+          "tempC": 5.8,
+          "nuclearMw": 4394,
+          "solarMw": 12
+        },
+        {
+          "epochMs": 1793610000000,
+          "dateKey": "2026-11-02",
+          "hour": 11,
+          "actual": 47.22,
+          "predicted": 14.85,
+          "windMw": 429,
+          "tempC": 6.0,
+          "nuclearMw": 4394,
+          "solarMw": 21
+        },
+        {
+          "epochMs": 1793613600000,
+          "dateKey": "2026-11-02",
+          "hour": 12,
+          "actual": 49.0,
+          "predicted": 16.8,
+          "windMw": 169,
+          "tempC": 6.3,
+          "nuclearMw": 4394,
+          "solarMw": 30
+        },
+        {
+          "epochMs": 1793617200000,
+          "dateKey": "2026-11-02",
+          "hour": 13,
+          "actual": 50.51,
+          "predicted": 16.38,
+          "windMw": 169,
+          "tempC": 7.0,
+          "nuclearMw": 4394,
+          "solarMw": 32
+        },
+        {
+          "epochMs": 1793620800000,
+          "dateKey": "2026-11-02",
+          "hour": 14,
+          "actual": 48.38,
+          "predicted": 15.71,
+          "windMw": 169,
+          "tempC": 7.5,
+          "nuclearMw": 4394,
+          "solarMw": 31
+        },
+        {
+          "epochMs": 1793624400000,
+          "dateKey": "2026-11-02",
+          "hour": 15,
+          "actual": 37.27,
+          "predicted": 15.31,
+          "windMw": 202,
+          "tempC": 7.3,
+          "nuclearMw": 4394,
+          "solarMw": 24
+        },
+        {
+          "epochMs": 1793628000000,
+          "dateKey": "2026-11-02",
+          "hour": 16,
+          "actual": 43.45,
+          "predicted": 13.84,
+          "windMw": 737,
+          "tempC": 7.1,
+          "nuclearMw": 4394,
+          "solarMw": 10
+        },
+        {
+          "epochMs": 1793631600000,
+          "dateKey": "2026-11-02",
+          "hour": 17,
+          "actual": 50.76,
+          "predicted": 12.47,
+          "windMw": 1330,
+          "tempC": 7.0,
+          "nuclearMw": 4394,
+          "solarMw": 0
+        },
+        {
+          "epochMs": 1793635200000,
+          "dateKey": "2026-11-02",
+          "hour": 18,
+          "actual": 34.63,
+          "predicted": 11.08,
+          "windMw": 2091,
+          "tempC": 6.6,
+          "nuclearMw": 4394,
+          "solarMw": 0
+        },
+        {
+          "epochMs": 1793638800000,
+          "dateKey": "2026-11-02",
+          "hour": 19,
+          "actual": 22.27,
+          "predicted": 10.99,
+          "windMw": 2248,
+          "tempC": 5.9,
+          "nuclearMw": 4394,
+          "solarMw": 0
+        },
+        {
+          "epochMs": 1793642400000,
+          "dateKey": "2026-11-02",
+          "hour": 20,
+          "actual": 20.54,
+          "predicted": 9.96,
+          "windMw": 2897,
+          "tempC": 5.5,
+          "nuclearMw": 4394,
+          "solarMw": 0
+        },
+        {
+          "epochMs": 1793646000000,
+          "dateKey": "2026-11-02",
+          "hour": 21,
+          "actual": 10.69,
+          "predicted": 8.49,
+          "windMw": 3285,
+          "tempC": 5.0,
+          "nuclearMw": 4394,
+          "solarMw": 0
+        },
+        {
+          "epochMs": 1793649600000,
+          "dateKey": "2026-11-02",
+          "hour": 22,
+          "actual": 6.67,
+          "predicted": 5.46,
+          "windMw": 3616,
+          "tempC": 4.6,
+          "nuclearMw": 4394,
+          "solarMw": 0
+        },
+        {
+          "epochMs": 1793653200000,
+          "dateKey": "2026-11-02",
+          "hour": 23,
+          "actual": 2.89,
+          "predicted": 4.34,
+          "windMw": 3707,
+          "tempC": 4.0,
+          "nuclearMw": 4394,
+          "solarMw": 0
+        },
+        {
+          "epochMs": 1793656800000,
+          "dateKey": "2026-11-03",
+          "hour": 0,
+          "actual": 0.88,
+          "predicted": 1.49,
+          "windMw": 4600,
+          "tempC": 3.6,
+          "nuclearMw": 4394,
+          "solarMw": 0
+        },
+        {
+          "epochMs": 1793660400000,
+          "dateKey": "2026-11-03",
+          "hour": 1,
+          "actual": 0.72,
+          "predicted": 1.28,
+          "windMw": 5474,
+          "tempC": 3.1,
+          "nuclearMw": 4394,
+          "solarMw": 0
+        },
+        {
+          "epochMs": 1793664000000,
+          "dateKey": "2026-11-03",
+          "hour": 2,
+          "actual": 0.64,
+          "predicted": 0.37,
+          "windMw": 6037,
+          "tempC": 3.0,
+          "nuclearMw": 4394,
+          "solarMw": 0
+        },
+        {
+          "epochMs": 1793667600000,
+          "dateKey": "2026-11-03",
+          "hour": 3,
+          "actual": 0.6,
+          "predicted": 0.05,
+          "windMw": 6348,
+          "tempC": 2.6,
+          "nuclearMw": 4394,
+          "solarMw": 0
+        },
+        {
+          "epochMs": 1793671200000,
+          "dateKey": "2026-11-03",
+          "hour": 4,
+          "actual": 0.59,
+          "predicted": 0.05,
+          "windMw": 6339,
+          "tempC": 3.9,
+          "nuclearMw": 4394,
+          "solarMw": 0
+        },
+        {
+          "epochMs": 1793674800000,
+          "dateKey": "2026-11-03",
+          "hour": 5,
+          "actual": 0.62,
+          "predicted": 0.05,
+          "windMw": 6454,
+          "tempC": 3.4,
+          "nuclearMw": 4394,
+          "solarMw": 0
+        },
+        {
+          "epochMs": 1793678400000,
+          "dateKey": "2026-11-03",
+          "hour": 6,
+          "actual": 0.67,
+          "predicted": 0.82,
+          "windMw": 7605,
+          "tempC": 3.9,
+          "nuclearMw": 4394,
+          "solarMw": 0
+        },
+        {
+          "epochMs": 1793682000000,
+          "dateKey": "2026-11-03",
+          "hour": 7,
+          "actual": 1.08,
+          "predicted": 0.91,
+          "windMw": 7605,
+          "tempC": 4.3,
+          "nuclearMw": 4394,
+          "solarMw": 0
+        },
+        {
+          "epochMs": 1793685600000,
+          "dateKey": "2026-11-03",
+          "hour": 8,
+          "actual": 1.89,
+          "predicted": 2.63,
+          "windMw": 7605,
+          "tempC": 4.6,
+          "nuclearMw": 4394,
+          "solarMw": 0
+        },
+        {
+          "epochMs": 1793689200000,
+          "dateKey": "2026-11-03",
+          "hour": 9,
+          "actual": 2.18,
+          "predicted": 2.59,
+          "windMw": 7605,
+          "tempC": 4.7,
+          "nuclearMw": 4394,
+          "solarMw": 32
+        },
+        {
+          "epochMs": 1793692800000,
+          "dateKey": "2026-11-03",
+          "hour": 10,
+          "actual": 1.87,
+          "predicted": 2.12,
+          "windMw": 7605,
+          "tempC": 5.2,
+          "nuclearMw": 4394,
+          "solarMw": 84
+        },
+        {
+          "epochMs": 1793696400000,
+          "dateKey": "2026-11-03",
+          "hour": 11,
+          "actual": 2.02,
+          "predicted": 2.06,
+          "windMw": 7605,
+          "tempC": 5.9,
+          "nuclearMw": 4394,
+          "solarMw": 188
+        },
+        {
+          "epochMs": 1793700000000,
+          "dateKey": "2026-11-03",
+          "hour": 12,
+          "actual": 2.13,
+          "predicted": 2.12,
+          "windMw": 7605,
+          "tempC": 6.3,
+          "nuclearMw": 4394,
+          "solarMw": 157
+        },
+        {
+          "epochMs": 1793703600000,
+          "dateKey": "2026-11-03",
+          "hour": 13,
+          "actual": 2.0,
+          "predicted": 2.36,
+          "windMw": 7572,
+          "tempC": 6.6,
+          "nuclearMw": 4394,
+          "solarMw": 124
+        },
+        {
+          "epochMs": 1793707200000,
+          "dateKey": "2026-11-03",
+          "hour": 14,
+          "actual": 2.87,
+          "predicted": 3.03,
+          "windMw": 6506,
+          "tempC": 6.6,
+          "nuclearMw": 4394,
+          "solarMw": 140
+        },
+        {
+          "epochMs": 1793710800000,
+          "dateKey": "2026-11-03",
+          "hour": 15,
+          "actual": 3.1,
+          "predicted": 4.76,
+          "windMw": 4960,
+          "tempC": 6.4,
+          "nuclearMw": 4394,
+          "solarMw": 95
+        },
+        {
+          "epochMs": 1793714400000,
+          "dateKey": "2026-11-03",
+          "hour": 16,
+          "actual": 3.64,
+          "predicted": 6.8,
+          "windMw": 4135,
+          "tempC": 5.7,
+          "nuclearMw": 4394,
+          "solarMw": 42
+        },
+        {
+          "epochMs": 1793718000000,
+          "dateKey": "2026-11-03",
+          "hour": 17,
+          "actual": 7.06,
+          "predicted": 8.86,
+          "windMw": 3419,
+          "tempC": 5.0,
+          "nuclearMw": 4394,
+          "solarMw": 0
+        },
+        {
+          "epochMs": 1793721600000,
+          "dateKey": "2026-11-03",
+          "hour": 18,
+          "actual": 17.37,
+          "predicted": 10.86,
+          "windMw": 2936,
+          "tempC": 4.1,
+          "nuclearMw": 4394,
+          "solarMw": 0
+        },
+        {
+          "epochMs": 1793725200000,
+          "dateKey": "2026-11-03",
+          "hour": 19,
+          "actual": 29.54,
+          "predicted": 12.28,
+          "windMw": 2045,
+          "tempC": 3.2,
+          "nuclearMw": 4394,
+          "solarMw": 0
+        },
+        {
+          "epochMs": 1793728800000,
+          "dateKey": "2026-11-03",
+          "hour": 20,
+          "actual": 33.29,
+          "predicted": 15.21,
+          "windMw": 879,
+          "tempC": 2.6,
+          "nuclearMw": 4394,
+          "solarMw": 0
+        },
+        {
+          "epochMs": 1793732400000,
+          "dateKey": "2026-11-03",
+          "hour": 21,
+          "actual": 33.23,
+          "predicted": 18.95,
+          "windMw": 169,
+          "tempC": 2.3,
+          "nuclearMw": 4394,
+          "solarMw": 0
+        },
+        {
+          "epochMs": 1793736000000,
+          "dateKey": "2026-11-03",
+          "hour": 22,
+          "actual": 33.08,
+          "predicted": 16.43,
+          "windMw": 169,
+          "tempC": 2.0,
+          "nuclearMw": 4394,
+          "solarMw": 0
+        },
+        {
+          "epochMs": 1793739600000,
+          "dateKey": "2026-11-03",
+          "hour": 23,
+          "actual": 27.57,
+          "predicted": 12.13,
+          "windMw": 276,
+          "tempC": 1.8,
+          "nuclearMw": 4394,
+          "solarMw": 0
+        },
+        {
+          "epochMs": 1793743200000,
+          "dateKey": "2026-11-04",
+          "hour": 0,
+          "actual": 16.95,
+          "predicted": 7.44,
+          "windMw": 1195,
+          "tempC": 1.6,
+          "nuclearMw": 4394,
+          "solarMw": 0
+        },
+        {
+          "epochMs": 1793746800000,
+          "dateKey": "2026-11-04",
+          "hour": 1,
+          "actual": 14.7,
+          "predicted": 7.48,
+          "windMw": 1703,
+          "tempC": 1.6,
+          "nuclearMw": 4394,
+          "solarMw": 0
+        },
+        {
+          "epochMs": 1793750400000,
+          "dateKey": "2026-11-04",
+          "hour": 2,
+          "actual": 2.38,
+          "predicted": 5.34,
+          "windMw": 2710,
+          "tempC": 1.9,
+          "nuclearMw": 4394,
+          "solarMw": 0
+        },
+        {
+          "epochMs": 1793754000000,
+          "dateKey": "2026-11-04",
+          "hour": 3,
+          "actual": 0.97,
+          "predicted": 4.42,
+          "windMw": 3347,
+          "tempC": 2.2,
+          "nuclearMw": 4394,
+          "solarMw": 0
+        },
+        {
+          "epochMs": 1793757600000,
+          "dateKey": "2026-11-04",
+          "hour": 4,
+          "actual": 0.97,
+          "predicted": 3.11,
+          "windMw": 4081,
+          "tempC": 2.3,
+          "nuclearMw": 4394,
+          "solarMw": 0
+        },
+        {
+          "epochMs": 1793761200000,
+          "dateKey": "2026-11-04",
+          "hour": 5,
+          "actual": 1.06,
+          "predicted": 2.45,
+          "windMw": 4793,
+          "tempC": 2.4,
+          "nuclearMw": 4394,
+          "solarMw": 0
+        },
+        {
+          "epochMs": 1793764800000,
+          "dateKey": "2026-11-04",
+          "hour": 6,
+          "actual": 1.33,
+          "predicted": 4.2,
+          "windMw": 5148,
+          "tempC": 2.6,
+          "nuclearMw": 4394,
+          "solarMw": 0
+        },
+        {
+          "epochMs": 1793768400000,
+          "dateKey": "2026-11-04",
+          "hour": 7,
+          "actual": 2.28,
+          "predicted": 5.47,
+          "windMw": 5610,
+          "tempC": 3.2,
+          "nuclearMw": 4394,
+          "solarMw": 0
+        },
+        {
+          "epochMs": 1793772000000,
+          "dateKey": "2026-11-04",
+          "hour": 8,
+          "actual": 2.39,
+          "predicted": 6.21,
+          "windMw": 5908,
+          "tempC": 3.7,
+          "nuclearMw": 4394,
+          "solarMw": 0
+        },
+        {
+          "epochMs": 1793775600000,
+          "dateKey": "2026-11-04",
+          "hour": 9,
+          "actual": 1.86,
+          "predicted": 5.27,
+          "windMw": 6395,
+          "tempC": 4.5,
+          "nuclearMw": 4394,
+          "solarMw": 8
+        },
+        {
+          "epochMs": 1793779200000,
+          "dateKey": "2026-11-04",
+          "hour": 10,
+          "actual": 1.57,
+          "predicted": 2.87,
+          "windMw": 7605,
+          "tempC": 5.2,
+          "nuclearMw": 4394,
+          "solarMw": 38
+        },
+        {
+          "epochMs": 1793782800000,
+          "dateKey": "2026-11-04",
+          "hour": 11,
+          "actual": 1.3,
+          "predicted": 2.52,
+          "windMw": 7605,
+          "tempC": 5.9,
+          "nuclearMw": 4394,
+          "solarMw": 67
+        },
+        {
+          "epochMs": 1793786400000,
+          "dateKey": "2026-11-04",
+          "hour": 12,
+          "actual": 1.48,
+          "predicted": 1.74,
+          "windMw": 7605,
+          "tempC": 6.9,
+          "nuclearMw": 4394,
+          "solarMw": 87
+        },
+        {
+          "epochMs": 1793790000000,
+          "dateKey": "2026-11-04",
+          "hour": 13,
+          "actual": 1.48,
+          "predicted": 1.18,
+          "windMw": 7605,
+          "tempC": 7.4,
+          "nuclearMw": 4394,
+          "solarMw": 94
+        },
+        {
+          "epochMs": 1793793600000,
+          "dateKey": "2026-11-04",
+          "hour": 14,
+          "actual": 1.29,
+          "predicted": 1.16,
+          "windMw": 7605,
+          "tempC": 7.7,
+          "nuclearMw": 4394,
+          "solarMw": 77
+        },
+        {
+          "epochMs": 1793797200000,
+          "dateKey": "2026-11-04",
+          "hour": 15,
+          "actual": 1.24,
+          "predicted": 1.38,
+          "windMw": 7605,
+          "tempC": 7.8,
+          "nuclearMw": 4394,
+          "solarMw": 34
+        },
+        {
+          "epochMs": 1793800800000,
+          "dateKey": "2026-11-04",
+          "hour": 16,
+          "actual": 1.57,
+          "predicted": 0.62,
+          "windMw": 7605,
+          "tempC": 7.7,
+          "nuclearMw": 4394,
+          "solarMw": 17
+        },
+        {
+          "epochMs": 1793804400000,
+          "dateKey": "2026-11-04",
+          "hour": 17,
+          "actual": 1.63,
+          "predicted": 1.34,
+          "windMw": 7605,
+          "tempC": 7.6,
+          "nuclearMw": 4394,
+          "solarMw": 0
+        },
+        {
+          "epochMs": 1793808000000,
+          "dateKey": "2026-11-04",
+          "hour": 18,
+          "actual": 1.64,
+          "predicted": 2.07,
+          "windMw": 7605,
+          "tempC": 7.6,
+          "nuclearMw": 4394,
+          "solarMw": 0
+        },
+        {
+          "epochMs": 1793811600000,
+          "dateKey": "2026-11-04",
+          "hour": 19,
+          "actual": 1.54,
+          "predicted": 2.52,
+          "windMw": 7605,
+          "tempC": 7.3,
+          "nuclearMw": 4394,
+          "solarMw": 0
+        },
+        {
+          "epochMs": 1793815200000,
+          "dateKey": "2026-11-04",
+          "hour": 20,
+          "actual": 1.07,
+          "predicted": 2.2,
+          "windMw": 7605,
+          "tempC": 7.0,
+          "nuclearMw": 4394,
+          "solarMw": 0
+        },
+        {
+          "epochMs": 1793818800000,
+          "dateKey": "2026-11-04",
+          "hour": 21,
+          "actual": 0.59,
+          "predicted": 1.23,
+          "windMw": 7605,
+          "tempC": 6.5,
+          "nuclearMw": 4394,
+          "solarMw": 0
+        },
+        {
+          "epochMs": 1793822400000,
+          "dateKey": "2026-11-04",
+          "hour": 22,
+          "actual": 0.6,
+          "predicted": 2.5,
+          "windMw": 7605,
+          "tempC": 6.2,
+          "nuclearMw": 4394,
+          "solarMw": 0
+        },
+        {
+          "epochMs": 1793826000000,
+          "dateKey": "2026-11-04",
+          "hour": 23,
+          "actual": 0.36,
+          "predicted": 1.55,
+          "windMw": 7605,
+          "tempC": 6.0,
+          "nuclearMw": 4394,
+          "solarMw": 0
+        },
+        {
+          "epochMs": 1793829600000,
+          "dateKey": "2026-11-05",
+          "hour": 0,
+          "actual": 0.27,
+          "predicted": 0.05,
+          "windMw": 7605,
+          "tempC": 6.1,
+          "nuclearMw": 4394,
+          "solarMw": 0
+        }
+      ]
+    },
+    {
+      "id": "winter_frost",
+      "label": "Talven pakkasjakso (Kova pakkanen ja lämmityshuippu)",
+      "startDate": "2026-01-29",
+      "endDate": "2026-02-01",
+      "metrics": {
+        "maeCents": 4.06,
+        "rmseCents": 5.09,
+        "corrR": 0.936,
+        "cheapest6hHitRatePct": 83.3
+      },
+      "avgWindMw": 1880,
+      "avgTempC": -17.9,
+      "avgNuclearMw": 4239,
+      "avgSolarMw": 33,
+      "hours": [
+        {
+          "epochMs": 1769698800000,
+          "dateKey": "2026-01-29",
+          "hour": 17,
+          "actual": 30.55,
+          "predicted": 29.28,
+          "windMw": 253,
+          "tempC": -11.4,
+          "nuclearMw": 4239,
+          "solarMw": 1
+        },
+        {
+          "epochMs": 1769702400000,
+          "dateKey": "2026-01-29",
+          "hour": 18,
+          "actual": 28.95,
+          "predicted": 29.94,
+          "windMw": 204,
+          "tempC": -11.6,
+          "nuclearMw": 4239,
+          "solarMw": 0
+        },
+        {
+          "epochMs": 1769706000000,
+          "dateKey": "2026-01-29",
+          "hour": 19,
+          "actual": 27.73,
+          "predicted": 28.76,
+          "windMw": 213,
+          "tempC": -11.9,
+          "nuclearMw": 4239,
+          "solarMw": 0
+        },
+        {
+          "epochMs": 1769709600000,
+          "dateKey": "2026-01-29",
+          "hour": 20,
+          "actual": 30.05,
+          "predicted": 28.67,
+          "windMw": 184,
+          "tempC": -12.5,
+          "nuclearMw": 4239,
+          "solarMw": 0
+        },
+        {
+          "epochMs": 1769713200000,
+          "dateKey": "2026-01-29",
+          "hour": 21,
+          "actual": 26.8,
+          "predicted": 26.59,
+          "windMw": 169,
+          "tempC": -12.8,
+          "nuclearMw": 4239,
+          "solarMw": 0
+        },
+        {
+          "epochMs": 1769716800000,
+          "dateKey": "2026-01-29",
+          "hour": 22,
+          "actual": 26.23,
+          "predicted": 24.18,
+          "windMw": 169,
+          "tempC": -13.0,
+          "nuclearMw": 4239,
+          "solarMw": 0
+        },
+        {
+          "epochMs": 1769720400000,
+          "dateKey": "2026-01-29",
+          "hour": 23,
+          "actual": 24.22,
+          "predicted": 20.78,
+          "windMw": 169,
+          "tempC": -13.3,
+          "nuclearMw": 4239,
+          "solarMw": 0
+        },
+        {
+          "epochMs": 1769724000000,
+          "dateKey": "2026-01-30",
+          "hour": 0,
+          "actual": 20.21,
+          "predicted": 18.92,
+          "windMw": 169,
+          "tempC": -13.4,
+          "nuclearMw": 4239,
+          "solarMw": 0
+        },
+        {
+          "epochMs": 1769727600000,
+          "dateKey": "2026-01-30",
+          "hour": 1,
+          "actual": 19.33,
+          "predicted": 18.96,
+          "windMw": 169,
+          "tempC": -13.6,
+          "nuclearMw": 4239,
+          "solarMw": 0
+        },
+        {
+          "epochMs": 1769731200000,
+          "dateKey": "2026-01-30",
+          "hour": 2,
+          "actual": 18.82,
+          "predicted": 18.58,
+          "windMw": 169,
+          "tempC": -16.6,
+          "nuclearMw": 4239,
+          "solarMw": 0
+        },
+        {
+          "epochMs": 1769734800000,
+          "dateKey": "2026-01-30",
+          "hour": 3,
+          "actual": 18.67,
+          "predicted": 18.27,
+          "windMw": 169,
+          "tempC": -17.4,
+          "nuclearMw": 4239,
+          "solarMw": 0
+        },
+        {
+          "epochMs": 1769738400000,
+          "dateKey": "2026-01-30",
+          "hour": 4,
+          "actual": 18.48,
+          "predicted": 18.04,
+          "windMw": 169,
+          "tempC": -17.4,
+          "nuclearMw": 4239,
+          "solarMw": 0
+        },
+        {
+          "epochMs": 1769742000000,
+          "dateKey": "2026-01-30",
+          "hour": 5,
+          "actual": 19.66,
+          "predicted": 18.56,
+          "windMw": 169,
+          "tempC": -17.7,
+          "nuclearMw": 4239,
+          "solarMw": 0
+        },
+        {
+          "epochMs": 1769745600000,
+          "dateKey": "2026-01-30",
+          "hour": 6,
+          "actual": 26.48,
+          "predicted": 24.69,
+          "windMw": 169,
+          "tempC": -17.7,
+          "nuclearMw": 4239,
+          "solarMw": 0
+        },
+        {
+          "epochMs": 1769749200000,
+          "dateKey": "2026-01-30",
+          "hour": 7,
+          "actual": 41.99,
+          "predicted": 29.9,
+          "windMw": 169,
+          "tempC": -17.9,
+          "nuclearMw": 4239,
+          "solarMw": 0
+        },
+        {
+          "epochMs": 1769752800000,
+          "dateKey": "2026-01-30",
+          "hour": 8,
+          "actual": 39.3,
+          "predicted": 31.81,
+          "windMw": 169,
+          "tempC": -19.0,
+          "nuclearMw": 4239,
+          "solarMw": 0
+        },
+        {
+          "epochMs": 1769756400000,
+          "dateKey": "2026-01-30",
+          "hour": 9,
+          "actual": 41.34,
+          "predicted": 32.81,
+          "windMw": 169,
+          "tempC": -20.0,
+          "nuclearMw": 4239,
+          "solarMw": 0
+        },
+        {
+          "epochMs": 1769760000000,
+          "dateKey": "2026-01-30",
+          "hour": 10,
+          "actual": 40.38,
+          "predicted": 31.89,
+          "windMw": 169,
+          "tempC": -19.6,
+          "nuclearMw": 4239,
+          "solarMw": 27
+        },
+        {
+          "epochMs": 1769763600000,
+          "dateKey": "2026-01-30",
+          "hour": 11,
+          "actual": 41.02,
+          "predicted": 29.33,
+          "windMw": 169,
+          "tempC": -17.8,
+          "nuclearMw": 4239,
+          "solarMw": 106
+        },
+        {
+          "epochMs": 1769767200000,
+          "dateKey": "2026-01-30",
+          "hour": 12,
+          "actual": 39.73,
+          "predicted": 29.03,
+          "windMw": 169,
+          "tempC": -16.2,
+          "nuclearMw": 4239,
+          "solarMw": 173
+        },
+        {
+          "epochMs": 1769770800000,
+          "dateKey": "2026-01-30",
+          "hour": 13,
+          "actual": 37.77,
+          "predicted": 28.61,
+          "windMw": 169,
+          "tempC": -15.2,
+          "nuclearMw": 4239,
+          "solarMw": 202
+        },
+        {
+          "epochMs": 1769774400000,
+          "dateKey": "2026-01-30",
+          "hour": 14,
+          "actual": 34.45,
+          "predicted": 28.32,
+          "windMw": 169,
+          "tempC": -14.5,
+          "nuclearMw": 4239,
+          "solarMw": 190
+        },
+        {
+          "epochMs": 1769778000000,
+          "dateKey": "2026-01-30",
+          "hour": 15,
+          "actual": 34.48,
+          "predicted": 28.93,
+          "windMw": 169,
+          "tempC": -14.5,
+          "nuclearMw": 4239,
+          "solarMw": 133
+        },
+        {
+          "epochMs": 1769781600000,
+          "dateKey": "2026-01-30",
+          "hour": 16,
+          "actual": 36.27,
+          "predicted": 31.55,
+          "windMw": 169,
+          "tempC": -15.9,
+          "nuclearMw": 4239,
+          "solarMw": 60
+        },
+        {
+          "epochMs": 1769785200000,
+          "dateKey": "2026-01-30",
+          "hour": 17,
+          "actual": 41.13,
+          "predicted": 32.44,
+          "windMw": 169,
+          "tempC": -16.4,
+          "nuclearMw": 4239,
+          "solarMw": 4
+        },
+        {
+          "epochMs": 1769788800000,
+          "dateKey": "2026-01-30",
+          "hour": 18,
+          "actual": 36.8,
+          "predicted": 30.53,
+          "windMw": 305,
+          "tempC": -16.4,
+          "nuclearMw": 4239,
+          "solarMw": 0
+        },
+        {
+          "epochMs": 1769792400000,
+          "dateKey": "2026-01-30",
+          "hour": 19,
+          "actual": 39.87,
+          "predicted": 28.91,
+          "windMw": 394,
+          "tempC": -16.7,
+          "nuclearMw": 4239,
+          "solarMw": 0
+        },
+        {
+          "epochMs": 1769796000000,
+          "dateKey": "2026-01-30",
+          "hour": 20,
+          "actual": 31.11,
+          "predicted": 24.67,
+          "windMw": 717,
+          "tempC": -18.5,
+          "nuclearMw": 4239,
+          "solarMw": 0
+        },
+        {
+          "epochMs": 1769799600000,
+          "dateKey": "2026-01-30",
+          "hour": 21,
+          "actual": 23.87,
+          "predicted": 23.87,
+          "windMw": 663,
+          "tempC": -19.0,
+          "nuclearMw": 4239,
+          "solarMw": 0
+        },
+        {
+          "epochMs": 1769803200000,
+          "dateKey": "2026-01-30",
+          "hour": 22,
+          "actual": 23.85,
+          "predicted": 19.81,
+          "windMw": 824,
+          "tempC": -19.2,
+          "nuclearMw": 4239,
+          "solarMw": 0
+        },
+        {
+          "epochMs": 1769806800000,
+          "dateKey": "2026-01-30",
+          "hour": 23,
+          "actual": 22.2,
+          "predicted": 18.97,
+          "windMw": 810,
+          "tempC": -19.5,
+          "nuclearMw": 4239,
+          "solarMw": 0
+        },
+        {
+          "epochMs": 1769810400000,
+          "dateKey": "2026-01-31",
+          "hour": 0,
+          "actual": 17.75,
+          "predicted": 17.13,
+          "windMw": 781,
+          "tempC": -19.7,
+          "nuclearMw": 4239,
+          "solarMw": 0
+        },
+        {
+          "epochMs": 1769814000000,
+          "dateKey": "2026-01-31",
+          "hour": 1,
+          "actual": 22.66,
+          "predicted": 17.16,
+          "windMw": 766,
+          "tempC": -20.1,
+          "nuclearMw": 4239,
+          "solarMw": 0
+        },
+        {
+          "epochMs": 1769817600000,
+          "dateKey": "2026-01-31",
+          "hour": 2,
+          "actual": 20.13,
+          "predicted": 12.52,
+          "windMw": 2308,
+          "tempC": -20.8,
+          "nuclearMw": 4239,
+          "solarMw": 0
+        },
+        {
+          "epochMs": 1769821200000,
+          "dateKey": "2026-01-31",
+          "hour": 3,
+          "actual": 18.95,
+          "predicted": 13.2,
+          "windMw": 1896,
+          "tempC": -21.3,
+          "nuclearMw": 4239,
+          "solarMw": 0
+        },
+        {
+          "epochMs": 1769824800000,
+          "dateKey": "2026-01-31",
+          "hour": 4,
+          "actual": 18.82,
+          "predicted": 13.96,
+          "windMw": 1461,
+          "tempC": -21.5,
+          "nuclearMw": 4239,
+          "solarMw": 0
+        },
+        {
+          "epochMs": 1769828400000,
+          "dateKey": "2026-01-31",
+          "hour": 5,
+          "actual": 19.08,
+          "predicted": 13.74,
+          "windMw": 1591,
+          "tempC": -21.7,
+          "nuclearMw": 4239,
+          "solarMw": 0
+        },
+        {
+          "epochMs": 1769832000000,
+          "dateKey": "2026-01-31",
+          "hour": 6,
+          "actual": 20.47,
+          "predicted": 15.8,
+          "windMw": 1544,
+          "tempC": -21.8,
+          "nuclearMw": 4239,
+          "solarMw": 0
+        },
+        {
+          "epochMs": 1769835600000,
+          "dateKey": "2026-01-31",
+          "hour": 7,
+          "actual": 20.98,
+          "predicted": 16.74,
+          "windMw": 1620,
+          "tempC": -22.4,
+          "nuclearMw": 4239,
+          "solarMw": 0
+        },
+        {
+          "epochMs": 1769839200000,
+          "dateKey": "2026-01-31",
+          "hour": 8,
+          "actual": 18.95,
+          "predicted": 16.6,
+          "windMw": 1639,
+          "tempC": -22.8,
+          "nuclearMw": 4239,
+          "solarMw": 0
+        },
+        {
+          "epochMs": 1769842800000,
+          "dateKey": "2026-01-31",
+          "hour": 9,
+          "actual": 21.6,
+          "predicted": 16.64,
+          "windMw": 2167,
+          "tempC": -23.6,
+          "nuclearMw": 4239,
+          "solarMw": 0
+        },
+        {
+          "epochMs": 1769846400000,
+          "dateKey": "2026-01-31",
+          "hour": 10,
+          "actual": 20.33,
+          "predicted": 15.86,
+          "windMw": 2682,
+          "tempC": -23.2,
+          "nuclearMw": 4239,
+          "solarMw": 30
+        },
+        {
+          "epochMs": 1769850000000,
+          "dateKey": "2026-01-31",
+          "hour": 11,
+          "actual": 21.52,
+          "predicted": 14.21,
+          "windMw": 3416,
+          "tempC": -21.6,
+          "nuclearMw": 4239,
+          "solarMw": 112
+        },
+        {
+          "epochMs": 1769853600000,
+          "dateKey": "2026-01-31",
+          "hour": 12,
+          "actual": 21.17,
+          "predicted": 17.94,
+          "windMw": 1697,
+          "tempC": -20.2,
+          "nuclearMw": 4239,
+          "solarMw": 180
+        },
+        {
+          "epochMs": 1769857200000,
+          "dateKey": "2026-01-31",
+          "hour": 13,
+          "actual": 22.44,
+          "predicted": 16.83,
+          "windMw": 2146,
+          "tempC": -18.6,
+          "nuclearMw": 4239,
+          "solarMw": 212
+        },
+        {
+          "epochMs": 1769860800000,
+          "dateKey": "2026-01-31",
+          "hour": 14,
+          "actual": 23.17,
+          "predicted": 17.06,
+          "windMw": 2093,
+          "tempC": -14.8,
+          "nuclearMw": 4239,
+          "solarMw": 200
+        },
+        {
+          "epochMs": 1769864400000,
+          "dateKey": "2026-01-31",
+          "hour": 15,
+          "actual": 22.68,
+          "predicted": 16.89,
+          "windMw": 2442,
+          "tempC": -14.9,
+          "nuclearMw": 4239,
+          "solarMw": 148
+        },
+        {
+          "epochMs": 1769868000000,
+          "dateKey": "2026-01-31",
+          "hour": 16,
+          "actual": 23.3,
+          "predicted": 16.18,
+          "windMw": 2883,
+          "tempC": -16.0,
+          "nuclearMw": 4239,
+          "solarMw": 68
+        },
+        {
+          "epochMs": 1769871600000,
+          "dateKey": "2026-01-31",
+          "hour": 17,
+          "actual": 23.28,
+          "predicted": 14.42,
+          "windMw": 3403,
+          "tempC": -17.1,
+          "nuclearMw": 4239,
+          "solarMw": 5
+        },
+        {
+          "epochMs": 1769875200000,
+          "dateKey": "2026-01-31",
+          "hour": 18,
+          "actual": 20.47,
+          "predicted": 13.52,
+          "windMw": 3890,
+          "tempC": -17.3,
+          "nuclearMw": 4239,
+          "solarMw": 0
+        },
+        {
+          "epochMs": 1769878800000,
+          "dateKey": "2026-01-31",
+          "hour": 19,
+          "actual": 17.83,
+          "predicted": 12.73,
+          "windMw": 4233,
+          "tempC": -17.6,
+          "nuclearMw": 4239,
+          "solarMw": 0
+        },
+        {
+          "epochMs": 1769882400000,
+          "dateKey": "2026-01-31",
+          "hour": 20,
+          "actual": 17.22,
+          "predicted": 12.38,
+          "windMw": 4247,
+          "tempC": -18.2,
+          "nuclearMw": 4239,
+          "solarMw": 0
+        },
+        {
+          "epochMs": 1769886000000,
+          "dateKey": "2026-01-31",
+          "hour": 21,
+          "actual": 15.82,
+          "predicted": 11.53,
+          "windMw": 4177,
+          "tempC": -18.8,
+          "nuclearMw": 4239,
+          "solarMw": 0
+        },
+        {
+          "epochMs": 1769889600000,
+          "dateKey": "2026-01-31",
+          "hour": 22,
+          "actual": 14.67,
+          "predicted": 11.45,
+          "windMw": 4233,
+          "tempC": -19.1,
+          "nuclearMw": 4239,
+          "solarMw": 0
+        },
+        {
+          "epochMs": 1769893200000,
+          "dateKey": "2026-01-31",
+          "hour": 23,
+          "actual": 13.15,
+          "predicted": 11.19,
+          "windMw": 4233,
+          "tempC": -19.3,
+          "nuclearMw": 4239,
+          "solarMw": 0
+        },
+        {
+          "epochMs": 1769896800000,
+          "dateKey": "2026-02-01",
+          "hour": 0,
+          "actual": 11.16,
+          "predicted": 8.88,
+          "windMw": 4430,
+          "tempC": -19.6,
+          "nuclearMw": 4239,
+          "solarMw": 0
+        },
+        {
+          "epochMs": 1769900400000,
+          "dateKey": "2026-02-01",
+          "hour": 1,
+          "actual": 6.58,
+          "predicted": 9.71,
+          "windMw": 4487,
+          "tempC": -19.8,
+          "nuclearMw": 4239,
+          "solarMw": 0
+        },
+        {
+          "epochMs": 1769904000000,
+          "dateKey": "2026-02-01",
+          "hour": 2,
+          "actual": 6.6,
+          "predicted": 9.63,
+          "windMw": 4219,
+          "tempC": -20.1,
+          "nuclearMw": 4239,
+          "solarMw": 0
+        },
+        {
+          "epochMs": 1769907600000,
+          "dateKey": "2026-02-01",
+          "hour": 3,
+          "actual": 6.67,
+          "predicted": 9.91,
+          "windMw": 3849,
+          "tempC": -20.5,
+          "nuclearMw": 4239,
+          "solarMw": 0
+        },
+        {
+          "epochMs": 1769911200000,
+          "dateKey": "2026-02-01",
+          "hour": 4,
+          "actual": 6.68,
+          "predicted": 10.04,
+          "windMw": 3971,
+          "tempC": -20.2,
+          "nuclearMw": 4239,
+          "solarMw": 0
+        },
+        {
+          "epochMs": 1769914800000,
+          "dateKey": "2026-02-01",
+          "hour": 5,
+          "actual": 7.19,
+          "predicted": 9.03,
+          "windMw": 4601,
+          "tempC": -19.9,
+          "nuclearMw": 4239,
+          "solarMw": 0
+        },
+        {
+          "epochMs": 1769918400000,
+          "dateKey": "2026-02-01",
+          "hour": 6,
+          "actual": 7.96,
+          "predicted": 9.64,
+          "windMw": 4938,
+          "tempC": -19.8,
+          "nuclearMw": 4239,
+          "solarMw": 0
+        },
+        {
+          "epochMs": 1769922000000,
+          "dateKey": "2026-02-01",
+          "hour": 7,
+          "actual": 8.28,
+          "predicted": 10.51,
+          "windMw": 5253,
+          "tempC": -20.0,
+          "nuclearMw": 4239,
+          "solarMw": 0
+        },
+        {
+          "epochMs": 1769925600000,
+          "dateKey": "2026-02-01",
+          "hour": 8,
+          "actual": 9.85,
+          "predicted": 11.31,
+          "windMw": 4908,
+          "tempC": -19.8,
+          "nuclearMw": 4239,
+          "solarMw": 0
+        },
+        {
+          "epochMs": 1769929200000,
+          "dateKey": "2026-02-01",
+          "hour": 9,
+          "actual": 12.29,
+          "predicted": 12.76,
+          "windMw": 4430,
+          "tempC": -20.0,
+          "nuclearMw": 4239,
+          "solarMw": 0
+        },
+        {
+          "epochMs": 1769932800000,
+          "dateKey": "2026-02-01",
+          "hour": 10,
+          "actual": 11.65,
+          "predicted": 11.93,
+          "windMw": 4923,
+          "tempC": -19.7,
+          "nuclearMw": 4239,
+          "solarMw": 18
+        },
+        {
+          "epochMs": 1769936400000,
+          "dateKey": "2026-02-01",
+          "hour": 11,
+          "actual": 14.32,
+          "predicted": 13.06,
+          "windMw": 4122,
+          "tempC": -19.0,
+          "nuclearMw": 4239,
+          "solarMw": 60
+        },
+        {
+          "epochMs": 1769940000000,
+          "dateKey": "2026-02-01",
+          "hour": 12,
+          "actual": 12.76,
+          "predicted": 15.28,
+          "windMw": 2265,
+          "tempC": -18.0,
+          "nuclearMw": 4239,
+          "solarMw": 89
+        },
+        {
+          "epochMs": 1769943600000,
+          "dateKey": "2026-02-01",
+          "hour": 13,
+          "actual": 13.28,
+          "predicted": 15.31,
+          "windMw": 1968,
+          "tempC": -17.0,
+          "nuclearMw": 4239,
+          "solarMw": 111
+        },
+        {
+          "epochMs": 1769947200000,
+          "dateKey": "2026-02-01",
+          "hour": 14,
+          "actual": 13.94,
+          "predicted": 14.79,
+          "windMw": 2189,
+          "tempC": -14.9,
+          "nuclearMw": 4239,
+          "solarMw": 126
+        },
+        {
+          "epochMs": 1769950800000,
+          "dateKey": "2026-02-01",
+          "hour": 15,
+          "actual": 14.62,
+          "predicted": 15.96,
+          "windMw": 2200,
+          "tempC": -15.0,
+          "nuclearMw": 4239,
+          "solarMw": 98
+        },
+        {
+          "epochMs": 1769954400000,
+          "dateKey": "2026-02-01",
+          "hour": 16,
+          "actual": 16.31,
+          "predicted": 15.58,
+          "windMw": 2907,
+          "tempC": -15.9,
+          "nuclearMw": 4239,
+          "solarMw": 49
+        }
+      ]
+    },
+    {
+      "id": "nuclear_outage",
+      "label": "Ydinvoimahuolto (OL3 vuosihuoltoseisokki -1 600 MW)",
+      "startDate": "2025-04-29",
+      "endDate": "2025-05-02",
+      "metrics": {
+        "maeCents": 4.42,
+        "rmseCents": 6.28,
+        "corrR": 0.822,
+        "cheapest6hHitRatePct": 55.6
+      },
+      "avgWindMw": 2610,
+      "avgTempC": 5.7,
+      "avgNuclearMw": 2639,
+      "avgSolarMw": 218,
+      "hours": [
+        {
+          "epochMs": 1745938800000,
+          "dateKey": "2025-04-29",
+          "hour": 18,
+          "actual": 7.52,
+          "predicted": 4.15,
+          "windMw": 3823,
+          "tempC": 7.9,
+          "nuclearMw": 2639,
+          "solarMw": 483
+        },
+        {
+          "epochMs": 1745942400000,
+          "dateKey": "2025-04-29",
+          "hour": 19,
+          "actual": 12.75,
+          "predicted": 7.06,
+          "windMw": 2895,
+          "tempC": 6.9,
+          "nuclearMw": 2639,
+          "solarMw": 351
+        },
+        {
+          "epochMs": 1745946000000,
+          "dateKey": "2025-04-29",
+          "hour": 20,
+          "actual": 25.1,
+          "predicted": 7.98,
+          "windMw": 2051,
+          "tempC": 5.8,
+          "nuclearMw": 2639,
+          "solarMw": 201
+        },
+        {
+          "epochMs": 1745949600000,
+          "dateKey": "2025-04-29",
+          "hour": 21,
+          "actual": 24.92,
+          "predicted": 7.08,
+          "windMw": 2341,
+          "tempC": 4.1,
+          "nuclearMw": 2639,
+          "solarMw": 72
+        },
+        {
+          "epochMs": 1745953200000,
+          "dateKey": "2025-04-29",
+          "hour": 22,
+          "actual": 28.37,
+          "predicted": 6.62,
+          "windMw": 2319,
+          "tempC": 2.6,
+          "nuclearMw": 2639,
+          "solarMw": 5
+        },
+        {
+          "epochMs": 1745956800000,
+          "dateKey": "2025-04-29",
+          "hour": 23,
+          "actual": 18.83,
+          "predicted": 6.56,
+          "windMw": 1835,
+          "tempC": 1.5,
+          "nuclearMw": 2639,
+          "solarMw": 0
+        },
+        {
+          "epochMs": 1745960400000,
+          "dateKey": "2025-04-30",
+          "hour": 0,
+          "actual": 15.06,
+          "predicted": 5.82,
+          "windMw": 1785,
+          "tempC": 0.6,
+          "nuclearMw": 2639,
+          "solarMw": 0
+        },
+        {
+          "epochMs": 1745964000000,
+          "dateKey": "2025-04-30",
+          "hour": 1,
+          "actual": 11.92,
+          "predicted": 6.56,
+          "windMw": 1415,
+          "tempC": -0.2,
+          "nuclearMw": 2639,
+          "solarMw": 0
+        },
+        {
+          "epochMs": 1745967600000,
+          "dateKey": "2025-04-30",
+          "hour": 2,
+          "actual": 15.97,
+          "predicted": 8.33,
+          "windMw": 937,
+          "tempC": -0.5,
+          "nuclearMw": 2639,
+          "solarMw": 0
+        },
+        {
+          "epochMs": 1745971200000,
+          "dateKey": "2025-04-30",
+          "hour": 3,
+          "actual": 11.05,
+          "predicted": 10.68,
+          "windMw": 485,
+          "tempC": 0.1,
+          "nuclearMw": 2639,
+          "solarMw": 0
+        },
+        {
+          "epochMs": 1745974800000,
+          "dateKey": "2025-04-30",
+          "hour": 4,
+          "actual": 11.13,
+          "predicted": 9.5,
+          "windMw": 683,
+          "tempC": 0.0,
+          "nuclearMw": 2639,
+          "solarMw": 0
+        },
+        {
+          "epochMs": 1745978400000,
+          "dateKey": "2025-04-30",
+          "hour": 5,
+          "actual": 15.97,
+          "predicted": 11.49,
+          "windMw": 503,
+          "tempC": 0.0,
+          "nuclearMw": 2639,
+          "solarMw": 0
+        },
+        {
+          "epochMs": 1745982000000,
+          "dateKey": "2025-04-30",
+          "hour": 6,
+          "actual": 32.94,
+          "predicted": 21.58,
+          "windMw": 169,
+          "tempC": 0.2,
+          "nuclearMw": 2639,
+          "solarMw": 2
+        },
+        {
+          "epochMs": 1745985600000,
+          "dateKey": "2025-04-30",
+          "hour": 7,
+          "actual": 37.64,
+          "predicted": 23.27,
+          "windMw": 485,
+          "tempC": 0.6,
+          "nuclearMw": 2639,
+          "solarMw": 11
+        },
+        {
+          "epochMs": 1745989200000,
+          "dateKey": "2025-04-30",
+          "hour": 8,
+          "actual": 36.4,
+          "predicted": 29.29,
+          "windMw": 248,
+          "tempC": 1.3,
+          "nuclearMw": 2639,
+          "solarMw": 34
+        },
+        {
+          "epochMs": 1745992800000,
+          "dateKey": "2025-04-30",
+          "hour": 9,
+          "actual": 28.33,
+          "predicted": 29.99,
+          "windMw": 204,
+          "tempC": 2.3,
+          "nuclearMw": 2639,
+          "solarMw": 60
+        },
+        {
+          "epochMs": 1745996400000,
+          "dateKey": "2025-04-30",
+          "hour": 10,
+          "actual": 24.97,
+          "predicted": 27.0,
+          "windMw": 169,
+          "tempC": 3.5,
+          "nuclearMw": 2639,
+          "solarMw": 170
+        },
+        {
+          "epochMs": 1746000000000,
+          "dateKey": "2025-04-30",
+          "hour": 11,
+          "actual": 28.06,
+          "predicted": 21.04,
+          "windMw": 169,
+          "tempC": 4.8,
+          "nuclearMw": 2639,
+          "solarMw": 302
+        },
+        {
+          "epochMs": 1746003600000,
+          "dateKey": "2025-04-30",
+          "hour": 12,
+          "actual": 25.1,
+          "predicted": 20.45,
+          "windMw": 169,
+          "tempC": 5.7,
+          "nuclearMw": 2639,
+          "solarMw": 343
+        },
+        {
+          "epochMs": 1746007200000,
+          "dateKey": "2025-04-30",
+          "hour": 13,
+          "actual": 23.72,
+          "predicted": 18.24,
+          "windMw": 169,
+          "tempC": 7.0,
+          "nuclearMw": 2639,
+          "solarMw": 521
+        },
+        {
+          "epochMs": 1746010800000,
+          "dateKey": "2025-04-30",
+          "hour": 14,
+          "actual": 19.46,
+          "predicted": 17.17,
+          "windMw": 169,
+          "tempC": 7.7,
+          "nuclearMw": 2639,
+          "solarMw": 561
+        },
+        {
+          "epochMs": 1746014400000,
+          "dateKey": "2025-04-30",
+          "hour": 15,
+          "actual": 18.44,
+          "predicted": 12.7,
+          "windMw": 389,
+          "tempC": 8.5,
+          "nuclearMw": 2639,
+          "solarMw": 633
+        },
+        {
+          "epochMs": 1746018000000,
+          "dateKey": "2025-04-30",
+          "hour": 16,
+          "actual": 17.64,
+          "predicted": 8.04,
+          "windMw": 999,
+          "tempC": 8.9,
+          "nuclearMw": 2639,
+          "solarMw": 474
+        },
+        {
+          "epochMs": 1746021600000,
+          "dateKey": "2025-04-30",
+          "hour": 17,
+          "actual": 15.05,
+          "predicted": 7.38,
+          "windMw": 1507,
+          "tempC": 8.8,
+          "nuclearMw": 2639,
+          "solarMw": 327
+        },
+        {
+          "epochMs": 1746025200000,
+          "dateKey": "2025-04-30",
+          "hour": 18,
+          "actual": 10.23,
+          "predicted": 10.48,
+          "windMw": 1055,
+          "tempC": 8.5,
+          "nuclearMw": 2639,
+          "solarMw": 289
+        },
+        {
+          "epochMs": 1746028800000,
+          "dateKey": "2025-04-30",
+          "hour": 19,
+          "actual": 8.44,
+          "predicted": 15.92,
+          "windMw": 559,
+          "tempC": 7.9,
+          "nuclearMw": 2639,
+          "solarMw": 238
+        },
+        {
+          "epochMs": 1746032400000,
+          "dateKey": "2025-04-30",
+          "hour": 20,
+          "actual": 16.04,
+          "predicted": 16.43,
+          "windMw": 603,
+          "tempC": 6.5,
+          "nuclearMw": 2639,
+          "solarMw": 134
+        },
+        {
+          "epochMs": 1746036000000,
+          "dateKey": "2025-04-30",
+          "hour": 21,
+          "actual": 15.05,
+          "predicted": 13.55,
+          "windMw": 839,
+          "tempC": 4.7,
+          "nuclearMw": 2639,
+          "solarMw": 58
+        },
+        {
+          "epochMs": 1746039600000,
+          "dateKey": "2025-04-30",
+          "hour": 22,
+          "actual": 18.44,
+          "predicted": 10.79,
+          "windMw": 1055,
+          "tempC": 2.8,
+          "nuclearMw": 2639,
+          "solarMw": 5
+        },
+        {
+          "epochMs": 1746043200000,
+          "dateKey": "2025-04-30",
+          "hour": 23,
+          "actual": 13.61,
+          "predicted": 9.67,
+          "windMw": 817,
+          "tempC": 2.7,
+          "nuclearMw": 2639,
+          "solarMw": 0
+        },
+        {
+          "epochMs": 1746046800000,
+          "dateKey": "2025-05-01",
+          "hour": 0,
+          "actual": 11.46,
+          "predicted": 12.03,
+          "windMw": 235,
+          "tempC": 2.7,
+          "nuclearMw": 2639,
+          "solarMw": 0
+        },
+        {
+          "epochMs": 1746050400000,
+          "dateKey": "2025-05-01",
+          "hour": 1,
+          "actual": 8.2,
+          "predicted": 13.35,
+          "windMw": 169,
+          "tempC": 1.9,
+          "nuclearMw": 2639,
+          "solarMw": 0
+        },
+        {
+          "epochMs": 1746054000000,
+          "dateKey": "2025-05-01",
+          "hour": 2,
+          "actual": 7.04,
+          "predicted": 11.32,
+          "windMw": 351,
+          "tempC": 0.9,
+          "nuclearMw": 2639,
+          "solarMw": 0
+        },
+        {
+          "epochMs": 1746057600000,
+          "dateKey": "2025-05-01",
+          "hour": 3,
+          "actual": 5.02,
+          "predicted": 5.66,
+          "windMw": 1129,
+          "tempC": 1.2,
+          "nuclearMw": 2639,
+          "solarMw": 0
+        },
+        {
+          "epochMs": 1746061200000,
+          "dateKey": "2025-05-01",
+          "hour": 4,
+          "actual": 0.87,
+          "predicted": 6.83,
+          "windMw": 1023,
+          "tempC": -0.4,
+          "nuclearMw": 2639,
+          "solarMw": 0
+        },
+        {
+          "epochMs": 1746064800000,
+          "dateKey": "2025-05-01",
+          "hour": 5,
+          "actual": 0.62,
+          "predicted": 5.17,
+          "windMw": 1610,
+          "tempC": -0.4,
+          "nuclearMw": 2639,
+          "solarMw": 0
+        },
+        {
+          "epochMs": 1746068400000,
+          "dateKey": "2025-05-01",
+          "hour": 6,
+          "actual": 0.61,
+          "predicted": 6.12,
+          "windMw": 2178,
+          "tempC": 0.1,
+          "nuclearMw": 2639,
+          "solarMw": 8
+        },
+        {
+          "epochMs": 1746072000000,
+          "dateKey": "2025-05-01",
+          "hour": 7,
+          "actual": 0.82,
+          "predicted": 6.79,
+          "windMw": 1999,
+          "tempC": 1.5,
+          "nuclearMw": 2639,
+          "solarMw": 61
+        },
+        {
+          "epochMs": 1746075600000,
+          "dateKey": "2025-05-01",
+          "hour": 8,
+          "actual": 6.02,
+          "predicted": 9.25,
+          "windMw": 1282,
+          "tempC": 2.7,
+          "nuclearMw": 2639,
+          "solarMw": 106
+        },
+        {
+          "epochMs": 1746079200000,
+          "dateKey": "2025-05-01",
+          "hour": 9,
+          "actual": 5.71,
+          "predicted": 11.52,
+          "windMw": 683,
+          "tempC": 3.9,
+          "nuclearMw": 2639,
+          "solarMw": 150
+        },
+        {
+          "epochMs": 1746082800000,
+          "dateKey": "2025-05-01",
+          "hour": 10,
+          "actual": 1.54,
+          "predicted": 8.92,
+          "windMw": 937,
+          "tempC": 5.0,
+          "nuclearMw": 2639,
+          "solarMw": 266
+        },
+        {
+          "epochMs": 1746086400000,
+          "dateKey": "2025-05-01",
+          "hour": 11,
+          "actual": 0.35,
+          "predicted": 8.46,
+          "windMw": 824,
+          "tempC": 6.7,
+          "nuclearMw": 2639,
+          "solarMw": 418
+        },
+        {
+          "epochMs": 1746090000000,
+          "dateKey": "2025-05-01",
+          "hour": 12,
+          "actual": 0.23,
+          "predicted": 5.97,
+          "windMw": 984,
+          "tempC": 8.8,
+          "nuclearMw": 2639,
+          "solarMw": 639
+        },
+        {
+          "epochMs": 1746093600000,
+          "dateKey": "2025-05-01",
+          "hour": 13,
+          "actual": 0.13,
+          "predicted": 3.08,
+          "windMw": 1204,
+          "tempC": 10.0,
+          "nuclearMw": 2639,
+          "solarMw": 716
+        },
+        {
+          "epochMs": 1746097200000,
+          "dateKey": "2025-05-01",
+          "hour": 14,
+          "actual": -0.01,
+          "predicted": 2.46,
+          "windMw": 1290,
+          "tempC": 10.7,
+          "nuclearMw": 2639,
+          "solarMw": 651
+        },
+        {
+          "epochMs": 1746100800000,
+          "dateKey": "2025-05-01",
+          "hour": 15,
+          "actual": -0.01,
+          "predicted": 3.15,
+          "windMw": 1343,
+          "tempC": 10.9,
+          "nuclearMw": 2639,
+          "solarMw": 513
+        },
+        {
+          "epochMs": 1746104400000,
+          "dateKey": "2025-05-01",
+          "hour": 16,
+          "actual": 0.0,
+          "predicted": 1.42,
+          "windMw": 1601,
+          "tempC": 11.3,
+          "nuclearMw": 2639,
+          "solarMw": 594
+        },
+        {
+          "epochMs": 1746108000000,
+          "dateKey": "2025-05-01",
+          "hour": 17,
+          "actual": 0.32,
+          "predicted": 3.7,
+          "windMw": 1716,
+          "tempC": 11.0,
+          "nuclearMw": 2639,
+          "solarMw": 434
+        },
+        {
+          "epochMs": 1746111600000,
+          "dateKey": "2025-05-01",
+          "hour": 18,
+          "actual": 1.25,
+          "predicted": 4.05,
+          "windMw": 1916,
+          "tempC": 11.1,
+          "nuclearMw": 2639,
+          "solarMw": 468
+        },
+        {
+          "epochMs": 1746115200000,
+          "dateKey": "2025-05-01",
+          "hour": 19,
+          "actual": 0.54,
+          "predicted": 6.01,
+          "windMw": 1433,
+          "tempC": 10.3,
+          "nuclearMw": 2639,
+          "solarMw": 248
+        },
+        {
+          "epochMs": 1746118800000,
+          "dateKey": "2025-05-01",
+          "hour": 20,
+          "actual": 0.45,
+          "predicted": 7.59,
+          "windMw": 1896,
+          "tempC": 9.5,
+          "nuclearMw": 2639,
+          "solarMw": 204
+        },
+        {
+          "epochMs": 1746122400000,
+          "dateKey": "2025-05-01",
+          "hour": 21,
+          "actual": 0.3,
+          "predicted": 3.69,
+          "windMw": 3468,
+          "tempC": 7.3,
+          "nuclearMw": 2639,
+          "solarMw": 80
+        },
+        {
+          "epochMs": 1746126000000,
+          "dateKey": "2025-05-01",
+          "hour": 22,
+          "actual": 0.22,
+          "predicted": 3.92,
+          "windMw": 3703,
+          "tempC": 5.4,
+          "nuclearMw": 2639,
+          "solarMw": 6
+        },
+        {
+          "epochMs": 1746129600000,
+          "dateKey": "2025-05-01",
+          "hour": 23,
+          "actual": 0.08,
+          "predicted": 4.29,
+          "windMw": 3214,
+          "tempC": 4.4,
+          "nuclearMw": 2639,
+          "solarMw": 0
+        },
+        {
+          "epochMs": 1746133200000,
+          "dateKey": "2025-05-02",
+          "hour": 0,
+          "actual": -0.0,
+          "predicted": 2.85,
+          "windMw": 3403,
+          "tempC": 3.7,
+          "nuclearMw": 2639,
+          "solarMw": 0
+        },
+        {
+          "epochMs": 1746136800000,
+          "dateKey": "2025-05-02",
+          "hour": 1,
+          "actual": 0.0,
+          "predicted": 0.64,
+          "windMw": 5132,
+          "tempC": 3.4,
+          "nuclearMw": 2639,
+          "solarMw": 0
+        },
+        {
+          "epochMs": 1746140400000,
+          "dateKey": "2025-05-02",
+          "hour": 2,
+          "actual": -0.0,
+          "predicted": 0.05,
+          "windMw": 5716,
+          "tempC": 3.4,
+          "nuclearMw": 2639,
+          "solarMw": 0
+        },
+        {
+          "epochMs": 1746144000000,
+          "dateKey": "2025-05-02",
+          "hour": 3,
+          "actual": -0.0,
+          "predicted": 0.05,
+          "windMw": 6146,
+          "tempC": 3.4,
+          "nuclearMw": 2639,
+          "solarMw": 0
+        },
+        {
+          "epochMs": 1746147600000,
+          "dateKey": "2025-05-02",
+          "hour": 4,
+          "actual": -0.0,
+          "predicted": 0.05,
+          "windMw": 6572,
+          "tempC": 4.4,
+          "nuclearMw": 2639,
+          "solarMw": 0
+        },
+        {
+          "epochMs": 1746151200000,
+          "dateKey": "2025-05-02",
+          "hour": 5,
+          "actual": -0.0,
+          "predicted": 0.05,
+          "windMw": 7077,
+          "tempC": 4.4,
+          "nuclearMw": 2639,
+          "solarMw": 0
+        },
+        {
+          "epochMs": 1746154800000,
+          "dateKey": "2025-05-02",
+          "hour": 6,
+          "actual": 0.05,
+          "predicted": 1.98,
+          "windMw": 6211,
+          "tempC": 4.7,
+          "nuclearMw": 2639,
+          "solarMw": 10
+        },
+        {
+          "epochMs": 1746158400000,
+          "dateKey": "2025-05-02",
+          "hour": 7,
+          "actual": 0.21,
+          "predicted": 0.97,
+          "windMw": 6839,
+          "tempC": 5.7,
+          "nuclearMw": 2639,
+          "solarMw": 70
+        },
+        {
+          "epochMs": 1746162000000,
+          "dateKey": "2025-05-02",
+          "hour": 8,
+          "actual": 0.33,
+          "predicted": 0.4,
+          "windMw": 7334,
+          "tempC": 6.9,
+          "nuclearMw": 2639,
+          "solarMw": 162
+        },
+        {
+          "epochMs": 1746165600000,
+          "dateKey": "2025-05-02",
+          "hour": 9,
+          "actual": 0.39,
+          "predicted": 0.83,
+          "windMw": 6195,
+          "tempC": 8.2,
+          "nuclearMw": 2639,
+          "solarMw": 273
+        },
+        {
+          "epochMs": 1746169200000,
+          "dateKey": "2025-05-02",
+          "hour": 10,
+          "actual": 0.41,
+          "predicted": 0.05,
+          "windMw": 7605,
+          "tempC": 10.2,
+          "nuclearMw": 2639,
+          "solarMw": 499
+        },
+        {
+          "epochMs": 1746172800000,
+          "dateKey": "2025-05-02",
+          "hour": 11,
+          "actual": 0.19,
+          "predicted": 0.05,
+          "windMw": 7283,
+          "tempC": 12.6,
+          "nuclearMw": 2639,
+          "solarMw": 635
+        },
+        {
+          "epochMs": 1746176400000,
+          "dateKey": "2025-05-02",
+          "hour": 12,
+          "actual": 0.06,
+          "predicted": 0.05,
+          "windMw": 7334,
+          "tempC": 13.5,
+          "nuclearMw": 2639,
+          "solarMw": 715
+        },
+        {
+          "epochMs": 1746180000000,
+          "dateKey": "2025-05-02",
+          "hour": 13,
+          "actual": -0.01,
+          "predicted": 0.05,
+          "windMw": 7605,
+          "tempC": 14.1,
+          "nuclearMw": 2639,
+          "solarMw": 734
+        },
+        {
+          "epochMs": 1746183600000,
+          "dateKey": "2025-05-02",
+          "hour": 14,
+          "actual": -0.22,
+          "predicted": 0.05,
+          "windMw": 7605,
+          "tempC": 14.7,
+          "nuclearMw": 2639,
+          "solarMw": 672
+        },
+        {
+          "epochMs": 1746187200000,
+          "dateKey": "2025-05-02",
+          "hour": 15,
+          "actual": -0.19,
+          "predicted": 0.05,
+          "windMw": 7605,
+          "tempC": 14.3,
+          "nuclearMw": 2639,
+          "solarMw": 730
+        },
+        {
+          "epochMs": 1746190800000,
+          "dateKey": "2025-05-02",
+          "hour": 16,
+          "actual": 0.0,
+          "predicted": 0.05,
+          "windMw": 7605,
+          "tempC": 11.2,
+          "nuclearMw": 2639,
+          "solarMw": 226
+        },
+        {
+          "epochMs": 1746194400000,
+          "dateKey": "2025-05-02",
+          "hour": 17,
+          "actual": 0.14,
+          "predicted": 0.05,
+          "windMw": 7605,
+          "tempC": 10.5,
+          "nuclearMw": 2639,
+          "solarMw": 155
+        }
+      ]
+    },
+    {
+      "id": "summer_solar",
+      "label": "Kesän aurinkojakso (Aurinkosähkön päiväkuoppa)",
+      "startDate": "2026-06-19",
+      "endDate": "2026-06-22",
+      "metrics": {
+        "maeCents": 1.29,
+        "rmseCents": 2.26,
+        "corrR": 0.8,
+        "cheapest6hHitRatePct": 55.6
+      },
+      "avgWindMw": 3693,
+      "avgTempC": 18.0,
+      "avgNuclearMw": 4394,
+      "avgSolarMw": 395,
+      "hours": [
+        {
+          "epochMs": 1781881200000,
+          "dateKey": "2026-06-19",
+          "hour": 18,
+          "actual": 3.13,
+          "predicted": 6.95,
+          "windMw": 433,
+          "tempC": 19.9,
+          "nuclearMw": 4394,
+          "solarMw": 655
+        },
+        {
+          "epochMs": 1781884800000,
+          "dateKey": "2026-06-19",
+          "hour": 19,
+          "actual": 3.72,
+          "predicted": 8.18,
+          "windMw": 331,
+          "tempC": 19.4,
+          "nuclearMw": 4394,
+          "solarMw": 513
+        },
+        {
+          "epochMs": 1781888400000,
+          "dateKey": "2026-06-19",
+          "hour": 20,
+          "actual": 3.16,
+          "predicted": 8.65,
+          "windMw": 267,
+          "tempC": 18.7,
+          "nuclearMw": 4394,
+          "solarMw": 366
+        },
+        {
+          "epochMs": 1781892000000,
+          "dateKey": "2026-06-19",
+          "hour": 21,
+          "actual": 2.73,
+          "predicted": 9.55,
+          "windMw": 169,
+          "tempC": 17.7,
+          "nuclearMw": 4394,
+          "solarMw": 221
+        },
+        {
+          "epochMs": 1781895600000,
+          "dateKey": "2026-06-19",
+          "hour": 22,
+          "actual": 1.33,
+          "predicted": 9.67,
+          "windMw": 169,
+          "tempC": 16.5,
+          "nuclearMw": 4394,
+          "solarMw": 87
+        },
+        {
+          "epochMs": 1781899200000,
+          "dateKey": "2026-06-19",
+          "hour": 23,
+          "actual": 0.55,
+          "predicted": 6.48,
+          "windMw": 649,
+          "tempC": 15.1,
+          "nuclearMw": 4394,
+          "solarMw": 23
+        },
+        {
+          "epochMs": 1781902800000,
+          "dateKey": "2026-06-20",
+          "hour": 0,
+          "actual": 0.34,
+          "predicted": 2.92,
+          "windMw": 1926,
+          "tempC": 14.2,
+          "nuclearMw": 4394,
+          "solarMw": 0
+        },
+        {
+          "epochMs": 1781906400000,
+          "dateKey": "2026-06-20",
+          "hour": 1,
+          "actual": 0.95,
+          "predicted": 2.44,
+          "windMw": 2072,
+          "tempC": 13.5,
+          "nuclearMw": 4394,
+          "solarMw": 0
+        },
+        {
+          "epochMs": 1781910000000,
+          "dateKey": "2026-06-20",
+          "hour": 2,
+          "actual": 0.68,
+          "predicted": 1.73,
+          "windMw": 2498,
+          "tempC": 13.1,
+          "nuclearMw": 4394,
+          "solarMw": 0
+        },
+        {
+          "epochMs": 1781913600000,
+          "dateKey": "2026-06-20",
+          "hour": 3,
+          "actual": 0.36,
+          "predicted": 1.22,
+          "windMw": 2752,
+          "tempC": 12.6,
+          "nuclearMw": 4394,
+          "solarMw": 0
+        },
+        {
+          "epochMs": 1781917200000,
+          "dateKey": "2026-06-20",
+          "hour": 4,
+          "actual": 0.24,
+          "predicted": 0.88,
+          "windMw": 3189,
+          "tempC": 12.6,
+          "nuclearMw": 4394,
+          "solarMw": 0
+        },
+        {
+          "epochMs": 1781920800000,
+          "dateKey": "2026-06-20",
+          "hour": 5,
+          "actual": 0.18,
+          "predicted": 0.64,
+          "windMw": 3558,
+          "tempC": 13.3,
+          "nuclearMw": 4394,
+          "solarMw": 23
+        },
+        {
+          "epochMs": 1781924400000,
+          "dateKey": "2026-06-20",
+          "hour": 6,
+          "actual": 0.19,
+          "predicted": 1.16,
+          "windMw": 3729,
+          "tempC": 14.5,
+          "nuclearMw": 4394,
+          "solarMw": 98
+        },
+        {
+          "epochMs": 1781928000000,
+          "dateKey": "2026-06-20",
+          "hour": 7,
+          "actual": 0.27,
+          "predicted": 0.05,
+          "windMw": 4908,
+          "tempC": 16.0,
+          "nuclearMw": 4394,
+          "solarMw": 206
+        },
+        {
+          "epochMs": 1781931600000,
+          "dateKey": "2026-06-20",
+          "hour": 8,
+          "actual": 0.34,
+          "predicted": 1.58,
+          "windMw": 2740,
+          "tempC": 17.8,
+          "nuclearMw": 4394,
+          "solarMw": 343
+        },
+        {
+          "epochMs": 1781935200000,
+          "dateKey": "2026-06-20",
+          "hour": 9,
+          "actual": 0.26,
+          "predicted": 1.28,
+          "windMw": 2442,
+          "tempC": 19.6,
+          "nuclearMw": 4394,
+          "solarMw": 451
+        },
+        {
+          "epochMs": 1781938800000,
+          "dateKey": "2026-06-20",
+          "hour": 10,
+          "actual": 0.09,
+          "predicted": 0.36,
+          "windMw": 2555,
+          "tempC": 20.9,
+          "nuclearMw": 4394,
+          "solarMw": 539
+        },
+        {
+          "epochMs": 1781942400000,
+          "dateKey": "2026-06-20",
+          "hour": 11,
+          "actual": 0.0,
+          "predicted": 0.05,
+          "windMw": 3276,
+          "tempC": 22.4,
+          "nuclearMw": 4394,
+          "solarMw": 716
+        },
+        {
+          "epochMs": 1781946000000,
+          "dateKey": "2026-06-20",
+          "hour": 12,
+          "actual": -0.0,
+          "predicted": 0.05,
+          "windMw": 3743,
+          "tempC": 23.0,
+          "nuclearMw": 4394,
+          "solarMw": 852
+        },
+        {
+          "epochMs": 1781949600000,
+          "dateKey": "2026-06-20",
+          "hour": 13,
+          "actual": -0.0,
+          "predicted": 0.05,
+          "windMw": 5253,
+          "tempC": 24.4,
+          "nuclearMw": 4394,
+          "solarMw": 906
+        },
+        {
+          "epochMs": 1781953200000,
+          "dateKey": "2026-06-20",
+          "hour": 14,
+          "actual": -0.0,
+          "predicted": 0.05,
+          "windMw": 5529,
+          "tempC": 24.8,
+          "nuclearMw": 4394,
+          "solarMw": 901
+        },
+        {
+          "epochMs": 1781956800000,
+          "dateKey": "2026-06-20",
+          "hour": 15,
+          "actual": -0.0,
+          "predicted": 0.05,
+          "windMw": 6522,
+          "tempC": 25.4,
+          "nuclearMw": 4394,
+          "solarMw": 790
+        },
+        {
+          "epochMs": 1781960400000,
+          "dateKey": "2026-06-20",
+          "hour": 16,
+          "actual": -0.0,
+          "predicted": 0.05,
+          "windMw": 4587,
+          "tempC": 25.3,
+          "nuclearMw": 4394,
+          "solarMw": 585
+        },
+        {
+          "epochMs": 1781964000000,
+          "dateKey": "2026-06-20",
+          "hour": 17,
+          "actual": 0.05,
+          "predicted": 0.05,
+          "windMw": 4908,
+          "tempC": 25.1,
+          "nuclearMw": 4394,
+          "solarMw": 706
+        },
+        {
+          "epochMs": 1781967600000,
+          "dateKey": "2026-06-20",
+          "hour": 18,
+          "actual": 0.22,
+          "predicted": 0.05,
+          "windMw": 6688,
+          "tempC": 24.4,
+          "nuclearMw": 4394,
+          "solarMw": 595
+        },
+        {
+          "epochMs": 1781971200000,
+          "dateKey": "2026-06-20",
+          "hour": 19,
+          "actual": 0.23,
+          "predicted": 0.05,
+          "windMw": 5953,
+          "tempC": 23.7,
+          "nuclearMw": 4394,
+          "solarMw": 461
+        },
+        {
+          "epochMs": 1781974800000,
+          "dateKey": "2026-06-20",
+          "hour": 20,
+          "actual": 0.23,
+          "predicted": 0.6,
+          "windMw": 5638,
+          "tempC": 22.2,
+          "nuclearMw": 4394,
+          "solarMw": 215
+        },
+        {
+          "epochMs": 1781978400000,
+          "dateKey": "2026-06-20",
+          "hour": 21,
+          "actual": 0.15,
+          "predicted": 0.05,
+          "windMw": 5716,
+          "tempC": 21.8,
+          "nuclearMw": 4394,
+          "solarMw": 161
+        },
+        {
+          "epochMs": 1781982000000,
+          "dateKey": "2026-06-20",
+          "hour": 22,
+          "actual": 0.15,
+          "predicted": 0.67,
+          "windMw": 4820,
+          "tempC": 20.4,
+          "nuclearMw": 4394,
+          "solarMw": 84
+        },
+        {
+          "epochMs": 1781985600000,
+          "dateKey": "2026-06-20",
+          "hour": 23,
+          "actual": 0.04,
+          "predicted": 0.05,
+          "windMw": 6098,
+          "tempC": 19.5,
+          "nuclearMw": 4394,
+          "solarMw": 13
+        },
+        {
+          "epochMs": 1781989200000,
+          "dateKey": "2026-06-21",
+          "hour": 0,
+          "actual": -0.0,
+          "predicted": 0.05,
+          "windMw": 7526,
+          "tempC": 19.0,
+          "nuclearMw": 4394,
+          "solarMw": 0
+        },
+        {
+          "epochMs": 1781992800000,
+          "dateKey": "2026-06-21",
+          "hour": 1,
+          "actual": 0.0,
+          "predicted": 0.05,
+          "windMw": 7300,
+          "tempC": 18.3,
+          "nuclearMw": 4394,
+          "solarMw": 0
+        },
+        {
+          "epochMs": 1781996400000,
+          "dateKey": "2026-06-21",
+          "hour": 2,
+          "actual": -0.0,
+          "predicted": 0.05,
+          "windMw": 7605,
+          "tempC": 17.4,
+          "nuclearMw": 4394,
+          "solarMw": 0
+        },
+        {
+          "epochMs": 1782000000000,
+          "dateKey": "2026-06-21",
+          "hour": 3,
+          "actual": -0.0,
+          "predicted": 0.05,
+          "windMw": 6772,
+          "tempC": 17.5,
+          "nuclearMw": 4394,
+          "solarMw": 0
+        },
+        {
+          "epochMs": 1782003600000,
+          "dateKey": "2026-06-21",
+          "hour": 4,
+          "actual": -0.0,
+          "predicted": 0.05,
+          "windMw": 7508,
+          "tempC": 17.1,
+          "nuclearMw": 4394,
+          "solarMw": 0
+        },
+        {
+          "epochMs": 1782007200000,
+          "dateKey": "2026-06-21",
+          "hour": 5,
+          "actual": -0.0,
+          "predicted": 0.05,
+          "windMw": 6292,
+          "tempC": 17.0,
+          "nuclearMw": 4394,
+          "solarMw": 21
+        },
+        {
+          "epochMs": 1782010800000,
+          "dateKey": "2026-06-21",
+          "hour": 6,
+          "actual": 0.06,
+          "predicted": 0.05,
+          "windMw": 4233,
+          "tempC": 16.9,
+          "nuclearMw": 4394,
+          "solarMw": 93
+        },
+        {
+          "epochMs": 1782014400000,
+          "dateKey": "2026-06-21",
+          "hour": 7,
+          "actual": 0.23,
+          "predicted": 0.05,
+          "windMw": 3917,
+          "tempC": 16.8,
+          "nuclearMw": 4394,
+          "solarMw": 201
+        },
+        {
+          "epochMs": 1782018000000,
+          "dateKey": "2026-06-21",
+          "hour": 8,
+          "actual": 0.4,
+          "predicted": 0.05,
+          "windMw": 2464,
+          "tempC": 17.0,
+          "nuclearMw": 4394,
+          "solarMw": 346
+        },
+        {
+          "epochMs": 1782021600000,
+          "dateKey": "2026-06-21",
+          "hour": 9,
+          "actual": 0.59,
+          "predicted": 0.05,
+          "windMw": 2114,
+          "tempC": 18.1,
+          "nuclearMw": 4394,
+          "solarMw": 498
+        },
+        {
+          "epochMs": 1782025200000,
+          "dateKey": "2026-06-21",
+          "hour": 10,
+          "actual": 0.63,
+          "predicted": 0.05,
+          "windMw": 1865,
+          "tempC": 19.0,
+          "nuclearMw": 4394,
+          "solarMw": 623
+        },
+        {
+          "epochMs": 1782028800000,
+          "dateKey": "2026-06-21",
+          "hour": 11,
+          "actual": 0.21,
+          "predicted": 0.05,
+          "windMw": 1855,
+          "tempC": 19.9,
+          "nuclearMw": 4394,
+          "solarMw": 768
+        },
+        {
+          "epochMs": 1782032400000,
+          "dateKey": "2026-06-21",
+          "hour": 12,
+          "actual": 0.09,
+          "predicted": 0.05,
+          "windMw": 1746,
+          "tempC": 20.3,
+          "nuclearMw": 4394,
+          "solarMw": 833
+        },
+        {
+          "epochMs": 1782036000000,
+          "dateKey": "2026-06-21",
+          "hour": 13,
+          "actual": 0.08,
+          "predicted": 0.05,
+          "windMw": 1937,
+          "tempC": 20.7,
+          "nuclearMw": 4394,
+          "solarMw": 928
+        },
+        {
+          "epochMs": 1782039600000,
+          "dateKey": "2026-06-21",
+          "hour": 14,
+          "actual": 0.06,
+          "predicted": 0.05,
+          "windMw": 2061,
+          "tempC": 20.9,
+          "nuclearMw": 4394,
+          "solarMw": 961
+        },
+        {
+          "epochMs": 1782043200000,
+          "dateKey": "2026-06-21",
+          "hour": 15,
+          "actual": 0.07,
+          "predicted": 0.26,
+          "windMw": 2146,
+          "tempC": 21.4,
+          "nuclearMw": 4394,
+          "solarMw": 950
+        },
+        {
+          "epochMs": 1782046800000,
+          "dateKey": "2026-06-21",
+          "hour": 16,
+          "actual": 0.07,
+          "predicted": 0.89,
+          "windMw": 1815,
+          "tempC": 21.2,
+          "nuclearMw": 4394,
+          "solarMw": 889
+        },
+        {
+          "epochMs": 1782050400000,
+          "dateKey": "2026-06-21",
+          "hour": 17,
+          "actual": 0.32,
+          "predicted": 1.19,
+          "windMw": 1978,
+          "tempC": 20.9,
+          "nuclearMw": 4394,
+          "solarMw": 795
+        },
+        {
+          "epochMs": 1782054000000,
+          "dateKey": "2026-06-21",
+          "hour": 18,
+          "actual": 0.62,
+          "predicted": 1.32,
+          "windMw": 3040,
+          "tempC": 20.3,
+          "nuclearMw": 4394,
+          "solarMw": 671
+        },
+        {
+          "epochMs": 1782057600000,
+          "dateKey": "2026-06-21",
+          "hour": 19,
+          "actual": 0.78,
+          "predicted": 0.05,
+          "windMw": 4688,
+          "tempC": 19.2,
+          "nuclearMw": 4394,
+          "solarMw": 529
+        },
+        {
+          "epochMs": 1782061200000,
+          "dateKey": "2026-06-21",
+          "hour": 20,
+          "actual": 1.03,
+          "predicted": 2.41,
+          "windMw": 3493,
+          "tempC": 18.1,
+          "nuclearMw": 4394,
+          "solarMw": 378
+        },
+        {
+          "epochMs": 1782064800000,
+          "dateKey": "2026-06-21",
+          "hour": 21,
+          "actual": 0.92,
+          "predicted": 3.48,
+          "windMw": 2498,
+          "tempC": 17.4,
+          "nuclearMw": 4394,
+          "solarMw": 234
+        },
+        {
+          "epochMs": 1782068400000,
+          "dateKey": "2026-06-21",
+          "hour": 22,
+          "actual": 0.86,
+          "predicted": 4.28,
+          "windMw": 2189,
+          "tempC": 15.9,
+          "nuclearMw": 4394,
+          "solarMw": 111
+        },
+        {
+          "epochMs": 1782072000000,
+          "dateKey": "2026-06-21",
+          "hour": 23,
+          "actual": 0.62,
+          "predicted": 2.41,
+          "windMw": 3429,
+          "tempC": 14.6,
+          "nuclearMw": 4394,
+          "solarMw": 28
+        },
+        {
+          "epochMs": 1782075600000,
+          "dateKey": "2026-06-22",
+          "hour": 0,
+          "actual": 0.46,
+          "predicted": 1.52,
+          "windMw": 4122,
+          "tempC": 14.3,
+          "nuclearMw": 4394,
+          "solarMw": 0
+        },
+        {
+          "epochMs": 1782079200000,
+          "dateKey": "2026-06-22",
+          "hour": 1,
+          "actual": 0.37,
+          "predicted": 1.48,
+          "windMw": 3676,
+          "tempC": 13.5,
+          "nuclearMw": 4394,
+          "solarMw": 0
+        },
+        {
+          "epochMs": 1782082800000,
+          "dateKey": "2026-06-22",
+          "hour": 2,
+          "actual": 0.26,
+          "predicted": 2.05,
+          "windMw": 2670,
+          "tempC": 13.3,
+          "nuclearMw": 4394,
+          "solarMw": 0
+        },
+        {
+          "epochMs": 1782086400000,
+          "dateKey": "2026-06-22",
+          "hour": 3,
+          "actual": 0.24,
+          "predicted": 1.56,
+          "windMw": 3089,
+          "tempC": 12.3,
+          "nuclearMw": 4394,
+          "solarMw": 0
+        },
+        {
+          "epochMs": 1782090000000,
+          "dateKey": "2026-06-22",
+          "hour": 4,
+          "actual": 0.23,
+          "predicted": 1.76,
+          "windMw": 3139,
+          "tempC": 12.5,
+          "nuclearMw": 4394,
+          "solarMw": 0
+        },
+        {
+          "epochMs": 1782093600000,
+          "dateKey": "2026-06-22",
+          "hour": 5,
+          "actual": 0.24,
+          "predicted": 2.09,
+          "windMw": 3102,
+          "tempC": 12.5,
+          "nuclearMw": 4394,
+          "solarMw": 15
+        },
+        {
+          "epochMs": 1782097200000,
+          "dateKey": "2026-06-22",
+          "hour": 6,
+          "actual": 0.39,
+          "predicted": 3.21,
+          "windMw": 2612,
+          "tempC": 12.6,
+          "nuclearMw": 4394,
+          "solarMw": 82
+        },
+        {
+          "epochMs": 1782100800000,
+          "dateKey": "2026-06-22",
+          "hour": 7,
+          "actual": 0.56,
+          "predicted": 6.04,
+          "windMw": 1677,
+          "tempC": 13.2,
+          "nuclearMw": 4394,
+          "solarMw": 155
+        },
+        {
+          "epochMs": 1782104400000,
+          "dateKey": "2026-06-22",
+          "hour": 8,
+          "actual": 0.61,
+          "predicted": 6.68,
+          "windMw": 2254,
+          "tempC": 14.2,
+          "nuclearMw": 4394,
+          "solarMw": 362
+        },
+        {
+          "epochMs": 1782108000000,
+          "dateKey": "2026-06-22",
+          "hour": 9,
+          "actual": 0.53,
+          "predicted": 4.56,
+          "windMw": 2835,
+          "tempC": 15.3,
+          "nuclearMw": 4394,
+          "solarMw": 515
+        },
+        {
+          "epochMs": 1782111600000,
+          "dateKey": "2026-06-22",
+          "hour": 10,
+          "actual": 0.41,
+          "predicted": 2.79,
+          "windMw": 3264,
+          "tempC": 16.1,
+          "nuclearMw": 4394,
+          "solarMw": 650
+        },
+        {
+          "epochMs": 1782115200000,
+          "dateKey": "2026-06-22",
+          "hour": 11,
+          "actual": 0.25,
+          "predicted": 0.79,
+          "windMw": 4472,
+          "tempC": 17.0,
+          "nuclearMw": 4394,
+          "solarMw": 788
+        },
+        {
+          "epochMs": 1782118800000,
+          "dateKey": "2026-06-22",
+          "hour": 12,
+          "actual": 0.25,
+          "predicted": 0.05,
+          "windMw": 5842,
+          "tempC": 17.5,
+          "nuclearMw": 4394,
+          "solarMw": 888
+        },
+        {
+          "epochMs": 1782122400000,
+          "dateKey": "2026-06-22",
+          "hour": 13,
+          "actual": 0.25,
+          "predicted": 0.05,
+          "windMw": 5874,
+          "tempC": 17.8,
+          "nuclearMw": 4394,
+          "solarMw": 955
+        },
+        {
+          "epochMs": 1782126000000,
+          "dateKey": "2026-06-22",
+          "hour": 14,
+          "actual": 0.21,
+          "predicted": 0.05,
+          "windMw": 5283,
+          "tempC": 18.0,
+          "nuclearMw": 4394,
+          "solarMw": 979
+        },
+        {
+          "epochMs": 1782129600000,
+          "dateKey": "2026-06-22",
+          "hour": 15,
+          "actual": 0.18,
+          "predicted": 0.05,
+          "windMw": 5795,
+          "tempC": 17.9,
+          "nuclearMw": 4394,
+          "solarMw": 958
+        },
+        {
+          "epochMs": 1782133200000,
+          "dateKey": "2026-06-22",
+          "hour": 16,
+          "actual": 0.24,
+          "predicted": 0.05,
+          "windMw": 6472,
+          "tempC": 17.6,
+          "nuclearMw": 4394,
+          "solarMw": 896
+        },
+        {
+          "epochMs": 1782136800000,
+          "dateKey": "2026-06-22",
+          "hour": 17,
+          "actual": 0.3,
+          "predicted": 0.05,
+          "windMw": 6130,
+          "tempC": 17.1,
+          "nuclearMw": 4394,
+          "solarMw": 798
+        }
+      ]
+    },
+    {
+      "id": "autumn_ramp",
+      "label": "Syysmyrsky ja tuuliramppi (Nopea tuulivaihtelu)",
+      "startDate": "2025-09-09",
+      "endDate": "2025-09-12",
+      "metrics": {
+        "maeCents": 1.51,
+        "rmseCents": 2.92,
+        "corrR": 0.91,
+        "cheapest6hHitRatePct": 44.4
+      },
+      "avgWindMw": 4844,
+      "avgTempC": 17.4,
+      "avgNuclearMw": 4028,
+      "avgSolarMw": 126,
+      "hours": [
+        {
+          "epochMs": 1757430000000,
+          "dateKey": "2025-09-09",
+          "hour": 18,
+          "actual": 18.11,
+          "predicted": 20.7,
+          "windMw": 176,
+          "tempC": 20.7,
+          "nuclearMw": 3732,
+          "solarMw": 229
+        },
+        {
+          "epochMs": 1757433600000,
+          "dateKey": "2025-09-09",
+          "hour": 19,
+          "actual": 21.08,
+          "predicted": 17.88,
+          "windMw": 810,
+          "tempC": 19.4,
+          "nuclearMw": 3732,
+          "solarMw": 148
+        },
+        {
+          "epochMs": 1757437200000,
+          "dateKey": "2025-09-09",
+          "hour": 20,
+          "actual": 33.29,
+          "predicted": 15.49,
+          "windMw": 1470,
+          "tempC": 17.7,
+          "nuclearMw": 3732,
+          "solarMw": 42
+        },
+        {
+          "epochMs": 1757440800000,
+          "dateKey": "2025-09-09",
+          "hour": 21,
+          "actual": 18.28,
+          "predicted": 17.85,
+          "windMw": 710,
+          "tempC": 16.5,
+          "nuclearMw": 3732,
+          "solarMw": 0
+        },
+        {
+          "epochMs": 1757444400000,
+          "dateKey": "2025-09-09",
+          "hour": 22,
+          "actual": 12.58,
+          "predicted": 10.35,
+          "windMw": 1154,
+          "tempC": 16.3,
+          "nuclearMw": 3732,
+          "solarMw": 0
+        },
+        {
+          "epochMs": 1757448000000,
+          "dateKey": "2025-09-09",
+          "hour": 23,
+          "actual": 8.39,
+          "predicted": 11.27,
+          "windMw": 346,
+          "tempC": 16.2,
+          "nuclearMw": 3732,
+          "solarMw": 0
+        },
+        {
+          "epochMs": 1757451600000,
+          "dateKey": "2025-09-10",
+          "hour": 0,
+          "actual": 3.54,
+          "predicted": 10.86,
+          "windMw": 169,
+          "tempC": 15.9,
+          "nuclearMw": 3732,
+          "solarMw": 0
+        },
+        {
+          "epochMs": 1757455200000,
+          "dateKey": "2025-09-10",
+          "hour": 1,
+          "actual": 1.66,
+          "predicted": 7.08,
+          "windMw": 656,
+          "tempC": 15.2,
+          "nuclearMw": 3732,
+          "solarMw": 0
+        },
+        {
+          "epochMs": 1757458800000,
+          "dateKey": "2025-09-10",
+          "hour": 2,
+          "actual": 1.4,
+          "predicted": 2.38,
+          "windMw": 2498,
+          "tempC": 14.8,
+          "nuclearMw": 3732,
+          "solarMw": 0
+        },
+        {
+          "epochMs": 1757462400000,
+          "dateKey": "2025-09-10",
+          "hour": 3,
+          "actual": 1.44,
+          "predicted": 2.1,
+          "windMw": 2286,
+          "tempC": 14.2,
+          "nuclearMw": 3732,
+          "solarMw": 0
+        },
+        {
+          "epochMs": 1757466000000,
+          "dateKey": "2025-09-10",
+          "hour": 4,
+          "actual": 1.26,
+          "predicted": 2.16,
+          "windMw": 2543,
+          "tempC": 12.7,
+          "nuclearMw": 3732,
+          "solarMw": 0
+        },
+        {
+          "epochMs": 1757469600000,
+          "dateKey": "2025-09-10",
+          "hour": 5,
+          "actual": 1.59,
+          "predicted": 3.21,
+          "windMw": 2931,
+          "tempC": 12.6,
+          "nuclearMw": 3732,
+          "solarMw": 0
+        },
+        {
+          "epochMs": 1757473200000,
+          "dateKey": "2025-09-10",
+          "hour": 6,
+          "actual": 4.97,
+          "predicted": 4.99,
+          "windMw": 3769,
+          "tempC": 12.6,
+          "nuclearMw": 3732,
+          "solarMw": 0
+        },
+        {
+          "epochMs": 1757476800000,
+          "dateKey": "2025-09-10",
+          "hour": 7,
+          "actual": 10.9,
+          "predicted": 9.59,
+          "windMw": 2776,
+          "tempC": 12.7,
+          "nuclearMw": 3732,
+          "solarMw": 0
+        },
+        {
+          "epochMs": 1757480400000,
+          "dateKey": "2025-09-10",
+          "hour": 8,
+          "actual": 20.15,
+          "predicted": 13.89,
+          "windMw": 1668,
+          "tempC": 13.8,
+          "nuclearMw": 3732,
+          "solarMw": 40
+        },
+        {
+          "epochMs": 1757484000000,
+          "dateKey": "2025-09-10",
+          "hour": 9,
+          "actual": 16.27,
+          "predicted": 13.14,
+          "windMw": 1290,
+          "tempC": 15.4,
+          "nuclearMw": 3732,
+          "solarMw": 140
+        },
+        {
+          "epochMs": 1757487600000,
+          "dateKey": "2025-09-10",
+          "hour": 10,
+          "actual": 16.32,
+          "predicted": 12.62,
+          "windMw": 636,
+          "tempC": 16.8,
+          "nuclearMw": 3732,
+          "solarMw": 234
+        },
+        {
+          "epochMs": 1757491200000,
+          "dateKey": "2025-09-10",
+          "hour": 11,
+          "actual": 12.66,
+          "predicted": 12.66,
+          "windMw": 331,
+          "tempC": 18.2,
+          "nuclearMw": 3732,
+          "solarMw": 284
+        },
+        {
+          "epochMs": 1757494800000,
+          "dateKey": "2025-09-10",
+          "hour": 12,
+          "actual": 7.72,
+          "predicted": 11.27,
+          "windMw": 315,
+          "tempC": 19.5,
+          "nuclearMw": 3732,
+          "solarMw": 355
+        },
+        {
+          "epochMs": 1757498400000,
+          "dateKey": "2025-09-10",
+          "hour": 13,
+          "actual": 4.3,
+          "predicted": 7.38,
+          "windMw": 643,
+          "tempC": 21.1,
+          "nuclearMw": 3732,
+          "solarMw": 552
+        },
+        {
+          "epochMs": 1757502000000,
+          "dateKey": "2025-09-10",
+          "hour": 14,
+          "actual": 4.14,
+          "predicted": 5.73,
+          "windMw": 1845,
+          "tempC": 21.9,
+          "nuclearMw": 3732,
+          "solarMw": 534
+        },
+        {
+          "epochMs": 1757505600000,
+          "dateKey": "2025-09-10",
+          "hour": 15,
+          "actual": 4.09,
+          "predicted": 6.53,
+          "windMw": 2125,
+          "tempC": 21.8,
+          "nuclearMw": 3732,
+          "solarMw": 362
+        },
+        {
+          "epochMs": 1757509200000,
+          "dateKey": "2025-09-10",
+          "hour": 16,
+          "actual": 7.69,
+          "predicted": 6.5,
+          "windMw": 2799,
+          "tempC": 21.8,
+          "nuclearMw": 3732,
+          "solarMw": 334
+        },
+        {
+          "epochMs": 1757512800000,
+          "dateKey": "2025-09-10",
+          "hour": 17,
+          "actual": 12.24,
+          "predicted": 7.97,
+          "windMw": 2464,
+          "tempC": 21.5,
+          "nuclearMw": 3732,
+          "solarMw": 321
+        },
+        {
+          "epochMs": 1757516400000,
+          "dateKey": "2025-09-10",
+          "hour": 18,
+          "actual": 15.06,
+          "predicted": 11.71,
+          "windMw": 1451,
+          "tempC": 20.8,
+          "nuclearMw": 3732,
+          "solarMw": 189
+        },
+        {
+          "epochMs": 1757520000000,
+          "dateKey": "2025-09-10",
+          "hour": 19,
+          "actual": 15.47,
+          "predicted": 13.49,
+          "windMw": 1370,
+          "tempC": 19.6,
+          "nuclearMw": 3732,
+          "solarMw": 121
+        },
+        {
+          "epochMs": 1757523600000,
+          "dateKey": "2025-09-10",
+          "hour": 20,
+          "actual": 14.87,
+          "predicted": 14.1,
+          "windMw": 1968,
+          "tempC": 17.7,
+          "nuclearMw": 3732,
+          "solarMw": 37
+        },
+        {
+          "epochMs": 1757527200000,
+          "dateKey": "2025-09-10",
+          "hour": 21,
+          "actual": 5.68,
+          "predicted": 7.13,
+          "windMw": 3756,
+          "tempC": 17.2,
+          "nuclearMw": 3732,
+          "solarMw": 0
+        },
+        {
+          "epochMs": 1757530800000,
+          "dateKey": "2025-09-10",
+          "hour": 22,
+          "actual": 0.74,
+          "predicted": 4.43,
+          "windMw": 4373,
+          "tempC": 16.4,
+          "nuclearMw": 3732,
+          "solarMw": 0
+        },
+        {
+          "epochMs": 1757534400000,
+          "dateKey": "2025-09-10",
+          "hour": 23,
+          "actual": 0.62,
+          "predicted": 1.91,
+          "windMw": 4893,
+          "tempC": 16.1,
+          "nuclearMw": 3732,
+          "solarMw": 0
+        },
+        {
+          "epochMs": 1757538000000,
+          "dateKey": "2025-09-11",
+          "hour": 0,
+          "actual": 0.63,
+          "predicted": 0.05,
+          "windMw": 4732,
+          "tempC": 15.7,
+          "nuclearMw": 4239,
+          "solarMw": 0
+        },
+        {
+          "epochMs": 1757541600000,
+          "dateKey": "2025-09-11",
+          "hour": 1,
+          "actual": 0.42,
+          "predicted": 0.05,
+          "windMw": 4923,
+          "tempC": 15.3,
+          "nuclearMw": 4239,
+          "solarMw": 0
+        },
+        {
+          "epochMs": 1757545200000,
+          "dateKey": "2025-09-11",
+          "hour": 2,
+          "actual": 0.31,
+          "predicted": 0.05,
+          "windMw": 5117,
+          "tempC": 15.4,
+          "nuclearMw": 4239,
+          "solarMw": 0
+        },
+        {
+          "epochMs": 1757548800000,
+          "dateKey": "2025-09-11",
+          "hour": 3,
+          "actual": 0.25,
+          "predicted": 0.05,
+          "windMw": 5436,
+          "tempC": 15.4,
+          "nuclearMw": 4239,
+          "solarMw": 0
+        },
+        {
+          "epochMs": 1757552400000,
+          "dateKey": "2025-09-11",
+          "hour": 4,
+          "actual": 0.32,
+          "predicted": 0.05,
+          "windMw": 5906,
+          "tempC": 15.4,
+          "nuclearMw": 4239,
+          "solarMw": 0
+        },
+        {
+          "epochMs": 1757556000000,
+          "dateKey": "2025-09-11",
+          "hour": 5,
+          "actual": 0.29,
+          "predicted": 0.05,
+          "windMw": 6065,
+          "tempC": 15.3,
+          "nuclearMw": 4239,
+          "solarMw": 0
+        },
+        {
+          "epochMs": 1757559600000,
+          "dateKey": "2025-09-11",
+          "hour": 6,
+          "actual": 0.34,
+          "predicted": 0.28,
+          "windMw": 6211,
+          "tempC": 15.2,
+          "nuclearMw": 4239,
+          "solarMw": 0
+        },
+        {
+          "epochMs": 1757563200000,
+          "dateKey": "2025-09-11",
+          "hour": 7,
+          "actual": 0.54,
+          "predicted": 1.03,
+          "windMw": 6049,
+          "tempC": 15.1,
+          "nuclearMw": 4239,
+          "solarMw": 0
+        },
+        {
+          "epochMs": 1757566800000,
+          "dateKey": "2025-09-11",
+          "hour": 8,
+          "actual": 0.92,
+          "predicted": 1.56,
+          "windMw": 7179,
+          "tempC": 15.9,
+          "nuclearMw": 4239,
+          "solarMw": 45
+        },
+        {
+          "epochMs": 1757570400000,
+          "dateKey": "2025-09-11",
+          "hour": 9,
+          "actual": 3.42,
+          "predicted": 0.05,
+          "windMw": 7605,
+          "tempC": 16.9,
+          "nuclearMw": 4239,
+          "solarMw": 154
+        },
+        {
+          "epochMs": 1757574000000,
+          "dateKey": "2025-09-11",
+          "hour": 10,
+          "actual": 3.88,
+          "predicted": 0.05,
+          "windMw": 5937,
+          "tempC": 18.2,
+          "nuclearMw": 4239,
+          "solarMw": 276
+        },
+        {
+          "epochMs": 1757577600000,
+          "dateKey": "2025-09-11",
+          "hour": 11,
+          "actual": 1.0,
+          "predicted": 0.61,
+          "windMw": 5421,
+          "tempC": 19.7,
+          "nuclearMw": 4239,
+          "solarMw": 422
+        },
+        {
+          "epochMs": 1757581200000,
+          "dateKey": "2025-09-11",
+          "hour": 12,
+          "actual": 0.63,
+          "predicted": 0.05,
+          "windMw": 5482,
+          "tempC": 20.8,
+          "nuclearMw": 4239,
+          "solarMw": 440
+        },
+        {
+          "epochMs": 1757584800000,
+          "dateKey": "2025-09-11",
+          "hour": 13,
+          "actual": 0.5,
+          "predicted": 0.05,
+          "windMw": 6456,
+          "tempC": 21.9,
+          "nuclearMw": 4239,
+          "solarMw": 551
+        },
+        {
+          "epochMs": 1757588400000,
+          "dateKey": "2025-09-11",
+          "hour": 14,
+          "actual": 0.37,
+          "predicted": 0.05,
+          "windMw": 7605,
+          "tempC": 22.6,
+          "nuclearMw": 4239,
+          "solarMw": 580
+        },
+        {
+          "epochMs": 1757592000000,
+          "dateKey": "2025-09-11",
+          "hour": 15,
+          "actual": 0.38,
+          "predicted": 0.05,
+          "windMw": 7605,
+          "tempC": 23.1,
+          "nuclearMw": 4239,
+          "solarMw": 570
+        },
+        {
+          "epochMs": 1757595600000,
+          "dateKey": "2025-09-11",
+          "hour": 16,
+          "actual": 0.43,
+          "predicted": 0.05,
+          "windMw": 7605,
+          "tempC": 23.7,
+          "nuclearMw": 4239,
+          "solarMw": 489
+        },
+        {
+          "epochMs": 1757599200000,
+          "dateKey": "2025-09-11",
+          "hour": 17,
+          "actual": 0.63,
+          "predicted": 0.05,
+          "windMw": 7605,
+          "tempC": 22.9,
+          "nuclearMw": 4239,
+          "solarMw": 368
+        },
+        {
+          "epochMs": 1757602800000,
+          "dateKey": "2025-09-11",
+          "hour": 18,
+          "actual": 0.43,
+          "predicted": 0.05,
+          "windMw": 7605,
+          "tempC": 22.0,
+          "nuclearMw": 4239,
+          "solarMw": 268
+        },
+        {
+          "epochMs": 1757606400000,
+          "dateKey": "2025-09-11",
+          "hour": 19,
+          "actual": 0.57,
+          "predicted": 0.05,
+          "windMw": 7605,
+          "tempC": 20.7,
+          "nuclearMw": 4239,
+          "solarMw": 135
+        },
+        {
+          "epochMs": 1757610000000,
+          "dateKey": "2025-09-11",
+          "hour": 20,
+          "actual": 0.43,
+          "predicted": 0.22,
+          "windMw": 7605,
+          "tempC": 19.3,
+          "nuclearMw": 4239,
+          "solarMw": 29
+        },
+        {
+          "epochMs": 1757613600000,
+          "dateKey": "2025-09-11",
+          "hour": 21,
+          "actual": 0.26,
+          "predicted": 0.05,
+          "windMw": 7605,
+          "tempC": 18.7,
+          "nuclearMw": 4239,
+          "solarMw": 0
+        },
+        {
+          "epochMs": 1757617200000,
+          "dateKey": "2025-09-11",
+          "hour": 22,
+          "actual": 0.17,
+          "predicted": 0.05,
+          "windMw": 7605,
+          "tempC": 18.2,
+          "nuclearMw": 4239,
+          "solarMw": 0
+        },
+        {
+          "epochMs": 1757620800000,
+          "dateKey": "2025-09-11",
+          "hour": 23,
+          "actual": 0.07,
+          "predicted": 0.05,
+          "windMw": 7605,
+          "tempC": 17.9,
+          "nuclearMw": 4239,
+          "solarMw": 0
+        },
+        {
+          "epochMs": 1757624400000,
+          "dateKey": "2025-09-12",
+          "hour": 0,
+          "actual": 0.0,
+          "predicted": 0.05,
+          "windMw": 7605,
+          "tempC": 17.6,
+          "nuclearMw": 4239,
+          "solarMw": 0
+        },
+        {
+          "epochMs": 1757628000000,
+          "dateKey": "2025-09-12",
+          "hour": 1,
+          "actual": -0.0,
+          "predicted": 0.05,
+          "windMw": 7605,
+          "tempC": 17.5,
+          "nuclearMw": 4239,
+          "solarMw": 0
+        },
+        {
+          "epochMs": 1757631600000,
+          "dateKey": "2025-09-12",
+          "hour": 2,
+          "actual": -0.0,
+          "predicted": 0.05,
+          "windMw": 7605,
+          "tempC": 17.6,
+          "nuclearMw": 4239,
+          "solarMw": 0
+        },
+        {
+          "epochMs": 1757635200000,
+          "dateKey": "2025-09-12",
+          "hour": 3,
+          "actual": -0.0,
+          "predicted": 0.05,
+          "windMw": 7605,
+          "tempC": 17.5,
+          "nuclearMw": 4239,
+          "solarMw": 0
+        },
+        {
+          "epochMs": 1757638800000,
+          "dateKey": "2025-09-12",
+          "hour": 4,
+          "actual": -0.0,
+          "predicted": 0.05,
+          "windMw": 7605,
+          "tempC": 16.8,
+          "nuclearMw": 4239,
+          "solarMw": 0
+        },
+        {
+          "epochMs": 1757642400000,
+          "dateKey": "2025-09-12",
+          "hour": 5,
+          "actual": -0.0,
+          "predicted": 0.05,
+          "windMw": 7605,
+          "tempC": 16.5,
+          "nuclearMw": 4239,
+          "solarMw": 0
+        },
+        {
+          "epochMs": 1757646000000,
+          "dateKey": "2025-09-12",
+          "hour": 6,
+          "actual": 0.0,
+          "predicted": 0.05,
+          "windMw": 7605,
+          "tempC": 16.2,
+          "nuclearMw": 4239,
+          "solarMw": 0
+        },
+        {
+          "epochMs": 1757649600000,
+          "dateKey": "2025-09-12",
+          "hour": 7,
+          "actual": 0.25,
+          "predicted": 0.05,
+          "windMw": 7605,
+          "tempC": 15.8,
+          "nuclearMw": 4239,
+          "solarMw": 0
+        },
+        {
+          "epochMs": 1757653200000,
+          "dateKey": "2025-09-12",
+          "hour": 8,
+          "actual": 0.44,
+          "predicted": 0.05,
+          "windMw": 7605,
+          "tempC": 15.2,
+          "nuclearMw": 4239,
+          "solarMw": 16
+        },
+        {
+          "epochMs": 1757656800000,
+          "dateKey": "2025-09-12",
+          "hour": 9,
+          "actual": 0.56,
+          "predicted": 0.05,
+          "windMw": 7605,
+          "tempC": 14.7,
+          "nuclearMw": 4239,
+          "solarMw": 27
+        },
+        {
+          "epochMs": 1757660400000,
+          "dateKey": "2025-09-12",
+          "hour": 10,
+          "actual": 0.54,
+          "predicted": 0.05,
+          "windMw": 7605,
+          "tempC": 14.4,
+          "nuclearMw": 4239,
+          "solarMw": 45
+        },
+        {
+          "epochMs": 1757664000000,
+          "dateKey": "2025-09-12",
+          "hour": 11,
+          "actual": 0.51,
+          "predicted": 0.05,
+          "windMw": 7605,
+          "tempC": 14.6,
+          "nuclearMw": 4239,
+          "solarMw": 45
+        },
+        {
+          "epochMs": 1757667600000,
+          "dateKey": "2025-09-12",
+          "hour": 12,
+          "actual": 0.5,
+          "predicted": 0.05,
+          "windMw": 7605,
+          "tempC": 15.3,
+          "nuclearMw": 4239,
+          "solarMw": 89
+        },
+        {
+          "epochMs": 1757671200000,
+          "dateKey": "2025-09-12",
+          "hour": 13,
+          "actual": 0.48,
+          "predicted": 0.05,
+          "windMw": 7605,
+          "tempC": 15.9,
+          "nuclearMw": 4239,
+          "solarMw": 140
+        },
+        {
+          "epochMs": 1757674800000,
+          "dateKey": "2025-09-12",
+          "hour": 14,
+          "actual": 0.47,
+          "predicted": 0.05,
+          "windMw": 7605,
+          "tempC": 16.4,
+          "nuclearMw": 4239,
+          "solarMw": 185
+        },
+        {
+          "epochMs": 1757678400000,
+          "dateKey": "2025-09-12",
+          "hour": 15,
+          "actual": 0.39,
+          "predicted": 0.05,
+          "windMw": 7605,
+          "tempC": 16.3,
+          "nuclearMw": 4239,
+          "solarMw": 118
+        },
+        {
+          "epochMs": 1757682000000,
+          "dateKey": "2025-09-12",
+          "hour": 16,
+          "actual": 0.48,
+          "predicted": 0.05,
+          "windMw": 7605,
+          "tempC": 16.1,
+          "nuclearMw": 4239,
+          "solarMw": 99
+        },
+        {
+          "epochMs": 1757685600000,
+          "dateKey": "2025-09-12",
+          "hour": 17,
+          "actual": 0.51,
+          "predicted": 0.05,
+          "windMw": 6722,
+          "tempC": 15.9,
+          "nuclearMw": 4239,
+          "solarMw": 65
+        }
+      ]
+    }
+  ],
   "insights": {
     "avgPriceLowWindUnder1500Mw": 10.72,
     "avgPriceHighWindOver4500Mw": 1.47,
-    "avgPriceFreezingUnderMinus5C": 14.44,
+    "avgPriceFreezingUnderMinus5C": 14.41,
+    "avgPriceNuclearOutageOver1000Mw": 5.09,
+    "avgPriceNuclearNormal": 6.3,
+    "avgPriceHighSolarOver450Mw": 3.54,
     "windEffectPer1000MwCents": -2.64
   },
   "monthlySummary": [
@@ -222,6 +4513,7 @@
       "avgPrice": 10.67,
       "avgWindMw": 3221,
       "avgTempC": -6.4,
+      "avgNuclearMw": 4239,
       "hours": 1488
     },
     {
@@ -230,6 +4522,7 @@
       "avgPrice": 11.57,
       "avgWindMw": 2720,
       "avgTempC": -7.4,
+      "avgNuclearMw": 4239,
       "hours": 1344
     },
     {
@@ -238,6 +4531,7 @@
       "avgPrice": 4.72,
       "avgWindMw": 4261,
       "avgTempC": 1.3,
+      "avgNuclearMw": 2639,
       "hours": 1486
     },
     {
@@ -246,6 +4540,7 @@
       "avgPrice": 6.1,
       "avgWindMw": 2887,
       "avgTempC": 4.7,
+      "avgNuclearMw": 2791,
       "hours": 1440
     },
     {
@@ -254,6 +4549,7 @@
       "avgPrice": 4.46,
       "avgWindMw": 2666,
       "avgTempC": 9.5,
+      "avgNuclearMw": 3530,
       "hours": 1488
     },
     {
@@ -262,6 +4558,7 @@
       "avgPrice": 4.01,
       "avgWindMw": 2342,
       "avgTempC": 14.7,
+      "avgNuclearMw": 4133,
       "hours": 1440
     },
     {
@@ -270,6 +4567,7 @@
       "avgPrice": 2.48,
       "avgWindMw": 1746,
       "avgTempC": 17.9,
+      "avgNuclearMw": 4316,
       "hours": 1488
     },
     {
@@ -278,6 +4576,7 @@
       "avgPrice": 6.05,
       "avgWindMw": 2677,
       "avgTempC": 10.0,
+      "avgNuclearMw": 4047,
       "hours": 1488
     },
     {
@@ -286,6 +4585,7 @@
       "avgPrice": 6.2,
       "avgWindMw": 3174,
       "avgTempC": 11.3,
+      "avgNuclearMw": 3852,
       "hours": 1440
     },
     {
@@ -294,6 +4594,7 @@
       "avgPrice": 5.46,
       "avgWindMw": 4179,
       "avgTempC": 7.6,
+      "avgNuclearMw": 4186,
       "hours": 1490
     },
     {
@@ -302,6 +4603,7 @@
       "avgPrice": 6.36,
       "avgWindMw": 3779,
       "avgTempC": 2.2,
+      "avgNuclearMw": 4145,
       "hours": 1472
     },
     {
@@ -310,6 +4612,7 @@
       "avgPrice": 4.69,
       "avgWindMw": 4395,
       "avgTempC": -0.6,
+      "avgNuclearMw": 4239,
       "hours": 1488
     }
   ],
@@ -318,253 +4621,309 @@
       "epochMs": 1793574000000,
       "dateKey": "2026-11-02",
       "hour": 1,
-      "actual": 7.094,
-      "predicted": 5.8,
+      "actual": 7.09,
+      "predicted": 4.28,
       "windMw": 2432,
-      "tempC": 7.4
+      "tempC": 7.4,
+      "nuclearMw": 4394,
+      "solarMw": 0
     },
     {
       "epochMs": 1793577600000,
       "dateKey": "2026-11-02",
       "hour": 2,
-      "actual": 5.423,
-      "predicted": 5.67,
+      "actual": 5.42,
+      "predicted": 5.3,
       "windMw": 2038,
-      "tempC": 7.2
+      "tempC": 7.2,
+      "nuclearMw": 4394,
+      "solarMw": 0
     },
     {
       "epochMs": 1793581200000,
       "dateKey": "2026-11-02",
       "hour": 3,
-      "actual": 4.007,
-      "predicted": 5.31,
+      "actual": 4.01,
+      "predicted": 5.09,
       "windMw": 2115,
-      "tempC": 6.9
+      "tempC": 6.9,
+      "nuclearMw": 4394,
+      "solarMw": 0
     },
     {
       "epochMs": 1793584800000,
       "dateKey": "2026-11-02",
       "hour": 4,
       "actual": 4.54,
-      "predicted": 5.47,
+      "predicted": 5.37,
       "windMw": 2102,
-      "tempC": 6.3
+      "tempC": 6.3,
+      "nuclearMw": 4394,
+      "solarMw": 0
     },
     {
       "epochMs": 1793588400000,
       "dateKey": "2026-11-02",
       "hour": 5,
-      "actual": 4.035,
-      "predicted": 6.79,
+      "actual": 4.04,
+      "predicted": 6.78,
       "windMw": 1525,
-      "tempC": 6.0
+      "tempC": 6.0,
+      "nuclearMw": 4394,
+      "solarMw": 0
     },
     {
       "epochMs": 1793592000000,
       "dateKey": "2026-11-02",
       "hour": 6,
-      "actual": 13.281,
-      "predicted": 8.94,
+      "actual": 13.28,
+      "predicted": 8.57,
       "windMw": 1401,
-      "tempC": 5.7
+      "tempC": 5.7,
+      "nuclearMw": 4394,
+      "solarMw": 0
     },
     {
       "epochMs": 1793595600000,
       "dateKey": "2026-11-02",
       "hour": 7,
-      "actual": 22.285,
-      "predicted": 15.02,
+      "actual": 22.29,
+      "predicted": 12.63,
       "windMw": 1066,
-      "tempC": 5.5
+      "tempC": 5.5,
+      "nuclearMw": 4394,
+      "solarMw": 0
     },
     {
       "epochMs": 1793599200000,
       "dateKey": "2026-11-02",
       "hour": 8,
-      "actual": 42.034,
-      "predicted": 17.83,
+      "actual": 42.03,
+      "predicted": 15.52,
       "windMw": 753,
-      "tempC": 5.3
+      "tempC": 5.3,
+      "nuclearMw": 4394,
+      "solarMw": 0
     },
     {
       "epochMs": 1793602800000,
       "dateKey": "2026-11-02",
       "hour": 9,
-      "actual": 43.925,
-      "predicted": 17.97,
+      "actual": 43.92,
+      "predicted": 15.86,
       "windMw": 754,
-      "tempC": 5.5
+      "tempC": 5.5,
+      "nuclearMw": 4394,
+      "solarMw": 3
     },
     {
       "epochMs": 1793606400000,
       "dateKey": "2026-11-02",
       "hour": 10,
-      "actual": 45.395,
-      "predicted": 17.71,
+      "actual": 45.4,
+      "predicted": 16.12,
       "windMw": 627,
-      "tempC": 5.8
+      "tempC": 5.8,
+      "nuclearMw": 4394,
+      "solarMw": 12
     },
     {
       "epochMs": 1793610000000,
       "dateKey": "2026-11-02",
       "hour": 11,
-      "actual": 47.217,
-      "predicted": 14.11,
+      "actual": 47.22,
+      "predicted": 14.85,
       "windMw": 429,
-      "tempC": 6.0
+      "tempC": 6.0,
+      "nuclearMw": 4394,
+      "solarMw": 21
     },
     {
       "epochMs": 1793613600000,
       "dateKey": "2026-11-02",
       "hour": 12,
-      "actual": 48.999,
-      "predicted": 14.59,
+      "actual": 49.0,
+      "predicted": 16.8,
       "windMw": 169,
-      "tempC": 6.3
+      "tempC": 6.3,
+      "nuclearMw": 4394,
+      "solarMw": 30
     },
     {
       "epochMs": 1793617200000,
       "dateKey": "2026-11-02",
       "hour": 13,
-      "actual": 50.511,
-      "predicted": 13.97,
+      "actual": 50.51,
+      "predicted": 16.38,
       "windMw": 169,
-      "tempC": 7.0
+      "tempC": 7.0,
+      "nuclearMw": 4394,
+      "solarMw": 32
     },
     {
       "epochMs": 1793620800000,
       "dateKey": "2026-11-02",
       "hour": 14,
-      "actual": 48.382,
-      "predicted": 13.38,
+      "actual": 48.38,
+      "predicted": 15.71,
       "windMw": 169,
-      "tempC": 7.5
+      "tempC": 7.5,
+      "nuclearMw": 4394,
+      "solarMw": 31
     },
     {
       "epochMs": 1793624400000,
       "dateKey": "2026-11-02",
       "hour": 15,
-      "actual": 37.274,
-      "predicted": 13.25,
+      "actual": 37.27,
+      "predicted": 15.31,
       "windMw": 202,
-      "tempC": 7.3
+      "tempC": 7.3,
+      "nuclearMw": 4394,
+      "solarMw": 24
     },
     {
       "epochMs": 1793628000000,
       "dateKey": "2026-11-02",
       "hour": 16,
-      "actual": 43.453,
-      "predicted": 14.61,
+      "actual": 43.45,
+      "predicted": 13.84,
       "windMw": 737,
-      "tempC": 7.1
+      "tempC": 7.1,
+      "nuclearMw": 4394,
+      "solarMw": 10
     },
     {
       "epochMs": 1793631600000,
       "dateKey": "2026-11-02",
       "hour": 17,
-      "actual": 50.761,
-      "predicted": 13.21,
+      "actual": 50.76,
+      "predicted": 12.47,
       "windMw": 1330,
-      "tempC": 7.0
+      "tempC": 7.0,
+      "nuclearMw": 4394,
+      "solarMw": 0
     },
     {
       "epochMs": 1793635200000,
       "dateKey": "2026-11-02",
       "hour": 18,
-      "actual": 34.629,
-      "predicted": 12.27,
+      "actual": 34.63,
+      "predicted": 11.08,
       "windMw": 2091,
-      "tempC": 6.6
+      "tempC": 6.6,
+      "nuclearMw": 4394,
+      "solarMw": 0
     },
     {
       "epochMs": 1793638800000,
       "dateKey": "2026-11-02",
       "hour": 19,
-      "actual": 22.271,
-      "predicted": 12.46,
+      "actual": 22.27,
+      "predicted": 10.99,
       "windMw": 2248,
-      "tempC": 5.9
+      "tempC": 5.9,
+      "nuclearMw": 4394,
+      "solarMw": 0
     },
     {
       "epochMs": 1793642400000,
       "dateKey": "2026-11-02",
       "hour": 20,
-      "actual": 20.544,
-      "predicted": 10.61,
+      "actual": 20.54,
+      "predicted": 9.96,
       "windMw": 2897,
-      "tempC": 5.5
+      "tempC": 5.5,
+      "nuclearMw": 4394,
+      "solarMw": 0
     },
     {
       "epochMs": 1793646000000,
       "dateKey": "2026-11-02",
       "hour": 21,
-      "actual": 10.693,
-      "predicted": 8.6,
+      "actual": 10.69,
+      "predicted": 8.49,
       "windMw": 3285,
-      "tempC": 5.0
+      "tempC": 5.0,
+      "nuclearMw": 4394,
+      "solarMw": 0
     },
     {
       "epochMs": 1793649600000,
       "dateKey": "2026-11-02",
       "hour": 22,
-      "actual": 6.675,
-      "predicted": 5.6,
+      "actual": 6.67,
+      "predicted": 5.46,
       "windMw": 3616,
-      "tempC": 4.6
+      "tempC": 4.6,
+      "nuclearMw": 4394,
+      "solarMw": 0
     },
     {
       "epochMs": 1793653200000,
       "dateKey": "2026-11-02",
       "hour": 23,
-      "actual": 2.887,
+      "actual": 2.89,
       "predicted": 4.34,
       "windMw": 3707,
-      "tempC": 4.0
+      "tempC": 4.0,
+      "nuclearMw": 4394,
+      "solarMw": 0
     },
     {
       "epochMs": 1793656800000,
       "dateKey": "2026-11-03",
       "hour": 0,
-      "actual": 0.877,
-      "predicted": 1.73,
+      "actual": 0.88,
+      "predicted": 1.49,
       "windMw": 4600,
-      "tempC": 3.6
+      "tempC": 3.6,
+      "nuclearMw": 4394,
+      "solarMw": 0
     },
     {
       "epochMs": 1793660400000,
       "dateKey": "2026-11-03",
       "hour": 1,
-      "actual": 0.724,
-      "predicted": 1.22,
+      "actual": 0.72,
+      "predicted": 1.28,
       "windMw": 5474,
-      "tempC": 3.1
+      "tempC": 3.1,
+      "nuclearMw": 4394,
+      "solarMw": 0
     },
     {
       "epochMs": 1793664000000,
       "dateKey": "2026-11-03",
       "hour": 2,
-      "actual": 0.641,
-      "predicted": 0.05,
+      "actual": 0.64,
+      "predicted": 0.37,
       "windMw": 6037,
-      "tempC": 3.0
+      "tempC": 3.0,
+      "nuclearMw": 4394,
+      "solarMw": 0
     },
     {
       "epochMs": 1793667600000,
       "dateKey": "2026-11-03",
       "hour": 3,
-      "actual": 0.599,
+      "actual": 0.6,
       "predicted": 0.05,
       "windMw": 6348,
-      "tempC": 2.6
+      "tempC": 2.6,
+      "nuclearMw": 4394,
+      "solarMw": 0
     },
     {
       "epochMs": 1793671200000,
       "dateKey": "2026-11-03",
       "hour": 4,
-      "actual": 0.595,
+      "actual": 0.59,
       "predicted": 0.05,
       "windMw": 6339,
-      "tempC": 3.1
+      "tempC": 3.9,
+      "nuclearMw": 4394,
+      "solarMw": 0
     },
     {
       "epochMs": 1793674800000,
@@ -573,394 +4932,482 @@
       "actual": 0.62,
       "predicted": 0.05,
       "windMw": 6454,
-      "tempC": 3.4
+      "tempC": 3.4,
+      "nuclearMw": 4394,
+      "solarMw": 0
     },
     {
       "epochMs": 1793678400000,
       "dateKey": "2026-11-03",
       "hour": 6,
       "actual": 0.67,
-      "predicted": 0.72,
+      "predicted": 0.82,
       "windMw": 7605,
-      "tempC": 3.9
+      "tempC": 3.9,
+      "nuclearMw": 4394,
+      "solarMw": 0
     },
     {
       "epochMs": 1793682000000,
       "dateKey": "2026-11-03",
       "hour": 7,
       "actual": 1.08,
-      "predicted": 0.94,
+      "predicted": 0.91,
       "windMw": 7605,
-      "tempC": 4.3
+      "tempC": 4.3,
+      "nuclearMw": 4394,
+      "solarMw": 0
     },
     {
       "epochMs": 1793685600000,
       "dateKey": "2026-11-03",
       "hour": 8,
       "actual": 1.89,
-      "predicted": 2.76,
+      "predicted": 2.63,
       "windMw": 7605,
-      "tempC": 4.6
+      "tempC": 4.6,
+      "nuclearMw": 4394,
+      "solarMw": 0
     },
     {
       "epochMs": 1793689200000,
       "dateKey": "2026-11-03",
       "hour": 9,
-      "actual": 2.183,
-      "predicted": 3.31,
+      "actual": 2.18,
+      "predicted": 2.59,
       "windMw": 7605,
-      "tempC": 4.7
+      "tempC": 4.7,
+      "nuclearMw": 4394,
+      "solarMw": 32
     },
     {
       "epochMs": 1793692800000,
       "dateKey": "2026-11-03",
       "hour": 10,
-      "actual": 1.868,
-      "predicted": 2.94,
+      "actual": 1.87,
+      "predicted": 2.12,
       "windMw": 7605,
-      "tempC": 5.2
+      "tempC": 5.2,
+      "nuclearMw": 4394,
+      "solarMw": 84
     },
     {
       "epochMs": 1793696400000,
       "dateKey": "2026-11-03",
       "hour": 11,
-      "actual": 2.021,
-      "predicted": 4.39,
+      "actual": 2.02,
+      "predicted": 2.06,
       "windMw": 7605,
-      "tempC": 5.9
+      "tempC": 5.9,
+      "nuclearMw": 4394,
+      "solarMw": 188
     },
     {
       "epochMs": 1793700000000,
       "dateKey": "2026-11-03",
       "hour": 12,
-      "actual": 2.133,
-      "predicted": 4.21,
+      "actual": 2.13,
+      "predicted": 2.12,
       "windMw": 7605,
-      "tempC": 6.3
+      "tempC": 6.3,
+      "nuclearMw": 4394,
+      "solarMw": 157
     },
     {
       "epochMs": 1793703600000,
       "dateKey": "2026-11-03",
       "hour": 13,
-      "actual": 2.005,
-      "predicted": 4.22,
+      "actual": 2.0,
+      "predicted": 2.36,
       "windMw": 7572,
-      "tempC": 6.6
+      "tempC": 6.6,
+      "nuclearMw": 4394,
+      "solarMw": 124
     },
     {
       "epochMs": 1793707200000,
       "dateKey": "2026-11-03",
       "hour": 14,
-      "actual": 2.869,
-      "predicted": 4.7,
+      "actual": 2.87,
+      "predicted": 3.03,
       "windMw": 6506,
-      "tempC": 6.6
+      "tempC": 6.6,
+      "nuclearMw": 4394,
+      "solarMw": 140
     },
     {
       "epochMs": 1793710800000,
       "dateKey": "2026-11-03",
       "hour": 15,
-      "actual": 3.098,
-      "predicted": 6.29,
+      "actual": 3.1,
+      "predicted": 4.76,
       "windMw": 4960,
-      "tempC": 6.4
+      "tempC": 6.4,
+      "nuclearMw": 4394,
+      "solarMw": 95
     },
     {
       "epochMs": 1793714400000,
       "dateKey": "2026-11-03",
       "hour": 16,
-      "actual": 3.639,
-      "predicted": 8.87,
+      "actual": 3.64,
+      "predicted": 6.8,
       "windMw": 4135,
-      "tempC": 5.7
+      "tempC": 5.7,
+      "nuclearMw": 4394,
+      "solarMw": 42
     },
     {
       "epochMs": 1793718000000,
       "dateKey": "2026-11-03",
       "hour": 17,
       "actual": 7.06,
-      "predicted": 11.5,
+      "predicted": 8.86,
       "windMw": 3419,
-      "tempC": 5.0
+      "tempC": 5.0,
+      "nuclearMw": 4394,
+      "solarMw": 0
     },
     {
       "epochMs": 1793721600000,
       "dateKey": "2026-11-03",
       "hour": 18,
-      "actual": 17.367,
-      "predicted": 14.52,
+      "actual": 17.37,
+      "predicted": 10.86,
       "windMw": 2936,
-      "tempC": 4.1
+      "tempC": 4.1,
+      "nuclearMw": 4394,
+      "solarMw": 0
     },
     {
       "epochMs": 1793725200000,
       "dateKey": "2026-11-03",
       "hour": 19,
-      "actual": 29.539,
-      "predicted": 17.01,
+      "actual": 29.54,
+      "predicted": 12.28,
       "windMw": 2045,
-      "tempC": 3.2
+      "tempC": 3.2,
+      "nuclearMw": 4394,
+      "solarMw": 0
     },
     {
       "epochMs": 1793728800000,
       "dateKey": "2026-11-03",
       "hour": 20,
-      "actual": 33.288,
-      "predicted": 20.33,
+      "actual": 33.29,
+      "predicted": 15.21,
       "windMw": 879,
-      "tempC": 2.6
+      "tempC": 2.6,
+      "nuclearMw": 4394,
+      "solarMw": 0
     },
     {
       "epochMs": 1793732400000,
       "dateKey": "2026-11-03",
       "hour": 21,
-      "actual": 33.226,
-      "predicted": 22.5,
+      "actual": 33.23,
+      "predicted": 18.95,
       "windMw": 169,
-      "tempC": 2.3
+      "tempC": 2.3,
+      "nuclearMw": 4394,
+      "solarMw": 0
     },
     {
       "epochMs": 1793736000000,
       "dateKey": "2026-11-03",
       "hour": 22,
-      "actual": 33.079,
-      "predicted": 18.61,
+      "actual": 33.08,
+      "predicted": 16.43,
       "windMw": 169,
-      "tempC": 2.0
+      "tempC": 2.0,
+      "nuclearMw": 4394,
+      "solarMw": 0
     },
     {
       "epochMs": 1793739600000,
       "dateKey": "2026-11-03",
       "hour": 23,
-      "actual": 27.571,
-      "predicted": 16.13,
+      "actual": 27.57,
+      "predicted": 12.13,
       "windMw": 276,
-      "tempC": 1.8
+      "tempC": 1.8,
+      "nuclearMw": 4394,
+      "solarMw": 0
     },
     {
       "epochMs": 1793743200000,
       "dateKey": "2026-11-04",
       "hour": 0,
-      "actual": 16.955,
-      "predicted": 11.16,
+      "actual": 16.95,
+      "predicted": 7.44,
       "windMw": 1195,
-      "tempC": 1.6
+      "tempC": 1.6,
+      "nuclearMw": 4394,
+      "solarMw": 0
     },
     {
       "epochMs": 1793746800000,
       "dateKey": "2026-11-04",
       "hour": 1,
-      "actual": 14.697,
-      "predicted": 10.34,
+      "actual": 14.7,
+      "predicted": 7.48,
       "windMw": 1703,
-      "tempC": 1.6
+      "tempC": 1.6,
+      "nuclearMw": 4394,
+      "solarMw": 0
     },
     {
       "epochMs": 1793750400000,
       "dateKey": "2026-11-04",
       "hour": 2,
-      "actual": 2.385,
-      "predicted": 7.96,
+      "actual": 2.38,
+      "predicted": 5.34,
       "windMw": 2710,
-      "tempC": 1.9
+      "tempC": 1.9,
+      "nuclearMw": 4394,
+      "solarMw": 0
     },
     {
       "epochMs": 1793754000000,
       "dateKey": "2026-11-04",
       "hour": 3,
-      "actual": 0.971,
-      "predicted": 7.18,
+      "actual": 0.97,
+      "predicted": 4.42,
       "windMw": 3347,
-      "tempC": 2.2
+      "tempC": 2.2,
+      "nuclearMw": 4394,
+      "solarMw": 0
     },
     {
       "epochMs": 1793757600000,
       "dateKey": "2026-11-04",
       "hour": 4,
-      "actual": 0.971,
-      "predicted": 5.46,
+      "actual": 0.97,
+      "predicted": 3.11,
       "windMw": 4081,
-      "tempC": 2.3
+      "tempC": 2.3,
+      "nuclearMw": 4394,
+      "solarMw": 0
     },
     {
       "epochMs": 1793761200000,
       "dateKey": "2026-11-04",
       "hour": 5,
-      "actual": 1.058,
-      "predicted": 4.73,
+      "actual": 1.06,
+      "predicted": 2.45,
       "windMw": 4793,
-      "tempC": 2.4
+      "tempC": 2.4,
+      "nuclearMw": 4394,
+      "solarMw": 0
     },
     {
       "epochMs": 1793764800000,
       "dateKey": "2026-11-04",
       "hour": 6,
-      "actual": 1.326,
-      "predicted": 6.43,
+      "actual": 1.33,
+      "predicted": 4.2,
       "windMw": 5148,
-      "tempC": 2.6
+      "tempC": 2.6,
+      "nuclearMw": 4394,
+      "solarMw": 0
     },
     {
       "epochMs": 1793768400000,
       "dateKey": "2026-11-04",
       "hour": 7,
-      "actual": 2.284,
-      "predicted": 7.32,
+      "actual": 2.28,
+      "predicted": 5.47,
       "windMw": 5610,
-      "tempC": 3.2
+      "tempC": 3.2,
+      "nuclearMw": 4394,
+      "solarMw": 0
     },
     {
       "epochMs": 1793772000000,
       "dateKey": "2026-11-04",
       "hour": 8,
-      "actual": 2.393,
-      "predicted": 8.1,
+      "actual": 2.39,
+      "predicted": 6.21,
       "windMw": 5908,
-      "tempC": 3.7
+      "tempC": 3.7,
+      "nuclearMw": 4394,
+      "solarMw": 0
     },
     {
       "epochMs": 1793775600000,
       "dateKey": "2026-11-04",
       "hour": 9,
-      "actual": 1.865,
-      "predicted": 7.11,
+      "actual": 1.86,
+      "predicted": 5.27,
       "windMw": 6395,
-      "tempC": 4.5
+      "tempC": 4.5,
+      "nuclearMw": 4394,
+      "solarMw": 8
     },
     {
       "epochMs": 1793779200000,
       "dateKey": "2026-11-04",
       "hour": 10,
-      "actual": 1.571,
-      "predicted": 4.4,
+      "actual": 1.57,
+      "predicted": 2.87,
       "windMw": 7605,
-      "tempC": 5.2
+      "tempC": 5.2,
+      "nuclearMw": 4394,
+      "solarMw": 38
     },
     {
       "epochMs": 1793782800000,
       "dateKey": "2026-11-04",
       "hour": 11,
       "actual": 1.3,
-      "predicted": 5.26,
+      "predicted": 2.52,
       "windMw": 7605,
-      "tempC": 5.9
+      "tempC": 5.9,
+      "nuclearMw": 4394,
+      "solarMw": 67
     },
     {
       "epochMs": 1793786400000,
       "dateKey": "2026-11-04",
       "hour": 12,
-      "actual": 1.475,
-      "predicted": 4.46,
+      "actual": 1.48,
+      "predicted": 1.74,
       "windMw": 7605,
-      "tempC": 6.9
+      "tempC": 6.9,
+      "nuclearMw": 4394,
+      "solarMw": 87
     },
     {
       "epochMs": 1793790000000,
       "dateKey": "2026-11-04",
       "hour": 13,
-      "actual": 1.482,
-      "predicted": 3.8,
+      "actual": 1.48,
+      "predicted": 1.18,
       "windMw": 7605,
-      "tempC": 7.4
+      "tempC": 7.4,
+      "nuclearMw": 4394,
+      "solarMw": 94
     },
     {
       "epochMs": 1793793600000,
       "dateKey": "2026-11-04",
       "hour": 14,
-      "actual": 1.288,
-      "predicted": 3.08,
+      "actual": 1.29,
+      "predicted": 1.16,
       "windMw": 7605,
-      "tempC": 7.7
+      "tempC": 7.7,
+      "nuclearMw": 4394,
+      "solarMw": 77
     },
     {
       "epochMs": 1793797200000,
       "dateKey": "2026-11-04",
       "hour": 15,
-      "actual": 1.241,
-      "predicted": 2.75,
+      "actual": 1.24,
+      "predicted": 1.38,
       "windMw": 7605,
-      "tempC": 7.8
+      "tempC": 7.8,
+      "nuclearMw": 4394,
+      "solarMw": 34
     },
     {
       "epochMs": 1793800800000,
       "dateKey": "2026-11-04",
       "hour": 16,
-      "actual": 1.573,
-      "predicted": 1.44,
+      "actual": 1.57,
+      "predicted": 0.62,
       "windMw": 7605,
-      "tempC": 7.7
+      "tempC": 7.7,
+      "nuclearMw": 4394,
+      "solarMw": 17
     },
     {
       "epochMs": 1793804400000,
       "dateKey": "2026-11-04",
       "hour": 17,
-      "actual": 1.629,
-      "predicted": 2.02,
+      "actual": 1.63,
+      "predicted": 1.34,
       "windMw": 7605,
-      "tempC": 7.6
+      "tempC": 7.6,
+      "nuclearMw": 4394,
+      "solarMw": 0
     },
     {
       "epochMs": 1793808000000,
       "dateKey": "2026-11-04",
       "hour": 18,
-      "actual": 1.643,
-      "predicted": 2.77,
+      "actual": 1.64,
+      "predicted": 2.07,
       "windMw": 7605,
-      "tempC": 7.6
+      "tempC": 7.6,
+      "nuclearMw": 4394,
+      "solarMw": 0
     },
     {
       "epochMs": 1793811600000,
       "dateKey": "2026-11-04",
       "hour": 19,
-      "actual": 1.544,
-      "predicted": 3.08,
+      "actual": 1.54,
+      "predicted": 2.52,
       "windMw": 7605,
-      "tempC": 7.3
+      "tempC": 7.3,
+      "nuclearMw": 4394,
+      "solarMw": 0
     },
     {
       "epochMs": 1793815200000,
       "dateKey": "2026-11-04",
       "hour": 20,
-      "actual": 1.067,
-      "predicted": 2.5,
+      "actual": 1.07,
+      "predicted": 2.2,
       "windMw": 7605,
-      "tempC": 7.0
+      "tempC": 7.0,
+      "nuclearMw": 4394,
+      "solarMw": 0
     },
     {
       "epochMs": 1793818800000,
       "dateKey": "2026-11-04",
       "hour": 21,
-      "actual": 0.593,
-      "predicted": 1.24,
+      "actual": 0.59,
+      "predicted": 1.23,
       "windMw": 7605,
-      "tempC": 6.5
+      "tempC": 6.5,
+      "nuclearMw": 4394,
+      "solarMw": 0
     },
     {
       "epochMs": 1793822400000,
       "dateKey": "2026-11-04",
       "hour": 22,
-      "actual": 0.597,
-      "predicted": 2.35,
+      "actual": 0.6,
+      "predicted": 2.5,
       "windMw": 7605,
-      "tempC": 6.2
+      "tempC": 6.2,
+      "nuclearMw": 4394,
+      "solarMw": 0
     },
     {
       "epochMs": 1793826000000,
       "dateKey": "2026-11-04",
       "hour": 23,
-      "actual": 0.356,
-      "predicted": 1.25,
+      "actual": 0.36,
+      "predicted": 1.55,
       "windMw": 7605,
-      "tempC": 6.0
+      "tempC": 6.0,
+      "nuclearMw": 4394,
+      "solarMw": 0
     },
     {
       "epochMs": 1793829600000,
       "dateKey": "2026-11-05",
       "hour": 0,
-      "actual": 0.271,
+      "actual": 0.27,
       "predicted": 0.05,
       "windMw": 7605,
-      "tempC": 6.1
+      "tempC": 6.1,
+      "nuclearMw": 4394,
+      "solarMw": 0
     }
   ]
 }

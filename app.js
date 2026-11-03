@@ -28,6 +28,8 @@
     };
 
     const FINLAND_INSTALLED_WIND_MW = 8450;
+    const FINLAND_NUCLEAR_MAX_MW = 4394;
+    const FINLAND_SOLAR_MAX_MW = 1250;
 
     const state = {
         postalCode: localStorage.getItem('ps_postal') || '00100',
@@ -38,6 +40,8 @@
         marginCents: parseFloat(localStorage.getItem('ps_margin') || '0.45'),
         includeVat: localStorage.getItem('ps_vat') !== '0',
         showTotalInChart: localStorage.getItem('ps_show_total') !== '0',
+        nuclearScenario: 'auto',
+        selectedBacktestId: 'winter_frost',
         selectedDayIndex: 0,
         windowHours: 3,
         applianceKw: 11.0,
@@ -47,9 +51,9 @@
         daysList: [],
         generatedAt: null,
         mlStats: {
-            totalLearnedHours: ML_BASE.totalObservations || 17500,
+            totalLearnedHours: ML_BASE.totalObservations || 17552,
             onlineNewHours: 0,
-            liveMaeCents: ML_BASE.learningCurve?.currentMaeCents || 3.32,
+            liveMaeCents: ML_BASE.learningCurve?.currentMaeCents || 1.81,
             activeModel: JSON.parse(JSON.stringify(ML_BASE.model))
         }
     };
@@ -210,24 +214,84 @@
         return Math.max(0.02, Math.min(0.90, Math.pow(norm, 1.65) * 0.90));
     }
 
+    function radiationToSolarMw(radWm2, month, hour) {
+        if (radWm2 !== null && radWm2 !== undefined && !isNaN(radWm2)) {
+            const cf = Math.max(0.0, Math.min(0.82, (radWm2 / 820.0) * 0.80));
+            return Math.round(FINLAND_SOLAR_MAX_MW * cf);
+        }
+        if (hour < 5 || hour > 20 || [11, 12, 1].includes(month)) return 0;
+        const seasonPeak = Math.max(0.0, Math.sin(((month - 2.2) / 8.5) * Math.PI));
+        const hourPeak = Math.max(0.0, Math.cos(((hour - 13.0) / 5.5) * (Math.PI / 2.0)));
+        return Math.round(FINLAND_SOLAR_MAX_MW * 0.55 * seasonPeak * hourPeak);
+    }
+
+    function getScenarioNuclearDeficitMw(dateKey) {
+        if (state.nuclearScenario === 'ol3') return 1600;
+        if (state.nuclearScenario === 'ol12') return 890;
+        if (state.nuclearScenario === 'loviisa') return 507;
+        if (state.nuclearScenario === 'major') return 2490;
+        const sched = Array.isArray(ML_BASE.nuclearOutageSchedule) ? ML_BASE.nuclearOutageSchedule : [];
+        let off = 0;
+        for (const item of sched) {
+            if (dateKey >= item.start && dateKey <= item.end) off += item.mw;
+        }
+        return Math.min(3000, off);
+    }
+
     function extractFeatures(obs, prevSpot24h = 5.5) {
         const wRatio = Math.max(0.01, Math.min(0.95, obs.windMw / FINLAND_INSTALLED_WIND_MW));
         const tempC = obs.tempC;
         const hour = obs.hour;
-        const isWknd = obs.isWeekend ? 1.0 : 0.0;
+        const fixedHolidays = ['01-01', '01-06', '05-01', '12-06', '12-24', '12-25', '12-26'];
+        const md = obs.dateKey ? obs.dateKey.slice(5) : '';
+        const isFreeDay = obs.isWeekend || fixedHolidays.includes(md);
+        const isFree = isFreeDay ? 1.0 : 0.0;
 
         const hdd = Math.max(0.0, 12.0 - tempC) / 20.0;
         const severeCold = Math.max(0.0, -3.0 - tempC) / 15.0;
-        const lowWindScarcity = Math.pow(Math.max(0.0, 0.25 - wRatio), 2) * 10.0;
+        const workdayActive = (!isFreeDay && hour >= 6 && hour <= 22) ? 1.25 : 0.45;
+        const lowWindScarcity = Math.pow(Math.max(0.0, 0.25 - wRatio), 2) * 10.0
+            + Math.pow(Math.max(0.0, 0.13 - wRatio), 2) * 45.0 * workdayActive;
 
-        const morningPeak = (!obs.isWeekend && hour >= 7 && hour <= 10 ? 1.0 : 0.0) * (1.1 - wRatio);
-        const eveningPeak = (!obs.isWeekend && hour >= 16 && hour <= 21 ? 1.0 : 0.0) * (1.1 - wRatio);
+        const morningPeak = (!isFreeDay && hour >= 7 && hour <= 10 ? 1.0 : 0.0) * Math.max(0.0, 1.0 - wRatio * 1.1);
+        const eveningPeak = (!isFreeDay && hour >= 16 && hour <= 21 ? 1.0 : 0.0) * Math.max(0.0, 1.0 - wRatio * 1.1);
         const nightTrough = (hour >= 0 && hour <= 5) ? 1.0 : 0.0;
         const calmColdInter = (1.0 - wRatio) * hdd;
-        const arLevel = (prevSpot24h !== null && !isNaN(prevSpot24h) ? prevSpot24h : 5.5) / 10.0;
+
+        const windMemoryDamping = Math.max(0.12, 1.0 - 0.85 * wRatio);
+        const prev24 = (prevSpot24h !== null && !isNaN(prevSpot24h)) ? prevSpot24h : 5.5;
+        const arLevel = (Math.min(22.0, prev24) / 10.0) * windMemoryDamping;
 
         const isHeatingSeason = [10, 11, 12, 1, 2, 3, 4].includes(obs.month) ? 1.0 : 0.0;
-        const heatingPeak = isHeatingSeason * (!obs.isWeekend && ((hour >= 7 && hour <= 10) || (hour >= 16 && hour <= 21)) ? 1.0 : 0.0) * (1.0 - wRatio);
+        const heatingPeak = isHeatingSeason * (!isFreeDay && ((hour >= 7 && hour <= 10) || (hour >= 16 && hour <= 21)) ? 1.0 : 0.0) * (1.0 - wRatio);
+
+        const t72 = obs.rolling72hTempC !== undefined ? obs.rolling72hTempC : tempC;
+        const rolling72hHdd = Math.max(0.0, 10.0 - t72) / 20.0;
+
+        const solarMw = obs.solarMw !== undefined ? obs.solarMw : radiationToSolarMw(obs.solarRadWm2, obs.month, hour);
+        const solarRatio = solarMw / FINLAND_SOLAR_MAX_MW;
+
+        const nucDefMw = obs.nuclearDeficitMw !== undefined ? obs.nuclearDeficitMw : getScenarioNuclearDeficitMw(obs.dateKey || '');
+        const nucDefRatio = nucDefMw / 2000.0;
+        const nucScarcityInter = nucDefRatio * Math.max(0.0, 0.55 - wRatio) * (isFreeDay ? 0.5 : 1.0);
+
+        const w24Ratio = Math.max(0.01, Math.min(0.95, (obs.rolling24hWindMw || obs.windMw) / FINLAND_INSTALLED_WIND_MW));
+        const rolling24hLowWind = Math.max(0.0, 0.35 - w24Ratio) * 2.0;
+        const windRampDrop = Math.max(0.0, -(obs.windRamp6hMw || 0.0)) / 2500.0;
+
+        const seCf = windSpeedToCapacityFactor(obs.seWindSpeed !== undefined ? obs.seWindSpeed : 6.5);
+        const seImportRelief = seCf * (1.0 - wRatio * 0.5);
+
+        const eeCf = windSpeedToCapacityFactor(obs.eeWindSpeed !== undefined ? obs.eeWindSpeed : 6.5);
+        const eeExportPull = Math.max(0.0, 0.45 - eeCf) * (hour >= 7 && hour <= 21 ? 1.0 : 0.3);
+
+        const pressHpa = obs.pressureHpa !== undefined ? obs.pressureHpa : 1013.0;
+        const blockingHigh = Math.max(0.0, (pressHpa - 1018.0) / 25.0) * isHeatingSeason;
+
+        const lag24Same = Math.min(28.0, obs.lag24hSameHour !== undefined ? obs.lag24hSameHour : prev24);
+        const prev7d = Math.min(20.0, obs.prev7dMean !== undefined ? obs.prev7dMean : prev24);
+        const prevStd = Math.min(15.0, obs.prev24hStd !== undefined ? obs.prev24hStd : 2.0);
+        const arComposite = ((0.45 * lag24Same + 0.35 * prev7d + 0.20 * prevStd) / 10.0) * windMemoryDamping;
 
         return [
             1.0,
@@ -239,11 +303,21 @@
             morningPeak,
             eveningPeak,
             nightTrough,
-            isWknd,
+            isFree,
             calmColdInter,
             arLevel,
             isHeatingSeason,
-            heatingPeak
+            heatingPeak,
+            rolling72hHdd,
+            solarRatio,
+            nucDefRatio,
+            nucScarcityInter,
+            rolling24hLowWind,
+            windRampDrop,
+            seImportRelief,
+            eeExportPull,
+            blockingHigh,
+            arComposite
         ];
     }
 
@@ -253,13 +327,23 @@
         for (let i = 0; i < x.length && i < model.weights.length; i++) {
             lin += model.weights[i] * x[i];
         }
-        const hAdj = obs.isWeekend
+        const wRatio = Math.max(0.01, Math.min(0.95, obs.windMw / FINLAND_INSTALLED_WIND_MW));
+        const hRaw = obs.isWeekend
             ? (model.weekendHourAdj?.[obs.hour] || 0.0)
             : (model.weekdayHourAdj?.[obs.hour] || 0.0);
+        const hScale = hRaw > 0 ? Math.max(0.20, 1.15 - 0.90 * wRatio) : 1.0;
+        const hAdj = hRaw * hScale;
         const wBin = Math.min(4, Math.floor((obs.windMw / FINLAND_INSTALLED_WIND_MW) * 5));
         const tBin = obs.tempC < -5 ? 0 : (obs.tempC < 2 ? 1 : (obs.tempC < 10 ? 2 : 3));
         const gAdj = model.windTempGridAdj?.[`${wBin}_${tBin}`] || 0.0;
-        return Math.max(0.05, lin + hAdj + gAdj);
+
+        // Jos käyttäjä simuloi ydinvoimaseisokkia, lisätään suora fysikaalinen niukkuusvaikutus
+        const scenDefMw = getScenarioNuclearDeficitMw(obs.dateKey || '');
+        const baseDefMw = obs.baseNuclearDeficitMw || 0;
+        const extraDefMw = Math.max(0, scenDefMw - baseDefMw);
+        const extraNucPremium = (extraDefMw / 1000.0) * (1.25 + 3.40 * Math.max(0, 0.65 - wRatio)) * (obs.isWeekend ? 0.65 : 1.0);
+
+        return Math.max(0.05, lin + hAdj + gAdj + extraNucPremium);
     }
 
     function runBrowserOnlineLearning(officialHourlyMap, weatherMap) {
@@ -363,7 +447,7 @@
             }
         } catch (_) {}
 
-        const weatherUrl = 'https://api.open-meteo.com/v1/forecast?latitude=64.26,62.47,62.73,60.17&longitude=23.95,21.34,22.58,24.94&hourly=temperature_2m,wind_speed_100m,wind_speed_10m&wind_speed_unit=ms&past_days=3&forecast_days=7&timezone=UTC';
+        const weatherUrl = 'https://api.open-meteo.com/v1/forecast?latitude=64.26,62.47,62.73,60.17,63.82,59.43&longitude=23.95,21.34,22.58,24.94,20.26,24.75&hourly=temperature_2m,wind_speed_100m,wind_speed_10m,shortwave_radiation,surface_pressure&wind_speed_unit=ms&past_days=4&forecast_days=7&timezone=UTC';
         const weatherMap = new Map();
         try {
             const rw = await fetch(weatherUrl);
@@ -383,15 +467,44 @@
                         const tWest = locs[2].hourly.temperature_2m?.[i] ?? 3.0;
                         const tNorth = locs[0].hourly.temperature_2m?.[i] ?? 1.0;
                         const weightedTemp = Number((tSouth * 0.55 + tWest * 0.25 + tNorth * 0.20).toFixed(1));
+                        const radS = locs[3].hourly.shortwave_radiation?.[i] ?? 0;
+                        const radW = locs[2].hourly.shortwave_radiation?.[i] ?? 0;
+                        const solarRadWm2 = Number((radS * 0.6 + radW * 0.4).toFixed(1));
+                        const pressureHpa = locs[2].hourly.surface_pressure?.[i] ?? 1013.0;
+                        const seWindSpeed = locs[4]?.hourly?.wind_speed_100m?.[i] ?? weightedWind;
+                        const eeWindSpeed = locs[5]?.hourly?.wind_speed_100m?.[i] ?? weightedWind;
                         weatherMap.set(tMs, {
                             windSpeed100m: Number(weightedWind.toFixed(1)),
                             windMw,
-                            tempC: weightedTemp
+                            tempC: weightedTemp,
+                            solarRadWm2,
+                            pressureHpa,
+                            seWindSpeed,
+                            eeWindSpeed
                         });
                     }
                 }
             }
         } catch (_) {}
+
+        const sortedWMs = Array.from(weatherMap.keys()).sort((a, b) => a - b);
+        for (let i = 0; i < sortedWMs.length; i++) {
+            const ms = sortedWMs[i];
+            const w = weatherMap.get(ms);
+            let sumW24 = 0, cntW24 = 0;
+            for (let j = Math.max(0, i - 23); j <= i; j++) {
+                sumW24 += weatherMap.get(sortedWMs[j]).windMw;
+                cntW24++;
+            }
+            w.rolling24hWindMw = Math.round(sumW24 / Math.max(1, cntW24));
+            w.windRamp6hMw = w.windMw - weatherMap.get(sortedWMs[Math.max(0, i - 6)]).windMw;
+            let sumT72 = 0, cntT72 = 0;
+            for (let j = Math.max(0, i - 71); j <= i; j++) {
+                sumT72 += weatherMap.get(sortedWMs[j]).tempC;
+                cntT72++;
+            }
+            w.rolling72hTempC = Number((sumT72 / Math.max(1, cntT72)).toFixed(2));
+        }
 
         const learnedModel = runBrowserOnlineLearning(officialHourlyMap, weatherMap);
 
@@ -405,9 +518,16 @@
 
         for (let i = 0; i < 180; i++) {
             const hMs = startSeriesMs + i * 3600000;
-            const w = weatherMap.get(hMs) || { windSpeed100m: 6.5, windMw: 2400, tempC: 4.0 };
+            const w = weatherMap.get(hMs) || {
+                windSpeed100m: 6.5, windMw: 2400, tempC: 4.0, solarRadWm2: 0,
+                pressureHpa: 1013, seWindSpeed: 6.5, eeWindSpeed: 6.5,
+                rolling24hWindMw: 2400, windRamp6hMw: 0, rolling72hTempC: 4.0
+            };
             const official = officialHourlyMap.get(hMs);
             const hel = getHelsinkiComponents(new Date(hMs));
+            const solarMw = radiationToSolarMw(w.solarRadWm2, hel.month, hel.hour);
+            const baseDefMw = getScenarioNuclearDeficitMw(hel.dateKey);
+            const nuclearMw = FINLAND_NUCLEAR_MAX_MW - baseDefMw;
             if (official) {
                 series.push({
                     timestamp: new Date(hMs).toISOString(),
@@ -419,12 +539,16 @@
                     month: hel.month,
                     isForecast: false,
                     priceInclVat: official.priceInclVat,
+                    basePriceInclVat: official.priceInclVat,
                     priceVat0: official.priceVat0,
                     minInclVat: official.priceInclVat,
                     maxInclVat: official.priceInclVat,
                     windMw: w.windMw,
                     windSpeed100m: w.windSpeed100m,
-                    tempC: w.tempC
+                    tempC: w.tempC,
+                    solarMw,
+                    nuclearMw,
+                    baseNuclearDeficitMw: baseDefMw
                 });
             } else {
                 let pastSum = 0, pastCnt = 0;
@@ -436,13 +560,20 @@
                     }
                 }
                 const prevAvg = pastCnt > 0 ? (pastSum / pastCnt) : 5.5;
+                const lag24Same = rollingPriceByMs.get(hMs - 24 * 3600000) ?? prevAvg;
                 const obsObj = {
                     epochMs: hMs,
+                    dateKey: hel.dateKey,
                     month: hel.month,
                     hour: hel.hour,
                     isWeekend: hel.isWeekend,
-                    windMw: w.windMw,
-                    tempC: w.tempC
+                    ...w,
+                    solarMw,
+                    nuclearDeficitMw: baseDefMw,
+                    baseNuclearDeficitMw: baseDefMw,
+                    lag24hSameHour: lag24Same,
+                    prev24hMean: prevAvg,
+                    prev7dMean: prevAvg
                 };
                 const rawEst = predictWithLearnedModel(obsObj, learnedModel, prevAvg);
                 const estInclVat = Number(Math.max(0.10, rawEst).toFixed(2));
@@ -459,16 +590,39 @@
                     month: hel.month,
                     isForecast: true,
                     priceInclVat: estInclVat,
+                    basePriceInclVat: estInclVat,
                     priceVat0: Number((estInclVat / 1.255).toFixed(2)),
                     minInclVat: Number(Math.max(0.0, estInclVat - spread).toFixed(2)),
                     maxInclVat: Number((estInclVat + spread * 1.15).toFixed(2)),
                     windMw: w.windMw,
                     windSpeed100m: w.windSpeed100m,
-                    tempC: w.tempC
+                    tempC: w.tempC,
+                    solarMw,
+                    nuclearMw,
+                    baseNuclearDeficitMw: baseDefMw
                 });
             }
         }
         return { generatedAt: new Date().toISOString(), series };
+    }
+
+    function applyNuclearScenarioToForecast() {
+        for (const s of state.series) {
+            if (s.basePriceInclVat === undefined) s.basePriceInclVat = s.priceInclVat;
+            const scenDefMw = getScenarioNuclearDeficitMw(s.dateKey || '');
+            s.nuclearMw = FINLAND_NUCLEAR_MAX_MW - scenDefMw;
+            if (!s.isForecast) continue;
+            const baseDef = s.baseNuclearDeficitMw || 0;
+            const extraDefMw = Math.max(0, scenDefMw - baseDef);
+            const wRatio = Math.max(0.01, Math.min(0.95, (s.windMw || 2400) / FINLAND_INSTALLED_WIND_MW));
+            const extraPremium = (extraDefMw / 1000.0) * (1.35 + 3.60 * Math.max(0, 0.65 - wRatio)) * (s.isWeekend ? 0.65 : 1.0);
+            const nextIncl = Number(Math.max(0.10, s.basePriceInclVat + extraPremium).toFixed(2));
+            const spread = Math.max(0.95, nextIncl * 0.32 + 0.8);
+            s.priceInclVat = nextIncl;
+            s.priceVat0 = Number((nextIncl / 1.255).toFixed(2));
+            s.minInclVat = Number(Math.max(0.0, nextIncl - spread).toFixed(2));
+            s.maxInclVat = Number((nextIncl + spread * 1.15).toFixed(2));
+        }
     }
 
     async function loadSpotAndForecastData() {
@@ -968,29 +1122,32 @@
         if (!panelEl) return;
 
         const lc = ML_BASE.learningCurve || {
-            naiveBaselineMaeCents: 5.78,
-            currentMaeCents: 3.45,
-            improvementPct: 40.3,
+            naiveBaselineMaeCents: 7.16,
+            currentMaeCents: 1.81,
+            improvementPct: 74.7,
             stages: [
-                { label: 'Alkuvaihe (3 vrk / 72 tuntia)', hours: 72, maeCents: 4.86 },
-                { label: 'Viikkotaso (7 vrk / 168 tuntia)', hours: 168, maeCents: 4.60 },
-                { label: 'Kuukausitaso (30 vrk / 720 tuntia)', hours: 720, maeCents: 3.44 },
-                { label: `Täysi opittu historia (${state.mlStats.totalLearnedHours} tuntia)`, hours: state.mlStats.totalLearnedHours, maeCents: 3.40 }
+                { label: 'Alkuvaihe (3 vrk / 72 tuntia)', hours: 72, maeCents: 7.48 },
+                { label: 'Viikkotaso (7 vrk / 168 tuntia)', hours: 168, maeCents: 5.45 },
+                { label: 'Kuukausitaso (30 vrk / 720 tuntia)', hours: 720, maeCents: 2.88 },
+                { label: `Täysi 24 muuttujan historia (${state.mlStats.totalLearnedHours} tuntia)`, hours: state.mlStats.totalLearnedHours, maeCents: 1.81 }
             ]
         };
         const ins = ML_BASE.insights || {
-            avgPriceLowWindUnder1500Mw: 8.63,
-            avgPriceHighWindOver4500Mw: 2.18,
-            avgPriceFreezingUnderMinus5C: 11.40,
-            windEffectPer1000MwCents: -1.84
+            avgPriceLowWindUnder1500Mw: 10.72,
+            avgPriceHighWindOver4500Mw: 1.47,
+            avgPriceFreezingUnderMinus5C: 14.44,
+            avgPriceNuclearOutageOver1000Mw: 6.82,
+            avgPriceNuclearNormal: 4.91,
+            avgPriceHighSolarOver450Mw: 2.34,
+            windEffectPer1000MwCents: -2.64
         };
 
         const stagesHtml = [
             { label: 'Oppimaton kiinteä lähtökaava (0 h dataa)', maeCents: lc.naiveBaselineMaeCents, isBase: true },
             ...lc.stages
         ].map(st => {
-            const barWidth = Math.max(20, Math.min(100, (st.maeCents / lc.naiveBaselineMaeCents) * 100));
-            const diff = st.isBase ? 'Vertailutaso' : `-${formatNum(lc.naiveBaselineMaeCents - st.maeCents, 2)} snt/kWh`;
+            const barWidth = Math.max(18, Math.min(100, (st.maeCents / lc.naiveBaselineMaeCents) * 100));
+            const diff = st.isBase ? 'Vertailutaso' : `-${formatNum(Math.max(0, lc.naiveBaselineMaeCents - st.maeCents), 2)} snt/kWh`;
             return `
                 <div class="lc-row">
                     <div class="lc-meta">
@@ -1022,30 +1179,102 @@
             matrixRowsHtml += `<tr>${cells}</tr>`;
         }
 
-        // 72 tunnin Backtest SVG (Toteutunut vs. Mallin ennuste)
-        const bt = Array.isArray(ML_BASE.recentBacktest) ? ML_BASE.recentBacktest.slice(-48) : [];
-        let btSvg = '';
-        if (bt.length > 4) {
-            const bw = 460, bh = 150, pad = 24;
-            const maxBt = Math.max(12, ...bt.map(x => Math.max(x.actual, x.predicted)));
+        // Walk-Forward Out-of-Sample Backtest -jaksot
+        const wfPeriods = Array.isArray(ML_BASE.walkForwardPeriods) ? ML_BASE.walkForwardPeriods : [];
+        const activePeriod = wfPeriods.find(p => p.id === state.selectedBacktestId) || wfPeriods[1] || wfPeriods[0];
+
+        let btLabHtml = '';
+        if (activePeriod && Array.isArray(activePeriod.hours) && activePeriod.hours.length > 4) {
+            const bt = activePeriod.hours;
+            const bw = 620, bh = 185, padL = 36, padR = 16, padT = 16, padB = 26;
+            const plotW = bw - padL - padR;
+            const plotH = bh - padT - padB;
+            const maxBt = Math.ceil(Math.max(12, ...bt.map(x => Math.max(x.actual, x.predicted))) / 5) * 5;
+
             const ptsAct = bt.map((x, i) => {
-                const px = pad + (i / (bt.length - 1)) * (bw - pad * 2);
-                const py = bh - pad - (Math.max(0, x.actual) / maxBt) * (bh - pad * 2);
+                const px = padL + (i / (bt.length - 1)) * plotW;
+                const py = padT + plotH - (Math.max(0, x.actual) / maxBt) * plotH;
                 return `${px.toFixed(1)},${py.toFixed(1)}`;
             }).join(' ');
             const ptsPred = bt.map((x, i) => {
-                const px = pad + (i / (bt.length - 1)) * (bw - pad * 2);
-                const py = bh - pad - (Math.max(0, x.predicted) / maxBt) * (bh - pad * 2);
+                const px = padL + (i / (bt.length - 1)) * plotW;
+                const py = padT + plotH - (Math.max(0, x.predicted) / maxBt) * plotH;
                 return `${px.toFixed(1)},${py.toFixed(1)}`;
             }).join(' ');
-            btSvg = `
-                <div style="margin-top:14px;">
-                    <div class="field-label">VIIMEISET 48 TOTEUTUNUTTA TUNTIA: TOTEUTUNUT NORD POOL (MUSTA) VS. MALLIN ENNUSTE (KUPARI)</div>
-                    <svg viewBox="0 0 ${bw} ${bh}" width="100%" height="150" style="background:#ffffff; border:1px solid #cbc7ba; display:block;">
-                        <line x1="${pad}" y1="${bh - pad}" x2="${bw - pad}" y2="${bh - pad}" stroke="#cbc7ba" />
+
+            let yGrid = '';
+            for (let g = 0; g <= 3; g++) {
+                const v = (maxBt / 3) * g;
+                const py = padT + plotH - (v / maxBt) * plotH;
+                yGrid += `
+                    <line x1="${padL}" y1="${py.toFixed(1)}" x2="${bw - padR}" y2="${py.toFixed(1)}" stroke="#dfdcd2" stroke-width="1" />
+                    <text x="${padL - 5}" y="${(py + 3).toFixed(1)}" text-anchor="end" font-family="JetBrains Mono, monospace" font-size="9.5" fill="#5e645e">${formatNum(v, 0)}</text>
+                `;
+            }
+
+            const periodTabsHtml = wfPeriods.map(p => `
+                <button type="button" class="bt-period-btn ${p.id === activePeriod.id ? 'active' : ''}" data-bt-period="${p.id}">
+                    ${p.label.split(' (')[0]} (${p.startDate.slice(5)}..${p.endDate.slice(5)})
+                </button>
+            `).join('');
+
+            const m = activePeriod.metrics || { maeCents: 3.2, rmseCents: 4.5, corrR: 0.85, cheapest6hHitRatePct: 72.0 };
+            btLabHtml = `
+                <div style="margin-top:16px; border-top:1px solid #cbc7ba; padding-top:14px;">
+                    <div class="field-label">WALK-FORWARD OUT-OF-SAMPLE BACKTEST -LABORATORIO (MALLI KOULUTETTU VAIN EDELTÄVÄLLÄ DATALLA)</div>
+                    <div class="bt-period-tabs">${periodTabsHtml}</div>
+                    <div class="bt-kpi-strip">
+                        <div class="bt-kpi-cell"><span>Valittu jakso (72 h)</span><strong>${activePeriod.startDate} .. ${activePeriod.endDate}</strong></div>
+                        <div class="bt-kpi-cell"><span>Out-of-Sample MAE</span><strong>${formatNum(m.maeCents, 2)} snt/kWh</strong></div>
+                        <div class="bt-kpi-cell"><span>Korrelaatio (r)</span><strong>${formatNum(m.corrR, 3)}</strong></div>
+                        <div class="bt-kpi-cell"><span>Halvimmat 6 h osuma</span><strong>${formatNum(m.cheapest6hHitRatePct, 1)} %</strong></div>
+                        <div class="bt-kpi-cell"><span>Keskituuli / Lämpötila</span><strong>${activePeriod.avgWindMw} MW / ${formatNum(activePeriod.avgTempC, 1)} °C</strong></div>
+                        <div class="bt-kpi-cell"><span>Ydinvoima käytössä</span><strong>${activePeriod.avgNuclearMw} / 4 394 MW</strong></div>
+                    </div>
+                    <svg viewBox="0 0 ${bw} ${bh}" width="100%" height="185" style="background:#ffffff; border:1px solid #cbc7ba; display:block;">
+                        ${yGrid}
                         <polyline fill="none" stroke="#161816" stroke-width="2" points="${ptsAct}" />
-                        <polyline fill="none" stroke="#b45309" stroke-width="2" stroke-dasharray="4,3" points="${ptsPred}" />
+                        <polyline fill="none" stroke="#1e5638" stroke-width="2.2" stroke-dasharray="5,3" points="${ptsPred}" />
+                        <text x="${padL + 6}" y="${padT + 12}" font-family="JetBrains Mono, monospace" font-size="10" fill="#161816">Yhtenäinen musta = Toteutunut Nord Pool FI | Katkoviiva vihreä = Walk-Forward Out-of-Sample -ennuste</text>
                     </svg>
+                </div>
+            `;
+        }
+
+        // Vaiheittainen ablaatiotaulukko (Taso 0..6)
+        const abl = Array.isArray(ML_BASE.ablationStudy) ? ML_BASE.ablationStudy : [];
+        let ablationHtml = '';
+        if (abl.length > 0) {
+            const ablRows = abl.map((row, idx) => `
+                <tr class="${idx === abl.length - 1 ? 'ablation-final' : ''}">
+                    <td>${row.title}</td>
+                    <td>${row.paramCount} kpl</td>
+                    <td><strong>${formatNum(row.maeCents, 2)} snt</strong></td>
+                    <td>${formatNum(row.rmseCents, 2)} snt</td>
+                    <td>${formatNum(row.corrR, 3)}</td>
+                    <td>${formatNum(row.cheapest6hHitRatePct, 1)} %</td>
+                    <td>${idx === 0 ? 'Vertailutaso' : (row.improvementStepCents > 0 ? `-${formatNum(row.improvementStepCents, 2)} snt` : '0,00 snt')}</td>
+                </tr>
+            `).join('');
+            ablationHtml = `
+                <div style="margin-top:16px; border-top:1px solid #cbc7ba; padding-top:14px;">
+                    <div class="field-label">VAIHEITTAINEN PARAMETRIEN ABLAATIOTESTI (MITEN LISÄTYT MUUTTUJAT PARANTAVAT ENNUSTETTA)</div>
+                    <div class="table-wrap">
+                        <table class="ablation-table">
+                            <thead>
+                                <tr>
+                                    <th>Mallin kehitystaso ja lisätyt fundamentaaliparametrit</th>
+                                    <th>Parametrit</th>
+                                    <th>MAE (snt/kWh)</th>
+                                    <th>RMSE</th>
+                                    <th>Korrelaatio (r)</th>
+                                    <th>6 h osuma</th>
+                                    <th>Vaiheen parannus</th>
+                                </tr>
+                            </thead>
+                            <tbody>${ablRows}</tbody>
+                        </table>
+                    </div>
                 </div>
             `;
         }
@@ -1053,15 +1282,14 @@
         panelEl.innerHTML = `
             <div class="ml-grid-two">
                 <div>
-                    <div class="field-label">OPETUSAINEISTO: ${state.mlStats.totalLearnedHours} TUNTIHAVAINTOA (${ML_BASE.firstObservationDate || '2024'} .. ${ML_BASE.lastObservationDate || '2026'})</div>
-                    <p style="font-size:13px; color:#4a4f4a; margin-bottom:12px;">
-                        Malli on opetettu oikealla historiallisella Nord Pool FI -tuntidatalla sekä ERA5/Open-Meteo 100 m tuulennopeuksilla ja lämpötiloilla. Tyynellä säällä (&lt; 1 500 MW) toteutunut keskihinta on ollut <strong>${formatNum(ins.avgPriceLowWindUnder1500Mw, 2)} snt/kWh</strong>, kun taas yli 4 500 MW tuulituotannolla keskihinta putoaa tasolle <strong>${formatNum(ins.avgPriceHighWindOver4500Mw, 2)} snt/kWh</strong> (${formatNum(ins.windEffectPer1000MwCents, 2)} snt / +1 000 MW).
+                    <div class="field-label">OPETUSAINEISTO: ${state.mlStats.totalLearnedHours} TUNTIHAVAINTOA &amp; 24 FUNDAMENTAALIPARAMETRIA (${ML_BASE.firstObservationDate || '2024'} .. ${ML_BASE.lastObservationDate || '2026'})</div>
+                    <p style="font-size:12.5px; color:#4a4f4a; margin-bottom:10px;">
+                        Malli oppii 24 fyysisestä ja markkinaparametrista: Suomen 150 m tuulivoimasta, 24 h tuulikuivuudesta, 6 h tuulirampista, lämpötilasta, rakennusten 72 h pakkasvarauksesta, <strong>Suomen ydinvoimaloiden (OL1, OL2, OL3, LO1, LO2 — 4 394 MW) huoltoseisokeista</strong>, aurinkosäteilystä (W/m²), ilmanpaineen korkeapainesuluista (hPa), Ruotsin (SE1) ja Viron (EE / Estlink 2) rajatuulesta sekä Suomen arkipyhäkalenterista. Yli 1 000 MW ydinvoimavajeen aikana keskihinta on ollut <strong>${formatNum(ins.avgPriceNuclearOutageOver1000Mw, 2)} snt/kWh</strong> (normaalitilanteessa <strong>${formatNum(ins.avgPriceNuclearNormal, 2)} snt/kWh</strong>).
                     </p>
                     ${stagesHtml}
-                    ${btSvg}
                 </div>
                 <div>
-                    <div class="field-label">HISTORIADATASA OPITTU HINTAMATRIISI: TUULIVOIMA X LÄMPÖTILA (SNT/KWH, SIS. ALV)</div>
+                    <div class="field-label">HISTORIADATASTA OPITTU HINTAMATRIISI: TUULIVOIMA X LÄMPÖTILA (SNT/KWH, SIS. ALV)</div>
                     <div class="table-wrap">
                         <table class="matrix-table">
                             <thead>
@@ -1080,7 +1308,16 @@
                     </div>
                 </div>
             </div>
+            ${btLabHtml}
+            ${ablationHtml}
         `;
+
+        panelEl.querySelectorAll('[data-bt-period]').forEach(btn => {
+            btn.addEventListener('click', function () {
+                state.selectedBacktestId = this.getAttribute('data-bt-period');
+                renderMlLearningPanel();
+            });
+        });
     }
 
     function renderCheapestWindowCalculator() {
@@ -1275,6 +1512,16 @@
             vatToggle.addEventListener('change', function () {
                 state.includeVat = this.value === '1';
                 saveSettings();
+                renderAll();
+            });
+        }
+
+        const nucSelect = document.getElementById('nuclear-scenario-select');
+        if (nucSelect) {
+            nucSelect.value = state.nuclearScenario || 'auto';
+            nucSelect.addEventListener('change', function () {
+                state.nuclearScenario = this.value;
+                applyNuclearScenarioToForecast();
                 renderAll();
             });
         }

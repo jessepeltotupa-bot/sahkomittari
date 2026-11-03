@@ -8,11 +8,11 @@
     <link rel="canonical" href="https://xn--shkmittari-q5a2t.fi/paikkakunnat/rovaniemi.html" />
     <meta name="geo.region" content="FI">
     <meta name="content-language" content="fi-FI">
-    <link rel="icon" type="image/svg+xml" href="../favicon.svg?v=27">
+    <link rel="icon" type="image/svg+xml" href="../favicon.svg?v=28">
     <link rel="icon" type="image/x-icon" href="../favicon.ico">
     <link rel="apple-touch-icon" sizes="180x180" href="../apple-touch-icon.png">
     <link rel="manifest" href="../site.webmanifest">
-    <link rel="stylesheet" href="../styles.css?v=27">
+    <link rel="stylesheet" href="../styles.css?v=28">
 </head>
 <body data-preset-dso="neve" data-preset-postal="96100" data-preset-city="Rovaniemi">
     <div class="telemetry-bar">
@@ -29,7 +29,7 @@
     <header class="site-header">
         <div class="header-inner">
             <a href="../index.html" class="brand-link">
-                <span class="brand-title"><img src="../favicon.svg?v=27" alt="" width="24" height="24" style="vertical-align:-5px; margin-right:8px;">Sähkömittari.fi</span>
+                <span class="brand-title"><img src="../favicon.svg?v=28" alt="" width="24" height="24" style="vertical-align:-5px; margin-right:8px;">Sähkömittari.fi</span>
                 <span class="brand-kicker">SUOMEN SÄHKÖMARKKINA- JA JAKELUVERKKOLASKURI</span>
                 <span class="brand-subtitle">Pörssisähkön spot-hinta, tarkentuva 7 vrk hintaennuste ja todellinen siirtohinta postinumerolla</span>
             </a>
@@ -116,15 +116,15 @@
 
             <section class="instrument-strip" id="siirtohintalaskuri">
                 <div class="instrument-strip-top">
-                    <h2>Pörssisähkö ja sähkön siirtohinta Rovaniemi (96100-97780)</h2>
-                    <p>Paikkakunnalla Rovaniemi (Lappi) ensisijainen jakeluverkkoyhtiö on Rovaniemen Verkko Oy (Neve). Kunnan reuna- tai haja-asutusalueilla verkosta vastaa osittain myös Rovakaira Oy. Yleissiirron ja sähköveron kiinteä osuus on yhteensä 6,45 snt/kWh pörssisähkön spot-hinnan päälle.</p>
+                    <h2 id="transfer-calc-heading">Pörssisähkön spot-hinta, 7 vrk ennuste ja siirtohintalaskuri postinumerolla</h2>
+                    <p id="transfer-calc-lead">Syötä postinumerosi tai paikkakuntasi alla olevaan kenttään, niin laskuri tunnistaa automaattisesti paikallisen sähköverkkoyhtiön ja laskee sähkön todellisen kokonaishinnan.</p>
                 </div>
 
                 <div class="control-matrix">
                     <form id="postal-search-form" class="control-cell" onsubmit="return false;">
                         <label for="postal-input" class="field-label">Postinumero tai kunta</label>
                         <div class="postal-input-group">
-                            <input type="text" id="postal-input" class="input-control" value="96100" placeholder="00100, 33100, 90100...">
+                            <input type="text" id="postal-input" class="input-control" value="" placeholder="Syötä postinumero, esim. 00100, 33100...">
                             <button type="submit" class="btn-primary">Aseta</button>
                         </div>
                     </form>
@@ -224,23 +224,18 @@
                     <div id="annual-comparison-result" class="comp-grid"></div>
                 </div>
             </section>
-        </div>
 
-        <section class="panel-box">
-            <div class="panel-head">
-                <h2>SÄHKÖNSIIRTO JA JAKELUVERKKOYHTIÖ PAIKKAKUNNALLA ROVANIEMI</h2>
-            </div>
-            <div class="panel-body">
-                <p>
-                    Kun käyttöpaikka sijaitsee paikkakunnalla <strong>Rovaniemi</strong> (postinumeroalue <code>96100-97780</code>, maakunta Lappi), paikallisesta jakeluverkosta vastaa ensisijaisesti <a href="../verkkoyhtiot/neve-rovaniemi.html"><strong>Rovaniemen Verkko Oy (Neve)</strong></a>. Kunnan reuna- tai haja-asutusalueilla verkosta vastaa osittain myös Rovakaira Oy.
-                </p>
-                <ul style="margin:12px 0 0 20px; font-family:monospace; font-size:13px;">
-                    <li><strong>Yleissiirto (Neve (Rovaniemi)):</strong> 3,62 snt/kWh (perusmaksu 12,20 €/kk)</li>
-                    <li><strong>Yösiirto / Aikasiirto:</strong> Päivä klo 07–22 4,18 snt/kWh, Yö klo 22–07 2,68 snt/kWh (perusmaksu 19,20 €/kk)</li>
-                    <li><strong>Valtion sähkövero ja huoltovarmuusmaksu:</strong> 2,83 snt/kWh (sis. ALV 25,5 %)</li>
-                </ul>
-            </div>
-        </section>
+            <section class="panel-box" id="local-dso-info-panel">
+                <div class="panel-head">
+                    <h2 id="local-dso-info-heading">SÄHKÖNSIIRTO JA PAIKALLINEN JAKELUVERKKOYHTIÖ</h2>
+                </div>
+                <div class="panel-body" id="local-dso-info-body">
+                    <p>
+                        Kun syötät käyttöpaikan postinumeron tai paikkakunnan yllä olevaan siirtohintalaskuriin, ohjelma hakee automaattisesti alueesi ensisijaisen jakeluverkkoyhtiön sekä voimassa olevat yleissiirron, yösiirron ja sähköveron tiedot.
+                    </p>
+                </div>
+            </section>
+        </div>
     </main>
 
     <footer class="site-footer">
@@ -264,6 +259,6 @@
     <script src="../dso_data.js"></script>
     <script src="../ml_weights.js"></script>
     <script src="../nordpool_models.js"></script>
-    <script src="../app.js?v=27"></script>
+    <script src="../app.js?v=28"></script>
 </body>
 </html>

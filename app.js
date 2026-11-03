@@ -176,6 +176,7 @@
     const storagePrefix = `ps_${COUNTRY_ID}_`;
 
     const state = {
+        hasUserPostal: localStorage.getItem(storagePrefix + 'has_user_postal') === '1',
         postalCode: localStorage.getItem(storagePrefix + 'postal') || (ACTIVE_LOC ? ACTIVE_LOC.defaultPostal : '00100'),
         cityName: localStorage.getItem(storagePrefix + 'city') || (ACTIVE_LOC ? ACTIVE_LOC.defaultCity : 'Helsinki'),
         dsoId: localStorage.getItem(storagePrefix + 'dso') || (ACTIVE_LOC ? defaultDsoKey : 'helen'),
@@ -204,7 +205,7 @@
     };
 
     const bodyEl = document.body;
-    if (bodyEl) {
+    if (bodyEl && !state.hasUserPostal) {
         const presetDso = bodyEl.getAttribute('data-preset-dso');
         const presetPostal = bodyEl.getAttribute('data-preset-postal');
         const presetCity = bodyEl.getAttribute('data-preset-city');
@@ -215,6 +216,7 @@
 
     function saveSettings() {
         try {
+            localStorage.setItem(storagePrefix + 'has_user_postal', state.hasUserPostal ? '1' : '0');
             localStorage.setItem(storagePrefix + 'postal', state.postalCode);
             localStorage.setItem(storagePrefix + 'city', state.cityName);
             localStorage.setItem(storagePrefix + 'dso', state.dsoId);
@@ -1078,7 +1080,7 @@
         const dso = getActiveDso();
         const postalInput = document.getElementById('postal-input');
         if (postalInput && document.activeElement !== postalInput) {
-            postalInput.value = state.postalCode;
+            postalInput.value = state.hasUserPostal ? state.postalCode : '';
         }
 
         const nowHourMs = Math.floor(Date.now() / 3600000) * 3600000;
@@ -1095,13 +1097,86 @@
             if (tHours) tHours.textContent = `${state.mlStats.totalLearnedHours} h`;
         }
 
+        const vatFactor = state.includeVat ? 1.0 : (1.0 / DSO_DATA.vatRate);
+        const genCVal = dso.general_c_kwh * vatFactor;
+        const dayCVal = dso.day_c_kwh * vatFactor;
+        const nightCVal = dso.night_c_kwh * vatFactor;
+        const taxCVal = state.includeVat ? DSO_DATA.electricityTaxInclVat : DSO_DATA.electricityTaxVat0;
+        const genC = formatNum(genCVal, 2);
+        const dayC = formatNum(dayCVal, 2);
+        const nightC = formatNum(nightCVal, 2);
+        const taxC = formatNum(taxCVal, 2);
+        const totalFixedC = formatNum(genCVal + taxCVal, 2);
+        const genBaseStr = formatNum(dso.general_base_eur * vatFactor, 2);
+        const timeBaseStr = formatNum(dso.time_base_eur * vatFactor, 2);
+        const vatText = state.includeVat ? 'sis. ALV 25,5 %' : 'ALV 0 %';
+
+        // Päivitetään siirtohintalaskurin yläotsikko sekä paikallisen jakeluverkkoyhtiön tietolaatikko:
+        // Kun postinumero on syötetty, näytetään kyseisen postinumeron ja kunnan tarkat tiedot;
+        // muuten näytetään geneerinen teksti ilman lukuja.
+        const calcHeadingEl = document.getElementById('transfer-calc-heading') || document.querySelector('.instrument-strip-top h2');
+        const calcLeadEl = document.getElementById('transfer-calc-lead') || document.querySelector('.instrument-strip-top p');
+        const infoHeadingEl = document.getElementById('local-dso-info-heading');
+        const infoBodyEl = document.getElementById('local-dso-info-body');
+
+        if (!ACTIVE_LOC) {
+            if (state.hasUserPostal) {
+                const matchedMuni = (DSO_DATA.municipalities || []).find(m =>
+                    m.name.toLowerCase() === (state.cityName || '').toLowerCase() || m.postal === state.postalCode
+                );
+                const postalRangeStr = matchedMuni && matchedMuni.postal_range ? matchedMuni.postal_range : state.postalCode;
+                const regionParen = matchedMuni && matchedMuni.region ? ` (${matchedMuni.region})` : '';
+                const regionComma = matchedMuni && matchedMuni.region ? `, maakunta ${matchedMuni.region}` : '';
+                const altNames = (state.altDsoIds || [])
+                    .map(id => DSO_DATA.companies[id]?.name)
+                    .filter(Boolean);
+                const altSentence = altNames.length > 0
+                    ? ` Kunnan reuna- tai haja-asutusalueilla verkosta vastaa osittain myös ${altNames.join(', ')}.`
+                    : '';
+
+                if (calcHeadingEl) {
+                    calcHeadingEl.textContent = `Pörssisähkö ja sähkön siirtohinta ${state.cityName} (${postalRangeStr})`;
+                }
+                if (calcLeadEl) {
+                    calcLeadEl.textContent = `Paikkakunnalla ${state.cityName}${regionParen} ensisijainen jakeluverkkoyhtiö on ${dso.name}.${altSentence} Yleissiirron ja sähköveron kiinteä osuus on yhteensä ${totalFixedC} snt/kWh pörssisähkön spot-hinnan päälle.`;
+                }
+                if (infoHeadingEl) {
+                    infoHeadingEl.textContent = `SÄHKÖNSIIRTO JA JAKELUVERKKOYHTIÖ PAIKKAKUNNALLA ${state.cityName.toUpperCase()}`;
+                }
+                if (infoBodyEl) {
+                    infoBodyEl.innerHTML = `
+                        <p>
+                            Kun käyttöpaikka sijaitsee paikkakunnalla <strong>${state.cityName}</strong> (postinumeroalue <code>${postalRangeStr}</code>${regionComma}), paikallisesta jakeluverkosta vastaa ensisijaisesti <strong>${dso.name}</strong>.${altSentence}
+                        </p>
+                        <ul style="margin:12px 0 0 20px; font-family:monospace; font-size:13px;">
+                            <li><strong>Yleissiirto (${dso.short_name}):</strong> ${genC} snt/kWh (perusmaksu ${genBaseStr} €/kk)</li>
+                            <li><strong>Yösiirto / Aikasiirto:</strong> Päivä klo 07–22 ${dayC} snt/kWh, Yö klo 22–07 ${nightC} snt/kWh (perusmaksu ${timeBaseStr} €/kk)</li>
+                            <li><strong>Valtion sähkövero ja huoltovarmuusmaksu:</strong> ${taxC} snt/kWh (${vatText})</li>
+                        </ul>
+                    `;
+                }
+            } else {
+                if (calcHeadingEl) {
+                    calcHeadingEl.textContent = 'Pörssisähkön spot-hinta, 7 vrk ennuste ja siirtohintalaskuri postinumerolla';
+                }
+                if (calcLeadEl) {
+                    calcLeadEl.textContent = 'Syötä postinumerosi tai paikkakuntasi alla olevaan kenttään, niin laskuri tunnistaa automaattisesti paikallisen sähköverkkoyhtiön ja laskee sähkön todellisen kokonaishinnan.';
+                }
+                if (infoHeadingEl) {
+                    infoHeadingEl.textContent = 'SÄHKÖNSIIRTO JA PAIKALLINEN JAKELUVERKKOYHTIÖ';
+                }
+                if (infoBodyEl) {
+                    infoBodyEl.innerHTML = `
+                        <p>
+                            Kun syötät käyttöpaikan postinumeron tai paikkakunnan yllä olevaan siirtohintalaskuriin, ohjelma hakee automaattisesti alueesi ensisijaisen jakeluverkkoyhtiön sekä voimassa olevat yleissiirron, yösiirron ja sähköveron tiedot.
+                        </p>
+                    `;
+                }
+            }
+        }
+
         const detectedEl = document.getElementById('detected-dso-banner');
         if (detectedEl) {
-            const vatFactor = state.includeVat ? 1.0 : (1.0 / DSO_DATA.vatRate);
-            const genC = formatNum(dso.general_c_kwh * vatFactor, 2);
-            const dayC = formatNum(dso.day_c_kwh * vatFactor, 2);
-            const nightC = formatNum(dso.night_c_kwh * vatFactor, 2);
-            const taxC = formatNum(state.includeVat ? DSO_DATA.electricityTaxInclVat : DSO_DATA.electricityTaxVat0, 2);
 
             let altHtml = '';
             if (state.altDsoIds && state.altDsoIds.length > 0) {
@@ -2127,8 +2202,16 @@
 
         function handlePostalLookup() {
             if (!postalInput) return;
-            const res = resolvePostalOrCity(postalInput.value);
+            const rawVal = postalInput.value.trim();
+            if (!rawVal) {
+                state.hasUserPostal = false;
+                saveSettings();
+                renderAll();
+                return;
+            }
+            const res = resolvePostalOrCity(rawVal);
             if (res) {
+                state.hasUserPostal = true;
                 state.postalCode = res.postal;
                 state.cityName = res.city;
                 state.dsoId = res.dsoId;
@@ -2147,7 +2230,7 @@
         if (postalInput) {
             postalInput.addEventListener('input', function () {
                 const v = this.value.trim();
-                if (/^\d{5}$/.test(v)) {
+                if (!v || /^\d{5}$/.test(v)) {
                     handlePostalLookup();
                 }
             });
@@ -2266,7 +2349,7 @@
 
     document.addEventListener('DOMContentLoaded', function () {
         const initRes = resolvePostalOrCity(state.postalCode);
-        if (initRes && !document.body.getAttribute('data-preset-dso')) {
+        if (initRes && (state.hasUserPostal || !document.body.getAttribute('data-preset-dso'))) {
             state.cityName = initRes.city;
             state.dsoId = initRes.dsoId;
             state.altDsoIds = initRes.alt || [];

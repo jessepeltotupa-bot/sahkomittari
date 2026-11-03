@@ -45,7 +45,7 @@ def render_header(prefix: str = "") -> str:
     <header class="site-header">
         <div class="header-inner">
             <a href="{prefix}index.html" class="brand-link">
-                <span class="brand-title"><img src="{prefix}favicon.svg?v=27" alt="" width="24" height="24" style="vertical-align:-5px; margin-right:8px;">Sähkömittari.fi</span>
+                <span class="brand-title"><img src="{prefix}favicon.svg?v=28" alt="" width="24" height="24" style="vertical-align:-5px; margin-right:8px;">Sähkömittari.fi</span>
                 <span class="brand-kicker">SUOMEN SÄHKÖMARKKINA- JA JAKELUVERKKOLASKURI</span>
                 <span class="brand-subtitle">Pörssisähkön spot-hinta, tarkentuva 7 vrk hintaennuste ja todellinen siirtohinta postinumerolla</span>
             </a>
@@ -159,15 +159,15 @@ def render_interactive_dashboard_block(
 
             <section class="instrument-strip" id="siirtohintalaskuri">
                 <div class="instrument-strip-top">
-                    <h2>{html.escape(h1_text)}</h2>
-                    <p>{html.escape(lead_text)}</p>
+                    <h2 id="transfer-calc-heading">Pörssisähkön spot-hinta, 7 vrk ennuste ja siirtohintalaskuri postinumerolla</h2>
+                    <p id="transfer-calc-lead">Syötä postinumerosi tai paikkakuntasi alla olevaan kenttään, niin laskuri tunnistaa automaattisesti paikallisen sähköverkkoyhtiön ja laskee sähkön todellisen kokonaishinnan.</p>
                 </div>
 
                 <div class="control-matrix">
                     <form id="postal-search-form" class="control-cell" onsubmit="return false;">
                         <label for="postal-input" class="field-label">Postinumero tai kunta</label>
                         <div class="postal-input-group">
-                            <input type="text" id="postal-input" class="input-control" value="{html.escape(default_postal)}" placeholder="00100, 33100, 90100...">
+                            <input type="text" id="postal-input" class="input-control" value="" placeholder="Syötä postinumero, esim. 00100, 33100...">
                             <button type="submit" class="btn-primary">Aseta</button>
                         </div>
                     </form>
@@ -267,6 +267,17 @@ def render_interactive_dashboard_block(
                     <div id="annual-comparison-result" class="comp-grid"></div>
                 </div>
             </section>
+
+            <section class="panel-box" id="local-dso-info-panel">
+                <div class="panel-head">
+                    <h2 id="local-dso-info-heading">SÄHKÖNSIIRTO JA PAIKALLINEN JAKELUVERKKOYHTIÖ</h2>
+                </div>
+                <div class="panel-body" id="local-dso-info-body">
+                    <p>
+                        Kun syötät käyttöpaikan postinumeron tai paikkakunnan yllä olevaan siirtohintalaskuriin, ohjelma hakee automaattisesti alueesi ensisijaisen jakeluverkkoyhtiön sekä voimassa olevat yleissiirron, yösiirron ja sähköveron tiedot.
+                    </p>
+                </div>
+            </section>
         </div>"""
 
 
@@ -333,11 +344,11 @@ def build_index_page() -> str:
     <meta name="geo.region" content="FI">
     <meta name="content-language" content="fi-FI">
     <link rel="canonical" href="{SITE_URL}/" />
-    <link rel="icon" type="image/svg+xml" href="favicon.svg?v=27">
+    <link rel="icon" type="image/svg+xml" href="favicon.svg?v=28">
     <link rel="icon" type="image/x-icon" href="favicon.ico">
     <link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon.png">
     <link rel="manifest" href="site.webmanifest">
-    <link rel="stylesheet" href="styles.css?v=27">
+    <link rel="stylesheet" href="styles.css?v=28">
     <script type="application/ld+json">
 {json.dumps(faq_schema, ensure_ascii=False, indent=2)}
     </script>
@@ -399,7 +410,7 @@ def build_index_page() -> str:
     <script src="dso_data.js"></script>
     <script src="ml_weights.js"></script>
     <script src="nordpool_models.js"></script>
-    <script src="app.js?v=27"></script>
+    <script src="app.js?v=28"></script>
 </body>
 </html>
 """
@@ -437,11 +448,11 @@ def build_dso_page(comp: dict) -> str:
     <link rel="canonical" href="{SITE_URL}/verkkoyhtiot/{slug}.html" />
     <meta name="geo.region" content="FI">
     <meta name="content-language" content="fi-FI">
-    <link rel="icon" type="image/svg+xml" href="../favicon.svg?v=27">
+    <link rel="icon" type="image/svg+xml" href="../favicon.svg?v=28">
     <link rel="icon" type="image/x-icon" href="../favicon.ico">
     <link rel="apple-touch-icon" sizes="180x180" href="../apple-touch-icon.png">
     <link rel="manifest" href="../site.webmanifest">
-    <link rel="stylesheet" href="../styles.css?v=27">
+    <link rel="stylesheet" href="../styles.css?v=28">
 </head>
 <body data-preset-dso="{comp['id']}" data-preset-postal="{sample_postal}" data-preset-city="{html.escape(sample_city)}">
 {render_header("../")}
@@ -523,7 +534,7 @@ def build_dso_page(comp: dict) -> str:
     <script src="../dso_data.js"></script>
     <script src="../ml_weights.js"></script>
     <script src="../nordpool_models.js"></script>
-    <script src="../app.js?v=27"></script>
+    <script src="../app.js?v=28"></script>
 </body>
 </html>
 """
@@ -557,40 +568,24 @@ def build_municipality_page(m: dict) -> str:
     <link rel="canonical" href="{SITE_URL}/paikkakunnat/{mslug}.html" />
     <meta name="geo.region" content="FI">
     <meta name="content-language" content="fi-FI">
-    <link rel="icon" type="image/svg+xml" href="../favicon.svg?v=27">
+    <link rel="icon" type="image/svg+xml" href="../favicon.svg?v=28">
     <link rel="icon" type="image/x-icon" href="../favicon.ico">
     <link rel="apple-touch-icon" sizes="180x180" href="../apple-touch-icon.png">
     <link rel="manifest" href="../site.webmanifest">
-    <link rel="stylesheet" href="../styles.css?v=27">
+    <link rel="stylesheet" href="../styles.css?v=28">
 </head>
 <body data-preset-dso="{comp['id']}" data-preset-postal="{m['postal']}" data-preset-city="{html.escape(m['name'])}">
 {render_header("../")}
 
     <main class="container">
 {dashboard_html}
-
-        <section class="panel-box">
-            <div class="panel-head">
-                <h2>SÄHKÖNSIIRTO JA JAKELUVERKKOYHTIÖ PAIKKAKUNNALLA {html.escape(m['name']).upper()}</h2>
-            </div>
-            <div class="panel-body">
-                <p>
-                    Kun käyttöpaikka sijaitsee paikkakunnalla <strong>{html.escape(m['name'])}</strong> (postinumeroalue <code>{m['postal_range']}</code>, maakunta {html.escape(m['region'])}), paikallisesta jakeluverkosta vastaa ensisijaisesti <a href="../verkkoyhtiot/{slugify(comp['short_name'])}.html"><strong>{html.escape(comp['name'])}</strong></a>.{alt_sentence}
-                </p>
-                <ul style="margin:12px 0 0 20px; font-family:monospace; font-size:13px;">
-                    <li><strong>Yleissiirto ({html.escape(comp['short_name'])}):</strong> {fmt_c(comp['general_c_kwh'])} snt/kWh (perusmaksu {fmt_c(comp['general_base_eur'])} €/kk)</li>
-                    <li><strong>Yösiirto / Aikasiirto:</strong> Päivä klo 07–22 {fmt_c(comp['day_c_kwh'])} snt/kWh, Yö klo 22–07 {fmt_c(comp['night_c_kwh'])} snt/kWh (perusmaksu {fmt_c(comp['time_base_eur'])} €/kk)</li>
-                    <li><strong>Valtion sähkövero ja huoltovarmuusmaksu:</strong> {fmt_c(ELECTRICITY_TAX_INCL_VAT)} snt/kWh (sis. ALV 25,5 %)</li>
-                </ul>
-            </div>
-        </section>
     </main>
 
 {render_footer("../")}
     <script src="../dso_data.js"></script>
     <script src="../ml_weights.js"></script>
     <script src="../nordpool_models.js"></script>
-    <script src="../app.js?v=27"></script>
+    <script src="../app.js?v=28"></script>
 </body>
 </html>
 """
@@ -607,11 +602,11 @@ def build_directory_page(title: str, lead: str, cards_html: str, canonical_path:
     <link rel="canonical" href="{SITE_URL}/{canonical_path}" />
     <meta name="geo.region" content="FI">
     <meta name="content-language" content="fi-FI">
-    <link rel="icon" type="image/svg+xml" href="../favicon.svg?v=27">
+    <link rel="icon" type="image/svg+xml" href="../favicon.svg?v=28">
     <link rel="icon" type="image/x-icon" href="../favicon.ico">
     <link rel="apple-touch-icon" sizes="180x180" href="../apple-touch-icon.png">
     <link rel="manifest" href="../site.webmanifest">
-    <link rel="stylesheet" href="../styles.css?v=27">
+    <link rel="stylesheet" href="../styles.css?v=28">
 </head>
 <body>
 {render_header("../")}
@@ -645,11 +640,11 @@ def build_guide_page(slug: str, title: str, meta_desc: str, body_html: str) -> s
     <link rel="canonical" href="{SITE_URL}/oppaat/{slug}.html" />
     <meta name="geo.region" content="FI">
     <meta name="content-language" content="fi-FI">
-    <link rel="icon" type="image/svg+xml" href="../favicon.svg?v=27">
+    <link rel="icon" type="image/svg+xml" href="../favicon.svg?v=28">
     <link rel="icon" type="image/x-icon" href="../favicon.ico">
     <link rel="apple-touch-icon" sizes="180x180" href="../apple-touch-icon.png">
     <link rel="manifest" href="../site.webmanifest">
-    <link rel="stylesheet" href="../styles.css?v=27">
+    <link rel="stylesheet" href="../styles.css?v=28">
 </head>
 <body>
 {render_header("../")}

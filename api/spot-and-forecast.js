@@ -21,11 +21,12 @@ function loadPretrainedWeights() {
 
 function windSpeedToCapacityFactor(v100m) {
     if (v100m === null || v100m === undefined || isNaN(v100m)) return 0.30;
-    if (v100m < 3.0) return 0.02;
-    if (v100m >= 25.0) return 0.05;
-    if (v100m >= 12.5) return 0.88;
-    const norm = (v100m - 3.0) / (12.5 - 3.0);
-    return Math.max(0.02, Math.min(0.88, Math.pow(norm, 2.15) * 0.88));
+    const vHub = v100m * 1.26;
+    if (vHub < 2.8) return 0.02;
+    if (vHub >= 25.0) return 0.05;
+    if (vHub >= 11.8) return 0.90;
+    const norm = (vHub - 2.8) / (11.8 - 2.8);
+    return Math.max(0.02, Math.min(0.90, Math.pow(norm, 1.65) * 0.90));
 }
 
 function getHelsinkiComponents(dateObj) {

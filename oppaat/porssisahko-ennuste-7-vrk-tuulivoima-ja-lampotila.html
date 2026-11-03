@@ -3,56 +3,71 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Miten pörssisähkön 7 vuorokauden hintaennuste toimii? | Pörssisähkö & Siirtohintalaskuri</title>
-    <meta name="description" content="Opas siihen, miten Suomen yli 8 400 MW tuulivoimakapasiteetti, 100 metrin tuulennopeudet ja pakkasasteet määräävät tulevien päivien pörssisähkön hinnan.">
+    <title>Miten pörssisähkön 7 vuorokauden oppiva hintaennuste toimii? | Sähkömittari — Pörssisähkö & Siirtohintalaskuri</title>
+    <meta name="description" content="Katsaus siihen, miten Suomen 8 450 MW tuulivoimakapasiteetti, 100 metrin tuulennopeudet ja pakkasasteet määräävät tulevien päivien pörssisähkön hinnan.">
     <link rel="canonical" href="https://porssisahko-ennuste.vercel.app/oppaat/porssisahko-ennuste-7-vrk-tuulivoima-ja-lampotila.html" />
     <link rel="stylesheet" href="../styles.css">
 </head>
 <body>
+    <div class="telemetry-bar">
+        <div class="telemetry-inner">
+            <div class="telemetry-items">
+                <span class="telemetry-item"><span class="telemetry-status-dot"></span>MARKKINA-ALUE: <strong>FI (NORD POOL)</strong></span>
+                <span class="telemetry-item">SPOT NYT: <strong id="tel-spot">— snt/kWh</strong></span>
+                <span class="telemetry-item">SIIRTO + VERO: <strong id="tel-transfer">— snt/kWh</strong></span>
+                <span class="telemetry-item">TUULIVOIMA: <strong id="tel-wind">— MW</strong></span>
+                <span class="telemetry-item">OPETETTU HISTORIA: <strong id="tel-hours">— h</strong></span>
+            </div>
+            <div>AIKAVYÖHYKE: EUROPE/HELSINKI (ALV 25,5 %)</div>
+        </div>
+    </div>
     <header class="site-header">
         <div class="header-inner">
             <a href="../index.html" class="brand-link">
-                <span class="brand-title">Pörssisähkö &amp; Siirtohintalaskuri</span>
-                <span class="brand-subtitle">Reaaliaikainen spot-hinta, 7 vrk tuulivoimaennuste ja todellinen kokonaishinta postinumerolla</span>
+                <span class="brand-kicker">SUOMEN SÄHKÖMARKKINA- JA JAKELUVERKKOLASKURI</span>
+                <span class="brand-title">Sähkömittari</span>
+                <span class="brand-subtitle">Pörssisähkön spot-hinta, historiadatasta oppiva 7 vrk tuulivoimaennuste ja todellinen siirtohinta postinumerolla</span>
             </a>
             <nav class="main-nav" aria-label="Päävalikko">
-                <a href="../index.html">Spot &amp; Ennuste</a>
-                <a href="../index.html#oppiva-malli">Oppiva tekoälymalli</a>
-                <a href="../index.html#optimoija">Halvimmat tunnit</a>
+                <a href="../index.html">Spot &amp; 7 vrk ennuste</a>
+                <a href="../index.html#optimoija">Kuorman ajoitus</a>
                 <a href="../index.html#vuosivertailu">Yleissiirto vs. Yösiirto</a>
-                <a href="../verkkoyhtiot/index.html">Sähköverkkoyhtiöt</a>
-                <a href="../paikkakunnat/index.html">Kunnat &amp; Postinumerot</a>
+                <a href="../index.html#oppiva-malli">Oppiva historiamalli</a>
+                <a href="../verkkoyhtiot/index.html">Jakeluverkkoyhtiöt</a>
+                <a href="../paikkakunnat/index.html">Postinumerot &amp; Kunnat</a>
             </nav>
         </div>
     </header>
     <main class="container">
-        <article class="section-card">
-            <h1 style="font-family:Georgia,serif; font-size:30px; color:#163022; margin-bottom:12px;">Miten pörssisähkön 7 vuorokauden hintaennuste toimii?</h1>
-            <p class="hero-lead">Opas siihen, miten Suomen yli 8 400 MW tuulivoimakapasiteetti, 100 metrin tuulennopeudet ja pakkasasteet määräävät tulevien päivien pörssisähkön hinnan.</p>
-            <div style="font-size:15.5px; line-height:1.75; color:#18201b;">
-                <p style="margin-bottom:14px;">Nord Pool julkaisee seuraavan vuorokauden viralliset tuntihinnat päivittäin vasta noin kello 13.45–14.00 Suomen aikaa. Sähköauton latausta, varaavaa lämmitystä tai viikonlopun saunomista suunnittelevalle pelkkä huomisen hinta ei kuitenkaan usein riitä.</p>
-            <h2 style="margin:18px 0 8px; font-family:Georgia,serif;">Tuulivoima on Suomen pörssisähkön suurin yksittäinen hinnanmuodostaja</h2>
-            <p style="margin-bottom:14px;">Suomen asennettu tuulivoimakapasiteetti on kasvanut yli 8 400 megawattiin. Kun Pohjanmaan, Pohjois-Pohjanmaan (Kalajoki, Pyhäjoki, Raahe) ja Lapin rannikon tuulipuistoissa 100 metrin napakorkeuden tuulennopeus nousee yli 9–11 m/s, tuulivoima kattaa suuren osan Suomen sähkönkulutuksesta ja painaa spot-hinnan usein lähelle nollaa.</p>
-            <h2 style="margin:18px 0 8px; font-family:Georgia,serif;">Lämpötilan ja kulutusprofiilin yhteisvaikutus</h2>
-            <p style="margin-bottom:14px;">Kun lämpötila laskee Suomessa pakkasen puolelle, sähkölämmityksen ja lämpöpumppujen kulutus kasvaa sadoilla megawateilla jokaista pakkasastetta kohden. Ennustemallimme yhdistää 100 metrin tuulennopeusennusteet, aluepainotetun lämpötilan sekä arkipäivien ja viikonloppujen kulutusprofiilin, ja kalibroi hintatason automaattisesti viimeisimpiin toteutuneisiin Nord Pool -tunteihin.</p>
+        <article class="panel-box">
+            <div class="panel-head">
+                <h1>Miten pörssisähkön 7 vuorokauden oppiva hintaennuste toimii?</h1>
             </div>
-            <div style="margin-top:24px; padding-top:16px; border-top:1px solid #d6d2c6;">
-                <a href="../index.html" class="btn-primary" style="display:inline-block; text-decoration:none;">Avaa pörssisähkö- ja siirtohintalaskuri</a>
+            <div class="panel-body" style="max-width:860px; font-size:15px; line-height:1.75;">
+                <p style="font-weight:600; margin-bottom:16px;">Katsaus siihen, miten Suomen 8 450 MW tuulivoimakapasiteetti, 100 metrin tuulennopeudet ja pakkasasteet määräävät tulevien päivien pörssisähkön hinnan.</p>
+                <p style="margin-bottom:14px;">Nord Pool julkaisee seuraavan vuorokauden viralliset tuntihinnat päivittäin vasta noin kello 13.45–14.00 Suomen aikaa. Sähköauton latausta, varaavaa lämmitystä tai lämminvesivaraajan ajoitusta suunnittelevalle pelkkä huomisen hinta ei usein riitä.</p>
+            <h2 style="margin:18px 0 8px; font-family:Georgia,serif;">Tuulivoima on Suomen pörssisähkön suurin yksittäinen hinnanmuodostaja</h2>
+            <p style="margin-bottom:14px;">Suomen asennettu tuulivoimakapasiteetti on kasvanut yli 8 450 megawattiin. Kun Pohjanmaan, Pohjois-Pohjanmaan (Kalajoki, Pyhäjoki, Raahe) ja Perämeren rannikon tuulipuistoissa 100 metrin napakorkeuden tuulennopeus nousee yli 9–11 m/s, tuulivoima kattaa suuren osan Suomen sähkönkulutuksesta ja painaa spot-hinnan usein lähelle nollaa.</p>
+            <h2 style="margin:18px 0 8px; font-family:Georgia,serif;">Lämpötilan ja kulutusprofiilin yhteisvaikutus</h2>
+            <p style="margin-bottom:14px;">Kun lämpötila laskee Suomessa pakkasen puolelle, sähkölämmityksen ja lämpöpumppujen kulutus kasvaa sadoilla megawateilla jokaista pakkasastetta kohden. Oppiva Ridge-regressiomallimme on koulutettu kahden vuoden toteutuneilla Nord Pool FI -tuntihinnoilla, 100 metrin tuulennopeuksilla ja lämpötiloilla, ja se päivittää painokertoimiaan jatkuvasti uusien havaintojen saapuessa.</p>
+                <div style="margin-top:24px; padding-top:16px; border-top:1px solid #cbc7ba;">
+                    <a href="../index.html" class="btn-primary" style="display:inline-block; text-decoration:none;">Avaa pörssisähkö- ja siirtohintalaskuri</a>
+                </div>
             </div>
         </article>
     </main>
     <footer class="site-footer">
         <div class="footer-inner">
             <div>
-                <strong>Pörssisähkö & Siirtohintalaskuri</strong>
-                <p style="margin-top:6px; color:#b7c6bd; max-width:540px;">
-                    Palvelu yhdistää Nord Pool FI -pörssisähkön spot-hinnat, Suomen tuulipuistojen ja lämpötilojen 7 vuorokauden ennustemallin sekä kaikkien Suomen jakeluverkkoyhtiöiden siirtohinnat ja sähköveron.
+                <strong style="color:#ffffff;">Sähkömittari — Pörssisähkö & Siirtohintalaskuri</strong>
+                <p style="margin-top:6px; max-width:580px;">
+                    Tekninen pörssisähkön ja sähkönsiirron laskentatyökalu. Yhdistää Nord Pool FI -spot-tuntihinnat, Suomen tuulipuistojen (8 450 MW) ja lämpötilan historialliseen regressiomalliin sekä 33 paikallisen jakeluverkkoyhtiön siirtotariffit ja sähköveron.
                 </p>
             </div>
             <div class="footer-links">
                 <a href="../index.html">Etusivu</a>
                 <a href="../verkkoyhtiot/index.html">Sähköverkkoyhtiöt</a>
-                <a href="../paikkakunnat/index.html">Paikkakunnat</a>
+                <a href="../paikkakunnat/index.html">Kunnat &amp; Postinumerot</a>
                 <a href="../oppaat/porssisahko-ennuste-7-vrk-tuulivoima-ja-lampotila.html">Ennustemalli</a>
                 <a href="../oppaat/sahkon-siirtohinta-postinumerolla-kaikki-verkkoyhtiot.html">Siirtohinnat</a>
                 <a href="../oppaat/yleissiirto-yosiirto-vai-kausisiirto-vertailu.html">Siirtotuotteiden vertailu</a>

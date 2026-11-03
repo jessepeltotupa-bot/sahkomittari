@@ -1,13 +1,6 @@
 # -*- coding: utf-8 -*-
 """
-Ohjelmallinen SEO- ja sivustogeneraattori: Pörssisähkö, 7 vrk hintaennuste ja postinumeropohjainen siirtohintalaskuri.
-Luo:
-- dso_data.js
-- index.html
-- verkkoyhtiot/index.html + jokaisen jakeluverkkoyhtiön oma laskurisivu (verkkoyhtiot/<slug>.html)
-- paikkakunnat/index.html + jokaisen Suomen kunnan oma postinumero- ja siirtohintasivu (paikkakunnat/<slug>.html)
-- oppaat/*.html
-- sitemap.xml, robots.txt, llms.txt, vercel.json
+Ohjelmallinen SEO- ja sivustogeneraattori: Sähkömittari — Nord Pool FI, oppiva 7 vrk ennustemalli ja postinumeropohjainen siirtohintalaskuri.
 """
 
 import html
@@ -19,12 +12,11 @@ from dso_data import (
     DSO_COMPANIES,
     MUNICIPALITIES,
     ELECTRICITY_TAX_INCL_VAT,
-    ELECTRICITY_TAX_VAT0,
     export_dso_js,
 )
 
 SITE_URL = "https://porssisahko-ennuste.vercel.app"
-SITE_NAME = "Pörssisähkö & Siirtohintalaskuri"
+SITE_NAME = "Sähkömittari — Pörssisähkö & Siirtohintalaskuri"
 
 
 def slugify(text: str) -> str:
@@ -39,19 +31,32 @@ def fmt_c(val: float) -> str:
 
 
 def render_header(prefix: str = "") -> str:
-    return f"""    <header class="site-header">
+    return f"""    <div class="telemetry-bar">
+        <div class="telemetry-inner">
+            <div class="telemetry-items">
+                <span class="telemetry-item"><span class="telemetry-status-dot"></span>MARKKINA-ALUE: <strong>FI (NORD POOL)</strong></span>
+                <span class="telemetry-item">SPOT NYT: <strong id="tel-spot">— snt/kWh</strong></span>
+                <span class="telemetry-item">SIIRTO + VERO: <strong id="tel-transfer">— snt/kWh</strong></span>
+                <span class="telemetry-item">TUULIVOIMA: <strong id="tel-wind">— MW</strong></span>
+                <span class="telemetry-item">OPETETTU HISTORIA: <strong id="tel-hours">— h</strong></span>
+            </div>
+            <div>AIKAVYÖHYKE: EUROPE/HELSINKI (ALV 25,5 %)</div>
+        </div>
+    </div>
+    <header class="site-header">
         <div class="header-inner">
             <a href="{prefix}index.html" class="brand-link">
-                <span class="brand-title">Pörssisähkö &amp; Siirtohintalaskuri</span>
-                <span class="brand-subtitle">Reaaliaikainen spot-hinta, 7 vrk tuulivoimaennuste ja todellinen kokonaishinta postinumerolla</span>
+                <span class="brand-kicker">SUOMEN SÄHKÖMARKKINA- JA JAKELUVERKKOLASKURI</span>
+                <span class="brand-title">Sähkömittari</span>
+                <span class="brand-subtitle">Pörssisähkön spot-hinta, historiadatasta oppiva 7 vrk tuulivoimaennuste ja todellinen siirtohinta postinumerolla</span>
             </a>
             <nav class="main-nav" aria-label="Päävalikko">
-                <a href="{prefix}index.html">Spot &amp; Ennuste</a>
-                <a href="{prefix}index.html#oppiva-malli">Oppiva tekoälymalli</a>
-                <a href="{prefix}index.html#optimoija">Halvimmat tunnit</a>
+                <a href="{prefix}index.html">Spot &amp; 7 vrk ennuste</a>
+                <a href="{prefix}index.html#optimoija">Kuorman ajoitus</a>
                 <a href="{prefix}index.html#vuosivertailu">Yleissiirto vs. Yösiirto</a>
-                <a href="{prefix}verkkoyhtiot/index.html">Sähköverkkoyhtiöt</a>
-                <a href="{prefix}paikkakunnat/index.html">Kunnat &amp; Postinumerot</a>
+                <a href="{prefix}index.html#oppiva-malli">Oppiva historiamalli</a>
+                <a href="{prefix}verkkoyhtiot/index.html">Jakeluverkkoyhtiöt</a>
+                <a href="{prefix}paikkakunnat/index.html">Postinumerot &amp; Kunnat</a>
             </nav>
         </div>
     </header>"""
@@ -61,15 +66,15 @@ def render_footer(prefix: str = "") -> str:
     return f"""    <footer class="site-footer">
         <div class="footer-inner">
             <div>
-                <strong>{SITE_NAME}</strong>
-                <p style="margin-top:6px; color:#b7c6bd; max-width:540px;">
-                    Palvelu yhdistää Nord Pool FI -pörssisähkön spot-hinnat, Suomen tuulipuistojen ja lämpötilojen 7 vuorokauden ennustemallin sekä kaikkien Suomen jakeluverkkoyhtiöiden siirtohinnat ja sähköveron.
+                <strong style="color:#ffffff;">{SITE_NAME}</strong>
+                <p style="margin-top:6px; max-width:580px;">
+                    Tekninen pörssisähkön ja sähkönsiirron laskentatyökalu. Yhdistää Nord Pool FI -spot-tuntihinnat, Suomen tuulipuistojen (8 450 MW) ja lämpötilan historialliseen regressiomalliin sekä 33 paikallisen jakeluverkkoyhtiön siirtotariffit ja sähköveron.
                 </p>
             </div>
             <div class="footer-links">
                 <a href="{prefix}index.html">Etusivu</a>
                 <a href="{prefix}verkkoyhtiot/index.html">Sähköverkkoyhtiöt</a>
-                <a href="{prefix}paikkakunnat/index.html">Paikkakunnat</a>
+                <a href="{prefix}paikkakunnat/index.html">Kunnat &amp; Postinumerot</a>
                 <a href="{prefix}oppaat/porssisahko-ennuste-7-vrk-tuulivoima-ja-lampotila.html">Ennustemalli</a>
                 <a href="{prefix}oppaat/sahkon-siirtohinta-postinumerolla-kaikki-verkkoyhtiot.html">Siirtohinnat</a>
                 <a href="{prefix}oppaat/yleissiirto-yosiirto-vai-kausisiirto-vertailu.html">Siirtotuotteiden vertailu</a>
@@ -84,177 +89,176 @@ def render_interactive_dashboard_block(
     lead_text: str,
     default_postal: str = "00100",
 ) -> str:
-    return f"""        <section class="hero-card">
-            <h1>{html.escape(h1_text)}</h1>
-            <p class="hero-lead">{html.escape(lead_text)}</p>
+    return f"""        <section class="instrument-strip">
+            <div class="instrument-strip-top">
+                <h1>{html.escape(h1_text)}</h1>
+                <p>{html.escape(lead_text)}</p>
+            </div>
 
-            <div class="postal-control-bar">
-                <div class="postal-grid">
-                    <form id="postal-search-form" onsubmit="return false;">
-                        <label for="postal-input" class="field-label">Postinumero tai paikkakunta</label>
-                        <div class="postal-input-group">
-                            <input type="text" id="postal-input" class="input-control" value="{html.escape(default_postal)}" placeholder="Esim. 00100, 33100, 60100 tai Oulu">
-                            <button type="submit" class="btn-primary">Hae siirtohinta</button>
-                        </div>
-                    </form>
-
-                    <div>
-                        <span class="field-label">Valitse siirtotuote</span>
-                        <div class="seg-group">
-                            <button type="button" class="seg-btn active" data-tariff-btn="general">Yleissiirto</button>
-                            <button type="button" class="seg-btn" data-tariff-btn="time">Yösiirto (07–22 / 22–07)</button>
-                            <button type="button" class="seg-btn" data-tariff-btn="season">Kausisiirto</button>
-                        </div>
+            <div class="control-matrix">
+                <form id="postal-search-form" class="control-cell" onsubmit="return false;">
+                    <label for="postal-input" class="field-label">Postinumero tai kunta</label>
+                    <div class="postal-input-group">
+                        <input type="text" id="postal-input" class="input-control" value="{html.escape(default_postal)}" placeholder="00100, 33100, 90100...">
+                        <button type="submit" class="btn-primary">Aseta</button>
                     </div>
+                </form>
 
-                    <div>
-                        <label for="margin-input" class="field-label">Myyjän marginaali (snt/kWh)</label>
-                        <input type="number" id="margin-input" class="input-control" step="0.01" min="0" max="3" value="0.45">
+                <div class="control-cell">
+                    <span class="field-label">Verkkoyhtiön siirtotariffi</span>
+                    <div class="seg-group">
+                        <button type="button" class="seg-btn active" data-tariff-btn="general">Yleissiirto</button>
+                        <button type="button" class="seg-btn" data-tariff-btn="time">Yösiirto (07–22 / 22–07)</button>
+                        <button type="button" class="seg-btn" data-tariff-btn="season">Kausisiirto</button>
                     </div>
+                </div>
 
-                    <div>
-                        <label for="vat-select" class="field-label">Arvonlisävero</label>
-                        <select id="vat-select" class="select-control">
-                            <option value="1" selected>Sis. ALV 25,5 %</option>
-                            <option value="0">Veroton (ALV 0 %)</option>
-                        </select>
-                    </div>
+                <div class="control-cell">
+                    <label for="margin-input" class="field-label">Myyjän marginaali (snt/kWh)</label>
+                    <input type="number" id="margin-input" class="input-control" step="0.01" min="0" max="3" value="0.45">
+                </div>
+
+                <div class="control-cell">
+                    <label for="vat-select" class="field-label">Arvonlisäverokanta</label>
+                    <select id="vat-select" class="select-control">
+                        <option value="1" selected>Sis. ALV 25,5 %</option>
+                        <option value="0">Veroton (ALV 0 %)</option>
+                    </select>
                 </div>
             </div>
 
             <div id="detected-dso-banner" class="detected-dso-banner">
-                Haetaan postinumeron verkkoyhtiötä...
+                Haetaan postinumeron jakeluverkkoyhtiötä...
             </div>
         </section>
 
-        <section class="kpi-grid" aria-label="Hintayhteenveto">
-            <div class="kpi-card highlight">
-                <div class="kpi-label">Kokonaishinta juuri nyt (sis. siirto + vero)</div>
-                <div class="kpi-value" id="kpi-now-total">— snt/kWh</div>
-                <div class="kpi-sub" id="kpi-now-breakdown">Lasketaan tuntikohtaista kokonaishintaa...</div>
-            </div>
-            <div class="kpi-card">
-                <div class="kpi-label">Pelkkä pörssisähkön spot-hinta nyt</div>
-                <div class="kpi-value" id="kpi-now-spot">— snt/kWh</div>
-                <div class="kpi-sub">Nord Pool FI tuntihinta</div>
-            </div>
-            <div class="kpi-card">
-                <div class="kpi-label">Päivän edullisin tunti (kokonaishinta)</div>
-                <div class="kpi-value" id="kpi-today-min">— snt/kWh</div>
-                <div class="kpi-sub" id="kpi-today-min-sub">—</div>
-            </div>
-            <div class="kpi-card">
-                <div class="kpi-label" id="kpi-tomorrow-title">Huomisen hintaennuste</div>
-                <div class="kpi-value" id="kpi-tomorrow-avg">— snt/kWh</div>
-                <div class="kpi-sub" id="kpi-tomorrow-sub">—</div>
-            </div>
-        </section>
+        <div class="desk-grid">
+            <div class="desk-main-col">
+                <section class="panel-box">
+                    <div class="panel-head">
+                        <h2 id="chart-view-title">TUNTIHINNAT, SIIRTO-OSUUS JA 7 VRK TUULIVOIMAENNUSTE</h2>
+                        <div class="seg-group" style="min-width:270px;">
+                            <button type="button" class="seg-btn active" data-mode-btn="total">Kokonaishinta (sis. siirto)</button>
+                            <button type="button" class="seg-btn" data-mode-btn="spot">Pelkkä Spot-hinta</button>
+                        </div>
+                    </div>
 
-        <section class="section-card">
-            <div class="section-header-row">
-                <h2 id="chart-view-title">Pörssisähkön tuntihinnat, siirtohinta ja 7 vrk ennuste</h2>
-                <div class="seg-group" style="min-width:290px;">
-                    <button type="button" class="seg-btn active" data-mode-btn="total">Kokonaishinta (Spot + Siirto + Vero)</button>
-                    <button type="button" class="seg-btn" data-mode-btn="spot">Pelkkä Spot-hinta</button>
-                </div>
-            </div>
+                    <div id="day-tabs" class="day-tabs"></div>
 
-            <div id="day-tabs" class="day-tabs"></div>
+                    <div class="panel-body">
+                        <div id="chart-readout-strip" class="chart-readout-strip">
+                            Valitse tai osoita tuntipylvästä tarkastellaksesi tuntikohtaista hinta- ja tuulivoimaerittelyä.
+                        </div>
 
-            <div class="chart-legend">
-                <span class="legend-item"><span class="legend-swatch" style="background:#2b7a4b;"></span> Edullinen spot (&lt; 3 snt/kWh)</span>
-                <span class="legend-item"><span class="legend-swatch" style="background:#2b5b84;"></span> Normaali spot (3–8 snt/kWh)</span>
-                <span class="legend-item"><span class="legend-swatch" style="background:#b5452a;"></span> Korkea spot (&gt; 8 snt/kWh)</span>
-                <span class="legend-item"><span class="legend-swatch" style="background:#94a398;"></span> Paikallinen siirtohinta + sähkövero + marginaali</span>
-                <span class="legend-item"><span class="legend-swatch" style="background:#4c6ef5;"></span> Ennustetunti (tuulivoima + lämpötila)</span>
-            </div>
+                        <div class="chart-legend">
+                            <span class="legend-item"><span class="legend-swatch" style="background:#1e6b43;"></span> Edullinen spot (&lt; 3 snt)</span>
+                            <span class="legend-item"><span class="legend-swatch" style="background:#2b4c65;"></span> Normaali spot (3–8 snt)</span>
+                            <span class="legend-item"><span class="legend-swatch" style="background:#a83820;"></span> Korkea spot (&gt; 8 snt)</span>
+                            <span class="legend-item"><span class="legend-swatch" style="background:#9e9b90;"></span> Siirtohinta + sähkövero + marginaali</span>
+                            <span class="legend-item"><span class="legend-swatch" style="background:#b45309; height:3px;"></span> Suomen tuulivoimatuotanto (GW, oikea asteikko)</span>
+                        </div>
 
-            <div id="price-chart" class="price-chart-box">
-                Ladataan pörssisähkön hintoja ja 7 vuorokauden tuulivoimaennustetta...
-            </div>
+                        <div id="price-chart" class="svg-chart-container">
+                            Ladataan vektorikaaviota...
+                        </div>
 
-            <div class="table-wrap">
-                <table class="data-table">
-                    <thead>
-                        <tr>
-                            <th>Aikajakso</th>
-                            <th>Tyyppi</th>
-                            <th>Spot-hinta</th>
-                            <th>Siirto + Sähkövero + Marg.</th>
-                            <th>Kokonaishinta yhteensä</th>
-                            <th>Tuulivoima / Sää</th>
-                        </tr>
-                    </thead>
-                    <tbody id="hourly-table-body">
-                        <tr><td colspan="6">Ladataan tuntitietoja...</td></tr>
-                    </tbody>
-                </table>
-            </div>
-        </section>
-
-        <section class="section-card" id="oppiva-malli">
-            <h2>Jatkuvasti oppiva hintaennustemalli (Ridge-regressio + Online NLMS -sopeutus)</h2>
-            <p class="hero-lead" style="margin-top:6px;">
-                Ennustemalli ei käytä kiinteitä arvauksia, vaan oppii jatkuvasti lisää jokaisesta toteutuneesta Nord Pool -tunnista, Suomen tuulipuistojen 100 metrin tuulennopeuksista ja lämpötiloista. Mitä enemmän tunteja tietokantaan (<code>data/historical_observations.json</code>) ja reaaliaikaiseen verkko-oppijaan kertyy, sitä tarkemmin malli tuntee tuulivoiman, pakkasen ja kulutuspiikkien yhteisvaikutuksen.
-            </p>
-            <div id="ml-learning-panel">
-                Ladataan oppivan mallin tarkkuustilastoja...
-            </div>
-        </section>
-
-        <section class="section-card" id="optimoija">
-            <h2>Halvimmat peräkkäiset tunnit kokonaishinnalla (huomioi myös yösiirron klo 22 jälkeen)</h2>
-            <p class="hero-lead" style="margin-top:6px;">
-                Pelkän spot-hinnan tuijottaminen voi johtaa väärään latausaikaan, jos käytössäsi on yösiirto tai kausisiirto: kello 22:00 alkava edullisempi yösiirto laskee siirtohintaa tyypillisesti 1,5–2,6 snt/kWh. Tämä laskuri etsii aidosti halvimman jakson yhdistämällä spot-hinnan ja postinumerosi siirtohinnan.
-            </p>
-
-            <div class="preset-pills">
-                <button type="button" class="preset-pill" data-preset-kw="11" data-preset-hrs="4">Sähköauton lataus (11 kW, 4 h)</button>
-                <button type="button" class="preset-pill" data-preset-kw="3.6" data-preset-hrs="6">Hybridin lataus (3,6 kW, 6 h)</button>
-                <button type="button" class="preset-pill" data-preset-kw="3" data-preset-hrs="3">Lämminvesivaraaja (3 kW, 3 h)</button>
-                <button type="button" class="preset-pill" data-preset-kw="8" data-preset-hrs="1">Sähkökiuas (8 kW, 1 h)</button>
-                <button type="button" class="preset-pill" data-preset-kw="2" data-preset-hrs="2">Pyykin- tai astianpesukone (2 kW, 2 h)</button>
+                        <div class="table-wrap">
+                            <table class="data-table">
+                                <thead>
+                                    <tr>
+                                        <th>Tunti / Jakso</th>
+                                        <th>Lähde</th>
+                                        <th>Spot-hinta</th>
+                                        <th>Siirto + Vero + Marg.</th>
+                                        <th>Kokonaishinta yhteensä</th>
+                                        <th>Tuulivoima / Lämpötila</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="hourly-table-body">
+                                    <tr><td colspan="6">Haetaan tuntisarjaa...</td></tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </section>
             </div>
 
-            <div class="opt-controls-row">
-                <div style="flex:1; min-width:240px;">
-                    <span class="field-label">Tarvittava yhtäjaksoinen kesto</span>
-                    <div class="seg-group">
-                        <button type="button" class="seg-btn" data-win-hours="1">1 h</button>
-                        <button type="button" class="seg-btn" data-win-hours="2">2 h</button>
-                        <button type="button" class="seg-btn active" data-win-hours="3">3 h</button>
-                        <button type="button" class="seg-btn" data-win-hours="4">4 h</button>
-                        <button type="button" class="seg-btn" data-win-hours="6">6 h</button>
-                        <button type="button" class="seg-btn" data-win-hours="8">8 h</button>
+            <aside class="desk-side-col">
+                <section class="panel-box">
+                    <div class="panel-head">
+                        <h2>PISTORASIAHINNAN ERITTELY NYT</h2>
+                    </div>
+                    <div class="panel-body" id="receipt-ledger-body">
+                        Lasketaan tuntihintaa...
+                    </div>
+                </section>
+
+                <section class="panel-box" id="optimoija">
+                    <div class="panel-head">
+                        <h2>KUORMAN AJOITUSLASKURI (36 H)</h2>
+                    </div>
+                    <div class="panel-body">
+                        <p style="font-size:12.5px; color:#4a4f4a; margin-bottom:10px;">
+                            Etsii edullisimman yhtäjaksoisen käyttöajan yhdistämällä pörssisähkön spot-hinnan ja kello 22:00 alkavan edullisemman yösiirron.
+                        </p>
+                        <div class="preset-pills">
+                            <button type="button" class="preset-pill" data-preset-kw="11" data-preset-hrs="4">Sähköauto 11 kW (4 h)</button>
+                            <button type="button" class="preset-pill" data-preset-kw="3.6" data-preset-hrs="6">Hybridi 3,6 kW (6 h)</button>
+                            <button type="button" class="preset-pill" data-preset-kw="3" data-preset-hrs="3">Varaaja 3 kW (3 h)</button>
+                            <button type="button" class="preset-pill" data-preset-kw="8" data-preset-hrs="1">Kiuas 8 kW (1 h)</button>
+                            <button type="button" class="preset-pill" data-preset-kw="2" data-preset-hrs="2">Pesukone 2 kW (2 h)</button>
+                        </div>
+
+                        <div class="opt-controls-row">
+                            <div style="flex:1; min-width:180px;">
+                                <span class="field-label">Käyttöjakson kesto</span>
+                                <div class="seg-group">
+                                    <button type="button" class="seg-btn" data-win-hours="1">1h</button>
+                                    <button type="button" class="seg-btn" data-win-hours="2">2h</button>
+                                    <button type="button" class="seg-btn active" data-win-hours="3">3h</button>
+                                    <button type="button" class="seg-btn" data-win-hours="4">4h</button>
+                                    <button type="button" class="seg-btn" data-win-hours="6">6h</button>
+                                    <button type="button" class="seg-btn" data-win-hours="8">8h</button>
+                                </div>
+                            </div>
+                            <div style="width:110px;">
+                                <label for="appliance-kw-input" class="field-label">Teho (kW)</label>
+                                <input type="number" id="appliance-kw-input" class="input-control" step="0.1" min="0.1" max="50" value="11">
+                            </div>
+                        </div>
+
+                        <div id="cheapest-window-result"></div>
+                    </div>
+                </section>
+            </aside>
+        </div>
+
+        <section class="panel-box" id="vuosivertailu">
+            <div class="panel-head">
+                <h2>SIIRTOSOPIMUKSEN VALINTALASKURI: YLEISSIIRTO, YÖSIIRTO VAI KAUSISIIRTO POSTINUMEROLLESI</h2>
+            </div>
+            <div class="panel-body">
+                <div class="opt-controls-row">
+                    <div style="width:240px;">
+                        <label for="annual-kwh-input" class="field-label">Vuosikulutus (kWh / vuosi)</label>
+                        <input type="number" id="annual-kwh-input" class="input-control" step="500" min="1000" max="60000" value="12000">
+                    </div>
+                    <div style="flex:1; min-width:240px;">
+                        <label for="night-share-input" class="field-label">Yöajan (klo 22–07) osuus kulutuksesta: <span id="night-share-label">55 %</span></label>
+                        <input type="range" id="night-share-input" style="width:100%; margin-top:8px;" min="10" max="90" step="5" value="55">
                     </div>
                 </div>
-                <div style="width:200px;">
-                    <label for="appliance-kw-input" class="field-label">Laitteen teho (kW)</label>
-                    <input type="number" id="appliance-kw-input" class="input-control" step="0.1" min="0.1" max="50" value="11">
-                </div>
+                <div id="annual-comparison-result" class="comp-grid"></div>
             </div>
-
-            <div id="cheapest-window-result"></div>
         </section>
 
-        <section class="section-card" id="vuosivertailu">
-            <h2>Yleissiirto, Yösiirto vai Kausisiirto? Vuosikustannuslaskuri postinumerollesi</h2>
-            <p class="hero-lead" style="margin-top:6px;">
-                Vaikka et voi kilpailuttaa paikallista sähköverkkoyhtiötäsi, voit vaihtaa verkkoyhtiön sisällä siirtotuotetta (Yleissiirto, Yösiirto tai Kausisiirto). Syötä vuosikulutuksesi ja arvioitu yöajan (klo 22–07) kulutusosuus nähdäksesi, mikä siirtotuote on postinumerossasi edullisin.
-            </p>
-
-            <div class="opt-controls-row">
-                <div style="width:240px;">
-                    <label for="annual-kwh-input" class="field-label">Vuosikulutus (kWh / vuosi)</label>
-                    <input type="number" id="annual-kwh-input" class="input-control" step="500" min="1000" max="60000" value="12000">
-                </div>
-                <div style="flex:1; min-width:240px;">
-                    <label for="night-share-input" class="field-label">Yöajan (klo 22–07) osuus kulutuksesta: <span id="night-share-label">55 %</span></label>
-                    <input type="range" id="night-share-input" style="width:100%; margin-top:8px;" min="10" max="90" step="5" value="55">
-                </div>
+        <section class="panel-box" id="oppiva-malli">
+            <div class="panel-head">
+                <h2>HISTORIADATASTA OPPIVA ENNUSTEMALLI — TARKKUUSTELEMETRIA &amp; TUULI X LÄMPÖTILA -VASTEMATRIISI</h2>
             </div>
-
-            <div id="annual-comparison-result" class="comp-grid"></div>
+            <div class="panel-body" id="ml-learning-panel">
+                Ladataan oppivan mallin telemetriaa...
+            </div>
         </section>"""
 
 
@@ -290,7 +294,7 @@ def build_index_page() -> str:
                 "name": "Miten pörssisähkön 7 vuorokauden hintaennuste lasketaan?",
                 "acceptedAnswer": {
                     "@type": "Answer",
-                    "text": "Ennustemalli yhdistää Suomen keskeisten tuulivoima-alueiden (Kalajoki-Pyhäjoki, Pohjanmaan rannikko, Etelä-Pohjanmaa ja Perämeri) 100 metrin korkeuden tuulennopeusennusteet, kulutuskeskusten lämpötilaennusteet (lämmitystarveluku) sekä arkipäivien ja viikonloppujen tuntikulutusprofiilin kalibroituna tuoreimpiin Nord Pool -toteumiin.",
+                    "text": "Ennustemalli on opetettu Suomen toteutuneiden Nord Pool FI -spot-hintojen, tuulivoima-alueiden 100 metrin tuulennopeuksien ja lämpötilojen historiallisella aikasarjalla. Se päivittää painokertoimiaan jatkuvasti uusien havaintojen perusteella.",
                 },
             },
             {
@@ -298,7 +302,7 @@ def build_index_page() -> str:
                 "name": "Miten postinumero vaikuttaa pörssisähkön kokonaishintaan?",
                 "acceptedAnswer": {
                     "@type": "Answer",
-                    "text": "Suomessa sähkönsiirto on paikallinen luonnollinen monopoli, joka määräytyy käyttöpaikan postinumeron ja kunnan mukaan. Pistorasiasta tulevan sähkön kokonaishinta on pörssisähkön spot-hinta + myyjän marginaali + paikallisen sähköverkkoyhtiön siirtohinta + sähkövero (2,83 snt/kWh sis. ALV 25,5 %).",
+                    "text": "Suomessa paikallinen jakeluverkkoyhtiö määräytyy käyttöpaikan postinumeron mukaan. Todellinen kokonaishinta on pörssisähkön spot-hinta + myyjän marginaali + paikallisen sähköverkkoyhtiön siirtomaksu + sähkövero (2,83 snt/kWh sis. ALV 25,5 %).",
                 },
             },
         ],
@@ -306,8 +310,8 @@ def build_index_page() -> str:
 
     dashboard_html = render_interactive_dashboard_block(
         prefix="",
-        h1_text="Pörssisähkö nyt, 7 vrk hintaennuste ja siirtohintalaskuri postinumerolla",
-        lead_text="Syötä postinumerosi nähdäksesi pörssisähkön todellisen kokonaishinnan (Spot + paikallisen sähköverkkoyhtiön siirtohinta + sähkövero 2,83 snt/kWh) sekä tuulivoima- ja lämpötilaennusteeseen perustuvan 7 vuorokauden hintaennusteen.",
+        h1_text="Pörssisähkön spot-hinta, 7 vrk ennuste ja siirtohintalaskuri postinumerolla",
+        lead_text="Syötä postinumerosi laskeaksesi sähkön todellisen pistorasiahinnan (Spot + paikallinen jakeluverkko + sähkövero 2,83 snt/kWh) sekä tuulivoima- ja lämpötilahistoriasta opitun 7 vuorokauden tuntiennusteen.",
         default_postal="00100",
     )
 
@@ -316,7 +320,7 @@ def build_index_page() -> str:
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Pörssisähkö nyt, 7 vrk Ennuste &amp; Siirtohintalaskuri Postinumerolla | Todellinen Kokonaishinta</title>
+    <title>Sähkömittari — Pörssisähkö nyt, 7 vrk Ennuste &amp; Siirtohintalaskuri Postinumerolla</title>
     <meta name="description" content="Tarkista pörssisähkön spot-hinta tänään, huomenna ja 7 vrk hintaennuste. Syötä postinumero, niin laskuri hakee automaattisesti sähköverkkoyhtiösi siirtohinnan (Caruna, Elenia, Helen, Vantaa, Tampere, Oulu ym.) ja laskee todellisen kokonaishinnan.">
     <link rel="canonical" href="{SITE_URL}/" />
     <link rel="stylesheet" href="styles.css">
@@ -330,54 +334,60 @@ def build_index_page() -> str:
     <main class="container">
 {dashboard_html}
 
-        <section class="section-card">
-            <h2>Suomen sähköverkkoyhtiöiden siirtohinnat 2026 (edullisimmasta kalleimpaan)</h2>
-            <p class="hero-lead" style="margin-top:6px;">
-                Alla olevassa taulukossa on vertailtu Suomen jakeluverkkoyhtiöiden yleissiirron ja yösiirron energiamaksuja (sis. ALV 25,5 %) sekä kiinteää siirto-osuutta sähköveron ({fmt_c(ELECTRICITY_TAX_INCL_VAT)} snt/kWh) kanssa. Klikkaa verkkoyhtiön nimeä avataksesi kyseisen yhtiön oman laskurin.
-            </p>
-            <div class="table-wrap">
-                <table class="data-table">
-                    <thead>
-                        <tr>
-                            <th>Sähköverkkoyhtiö ja toiminta-alue</th>
-                            <th>Yleissiirto</th>
-                            <th>Yösiirto (Päivä / Yö)</th>
-                            <th>Perusmaksu (3x25A)</th>
-                            <th>Siirto + Sähkövero yht.</th>
-                        </tr>
-                    </thead>
-                    <tbody>
+        <section class="panel-box">
+            <div class="panel-head">
+                <h2>SUOMEN SÄHKÖVERKKOYHTIÖIDEN SIIRTOHINNAT 2026 (EDULLISIMMASTA KALLEIMPAAN)</h2>
+            </div>
+            <div class="panel-body">
+                <div class="table-wrap">
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>Sähköverkkoyhtiö ja toiminta-alue</th>
+                                <th>Yleissiirto</th>
+                                <th>Yösiirto (Päivä / Yö)</th>
+                                <th>Perusmaksu (3x25A)</th>
+                                <th>Siirto + Sähkövero yht.</th>
+                            </tr>
+                        </thead>
+                        <tbody>
 {chr(10).join(dso_rows)}
-                    </tbody>
-                </table>
+                        </tbody>
+                    </table>
+                </div>
             </div>
         </section>
 
-        <section class="section-card">
-            <h2>Paikkakunta- ja postinumerokohtaiset pörssisähkö- ja siirtohintasivut</h2>
-            <p class="hero-lead" style="margin-top:6px;">
-                Valitse paikkakuntasi alta tarkistaaksesi suoraan alueesi verkkoyhtiön siirtohinnat ja pörssisähkön kokonaishinnan:
-            </p>
-            <div class="directory-grid">
-                {chr(10).join(muni_pills)}
+        <section class="panel-box">
+            <div class="panel-head">
+                <h2>PAIKKAKUNTA- JA POSTINUMEROKOHTAISET SIIRTOHINTA- JA PÖRSSISÄHKÖLASKURIT</h2>
+            </div>
+            <div class="panel-body">
+                <div class="directory-grid">
+                    {chr(10).join(muni_pills)}
+                </div>
             </div>
         </section>
 
-        <section class="section-card">
-            <h2>Oppaat pörssisähkön ennustamiseen ja siirtohinnan optimointiin</h2>
-            <div class="directory-grid">
-                <a href="oppaat/porssisahko-ennuste-7-vrk-tuulivoima-ja-lampotila.html" class="dir-pill">
-                    <span>Miten 7 vrk pörssisähköennuste toimii?</span>
-                </a>
-                <a href="oppaat/sahkon-siirtohinta-postinumerolla-kaikki-verkkoyhtiot.html" class="dir-pill">
-                    <span>Sähkön siirtohinta postinumerolla</span>
-                </a>
-                <a href="oppaat/yleissiirto-yosiirto-vai-kausisiirto-vertailu.html" class="dir-pill">
-                    <span>Yleissiirto, yösiirto vai kausisiirto?</span>
-                </a>
-                <a href="oppaat/sahkoauton-lataus-ja-lamminvesivaraaja-porssisahkolla.html" class="dir-pill">
-                    <span>Sähköauton ja varaajan optimointi</span>
-                </a>
+        <section class="panel-box">
+            <div class="panel-head">
+                <h2>MENETELMÄOPPAAT JA TAUSTA-ANALYYSI</h2>
+            </div>
+            <div class="panel-body">
+                <div class="directory-grid">
+                    <a href="oppaat/porssisahko-ennuste-7-vrk-tuulivoima-ja-lampotila.html" class="dir-pill">
+                        <span>Miten 7 vrk pörssisähköennuste toimii?</span>
+                    </a>
+                    <a href="oppaat/sahkon-siirtohinta-postinumerolla-kaikki-verkkoyhtiot.html" class="dir-pill">
+                        <span>Sähkön siirtohinta postinumerolla</span>
+                    </a>
+                    <a href="oppaat/yleissiirto-yosiirto-vai-kausisiirto-vertailu.html" class="dir-pill">
+                        <span>Yleissiirto, yösiirto vai kausisiirto?</span>
+                    </a>
+                    <a href="oppaat/sahkoauton-lataus-ja-lamminvesivaraaja-porssisahkolla.html" class="dir-pill">
+                        <span>Sähköauton ja varaajan optimointi</span>
+                    </a>
+                </div>
             </div>
         </section>
     </main>
@@ -409,7 +419,7 @@ def build_dso_page(comp: dict) -> str:
     dashboard_html = render_interactive_dashboard_block(
         prefix="../",
         h1_text=f"{comp['name']} — Siirtohinta, pörssisähkön kokonaishinta ja 7 vrk ennuste",
-        lead_text=f"{comp['name']} toimii alueella: {comp['region_desc']}. Yhtiön yleissiirtohinta on {fmt_c(comp['general_c_kwh'])} snt/kWh (yhdessä sähköveron kanssa {fmt_c(total_fixed_gen)} snt/kWh) ja yösiirron yöhinta klo 22–07 on {fmt_c(comp['night_c_kwh'])} snt/kWh (veron kanssa {fmt_c(total_fixed_night)} snt/kWh).",
+        lead_text=f"Toiminta-alue: {comp['region_desc']}. Yleissiirto {fmt_c(comp['general_c_kwh'])} snt/kWh (veron kanssa {fmt_c(total_fixed_gen)} snt/kWh) ja yösiirron yöhinta klo 22–07 {fmt_c(comp['night_c_kwh'])} snt/kWh (veron kanssa {fmt_c(total_fixed_night)} snt/kWh).",
         default_postal=sample_postal,
     )
 
@@ -429,64 +439,72 @@ def build_dso_page(comp: dict) -> str:
     <main class="container">
 {dashboard_html}
 
-        <section class="section-card">
-            <h2>{html.escape(comp['name'])} — Siirtohinnasto ja kiinteät maksut (sis. ALV 25,5 %)</h2>
-            <div class="table-wrap" style="margin-top:12px;">
-                <table class="data-table">
-                    <thead>
-                        <tr>
-                            <th>Siirtotuote</th>
-                            <th>Energiamaksu (snt/kWh)</th>
-                            <th>Sähkövero (luokka I)</th>
-                            <th>Siirto + vero yhteensä</th>
-                            <th>Perusmaksu (3x25A)</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <td><strong>Yleissiirto</strong></td>
-                            <td>{fmt_c(comp['general_c_kwh'])} snt/kWh</td>
-                            <td>{fmt_c(ELECTRICITY_TAX_INCL_VAT)} snt/kWh</td>
-                            <td><strong>{fmt_c(comp['general_c_kwh'] + ELECTRICITY_TAX_INCL_VAT)} snt/kWh</strong></td>
-                            <td>{fmt_c(comp['general_base_eur'])} €/kk</td>
-                        </tr>
-                        <tr>
-                            <td><strong>Yösiirto — Päivä (klo 07–22)</strong></td>
-                            <td>{fmt_c(comp['day_c_kwh'])} snt/kWh</td>
-                            <td>{fmt_c(ELECTRICITY_TAX_INCL_VAT)} snt/kWh</td>
-                            <td><strong>{fmt_c(comp['day_c_kwh'] + ELECTRICITY_TAX_INCL_VAT)} snt/kWh</strong></td>
-                            <td>{fmt_c(comp['time_base_eur'])} €/kk</td>
-                        </tr>
-                        <tr>
-                            <td><strong>Yösiirto — Yö (klo 22–07)</strong></td>
-                            <td>{fmt_c(comp['night_c_kwh'])} snt/kWh</td>
-                            <td>{fmt_c(ELECTRICITY_TAX_INCL_VAT)} snt/kWh</td>
-                            <td><strong>{fmt_c(comp['night_c_kwh'] + ELECTRICITY_TAX_INCL_VAT)} snt/kWh</strong></td>
-                            <td>{fmt_c(comp['time_base_eur'])} €/kk</td>
-                        </tr>
-                        <tr>
-                            <td><strong>Kausisiirto — Talviarkipäivä</strong></td>
-                            <td>{fmt_c(comp['winter_day_c_kwh'])} snt/kWh</td>
-                            <td>{fmt_c(ELECTRICITY_TAX_INCL_VAT)} snt/kWh</td>
-                            <td><strong>{fmt_c(comp['winter_day_c_kwh'] + ELECTRICITY_TAX_INCL_VAT)} snt/kWh</strong></td>
-                            <td>{fmt_c(comp['season_base_eur'])} €/kk</td>
-                        </tr>
-                        <tr>
-                            <td><strong>Kausisiirto — Muu aika</strong></td>
-                            <td>{fmt_c(comp['other_c_kwh'])} snt/kWh</td>
-                            <td>{fmt_c(ELECTRICITY_TAX_INCL_VAT)} snt/kWh</td>
-                            <td><strong>{fmt_c(comp['other_c_kwh'] + ELECTRICITY_TAX_INCL_VAT)} snt/kWh</strong></td>
-                            <td>{fmt_c(comp['season_base_eur'])} €/kk</td>
-                        </tr>
-                    </tbody>
-                </table>
+        <section class="panel-box">
+            <div class="panel-head">
+                <h2>{html.escape(comp['name']).upper()} — SIIRTOHINNASTO JA KIINTEÄT MAKSUT (SIS. ALV 25,5 %)</h2>
+            </div>
+            <div class="panel-body">
+                <div class="table-wrap">
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>Siirtotuote</th>
+                                <th>Energiamaksu (snt/kWh)</th>
+                                <th>Sähkövero (luokka I)</th>
+                                <th>Siirto + vero yhteensä</th>
+                                <th>Perusmaksu (3x25A)</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><strong>Yleissiirto</strong></td>
+                                <td>{fmt_c(comp['general_c_kwh'])} snt/kWh</td>
+                                <td>{fmt_c(ELECTRICITY_TAX_INCL_VAT)} snt/kWh</td>
+                                <td><strong>{fmt_c(comp['general_c_kwh'] + ELECTRICITY_TAX_INCL_VAT)} snt/kWh</strong></td>
+                                <td>{fmt_c(comp['general_base_eur'])} €/kk</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Yösiirto — Päivä (klo 07–22)</strong></td>
+                                <td>{fmt_c(comp['day_c_kwh'])} snt/kWh</td>
+                                <td>{fmt_c(ELECTRICITY_TAX_INCL_VAT)} snt/kWh</td>
+                                <td><strong>{fmt_c(comp['day_c_kwh'] + ELECTRICITY_TAX_INCL_VAT)} snt/kWh</strong></td>
+                                <td>{fmt_c(comp['time_base_eur'])} €/kk</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Yösiirto — Yö (klo 22–07)</strong></td>
+                                <td>{fmt_c(comp['night_c_kwh'])} snt/kWh</td>
+                                <td>{fmt_c(ELECTRICITY_TAX_INCL_VAT)} snt/kWh</td>
+                                <td><strong>{fmt_c(comp['night_c_kwh'] + ELECTRICITY_TAX_INCL_VAT)} snt/kWh</strong></td>
+                                <td>{fmt_c(comp['time_base_eur'])} €/kk</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Kausisiirto — Talviarkipäivä</strong></td>
+                                <td>{fmt_c(comp['winter_day_c_kwh'])} snt/kWh</td>
+                                <td>{fmt_c(ELECTRICITY_TAX_INCL_VAT)} snt/kWh</td>
+                                <td><strong>{fmt_c(comp['winter_day_c_kwh'] + ELECTRICITY_TAX_INCL_VAT)} snt/kWh</strong></td>
+                                <td>{fmt_c(comp['season_base_eur'])} €/kk</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Kausisiirto — Muu aika</strong></td>
+                                <td>{fmt_c(comp['other_c_kwh'])} snt/kWh</td>
+                                <td>{fmt_c(ELECTRICITY_TAX_INCL_VAT)} snt/kWh</td>
+                                <td><strong>{fmt_c(comp['other_c_kwh'] + ELECTRICITY_TAX_INCL_VAT)} snt/kWh</strong></td>
+                                <td>{fmt_c(comp['season_base_eur'])} €/kk</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
             </div>
         </section>
 
-        <section class="section-card">
-            <h2>Paikkakunnat ja postinumeroalueet: {html.escape(comp['short_name'])}</h2>
-            <div class="directory-grid">
-                {muni_links or '<p>Katso kaikki kunnat paikkakuntahakemistosta.</p>'}
+        <section class="panel-box">
+            <div class="panel-head">
+                <h2>PAIKKAKUNNAT JA POSTINUMEROALUEET: {html.escape(comp['short_name']).upper()}</h2>
+            </div>
+            <div class="panel-body">
+                <div class="directory-grid">
+                    {muni_links or '<p>Katso kaikki kunnat paikkakuntahakemistosta.</p>'}
+                </div>
             </div>
         </section>
     </main>
@@ -514,7 +532,7 @@ def build_municipality_page(m: dict) -> str:
     dashboard_html = render_interactive_dashboard_block(
         prefix="../",
         h1_text=f"Pörssisähkö ja sähkön siirtohinta {m['name']} ({m['postal_range']})",
-        lead_text=f"Paikkakunnalla {m['name']} ({m['region']}) ensisijainen paikallinen sähköverkkoyhtiö on {comp['name']}.{alt_sentence} Yleissiirron ja sähköveron kiinteä osuus on yhteensä {fmt_c(total_fixed)} snt/kWh pörssisähkön spot-hinnan päälle.",
+        lead_text=f"Paikkakunnalla {m['name']} ({m['region']}) ensisijainen jakeluverkkoyhtiö on {comp['name']}.{alt_sentence} Yleissiirron ja sähköveron kiinteä osuus on yhteensä {fmt_c(total_fixed)} snt/kWh pörssisähkön spot-hinnan päälle.",
         default_postal=m["postal"],
     )
 
@@ -534,16 +552,20 @@ def build_municipality_page(m: dict) -> str:
     <main class="container">
 {dashboard_html}
 
-        <section class="section-card">
-            <h2>Sähkönsiirto ja verkkoyhtiö paikkakunnalla {html.escape(m['name'])}</h2>
-            <p style="margin-top:8px;">
-                Kun asut paikkakunnalla <strong>{html.escape(m['name'])}</strong> (postinumeroalue <code>{m['postal_range']}</code>, maakunta {html.escape(m['region'])}), paikallisesta jakeluverkosta vastaa ensisijaisesti <a href="../verkkoyhtiot/{slugify(comp['short_name'])}.html"><strong>{html.escape(comp['name'])}</strong></a>.{alt_sentence}
-            </p>
-            <ul style="margin:12px 0 0 20px;">
-                <li><strong>Yleissiirto ({html.escape(comp['short_name'])}):</strong> {fmt_c(comp['general_c_kwh'])} snt/kWh (perusmaksu {fmt_c(comp['general_base_eur'])} €/kk)</li>
-                <li><strong>Yösiirto / Aikasiirto:</strong> Päivä klo 07–22 {fmt_c(comp['day_c_kwh'])} snt/kWh, Yö klo 22–07 {fmt_c(comp['night_c_kwh'])} snt/kWh (perusmaksu {fmt_c(comp['time_base_eur'])} €/kk)</li>
-                <li><strong>Valtion sähkövero ja huoltovarmuusmaksu:</strong> {fmt_c(ELECTRICITY_TAX_INCL_VAT)} snt/kWh (sis. ALV 25,5 %)</li>
-            </ul>
+        <section class="panel-box">
+            <div class="panel-head">
+                <h2>SÄHKÖNSIIRTO JA JAKELUVERKKOYHTIÖ PAIKKAKUNNALLA {html.escape(m['name']).upper()}</h2>
+            </div>
+            <div class="panel-body">
+                <p>
+                    Kun käyttöpaikka sijaitsee paikkakunnalla <strong>{html.escape(m['name'])}</strong> (postinumeroalue <code>{m['postal_range']}</code>, maakunta {html.escape(m['region'])}), paikallisesta jakeluverkosta vastaa ensisijaisesti <a href="../verkkoyhtiot/{slugify(comp['short_name'])}.html"><strong>{html.escape(comp['name'])}</strong></a>.{alt_sentence}
+                </p>
+                <ul style="margin:12px 0 0 20px; font-family:monospace; font-size:13px;">
+                    <li><strong>Yleissiirto ({html.escape(comp['short_name'])}):</strong> {fmt_c(comp['general_c_kwh'])} snt/kWh (perusmaksu {fmt_c(comp['general_base_eur'])} €/kk)</li>
+                    <li><strong>Yösiirto / Aikasiirto:</strong> Päivä klo 07–22 {fmt_c(comp['day_c_kwh'])} snt/kWh, Yö klo 22–07 {fmt_c(comp['night_c_kwh'])} snt/kWh (perusmaksu {fmt_c(comp['time_base_eur'])} €/kk)</li>
+                    <li><strong>Valtion sähkövero ja huoltovarmuusmaksu:</strong> {fmt_c(ELECTRICITY_TAX_INCL_VAT)} snt/kWh (sis. ALV 25,5 %)</li>
+                </ul>
+            </div>
         </section>
     </main>
 
@@ -570,11 +592,15 @@ def build_directory_page(title: str, lead: str, cards_html: str, canonical_path:
 <body>
 {render_header("../")}
     <main class="container">
-        <section class="section-card">
-            <h1>{html.escape(title)}</h1>
-            <p class="hero-lead" style="margin-top:8px;">{html.escape(lead)}</p>
-            <div class="directory-grid">
-                {cards_html}
+        <section class="panel-box">
+            <div class="panel-head">
+                <h1>{html.escape(title)}</h1>
+            </div>
+            <div class="panel-body">
+                <p style="margin-bottom:14px; color:#4a4f4a;">{html.escape(lead)}</p>
+                <div class="directory-grid">
+                    {cards_html}
+                </div>
             </div>
         </section>
     </main>
@@ -598,14 +624,16 @@ def build_guide_page(slug: str, title: str, meta_desc: str, body_html: str) -> s
 <body>
 {render_header("../")}
     <main class="container">
-        <article class="section-card">
-            <h1 style="font-family:Georgia,serif; font-size:30px; color:#163022; margin-bottom:12px;">{html.escape(title)}</h1>
-            <p class="hero-lead">{html.escape(meta_desc)}</p>
-            <div style="font-size:15.5px; line-height:1.75; color:#18201b;">
-                {body_html}
+        <article class="panel-box">
+            <div class="panel-head">
+                <h1>{html.escape(title)}</h1>
             </div>
-            <div style="margin-top:24px; padding-top:16px; border-top:1px solid #d6d2c6;">
-                <a href="../index.html" class="btn-primary" style="display:inline-block; text-decoration:none;">Avaa pörssisähkö- ja siirtohintalaskuri</a>
+            <div class="panel-body" style="max-width:860px; font-size:15px; line-height:1.75;">
+                <p style="font-weight:600; margin-bottom:16px;">{html.escape(meta_desc)}</p>
+                {body_html}
+                <div style="margin-top:24px; padding-top:16px; border-top:1px solid #cbc7ba;">
+                    <a href="../index.html" class="btn-primary" style="display:inline-block; text-decoration:none;">Avaa pörssisähkö- ja siirtohintalaskuri</a>
+                </div>
             </div>
         </article>
     </main>
@@ -625,11 +653,9 @@ def main():
 
     urls = [f"{SITE_URL}/"]
 
-    # 1. Etusivu
     with open(os.path.join(base_dir, "index.html"), "w", encoding="utf-8") as f:
         f.write(build_index_page())
 
-    # 2. Verkkoyhtiösivut
     dso_pills = []
     for comp in sorted(DSO_COMPANIES.values(), key=lambda x: x["name"]):
         cslug = slugify(comp["short_name"])
@@ -652,7 +678,6 @@ def main():
         )
     urls.append(f"{SITE_URL}/verkkoyhtiot/index.html")
 
-    # 3. Paikkakuntasivut
     muni_pills = []
     for m in sorted(MUNICIPALITIES, key=lambda x: x["name"]):
         mslug = slugify(m["name"])
@@ -676,17 +701,16 @@ def main():
         )
     urls.append(f"{SITE_URL}/paikkakunnat/index.html")
 
-    # 4. Oppaat
     guides = [
         (
             "porssisahko-ennuste-7-vrk-tuulivoima-ja-lampotila",
-            "Miten pörssisähkön 7 vuorokauden hintaennuste toimii?",
-            "Opas siihen, miten Suomen yli 8 400 MW tuulivoimakapasiteetti, 100 metrin tuulennopeudet ja pakkasasteet määräävät tulevien päivien pörssisähkön hinnan.",
-            """<p style="margin-bottom:14px;">Nord Pool julkaisee seuraavan vuorokauden viralliset tuntihinnat päivittäin vasta noin kello 13.45–14.00 Suomen aikaa. Sähköauton latausta, varaavaa lämmitystä tai viikonlopun saunomista suunnittelevalle pelkkä huomisen hinta ei kuitenkaan usein riitä.</p>
+            "Miten pörssisähkön 7 vuorokauden oppiva hintaennuste toimii?",
+            "Katsaus siihen, miten Suomen 8 450 MW tuulivoimakapasiteetti, 100 metrin tuulennopeudet ja pakkasasteet määräävät tulevien päivien pörssisähkön hinnan.",
+            """<p style="margin-bottom:14px;">Nord Pool julkaisee seuraavan vuorokauden viralliset tuntihinnat päivittäin vasta noin kello 13.45–14.00 Suomen aikaa. Sähköauton latausta, varaavaa lämmitystä tai lämminvesivaraajan ajoitusta suunnittelevalle pelkkä huomisen hinta ei usein riitä.</p>
             <h2 style="margin:18px 0 8px; font-family:Georgia,serif;">Tuulivoima on Suomen pörssisähkön suurin yksittäinen hinnanmuodostaja</h2>
-            <p style="margin-bottom:14px;">Suomen asennettu tuulivoimakapasiteetti on kasvanut yli 8 400 megawattiin. Kun Pohjanmaan, Pohjois-Pohjanmaan (Kalajoki, Pyhäjoki, Raahe) ja Lapin rannikon tuulipuistoissa 100 metrin napakorkeuden tuulennopeus nousee yli 9–11 m/s, tuulivoima kattaa suuren osan Suomen sähkönkulutuksesta ja painaa spot-hinnan usein lähelle nollaa.</p>
+            <p style="margin-bottom:14px;">Suomen asennettu tuulivoimakapasiteetti on kasvanut yli 8 450 megawattiin. Kun Pohjanmaan, Pohjois-Pohjanmaan (Kalajoki, Pyhäjoki, Raahe) ja Perämeren rannikon tuulipuistoissa 100 metrin napakorkeuden tuulennopeus nousee yli 9–11 m/s, tuulivoima kattaa suuren osan Suomen sähkönkulutuksesta ja painaa spot-hinnan usein lähelle nollaa.</p>
             <h2 style="margin:18px 0 8px; font-family:Georgia,serif;">Lämpötilan ja kulutusprofiilin yhteisvaikutus</h2>
-            <p style="margin-bottom:14px;">Kun lämpötila laskee Suomessa pakkasen puolelle, sähkölämmityksen ja lämpöpumppujen kulutus kasvaa sadoilla megawateilla jokaista pakkasastetta kohden. Ennustemallimme yhdistää 100 metrin tuulennopeusennusteet, aluepainotetun lämpötilan sekä arkipäivien ja viikonloppujen kulutusprofiilin, ja kalibroi hintatason automaattisesti viimeisimpiin toteutuneisiin Nord Pool -tunteihin.</p>""",
+            <p style="margin-bottom:14px;">Kun lämpötila laskee Suomessa pakkasen puolelle, sähkölämmityksen ja lämpöpumppujen kulutus kasvaa sadoilla megawateilla jokaista pakkasastetta kohden. Oppiva Ridge-regressiomallimme on koulutettu kahden vuoden toteutuneilla Nord Pool FI -tuntihinnoilla, 100 metrin tuulennopeuksilla ja lämpötiloilla, ja se päivittää painokertoimiaan jatkuvasti uusien havaintojen saapuessa.</p>""",
         ),
         (
             "sahkon-siirtohinta-postinumerolla-kaikki-verkkoyhtiot",
@@ -717,7 +741,6 @@ def main():
             f.write(build_guide_page(gslug, gtitle, gdesc, gbody))
         urls.append(f"{SITE_URL}/oppaat/{gslug}.html")
 
-    # 5. Sitemap, robots.txt, llms.txt, vercel.json
     today_str = datetime.now(timezone.utc).strftime("%Y-%m-%d")
     sitemap_items = "\n".join(
         f"  <url>\n    <loc>{u}</loc>\n    <lastmod>{today_str}</lastmod>\n  </url>" for u in urls
@@ -725,52 +748,6 @@ def main():
     with open(os.path.join(base_dir, "sitemap.xml"), "w", encoding="utf-8") as f:
         f.write(
             f'<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n{sitemap_items}\n</urlset>\n'
-        )
-
-    with open(os.path.join(base_dir, "robots.txt"), "w", encoding="utf-8") as f:
-        f.write(f"User-agent: *\nAllow: /\nSitemap: {SITE_URL}/sitemap.xml\n")
-
-    with open(os.path.join(base_dir, "llms.txt"), "w", encoding="utf-8") as f:
-        f.write(
-            f"""# {SITE_NAME}
-> Reaaliaikainen Suomen pörssisähkön spot-hintaseuranta, 7 vuorokauden tuulivoima- ja lämpötilaennuste sekä postinumeropohjainen sähkönsiirto- ja kokonaishintalaskuri.
-
-## Keskeiset ominaisuudet
-- Viralliset Nord Pool FI -spot-hinnat ja 7 vrk (168 h) tuntikohtainen hintaennuste (`/api/spot-and-forecast`)
-- Postinumerohaku, joka tunnistaa automaattisesti paikallisen sähköverkkoyhtiön (30+ verkkoyhtiötä ja 134+ Suomen kuntaa)
-- Todellinen tuntikohtainen kokonaishinta: Spot + Myyjän marginaali + Paikallinen siirtohinta (Yleissiirto, Yösiirto tai Kausisiirto) + Sähkövero ({fmt_c(ELECTRICITY_TAX_INCL_VAT)} snt/kWh sis. ALV 25,5 %)
-- Halvimmat peräkkäiset tunnit -optimoija kokonaishinnalla (huomioi klo 22:00 alkavan yösiirron)
-"""
-        )
-
-    with open(os.path.join(base_dir, "vercel.json"), "w", encoding="utf-8") as f:
-        json.dump(
-            {
-                "version": 2,
-                "cleanUrls": False,
-                "headers": [
-                    {
-                        "source": "/api/(.*)",
-                        "headers": [
-                            {"key": "Cache-Control", "value": "public, s-maxage=600, stale-while-revalidate=1800"}
-                        ],
-                    }
-                ],
-            },
-            f,
-            indent=2,
-        )
-
-    with open(os.path.join(base_dir, "package.json"), "w", encoding="utf-8") as f:
-        json.dump(
-            {
-                "name": "porssisahko-ennuste-siirtohintalaskuri",
-                "version": "1.0.0",
-                "private": True,
-                "type": "module",
-            },
-            f,
-            indent=2,
         )
 
     print(f"Generated {len(urls)} pages in {base_dir}!")

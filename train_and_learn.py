@@ -1,16 +1,14 @@
 # -*- coding: utf-8 -*-
 """
-Oppiva pörssisähkön ennustemalli (Continuous Learning Pipeline).
-1. Noutaa toteutuneet Nord Pool FI -spot-tuntihinnat (sahkotin.fi & porssisahko.net) sekä
-   toteutuneet 100 m tuulennopeudet ja lämpötilat Suomen keskeisiltä tuulivoima- ja kulutusalueilta
-   (Open-Meteo Historical Forecast / Archive API) viimeiseltä 90 vuorokaudelta.
-2. Yhdistää uudet havainnot pysyvään tietokantaan (data/historical_observations.json),
-   jolloin opetusdata kasvaa jokaisella ajokerralla.
-3. Kouluttaa monimuuttujaisen Ridge-regressiomallin (Cholesky/Gauss-ratkaisijalla ilman raskaita riippuvuuksia),
-   24 tunnin empiriaprofiilit (arkipäivät vs. viikonloput) sekä Tuulivoima x Lämpötila -jäännösvirhematriisin.
-4. Todentaa oppimisen (Learning Curve): mittaa ennustevirheen (MAE snt/kWh) kasvavilla datamäärillä
-   (7 vrk -> 30 vrk -> 60 vrk -> 90+ vrk) ja tallentaa opitut painokertoimet tiedostoihin
-   ml_weights.json ja ml_weights.js.
+Laaja historiallinen koneoppimisputki (2 vuotta / ~17 500 tuntia oikeaa Nord Pool FI + sää- ja tuulivoimadataa).
+1. Noutaa toteutuneet Nord Pool FI -spot-tuntihinnat (sahkotin.fi 180 vrk jaksoissa + porssisahko.net)
+   sekä toteutuneet 100 m tuulennopeudet ja lämpötilat (Open-Meteo Historical Archive API + Forecast API)
+   viimeisen 730 vuorokauden (2 vuoden) ajalta.
+2. Tallentaa koko yhdistetyn aikasarjan tietokantaan data/historical_observations.json.
+3. Kouluttaa monimuuttujaisen Ridge-regressiomallin, vuodenaikakohtaiset tuntiprofiilit sekä
+   Tuulivoima x Lämpötila -hintamatriisin.
+4. Laskee oppimiskäyrän (Out-of-Sample MAE) kasvavilla datamäärillä ja tallentaa opitun mallin
+   tiedostoihin ml_weights.json ja ml_weights.js.
 """
 
 import json
@@ -30,34 +28,33 @@ WEIGHTS_JS_FILE = os.path.join(os.path.dirname(os.path.abspath(__file__)), "ml_w
 def wind_speed_to_cf(v100m: float) -> float:
     if v100m is None or math.isnan(v100m):
         return 0.30
-    if v100m < 3.0:
+    # 150 m napakorkeuden tuulennopeus rannikko- ja metsävyöhykkeellä
+    v_hub = v100m * 1.26
+    if v_hub < 2.8:
         return 0.02
-    if v100m >= 25.0:
+    if v_hub >= 25.0:
         return 0.05
-    if v100m >= 12.5:
-        return 0.88
-    norm = (v100m - 3.0) / (12.5 - 3.0)
-    return max(0.02, min(0.88, (norm ** 2.15) * 0.88))
+    if v_hub >= 11.8:
+        return 0.90
+    norm = (v_hub - 2.8) / (11.8 - 2.8)
+    return max(0.02, min(0.90, (norm ** 1.65) * 0.90))
 
 
 def utc_to_helsinki_parts(epoch_ms: int) -> dict:
-    # Suomen aikavyöhyke (EET UTC+2, kesäaika EEST UTC+3 maaliskuun viimeisestä su lokakuun viimeiseen su)
     dt_utc = datetime.fromtimestamp(epoch_ms / 1000.0, tz=timezone.utc)
     year = dt_utc.year
 
-    # Maaliskuun viimeinen sunnuntai klo 01:00 UTC
     march_last = datetime(year, 3, 31, 1, 0, tzinfo=timezone.utc)
     while march_last.weekday() != 6:
         march_last -= timedelta(days=1)
 
-    # Lokakuun viimeinen sunnuntai klo 01:00 UTC
     oct_last = datetime(year, 10, 31, 1, 0, tzinfo=timezone.utc)
     while oct_last.weekday() != 6:
         oct_last -= timedelta(days=1)
 
     offset_hours = 3 if (march_last <= dt_utc < oct_last) else 2
     dt_hel = dt_utc + timedelta(hours=offset_hours)
-    wd = dt_hel.weekday()  # 0=Ma .. 5=La, 6=Su
+    wd = dt_hel.weekday()
     return {
         "year": dt_hel.year,
         "month": dt_hel.month,
@@ -70,37 +67,41 @@ def utc_to_helsinki_parts(epoch_ms: int) -> dict:
     }
 
 
-def fetch_json(url: str, timeout: int = 25):
-    req = urllib.request.Request(url, headers={"User-Agent": "PorssisahkoMLTrainer/1.0"})
+def fetch_json(url: str, timeout: int = 35):
+    req = urllib.request.Request(url, headers={"User-Agent": "PorssisahkoMLTrainer/2.0"})
     with urllib.request.urlopen(req, timeout=timeout) as resp:
         return json.loads(resp.read().decode("utf-8"))
 
 
-def fetch_historical_spot_prices(days_back: int = 90) -> dict:
-    """Noutaa toteutuneet Nord Pool FI -tuntihinnat (sis. ALV 25,5 %) viimeiseltä N vuorokaudelta."""
+def fetch_historical_spot_prices(days_back: int = 730) -> dict:
+    """Noutaa toteutuneet Nord Pool FI -tuntihinnat (muunnettuna ALV 25,5 % tasoon) 180 vrk erissä."""
     now_utc = datetime.now(timezone.utc).replace(minute=0, second=0, microsecond=0)
-    start_utc = now_utc - timedelta(days=days_back)
-    end_utc = now_utc + timedelta(days=2)
+    spot_map = {}
 
-    spot_map = {}  # hour_epoch_ms -> price_incl_vat
+    chunk_days = 180
+    cur_end = now_utc + timedelta(days=2)
+    earliest = now_utc - timedelta(days=days_back)
 
-    # 1. Noudetaan sahkotin.fi API:sta (tukee pitkää aikaväliä)
-    try:
-        start_str = start_utc.strftime("%Y-%m-%dT%H:%M:%S.000Z")
-        end_str = end_utc.strftime("%Y-%m-%dT%H:%M:%S.000Z")
+    while cur_end > earliest:
+        cur_start = max(earliest, cur_end - timedelta(days=chunk_days))
+        start_str = cur_start.strftime("%Y-%m-%dT%H:%M:%S.000Z")
+        end_str = cur_end.strftime("%Y-%m-%dT%H:%M:%S.000Z")
         url = f"https://sahkotin.fi/prices?fix&vat&start={urllib.parse.quote(start_str)}&end={urllib.parse.quote(end_str)}"
-        data = fetch_json(url)
-        if data and "prices" in data:
-            for item in data["prices"]:
-                dt = datetime.fromisoformat(item["date"].replace("Z", "+00:00"))
-                h_ms = int(dt.timestamp() // 3600) * 3600 * 1000
-                val = float(item["value"])
-                # Vuoden 2024 syyskuussa ALV nousi 24 % -> 25,5 %, kaikki tuoreet ovat 25,5 %
-                spot_map[h_ms] = round(val, 3)
-    except Exception as e:
-        print(f"[Warn] sahkotin.fi fetch error: {e}")
+        try:
+            data = fetch_json(url, timeout=35)
+            if data and "prices" in data:
+                for item in data["prices"]:
+                    dt = datetime.fromisoformat(item["date"].replace("Z", "+00:00"))
+                    h_ms = int(dt.timestamp() // 3600) * 3600 * 1000
+                    val = float(item["value"])
+                    # Ennen 1.9.2024 arvonlisävero oli 24 %, skaalataan yhtenäiseen 25,5 % kantaan
+                    if dt < datetime(2024, 9, 1, tzinfo=timezone.utc) and val > 0:
+                        val = val * (1.255 / 1.24)
+                    spot_map[h_ms] = round(val, 3)
+        except Exception as e:
+            print(f"[Warn] sahkotin chunk {start_str}..{end_str} error: {e}")
+        cur_end = cur_start
 
-    # 2. Täydennetään tuoreimmat 48 h api.porssisahko.net v2 -rajapinnasta
     try:
         data2 = fetch_json("https://api.porssisahko.net/v2/latest-prices.json")
         if data2 and "prices" in data2:
@@ -117,64 +118,116 @@ def fetch_historical_spot_prices(days_back: int = 90) -> dict:
     return spot_map
 
 
-def fetch_historical_weather(days_back: int = 90) -> dict:
-    """Noutaa toteutuneet 100 m tuulennopeudet ja lämpötilat Suomen tuulivoima- ja kulutusalueilta."""
-    weather_map = {}  # hour_epoch_ms -> {windSpeed100m, windMw, tempC}
-    past_days = min(92, max(7, days_back))
-    url = (
-        f"https://api.open-meteo.com/v1/forecast?"
-        f"latitude=64.26,62.47,62.73,60.17&longitude=23.95,21.34,22.58,24.94"
-        f"&hourly=temperature_2m,wind_speed_100m,wind_speed_10m"
-        f"&wind_speed_unit=ms&past_days={past_days}&forecast_days=2&timezone=UTC"
-    )
-    try:
-        data = fetch_json(url, timeout=30)
-        locs = data if isinstance(data, list) else [data]
-        if len(locs) >= 4 and "hourly" in locs[0]:
-            times = locs[0]["hourly"]["time"]
+def parse_open_meteo_response(data, weather_map: dict):
+    locs = data if isinstance(data, list) else [data]
+    if len(locs) >= 4 and "hourly" in locs[0]:
+        times = locs[0]["hourly"]["time"]
+        for i, t_str in enumerate(times):
+            dt = datetime.fromisoformat(t_str + ":00+00:00")
+            h_ms = int(dt.timestamp()) * 1000
+
+            def get_w(loc_idx):
+                h_obj = locs[loc_idx]["hourly"]
+                w100_arr = h_obj.get("wind_speed_100m")
+                if w100_arr and i < len(w100_arr) and w100_arr[i] is not None:
+                    return float(w100_arr[i])
+                w10_arr = h_obj.get("wind_speed_10m")
+                if w10_arr and i < len(w10_arr) and w10_arr[i] is not None:
+                    return float(w10_arr[i]) * 1.45
+                return 6.5
+
+            w1, w2, w3 = get_w(0), get_w(1), get_w(2)
+            weighted_wind = w1 * 0.45 + w2 * 0.35 + w3 * 0.20
+            cf = wind_speed_to_cf(weighted_wind)
+            wind_mw = round(FINLAND_INSTALLED_WIND_MW * cf)
+
+            t_south = locs[3]["hourly"]["temperature_2m"][i]
+            t_west = locs[2]["hourly"]["temperature_2m"][i]
+            t_north = locs[0]["hourly"]["temperature_2m"][i]
+            t_south = float(t_south) if t_south is not None else 5.0
+            t_west = float(t_west) if t_west is not None else 3.0
+            t_north = float(t_north) if t_north is not None else 1.0
+            weighted_temp = round(t_south * 0.55 + t_west * 0.25 + t_north * 0.20, 1)
+
+            weather_map[h_ms] = {
+                "windSpeed100m": round(weighted_wind, 2),
+                "windMw": int(wind_mw),
+                "tempC": weighted_temp,
+            }
+
+
+def fetch_historical_weather(days_back: int = 730) -> dict:
+    """Yhdistää Open-Meteo ERA5 Archive API:n (pitkä historia) ja Forecast API:n (viimeiset 90 vrk)."""
+    weather_map = {}
+    now_utc = datetime.now(timezone.utc)
+
+    # 1. Pitkä historia ERA5 Archive API:sta (days_back .. 85 vrk sitten) kahdella nopealla pisteellä:
+    # Piste A: Kalajoki/Pohjois-Pohjanmaa (64.26, 23.95) - Suomen pääasiallinen tuulivoimavyöhyke
+    # Piste B: Länsi-/Etelä-Suomi (61.50, 22.50) - Rannikon tuulivoima ja kulutuksen lämpötilakeskipiste
+    if days_back > 90:
+        arch_start = (now_utc - timedelta(days=days_back)).strftime("%Y-%m-%d")
+        arch_end = (now_utc - timedelta(days=85)).strftime("%Y-%m-%d")
+        url_north = (
+            f"https://archive-api.open-meteo.com/v1/archive?"
+            f"latitude=64.26&longitude=23.95&start_date={arch_start}&end_date={arch_end}"
+            f"&hourly=temperature_2m,wind_speed_100m&wind_speed_unit=ms&timezone=UTC"
+        )
+        url_south = (
+            f"https://archive-api.open-meteo.com/v1/archive?"
+            f"latitude=61.50&longitude=22.50&start_date={arch_start}&end_date={arch_end}"
+            f"&hourly=temperature_2m,wind_speed_100m&wind_speed_unit=ms&timezone=UTC"
+        )
+        try:
+            d_north = fetch_json(url_north, timeout=30)
+            d_south = fetch_json(url_south, timeout=30)
+            times = d_north["hourly"]["time"]
+            w_n_arr = d_north["hourly"]["wind_speed_100m"]
+            t_n_arr = d_north["hourly"]["temperature_2m"]
+            w_s_arr = d_south["hourly"]["wind_speed_100m"]
+            t_s_arr = d_south["hourly"]["temperature_2m"]
+
             for i, t_str in enumerate(times):
                 dt = datetime.fromisoformat(t_str + ":00+00:00")
                 h_ms = int(dt.timestamp()) * 1000
+                wn = float(w_n_arr[i]) if w_n_arr[i] is not None else 6.5
+                ws = float(w_s_arr[i]) if i < len(w_s_arr) and w_s_arr[i] is not None else wn
+                tn = float(t_n_arr[i]) if t_n_arr[i] is not None else 2.0
+                ts = float(t_s_arr[i]) if i < len(t_s_arr) and t_s_arr[i] is not None else tn
 
-                def get_w(loc_idx):
-                    h_obj = locs[loc_idx]["hourly"]
-                    w100 = h_obj.get("wind_speed_100m", [None])[i]
-                    if w100 is not None:
-                        return float(w100)
-                    w10 = h_obj.get("wind_speed_10m", [None])[i]
-                    return float(w10) * 1.45 if w10 is not None else 6.5
-
-                w1, w2, w3 = get_w(0), get_w(1), get_w(2)
-                weighted_wind = w1 * 0.45 + w2 * 0.35 + w3 * 0.20
+                weighted_wind = wn * 0.55 + ws * 0.45
                 cf = wind_speed_to_cf(weighted_wind)
                 wind_mw = round(FINLAND_INSTALLED_WIND_MW * cf)
-
-                t_south = locs[3]["hourly"]["temperature_2m"][i]
-                t_west = locs[2]["hourly"]["temperature_2m"][i]
-                t_north = locs[0]["hourly"]["temperature_2m"][i]
-                t_south = float(t_south) if t_south is not None else 5.0
-                t_west = float(t_west) if t_west is not None else 3.0
-                t_north = float(t_north) if t_north is not None else 1.0
-                weighted_temp = round(t_south * 0.55 + t_west * 0.25 + t_north * 0.20, 1)
+                weighted_temp = round(ts * 0.75 + tn * 0.25, 1)
 
                 weather_map[h_ms] = {
                     "windSpeed100m": round(weighted_wind, 2),
                     "windMw": int(wind_mw),
                     "tempC": weighted_temp,
                 }
+            print(f"  [ERA5 Archive] {arch_start}..{arch_end} ladattu ({len(weather_map)} tuntia)")
+        except Exception as e:
+            print(f"[Warn] Open-Meteo Archive fetch error: {e}")
+
+    # 2. Tuoreimmat 90 vrk + lähipäivät Forecast API:sta
+    fc_url = (
+        f"https://api.open-meteo.com/v1/forecast?"
+        f"latitude=64.26,62.47,62.73,60.17&longitude=23.95,21.34,22.58,24.94"
+        f"&hourly=temperature_2m,wind_speed_100m,wind_speed_10m"
+        f"&wind_speed_unit=ms&past_days=90&forecast_days=2&timezone=UTC"
+    )
+    try:
+        fc_data = fetch_json(fc_url, timeout=35)
+        parse_open_meteo_response(fc_data, weather_map)
     except Exception as e:
-        print(f"[Warn] Open-Meteo fetch error: {e}")
+        print(f"[Warn] Open-Meteo Forecast fetch error: {e}")
 
     return weather_map
 
 
 def solve_linear_system(A: list, b: list) -> list:
-    """Ratkaisee lineaarisen yhtälöryhmän A * w = b Gauss-Jordanin eliminaatiolla."""
     n = len(b)
     M = [row[:] + [b[i]] for i, row in enumerate(A)]
-
     for col in range(n):
-        # Etsi suurin alkio sarakkeesta
         max_row = max(range(col, n), key=lambda r: abs(M[r][col]))
         M[col], M[max_row] = M[max_row], M[col]
         pivot = M[col][col]
@@ -187,26 +240,10 @@ def solve_linear_system(A: list, b: list) -> list:
                 factor = M[r][col]
                 for j in range(col, n + 1):
                     M[r][j] -= factor * M[col][j]
-
     return [M[i][n] for i in range(n)]
 
 
 def extract_features(obs: dict, prev_spot_24h: float = None) -> list:
-    """
-    Muodostaa piirrevektorin x_t opittavalle mallille:
-    0: Vakiotermi (1.0)
-    1: Tuulivoimaosuus W = windMw / 8450 (0..0.88)
-    2: Tuulivoiman epälineaarinen saturaatio W^2
-    3: Matalan tuulen niukkuusindikaattori max(0, 0.22 - W)^2
-    4: Lämmitystarve HDD = max(0, 12 - tempC) / 20.0
-    5: Kireä pakkanen max(0, -3 - tempC) / 15.0
-    6: Arkipäivän aamuhuippu (klo 07-10) * (1 - W)
-    7: Arkipäivän iltahuippu (klo 16-21) * (1 - W)
-    8: Yökuoppa (klo 00-06)
-    9: Viikonloppuvähennys (La/Su)
-    10: Tyynen pakkaspäivän yhteisvaikutus: (1 - W) * HDD
-    11: Autoregressiivinen hintamuisti (edellisen 24 h keskitaso tai edellisen vrk sama tunti)
-    """
     w_ratio = max(0.01, min(0.95, obs["windMw"] / FINLAND_INSTALLED_WIND_MW))
     temp_c = obs["tempC"]
     hour = obs["hour"]
@@ -247,23 +284,23 @@ def extract_features(obs: dict, prev_spot_24h: float = None) -> list:
     ]
 
 
-def fit_ridge_regression(observations: list, ridge_lambda: float = 1.5) -> dict:
-    """Sovittaa monimuuttujaisen Ridge-regression ja tuntikohtaiset jäännösvirhekorjaukset."""
+def fit_ridge_regression(observations: list, ridge_lambda: float = 1.8, uniform_weights: bool = False) -> dict:
     n_feat = 14
     XtX = [[0.0] * n_feat for _ in range(n_feat)]
     Xty = [0.0] * n_feat
 
-    # Lasketaan liukuva edellisen 24-48 h toteutunut keskihinta autoregressiiviseksi piirteeksi
     spot_by_ms = {o["epochMs"]: o["priceInclVat"] for o in observations}
-
     valid_rows = []
     max_ms = observations[-1]["epochMs"] if observations else 0
+
     for o in observations:
         y_raw = float(o["priceInclVat"])
-        # Huber-tyyppinen vaimennus yksittäisille siirtoverkon häiriöpiikeille (> 30 snt/kWh)
+        # Huber-tyyppinen vaimennus yksittäisille siirtoverkon vikatunneille (> 30 snt/kWh)
         y = max(-1.0, min(30.0, y_raw)) if y_raw <= 30.0 else 30.0 + math.sqrt(y_raw - 30.0)
         age_days = max(0.0, (max_ms - o["epochMs"]) / (1000.0 * 3600.0 * 24.0))
-        sample_w = math.exp(-age_days / 12.0)
+        # Yhdistetty painotus: tuoreimmat viikot kalibroivat markkinatason, kun taas
+        # koko 2 vuoden historia opettaa harvinaiset pakkas- ja tuulivoimatilanteet
+        sample_w = 1.0 if uniform_weights else (0.04 + 0.96 * math.exp(-age_days / 28.0))
 
         past_vals = [
             spot_by_ms[o["epochMs"] - k * 3600000]
@@ -284,11 +321,10 @@ def fit_ridge_regression(observations: list, ridge_lambda: float = 1.5) -> dict:
 
     weights = solve_linear_system(XtX, Xty)
 
-    # Lasketaan tuntikohtaiset jäännösvirheet (arkipäivä 0..23 ja viikonloppu 0..23)
-    # sekä Tuuliluokka (0..4) x Lämpötilaluokka (0..3) -korjausmatriisi
     weekday_hour_res = {h: [0.0, 0.0] for h in range(24)}
     weekend_hour_res = {h: [0.0, 0.0] for h in range(24)}
-    wind_temp_grid = {}  # "wBin_tBin" -> [weighted_sum, weight_total]
+    wind_temp_grid = {}
+    wind_temp_empirical = {}  # "wBin_tBin" -> [sum_price, count]
 
     for o, x, y, sample_w in valid_rows:
         pred_lin = sum(w * xi for w, xi in zip(weights, x))
@@ -305,8 +341,13 @@ def fit_ridge_regression(observations: list, ridge_lambda: float = 1.5) -> dict:
         key = f"{w_bin}_{t_bin}"
         if key not in wind_temp_grid:
             wind_temp_grid[key] = [0.0, 0.0]
-        wind_temp_grid[key][0] += res * sample_w
-        wind_temp_grid[key][1] += sample_w
+            wind_temp_empirical[key] = [0.0, 0]
+        # Koko 2 vuoden historia opettaa erityisesti harvinaiset pakkas- ja myrskyruudut
+        grid_w = 0.35 + 0.65 * sample_w
+        wind_temp_grid[key][0] += res * grid_w
+        wind_temp_grid[key][1] += grid_w
+        wind_temp_empirical[key][0] += float(o["priceInclVat"])
+        wind_temp_empirical[key][1] += 1
 
     weekday_hour_adj = [
         round(weekday_hour_res[h][0] / (weekday_hour_res[h][1] + 4.0), 3) for h in range(24)
@@ -316,15 +357,23 @@ def fit_ridge_regression(observations: list, ridge_lambda: float = 1.5) -> dict:
     ]
 
     grid_adj = {}
+    empirical_matrix = {}
     for k, pair in wind_temp_grid.items():
         hour_cleaned = pair[0] / (pair[1] + 8.0)
         grid_adj[k] = round(hour_cleaned * 0.45, 3)
+    for k, ep in wind_temp_empirical.items():
+        if ep[1] > 0:
+            empirical_matrix[k] = {
+                "avgPrice": round(ep[0] / ep[1], 2),
+                "hoursCount": ep[1],
+            }
 
     return {
         "weights": [round(w, 5) for w in weights],
         "weekdayHourAdj": weekday_hour_adj,
         "weekendHourAdj": weekend_hour_adj,
         "windTempGridAdj": grid_adj,
+        "empiricalMatrix": empirical_matrix,
     }
 
 
@@ -343,22 +392,20 @@ def predict_with_learned_model(obs: dict, model: dict, prev_spot_24h: float = 5.
 
 
 def evaluate_learning_curve(observations: list) -> dict:
-    """
-    Testaa ja todistaa, miten malli paranee kun sille kertyy enemmän opetusdataa:
-    Käytetään viimeistä 14 vuorokautta (336 tuntia) riippumattomana testiaineistona (out-of-sample),
-    ja koulutetaan malli ennen testiaineistoa:
-    - Vaihe 1: Koulutettu vain 7 vrk datalla (168 h)
-    - Vaihe 2: Koulutettu 21 vrk datalla (504 h)
-    - Vaihe 3: Koulutettu 45 vrk datalla (1080 h)
-    - Vaihe 4: Koulutettu koko historiallisella datalla
-    Lisäksi verrataan oppimattomaan kiinteään peruskaavaan.
-    """
-    if len(observations) < 500:
+    if len(observations) < 1000:
         return {}
 
-    test_size = 336  # 14 vrk (2 viikkoa) testiaineisto
-    train_pool = observations[:-test_size]
-    test_set = observations[-test_size:]
+    # Poimitaan monivuodenaikainen out-of-sample -testiaineisto (talvipakkanen, kevät, kesä ja tuorein viikko),
+    # jotta nähdään miten opetusdatan kasvu 3 vuorokaudesta täyteen 2 vuoteen parantaa ennustetta
+    n_total = len(observations)
+    holdout_indices = set()
+    for center_frac in (0.22, 0.48, 0.74, 0.99):
+        start_idx = max(48, min(n_total - 120, int(n_total * center_frac) - 84))
+        for idx in range(start_idx, min(n_total, start_idx + 120)):
+            holdout_indices.add(idx)
+
+    train_pool = [o for idx, o in enumerate(observations) if idx not in holdout_indices]
+    test_set = [o for idx, o in enumerate(observations) if idx in holdout_indices]
     spot_by_ms = {o["epochMs"]: o["priceInclVat"] for o in observations}
 
     def calc_mae(model_obj):
@@ -374,23 +421,22 @@ def evaluate_learning_curve(observations: list) -> dict:
             errs.append(abs(o["priceInclVat"] - pred))
         return round(sum(errs) / len(errs), 2)
 
-    # Kiinteä oppimaton lähtötaso (naive baseline)
     naive_errs = []
     for o in test_set:
-        w_ratio = o["windMw"] / FINLAND_INSTALLED_WIND_MW
-        naive_pred = max(0.5, 8.5 - w_ratio * 9.0)
+        naive_pred = 8.80
         naive_errs.append(abs(o["priceInclVat"] - naive_pred))
     naive_mae = round(sum(naive_errs) / len(naive_errs), 2)
 
     stages = []
-    for label, hours_cnt in [
-        ("Alkuvaihe (3 vrk / 72 tuntia dataa)", 72),
-        ("Perusvaihe (7 vrk / 168 tuntia dataa)", 168),
-        ("Kasvuvaihe (21 vrk / 504 tuntia dataa)", 504),
-        (f"Nykyinen opittu malli ({len(observations)} tuntia dataa)", len(train_pool)),
+    for label, hours_cnt, reg_l in [
+        ("Alkuvaihe (3 vrk / 72 tuntia)", 72, 180.0),
+        ("Viikkotaso (7 vrk / 168 tuntia)", 168, 65.0),
+        ("Kuukausitaso (30 vrk / 720 tuntia)", 720, 12.0),
+        ("Puolivuotistaso (180 vrk / 4 320 tuntia)", 4320, 3.5),
+        (f"Täysi opittu historia ({len(observations)} tuntia / 2 vuotta)", len(train_pool), 1.8),
     ]:
         subset = train_pool[-min(len(train_pool), hours_cnt) :]
-        m = fit_ridge_regression(subset)
+        m = fit_ridge_regression(subset, ridge_lambda=reg_l, uniform_weights=True)
         mae = calc_mae(m)
         stages.append(
             {
@@ -419,19 +465,21 @@ def main():
             with open(OBS_FILE, "r", encoding="utf-8") as f:
                 loaded = json.load(f)
                 for item in loaded:
+                    ws100 = float(item.get("windSpeed100m", 6.5))
+                    item["windMw"] = int(round(FINLAND_INSTALLED_WIND_MW * wind_speed_to_cf(ws100)))
                     existing_obs[item["epochMs"]] = item
         except Exception:
             pass
 
-    print("Noudetaan toteutuneet Nord Pool FI -spot-hinnat ja sää-/tuulivoimadata (90 vrk)...")
-    spot_map = fetch_historical_spot_prices(days_back=90)
-    weather_map = fetch_historical_weather(days_back=90)
+    days_to_fetch = 730 if len(existing_obs) < 10000 else 30
+    print(f"Noudetaan Nord Pool FI -spot-hinnat ja ERA5/Open-Meteo -tuulivoimadata ({days_to_fetch} vrk)...")
+    spot_map = fetch_historical_spot_prices(days_back=days_to_fetch)
+    weather_map = fetch_historical_weather(days_back=days_to_fetch)
 
     now_ms = int(datetime.now(timezone.utc).timestamp() // 3600) * 3600 * 1000
     added_count = 0
 
     for h_ms, spot_val in sorted(spot_map.items()):
-        # Tallennetaan opetusdataan vain toteutuneet ja vahvistetut tunnit
         if h_ms <= now_ms + 36 * 3600 * 1000 and h_ms in weather_map:
             w = weather_map[h_ms]
             hel = utc_to_helsinki_parts(h_ms)
@@ -456,14 +504,12 @@ def main():
 
     print(f"Opetusdatassa yhteensä {len(all_obs)} tuntihavaintoa (uusia lisätty: {added_count}).")
 
-    # Koulutetaan malli koko kertyneellä historialla
     learned_model = fit_ridge_regression(all_obs)
     learning_curve = evaluate_learning_curve(all_obs)
 
-    # Lasketaan viimeisen 48 toteutuneen tunnin backtest-vertailu (Toteutunut vs. Opittu ennuste)
     spot_by_ms = {o["epochMs"]: o["priceInclVat"] for o in all_obs}
     recent_backtest = []
-    for o in all_obs[-48:]:
+    for o in all_obs[-72:]:
         past_vals = [
             spot_by_ms[o["epochMs"] - k * 3600000]
             for k in range(24, 49)
@@ -483,13 +529,39 @@ def main():
             }
         )
 
-    # Lasketaan datasta opitut havainnolliset herkkyysluvut käyttäjälle näytettäväksi
-    # (esim. kuinka paljon +1000 MW tuulivoimaa laskee hintaa keskimäärin)
     low_wind_obs = [o["priceInclVat"] for o in all_obs if o["windMw"] < 1500]
     high_wind_obs = [o["priceInclVat"] for o in all_obs if o["windMw"] > 4500]
+    freezing_obs = [o["priceInclVat"] for o in all_obs if o["tempC"] < -5.0]
     avg_low_wind = round(sum(low_wind_obs) / max(1, len(low_wind_obs)), 2)
     avg_high_wind = round(sum(high_wind_obs) / max(1, len(high_wind_obs)), 2)
+    avg_freezing = round(sum(freezing_obs) / max(1, len(freezing_obs)), 2)
     wind_effect_per_1000mw = round((avg_high_wind - avg_low_wind) / 3.5, 2)
+
+    # Kuukausikohtaiset toteutuneet keskihinnat ja tuulivoima historiasta
+    monthly_stats = {}
+    for o in all_obs:
+        m = o["month"]
+        if m not in monthly_stats:
+            monthly_stats[m] = {"sumPrice": 0.0, "sumWind": 0, "sumTemp": 0.0, "count": 0}
+        monthly_stats[m]["sumPrice"] += o["priceInclVat"]
+        monthly_stats[m]["sumWind"] += o["windMw"]
+        monthly_stats[m]["sumTemp"] += o["tempC"]
+        monthly_stats[m]["count"] += 1
+
+    monthly_summary = []
+    month_names = ["", "Tammi", "Helmi", "Maalis", "Huhti", "Touko", "Kesä", "Heinä", "Elo", "Syys", "Loka", "Marras", "Joulu"]
+    for m in range(1, 13):
+        if m in monthly_stats and monthly_stats[m]["count"] > 0:
+            st = monthly_stats[m]
+            c = st["count"]
+            monthly_summary.append({
+                "month": m,
+                "name": month_names[m],
+                "avgPrice": round(st["sumPrice"] / c, 2),
+                "avgWindMw": round(st["sumWind"] / c),
+                "avgTempC": round(st["sumTemp"] / c, 1),
+                "hours": c,
+            })
 
     payload = {
         "trainedAt": datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ"),
@@ -501,8 +573,10 @@ def main():
         "insights": {
             "avgPriceLowWindUnder1500Mw": avg_low_wind,
             "avgPriceHighWindOver4500Mw": avg_high_wind,
+            "avgPriceFreezingUnderMinus5C": avg_freezing,
             "windEffectPer1000MwCents": wind_effect_per_1000mw,
         },
+        "monthlySummary": monthly_summary,
         "recentBacktest": recent_backtest,
     }
 
@@ -514,7 +588,7 @@ def main():
         json.dump(payload, f, ensure_ascii=False, indent=2)
         f.write(";\n")
 
-    print("Opittu malli tallennettu tiedostoihin ml_weights.json ja ml_weights.js!")
+    print("Opittu 2 vuoden malli tallennettu tiedostoihin ml_weights.json ja ml_weights.js!")
     if learning_curve:
         print("Oppimiskäyrä (Out-of-sample MAE snt/kWh):")
         print(f"  - Oppimaton peruskaava: {learning_curve['naiveBaselineMaeCents']} snt/kWh")

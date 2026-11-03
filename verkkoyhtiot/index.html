@@ -3,34 +3,50 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Suomen sähköverkkoyhtiöt ja siirtohinnat 2026 | Pörssisähkö & Siirtohintalaskuri</title>
+    <title>Suomen sähköverkkoyhtiöt ja siirtohinnat 2026 | Sähkömittari — Pörssisähkö & Siirtohintalaskuri</title>
     <meta name="description" content="Valitse oma paikallinen jakeluverkkoyhtiösi tarkistaaksesi yleissiirron, yösiirron ja kausisiirron hinnat sekä pörssisähkön reaaliaikaisen kokonaishinnan.">
     <link rel="canonical" href="https://porssisahko-ennuste.vercel.app/verkkoyhtiot/index.html" />
     <link rel="stylesheet" href="../styles.css">
 </head>
 <body>
+    <div class="telemetry-bar">
+        <div class="telemetry-inner">
+            <div class="telemetry-items">
+                <span class="telemetry-item"><span class="telemetry-status-dot"></span>MARKKINA-ALUE: <strong>FI (NORD POOL)</strong></span>
+                <span class="telemetry-item">SPOT NYT: <strong id="tel-spot">— snt/kWh</strong></span>
+                <span class="telemetry-item">SIIRTO + VERO: <strong id="tel-transfer">— snt/kWh</strong></span>
+                <span class="telemetry-item">TUULIVOIMA: <strong id="tel-wind">— MW</strong></span>
+                <span class="telemetry-item">OPETETTU HISTORIA: <strong id="tel-hours">— h</strong></span>
+            </div>
+            <div>AIKAVYÖHYKE: EUROPE/HELSINKI (ALV 25,5 %)</div>
+        </div>
+    </div>
     <header class="site-header">
         <div class="header-inner">
             <a href="../index.html" class="brand-link">
-                <span class="brand-title">Pörssisähkö &amp; Siirtohintalaskuri</span>
-                <span class="brand-subtitle">Reaaliaikainen spot-hinta, 7 vrk tuulivoimaennuste ja todellinen kokonaishinta postinumerolla</span>
+                <span class="brand-kicker">SUOMEN SÄHKÖMARKKINA- JA JAKELUVERKKOLASKURI</span>
+                <span class="brand-title">Sähkömittari</span>
+                <span class="brand-subtitle">Pörssisähkön spot-hinta, historiadatasta oppiva 7 vrk tuulivoimaennuste ja todellinen siirtohinta postinumerolla</span>
             </a>
             <nav class="main-nav" aria-label="Päävalikko">
-                <a href="../index.html">Spot &amp; Ennuste</a>
-                <a href="../index.html#oppiva-malli">Oppiva tekoälymalli</a>
-                <a href="../index.html#optimoija">Halvimmat tunnit</a>
+                <a href="../index.html">Spot &amp; 7 vrk ennuste</a>
+                <a href="../index.html#optimoija">Kuorman ajoitus</a>
                 <a href="../index.html#vuosivertailu">Yleissiirto vs. Yösiirto</a>
-                <a href="../verkkoyhtiot/index.html">Sähköverkkoyhtiöt</a>
-                <a href="../paikkakunnat/index.html">Kunnat &amp; Postinumerot</a>
+                <a href="../index.html#oppiva-malli">Oppiva historiamalli</a>
+                <a href="../verkkoyhtiot/index.html">Jakeluverkkoyhtiöt</a>
+                <a href="../paikkakunnat/index.html">Postinumerot &amp; Kunnat</a>
             </nav>
         </div>
     </header>
     <main class="container">
-        <section class="section-card">
-            <h1>Suomen sähköverkkoyhtiöt ja siirtohinnat 2026</h1>
-            <p class="hero-lead" style="margin-top:8px;">Valitse oma paikallinen jakeluverkkoyhtiösi tarkistaaksesi yleissiirron, yösiirron ja kausisiirron hinnat sekä pörssisähkön reaaliaikaisen kokonaishinnan.</p>
-            <div class="directory-grid">
-                <a href="alva-sahkoverkko.html" class="dir-pill"><span>Alva Sähköverkko</span><span class="dir-pill-sub">3,92 snt/kWh</span></a>
+        <section class="panel-box">
+            <div class="panel-head">
+                <h1>Suomen sähköverkkoyhtiöt ja siirtohinnat 2026</h1>
+            </div>
+            <div class="panel-body">
+                <p style="margin-bottom:14px; color:#4a4f4a;">Valitse oma paikallinen jakeluverkkoyhtiösi tarkistaaksesi yleissiirron, yösiirron ja kausisiirron hinnat sekä pörssisähkön reaaliaikaisen kokonaishinnan.</p>
+                <div class="directory-grid">
+                    <a href="alva-sahkoverkko.html" class="dir-pill"><span>Alva Sähköverkko</span><span class="dir-pill-sub">3,92 snt/kWh</span></a>
 <a href="caruna-espoo.html" class="dir-pill"><span>Caruna Espoo</span><span class="dir-pill-sub">3,59 snt/kWh</span></a>
 <a href="caruna.html" class="dir-pill"><span>Caruna</span><span class="dir-pill-sub">5,18 snt/kWh</span></a>
 <a href="ese-verkko-mikkeli.html" class="dir-pill"><span>ESE-Verkko (Mikkeli)</span><span class="dir-pill-sub">3,78 snt/kWh</span></a>
@@ -67,21 +83,22 @@
 <a href="vaasan-sahkoverkko.html" class="dir-pill"><span>Vaasan Sähköverkko</span><span class="dir-pill-sub">3,58 snt/kWh</span></a>
 <a href="vakka-suomen-voima.html" class="dir-pill"><span>Vakka-Suomen Voima</span><span class="dir-pill-sub">4,48 snt/kWh</span></a>
 <a href="vantaan-energia-sahkoverkot.html" class="dir-pill"><span>Vantaan Energia Sähköverkot</span><span class="dir-pill-sub">3,68 snt/kWh</span></a>
+                </div>
             </div>
         </section>
     </main>
     <footer class="site-footer">
         <div class="footer-inner">
             <div>
-                <strong>Pörssisähkö & Siirtohintalaskuri</strong>
-                <p style="margin-top:6px; color:#b7c6bd; max-width:540px;">
-                    Palvelu yhdistää Nord Pool FI -pörssisähkön spot-hinnat, Suomen tuulipuistojen ja lämpötilojen 7 vuorokauden ennustemallin sekä kaikkien Suomen jakeluverkkoyhtiöiden siirtohinnat ja sähköveron.
+                <strong style="color:#ffffff;">Sähkömittari — Pörssisähkö & Siirtohintalaskuri</strong>
+                <p style="margin-top:6px; max-width:580px;">
+                    Tekninen pörssisähkön ja sähkönsiirron laskentatyökalu. Yhdistää Nord Pool FI -spot-tuntihinnat, Suomen tuulipuistojen (8 450 MW) ja lämpötilan historialliseen regressiomalliin sekä 33 paikallisen jakeluverkkoyhtiön siirtotariffit ja sähköveron.
                 </p>
             </div>
             <div class="footer-links">
                 <a href="../index.html">Etusivu</a>
                 <a href="../verkkoyhtiot/index.html">Sähköverkkoyhtiöt</a>
-                <a href="../paikkakunnat/index.html">Paikkakunnat</a>
+                <a href="../paikkakunnat/index.html">Kunnat &amp; Postinumerot</a>
                 <a href="../oppaat/porssisahko-ennuste-7-vrk-tuulivoima-ja-lampotila.html">Ennustemalli</a>
                 <a href="../oppaat/sahkon-siirtohinta-postinumerolla-kaikki-verkkoyhtiot.html">Siirtohinnat</a>
                 <a href="../oppaat/yleissiirto-yosiirto-vai-kausisiirto-vertailu.html">Siirtotuotteiden vertailu</a>

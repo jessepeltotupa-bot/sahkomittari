@@ -392,6 +392,17 @@ a:hover {
     cursor: default;
 }
 
+/* Aktiivisen / osoitetun tuntipylvään korostus kaaviossa */
+.responsive-price-svg.has-active-slot .svg-bar-rect:not(.is-active-slot-bar) {
+    opacity: 0.72;
+    transition: opacity 0.1s ease;
+}
+
+.responsive-price-svg .svg-bar-rect.is-active-slot-bar {
+    opacity: 1;
+    filter: brightness(1.08);
+}
+
 /* Teollinen tarkkuustooltip hiiren vieressä */
 .chart-floating-tooltip {
     position: fixed;

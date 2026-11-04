@@ -1411,12 +1411,16 @@
                 }
             }
 
+            // Aktiivisen/osoitetun tunnin pystysuora korostuspalkki
+            svg += `<rect class="svg-slot-hl" data-hl-idx="${i}" x="${x0.toFixed(1)}" y="${padT}" width="${colW.toFixed(1)}" height="${plotH}" fill="#ffd000" fill-opacity="0" stroke="#111210" stroke-width="0" stroke-dasharray="3,2" pointer-events="none" />`;
+
             // Spot-pylväs (kuluvan tunnin palkki korostettuna)
             const hSpot = Math.max(2.0, yBottom - yTopSpot);
             if (isCurrentHour) {
                 svg += `<rect x="${(barX - 2.5).toFixed(1)}" y="${(yTopSpot - 2.5).toFixed(1)}" width="${(barW + 5).toFixed(1)}" height="${(hSpot + 2.5).toFixed(1)}" fill="none" stroke="#ffd000" stroke-width="3.2" pointer-events="none" />`;
             }
             svg += `<rect class="svg-bar-rect${isCurrentHour ? ' is-current-bar' : ''}" data-bar-idx="${i}" x="${barX.toFixed(1)}" y="${yTopSpot.toFixed(1)}" width="${barW.toFixed(1)}" height="${hSpot.toFixed(1)}" fill="${spotFill}" stroke="#111210" stroke-width="${isCurrentHour ? '2.4' : (isWeekView ? '0.6' : '1.2')}" />`;
+            svg += `<rect class="svg-bar-hl" data-bar-hl-idx="${i}" x="${(barX - 2.2).toFixed(1)}" y="${(yTopSpot - 2.2).toFixed(1)}" width="${(barW + 4.4).toFixed(1)}" height="${(hSpot + 2.2).toFixed(1)}" fill="none" stroke="#ff3b00" stroke-width="2.5" opacity="0" pointer-events="none" />`;
 
             if (isCurrentHour) {
                 const minuteFrac = Math.max(0.08, Math.min(0.92, (nowMsExact - nowHourMs) / 3600000));
@@ -1735,12 +1739,50 @@
             floatingTooltip.style.top = `${topPx}px`;
         }
 
-        if (floatingTooltip && !floatingTooltip.dataset.boundClose) {
-            floatingTooltip.dataset.boundClose = '1';
-            floatingTooltip.addEventListener('click', function () {
+        function clearChartSlotHighlight() {
+            const svgEl = chartContainer.querySelector('.responsive-price-svg');
+            if (svgEl) svgEl.classList.remove('has-active-slot');
+            chartContainer.querySelectorAll('.svg-slot-hl.is-active').forEach(el => {
+                el.classList.remove('is-active');
+                el.setAttribute('fill-opacity', '0');
+                el.setAttribute('stroke-width', '0');
+            });
+            chartContainer.querySelectorAll('.svg-bar-rect.is-active-slot-bar').forEach(el => {
+                el.classList.remove('is-active-slot-bar');
+            });
+            chartContainer.querySelectorAll('.svg-bar-hl.is-active').forEach(el => {
+                el.classList.remove('is-active');
+                el.setAttribute('opacity', '0');
+            });
+        }
+
+        function highlightChartSlot(idx) {
+            clearChartSlotHighlight();
+            const svgEl = chartContainer.querySelector('.responsive-price-svg');
+            if (svgEl) svgEl.classList.add('has-active-slot');
+            const slotHl = chartContainer.querySelector(`.svg-slot-hl[data-hl-idx="${idx}"]`);
+            if (slotHl) {
+                slotHl.classList.add('is-active');
+                slotHl.setAttribute('fill-opacity', '0.24');
+                slotHl.setAttribute('stroke-width', '1');
+            }
+            const barEl = chartContainer.querySelector(`.svg-bar-rect[data-bar-idx="${idx}"]`);
+            if (barEl) {
+                barEl.classList.add('is-active-slot-bar');
+            }
+            const barHl = chartContainer.querySelector(`.svg-bar-hl[data-bar-hl-idx="${idx}"]`);
+            if (barHl) {
+                barHl.classList.add('is-active');
+                barHl.setAttribute('opacity', '1');
+            }
+        }
+
+        if (floatingTooltip) {
+            floatingTooltip.onclick = function () {
                 this.classList.remove('visible');
                 this.dataset.activeEpoch = '';
-            });
+                clearChartSlotHighlight();
+            };
         }
 
         const nowHourMs = Math.floor(Date.now() / 3600000) * 3600000;
@@ -1759,6 +1801,7 @@
                 if (!item) return;
 
                 updateReadout(item);
+                highlightChartSlot(i);
 
                 if (evt && typeof evt.clientX === 'number') {
                     const dx = Math.abs(evt.clientX - lastMouseX);
@@ -1774,6 +1817,7 @@
                 if (hoverDwellTimer) clearTimeout(hoverDwellTimer);
 
                 hoverDwellTimer = setTimeout(() => {
+                    highlightChartSlot(i);
                     showFloatingTooltipAt(item, lastMouseX, lastMouseY);
                 }, 260);
             };
@@ -1787,6 +1831,7 @@
                     hoverDwellTimer = null;
                 }
                 if (floatingTooltip) floatingTooltip.classList.remove('visible');
+                clearChartSlotHighlight();
             });
             rect.addEventListener('click', function (evt) {
                 if (chartContainer.dataset.lastSwipeTs && Date.now() - parseInt(chartContainer.dataset.lastSwipeTs, 10) < 400) {
@@ -1799,8 +1844,10 @@
                     if (window.innerWidth <= 768 && floatingTooltip && floatingTooltip.classList.contains('visible') && floatingTooltip.dataset.activeEpoch === String(item.slot.epochMs)) {
                         floatingTooltip.classList.remove('visible');
                         floatingTooltip.dataset.activeEpoch = '';
+                        clearChartSlotHighlight();
                         return;
                     }
+                    highlightChartSlot(i);
                     showFloatingTooltipAt(item, evt.clientX || lastMouseX, evt.clientY || lastMouseY);
                 }
             });
@@ -1853,6 +1900,7 @@
                 hoverDwellTimer = null;
             }
             if (floatingTooltip) floatingTooltip.classList.remove('visible');
+            if (window.innerWidth > 768) clearChartSlotHighlight();
         });
 
         // Tuntikohtainen hintataulukko ja 30 vrk liukuvan keskiarvon mukaiset hintarajat

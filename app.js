@@ -1791,7 +1791,10 @@
         const activeDsoLabel = activeDsoObj ? activeDsoObj.short_name : '';
         const totalHeaderTh = document.querySelector('#tuntitaulukko thead th:nth-child(4)');
         if (totalHeaderTh && activeDsoLabel) {
-            const baseLabel = IS_SE ? 'Totalpris inkl. elnät' : (IS_NO ? 'Totalpris inkl. nettleie' : 'Kokonaishinta siirtoineen');
+            if (!totalHeaderTh.dataset.baseLabel) {
+                totalHeaderTh.dataset.baseLabel = totalHeaderTh.textContent.trim();
+            }
+            const baseLabel = totalHeaderTh.dataset.baseLabel || 'Kokonaishinta siirtoineen';
             totalHeaderTh.innerHTML = `${baseLabel}<span style="display:block; font-size:10.5px; font-weight:600; color:#4a4f4a; text-transform:none; letter-spacing:0; margin-top:1px;">(${activeDsoLabel})</span>`;
         }
         let rowsHtml = '';

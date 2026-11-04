@@ -30,6 +30,7 @@ FINLAND_SOLAR_MAX_MW = 1250.0
 
 DATA_DIR = os.path.join(os.path.dirname(os.path.abspath(__file__)), "data")
 OBS_FILE = os.path.join(DATA_DIR, "historical_observations.json")
+ERROR_LEDGER_FILE = os.path.join(DATA_DIR, "error_learning_ledger.json")
 WEIGHTS_JSON_FILE = os.path.join(os.path.dirname(os.path.abspath(__file__)), "ml_weights.json")
 WEIGHTS_JS_FILE = os.path.join(os.path.dirname(os.path.abspath(__file__)), "ml_weights.js")
 
@@ -740,6 +741,40 @@ def fit_ridge_regression(
         for r_i, (o, x, y, w) in enumerate(valid_rows):
             current_preds[r_i] = sum(weights[j] * x[j] for j in range(n_feat))
 
+    # Virhepainotettu jatko-opetus (Error-Boosted Residual Refinement):
+    # Painotetaan tuoreita tunteja, joissa mallin ennustevirhe oli suuri, ja korjataan painoja suoraan virheiden perusteella.
+    if active_groups >= 6 and not uniform_weights and len(valid_rows) > 240:
+        boosted_rows = []
+        residuals_boost = []
+        for (o, x, y, w), pred in zip(valid_rows, current_preds):
+            err = y - max(0.05, pred)
+            hard_mult = 1.0 + min(2.2, abs(err) / 2.4)
+            boosted_rows.append((o, x, y, w * hard_mult))
+            residuals_boost.append(err)
+        all_feat_idx = list(range(n_feat))
+        delta_boost = fit_subspace_ridge(boosted_rows, residuals_boost, all_feat_idx, ridge_lambda * 3.2)
+        if delta_boost[15] > 0.0:
+            delta_boost[15] = 0.0
+        if delta_boost[16] < 0.0:
+            delta_boost[16] = 0.0
+        if delta_boost[17] < 0.0:
+            delta_boost[17] = 0.0
+        base_loss = sum(row[3] * abs(row[2] - max(0.05, pred)) for row, pred in zip(valid_rows, current_preds))
+        best_boost_eta = 0.0
+        for eta_b in (0.08, 0.15, 0.25, 0.35, 0.5):
+            loss_b = 0.0
+            for (o, x, y, w), pred in zip(valid_rows, current_preds):
+                corr = sum(delta_boost[j] * x[j] for j in range(n_feat))
+                loss_b += w * abs(y - max(0.05, pred + eta_b * corr))
+            if loss_b < base_loss:
+                base_loss = loss_b
+                best_boost_eta = eta_b
+        if best_boost_eta > 0.0:
+            for j in range(n_feat):
+                weights[j] += best_boost_eta * delta_boost[j]
+            for r_i, (o, x, y, w) in enumerate(valid_rows):
+                current_preds[r_i] = sum(weights[j] * x[j] for j in range(n_feat))
+
     weekday_hour_res = {h: [0.0, 0.0] for h in range(24)}
     weekend_hour_res = {h: [0.0, 0.0] for h in range(24)}
     wind_temp_grid = {}
@@ -1139,6 +1174,188 @@ def evaluate_learning_curve(observations: list) -> dict:
     }
 
 
+
+def update_and_apply_error_learning_ledger(all_obs: list, learned_model: dict, weather_map: dict) -> dict:
+    """
+    Ylläpitää pysyvää virheistä oppimisen tilikirjaa (data/error_learning_ledger.json):
+    1. Vertailee aiemmin tallennettuja ennusteita (pendingPredictions) uusiin toteutuneisiin Nord Pool -hintoihin.
+    2. Laskee tuntikohtaisen (weekday/weekend 0..23) ja sääluokkakohtaisen (5x4 tuuli x lämpötila)
+       eksponentiaalisesti painotetun jäännösvirheen (EMA) ja syöttää korjauksen suoraan mallin
+       tunti- ja säämatriisikorjauksiin.
+    3. Tallentaa tulevien tuntien uudet ennusteet seuraavaa 13:45 / 01:45 -verifiointia varten.
+    """
+    ledger = {
+        "verifiedHistory": [],
+        "pendingPredictions": {},
+        "weekdayResidualEma": [0.0] * 24,
+        "weekendResidualEma": [0.0] * 24,
+        "regimeResidualEma": {},
+    }
+    if os.path.exists(ERROR_LEDGER_FILE):
+        try:
+            with open(ERROR_LEDGER_FILE, "r", encoding="utf-8") as f:
+                loaded = json.load(f)
+                if isinstance(loaded, dict):
+                    ledger.update(loaded)
+        except Exception:
+            pass
+
+    obs_by_ms = {o["epochMs"]: o for o in all_obs}
+    verified_map = {item["epochMs"]: item for item in ledger.get("verifiedHistory", []) if "epochMs" in item}
+
+    # Jos tilikirja on tyhjä, alustetaan se aidolla Walk-Forward out-of-sample -ajolla viimeisen 14 vrk (336 h) ajalta
+    if len(verified_map) < 48 and len(all_obs) > 600:
+        start_wf = len(all_obs) - 336
+        wf_base_model = fit_ridge_regression(all_obs[:start_wf], ridge_lambda=2.0, uniform_weights=False, active_groups=6)
+        for idx in range(start_wf, len(all_obs)):
+            o = all_obs[idx]
+            raw_p = round(predict_with_learned_model(o, wf_base_model, active_groups=6), 3)
+            verified_map[o["epochMs"]] = {
+                "epochMs": o["epochMs"],
+                "dateKey": o["dateKey"],
+                "hour": o["hour"],
+                "isFreeDay": bool(o.get("isFreeDay", o["isWeekend"])),
+                "windMw": o["windMw"],
+                "tempC": o["tempC"],
+                "predicted": raw_p,
+                "actual": round(float(o["priceInclVat"]), 3),
+                "error": round(float(o["priceInclVat"]) - raw_p, 3),
+            }
+
+    # Tarkistetaan pendingPredictions uusia vahvistettuja Nord Pool -tunteja vasten
+    pending = ledger.get("pendingPredictions", {})
+    newly_verified = 0
+    for ms_str, p_info in list(pending.items()):
+        ms_val = int(ms_str)
+        if ms_val in obs_by_ms:
+            o = obs_by_ms[ms_val]
+            pred_val = float(p_info.get("predicted", 0.0))
+            act_val = float(o["priceInclVat"])
+            verified_map[ms_val] = {
+                "epochMs": ms_val,
+                "dateKey": o["dateKey"],
+                "hour": o["hour"],
+                "isFreeDay": bool(o.get("isFreeDay", o["isWeekend"])),
+                "windMw": o["windMw"],
+                "tempC": o["tempC"],
+                "predicted": round(pred_val, 3),
+                "actual": round(act_val, 3),
+                "error": round(act_val - pred_val, 3),
+            }
+            del pending[ms_str]
+            newly_verified += 1
+
+    sorted_verified = [verified_map[k] for k in sorted(verified_map.keys())][-2000:]
+
+    # Lasketaan virheistä opitut tunti- ja sääluokkakohtaiset EMA-korjaukset ja mitataan tarkkuusparannus
+    wk_ema = [0.0] * 24
+    we_ema = [0.0] * 24
+    reg_ema = {}
+    pre_errs = []
+    post_errs = []
+
+    alpha_h = 0.14
+    alpha_r = 0.12
+    for v in sorted_verified:
+        h = int(v["hour"]) % 24
+        is_free = bool(v.get("isFreeDay", False))
+        w_bin = min(4, int((v["windMw"] / FINLAND_INSTALLED_WIND_MW) * 5))
+        t_bin = 0 if v["tempC"] < -5 else (1 if v["tempC"] < 2 else (2 if v["tempC"] < 10 else 3))
+        r_key = f"{w_bin}_{t_bin}"
+
+        raw_pred = float(v["predicted"])
+        act = float(v["actual"])
+        learned_corr = (we_ema[h] if is_free else wk_ema[h]) * 0.55 + reg_ema.get(r_key, 0.0) * 0.45
+        corr_pred = max(0.05, raw_pred + learned_corr)
+
+        pre_errs.append(abs(act - raw_pred))
+        post_errs.append(abs(act - corr_pred))
+
+        clamped_err = max(-10.0, min(10.0, act - raw_pred))
+        if is_free:
+            we_ema[h] = (1.0 - alpha_h) * we_ema[h] + alpha_h * clamped_err
+        else:
+            wk_ema[h] = (1.0 - alpha_h) * wk_ema[h] + alpha_h * clamped_err
+        reg_ema[r_key] = (1.0 - alpha_r) * reg_ema.get(r_key, 0.0) + alpha_r * clamped_err
+
+    # Syötetään opitut jäännösvirheet suoraan mallin tunti- ja säämatriisiin
+    for h in range(24):
+        learned_model["weekdayHourAdj"][h] = round(learned_model["weekdayHourAdj"][h] + wk_ema[h] * 0.35, 3)
+        learned_model["weekendHourAdj"][h] = round(learned_model["weekendHourAdj"][h] + we_ema[h] * 0.35, 3)
+    for r_key, r_val in reg_ema.items():
+        learned_model["windTempGridAdj"][r_key] = round(learned_model["windTempGridAdj"].get(r_key, 0.0) + r_val * 0.30, 3)
+
+    learned_model["weekdayResidualEma"] = [round(x, 3) for x in wk_ema]
+    learned_model["weekendResidualEma"] = [round(x, 3) for x in we_ema]
+    learned_model["regimeResidualEma"] = {k: round(val, 3) for k, val in reg_ema.items()}
+
+    # Tallennetaan tulevien vahvistamattomien tuntien ennusteet seuraavaa verifiointikierrosta varten
+    max_obs_ms = all_obs[-1]["epochMs"] if all_obs else 0
+    recent_24_mean = sum(o["priceInclVat"] for o in all_obs[-24:]) / max(1, len(all_obs[-24:])) if all_obs else 5.5
+    recent_7d_mean = sum(o["priceInclVat"] for o in all_obs[-168:]) / max(1, len(all_obs[-168:])) if all_obs else 5.5
+
+    for h_ms, w in sorted(weather_map.items()):
+        if h_ms > max_obs_ms:
+            hel = utc_to_helsinki_parts(h_ms)
+            nuc = get_nuclear_and_border_status(hel["date_key"])
+            cand_obs = {
+                "epochMs": h_ms,
+                "dateKey": hel["date_key"],
+                "month": hel["month"],
+                "hour": hel["hour"],
+                "weekday": hel["weekday"],
+                "isWeekend": hel["is_weekend"],
+                "isFreeDay": hel["is_free_day"],
+                "windMw": w["windMw"],
+                "windSpeed100m": w["windSpeed100m"],
+                "tempC": w["tempC"],
+                "solarRadWm2": w["solarRadWm2"],
+                "solarMw": radiation_to_solar_mw(w["solarRadWm2"], hel["month"], hel["hour"]),
+                "pressureHpa": w["pressureHpa"],
+                "seWindSpeed": w["seWindSpeed"],
+                "eeWindSpeed": w["eeWindSpeed"],
+                "nuclearMw": nuc["nuclearMw"],
+                "nuclearDeficitMw": nuc["nuclearDeficitMw"],
+                "estlink2Online": nuc["estlink2Online"],
+                "rolling24hWindMw": w["windMw"],
+                "windRamp6hMw": 0.0,
+                "rolling72hTempC": w["tempC"],
+                "lag24hSameHour": recent_24_mean,
+                "prev24hMean": recent_24_mean,
+                "prev24hStd": 2.0,
+                "prev7dMean": recent_7d_mean,
+            }
+            pred_f = round(predict_with_learned_model(cand_obs, learned_model, active_groups=6), 3)
+            pending[str(h_ms)] = {
+                "epochMs": h_ms,
+                "dateKey": hel["date_key"],
+                "hour": hel["hour"],
+                "predicted": pred_f,
+            }
+
+    ledger["verifiedHistory"] = sorted_verified
+    ledger["pendingPredictions"] = pending
+    ledger["weekdayResidualEma"] = learned_model["weekdayResidualEma"]
+    ledger["weekendResidualEma"] = learned_model["weekendResidualEma"]
+    ledger["regimeResidualEma"] = learned_model["regimeResidualEma"]
+
+    with open(ERROR_LEDGER_FILE, "w", encoding="utf-8") as f:
+        json.dump(ledger, f, ensure_ascii=False, indent=2)
+
+    pre_mae = round(sum(pre_errs[-336:]) / max(1, len(pre_errs[-336:])), 2) if pre_errs else 0.0
+    post_mae = round(sum(post_errs[-336:]) / max(1, len(post_errs[-336:])), 2) if post_errs else 0.0
+
+    return {
+        "verifiedHoursCount": len(sorted_verified),
+        "newlyVerifiedHours": newly_verified,
+        "pendingForecastHours": len(pending),
+        "preCorrectionMae14d": pre_mae,
+        "postCorrectionMae14d": post_mae,
+        "errorReductionPct": round(max(0.0, (pre_mae - post_mae) / max(0.1, pre_mae) * 100.0), 1),
+        "recentVerified": sorted_verified[-24:],
+    }
+
+
 def main():
     os.makedirs(DATA_DIR, exist_ok=True)
 
@@ -1214,6 +1431,7 @@ def main():
     print(f"Opetusdatassa yhteensä {len(all_obs)} tuntihavaintoa (24 muuttujaa/tunti).")
 
     learned_model = fit_ridge_regression(all_obs, ridge_lambda=2.0, uniform_weights=False, active_groups=6)
+    error_learning_stats = update_and_apply_error_learning_ledger(all_obs, learned_model, weather_map)
     learning_curve = evaluate_learning_curve(all_obs)
     backtest_bundle = run_ablation_and_walkforward_backtest(all_obs)
 
@@ -1272,6 +1490,7 @@ def main():
         "currentGridStatus": current_nuc,
         "nuclearOutageSchedule": NUCLEAR_OUTAGE_SCHEDULE,
         "model": learned_model,
+        "errorLearning": error_learning_stats,
         "learningCurve": learning_curve,
         "ablationStudy": backtest_bundle["ablationStudy"],
         "walkForwardPeriods": backtest_bundle["walkForwardPeriods"],

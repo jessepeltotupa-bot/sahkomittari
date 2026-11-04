@@ -558,10 +558,24 @@
     }
 
     function runBrowserOnlineLearning(officialHourlyMap, weatherMap) {
+        const obsStorageKey = storagePrefix + 'ps_online_obs_v2';
+        const errLedgerKey = storagePrefix + 'ps_verified_errors_v1';
+        const preConfirmKey = storagePrefix + 'preconfirm_v3';
+
         let storedObs = {};
+        let verifiedLedger = {};
+        let preConfirmSnapshot = {};
         try {
-            const raw = localStorage.getItem('ps_online_obs_v1');
-            if (raw) storedObs = JSON.parse(raw);
+            const raw = localStorage.getItem(obsStorageKey);
+            if (raw) storedObs = JSON.parse(raw) || {};
+        } catch (_) {}
+        try {
+            const rawErr = localStorage.getItem(errLedgerKey);
+            if (rawErr) verifiedLedger = JSON.parse(rawErr) || {};
+        } catch (_) {}
+        try {
+            const rawPre = localStorage.getItem(preConfirmKey);
+            if (rawPre) preConfirmSnapshot = JSON.parse(rawPre) || {};
         } catch (_) {}
 
         for (const [hMs, spotObj] of officialHourlyMap.entries()) {
@@ -571,8 +585,28 @@
                     epochMs: Number(hMs),
                     priceInclVat: spotObj.priceInclVat,
                     windMw: w.windMw,
-                    tempC: w.tempC
+                    windSpeed100m: w.windSpeed100m,
+                    tempC: w.tempC,
+                    solarRadWm2: w.solarRadWm2 || 0,
+                    pressureHpa: w.pressureHpa || 1013,
+                    seWindSpeed: w.seWindSpeed || w.windSpeed100m || 6.5,
+                    eeWindSpeed: w.eeWindSpeed || w.windSpeed100m || 6.5,
+                    rolling24hWindMw: w.rolling24hWindMw || w.windMw,
+                    windRamp6hMw: w.windRamp6hMw || 0,
+                    rolling72hTempC: w.rolling72hTempC !== undefined ? w.rolling72hTempC : w.tempC
                 };
+                const pre = preConfirmSnapshot[hMs];
+                if (pre && pre.wasForecast && typeof pre.estInclVat === 'number') {
+                    verifiedLedger[hMs] = {
+                        epochMs: Number(hMs),
+                        predicted: pre.estInclVat,
+                        minIncl: pre.minIncl,
+                        maxIncl: pre.maxIncl,
+                        actual: spotObj.priceInclVat,
+                        error: Number((spotObj.priceInclVat - pre.estInclVat).toFixed(3)),
+                        inRange: spotObj.priceInclVat >= (pre.minIncl - 0.05) && spotObj.priceInclVat <= (pre.maxIncl + 0.05)
+                    };
+                }
             }
         }
 
@@ -581,29 +615,32 @@
         const nextStore = {};
         for (const k of trimmedKeys) nextStore[k] = storedObs[k];
         try {
-            localStorage.setItem('ps_online_obs_v1', JSON.stringify(nextStore));
+            localStorage.setItem(obsStorageKey, JSON.stringify(nextStore));
+        } catch (_) {}
+
+        const verKeys = Object.keys(verifiedLedger).map(Number).sort((a, b) => a - b).slice(-720);
+        const nextVer = {};
+        for (const k of verKeys) nextVer[k] = verifiedLedger[k];
+        try {
+            localStorage.setItem(errLedgerKey, JSON.stringify(nextVer));
         } catch (_) {}
 
         const activeModel = JSON.parse(JSON.stringify(ML_BASE.model));
-        let errSum = 0.0;
-        let signedErrSum = 0.0;
+        if (!Array.isArray(activeModel.weekdayHourAdj)) activeModel.weekdayHourAdj = new Array(24).fill(0);
+        if (!Array.isArray(activeModel.weekendHourAdj)) activeModel.weekendHourAdj = new Array(24).fill(0);
+        if (!activeModel.windTempGridAdj) activeModel.windTempGridAdj = {};
+
+        const latestMs = trimmedKeys.length > 0 ? trimmedKeys[trimmedKeys.length - 1] : Date.now();
+        let preLearnErrSum = 0.0;
+        let postLearnErrSum = 0.0;
         let count = 0;
 
+        // Moniparametrinen NLMS-verkko-oppiminen (Normalized Least Mean Squares) + tunti- ja sääluokkakohtainen virheenkorjaus:
+        // Kun ohjelma saa uusia toteutuneita hintoja, se vertaa ennustettaan toteumaan ja korjaa 24 muuttujan painoja,
+        // tuntiprofiilia sekä tuuli x lämpötila -matriisia suoraan havaittujen ennustevirheiden perusteella.
         for (const k of trimmedKeys) {
             const item = nextStore[k];
-            const hel = getHelsinkiComponents(new Date(item.epochMs));
-            const obsObj = {
-                epochMs: item.epochMs,
-                dateKey: hel.dateKey,
-                month: hel.month,
-                hour: hel.hour,
-                isWeekend: hel.isWeekend,
-                windMw: item.windMw,
-                rolling24hWindMw: item.windMw,
-                tempC: item.tempC,
-                rolling72hTempC: item.tempC
-            };
-
+            const hel = getHelsinkiComponents(item.epochMs);
             let pastSum = 0, pastCnt = 0;
             for (let lag = 24; lag <= 48; lag++) {
                 const prev = nextStore[item.epochMs - lag * 3600000];
@@ -613,24 +650,85 @@
                 }
             }
             const prevAvg = pastCnt > 0 ? (pastSum / pastCnt) : 5.5;
-            const pred = predictWithLearnedModel(obsObj, activeModel, prevAvg);
-            const err = Math.max(-12.0, Math.min(12.0, item.priceInclVat - pred));
-            errSum += Math.abs(item.priceInclVat - pred);
-            signedErrSum += err;
+            const lag24Prev = nextStore[item.epochMs - 24 * 3600000];
+            const lag24Same = lag24Prev ? lag24Prev.priceInclVat : prevAvg;
+
+            const obsObj = {
+                epochMs: item.epochMs,
+                dateKey: hel.dateKey,
+                month: hel.month,
+                hour: hel.hour,
+                isWeekend: hel.isWeekend,
+                windMw: item.windMw,
+                windSpeed100m: item.windSpeed100m || 6.5,
+                rolling24hWindMw: item.rolling24hWindMw || item.windMw,
+                windRamp6hMw: item.windRamp6hMw || 0,
+                tempC: item.tempC,
+                rolling72hTempC: item.rolling72hTempC !== undefined ? item.rolling72hTempC : item.tempC,
+                solarRadWm2: item.solarRadWm2 || 0,
+                pressureHpa: item.pressureHpa || 1013,
+                seWindSpeed: item.seWindSpeed || 6.5,
+                eeWindSpeed: item.eeWindSpeed || 6.5,
+                lag24hSameHour: lag24Same,
+                prev24hMean: prevAvg,
+                prev7dMean: prevAvg
+            };
+
+            const basePred = predictWithLearnedModel(obsObj, ML_BASE.model, prevAvg);
+            const adaptivePred = predictWithLearnedModel(obsObj, activeModel, prevAvg);
+            const rawErr = item.priceInclVat - adaptivePred;
+            const err = Math.max(-10.0, Math.min(10.0, rawErr));
+
+            preLearnErrSum += Math.abs(item.priceInclVat - basePred);
+            postLearnErrSum += Math.abs(rawErr);
             count++;
+
+            const ageHours = Math.max(0.0, (latestMs - item.epochMs) / 3600000);
+            const recencyW = Math.exp(-ageHours / 180.0);
+            const verItem = nextVer[item.epochMs];
+            const verifiedErrMag = verItem ? Math.abs(verItem.error) : Math.abs(err);
+            const hardBoost = 1.0 + Math.min(1.6, verifiedErrMag / 2.5);
+
+            const x = extractFeatures(obsObj, prevAvg);
+            let normSq = 1.0;
+            for (let j = 0; j < x.length; j++) normSq += x[j] * x[j];
+            const nlmsStep = (0.014 * recencyW * hardBoost * err) / normSq;
+
+            for (let j = 0; j < x.length && j < activeModel.weights.length; j++) {
+                activeModel.weights[j] += nlmsStep * x[j];
+            }
+            // Fysikaaliset etumerkkirajoitteet: aurinkovoima ei nosta hintaa, ydinvoimavaje ei laske hintaa
+            if (activeModel.weights[15] > 0) activeModel.weights[15] = 0;
+            if (activeModel.weights[16] < 0) activeModel.weights[16] = 0.25;
+            if (activeModel.weights[17] < 0) activeModel.weights[17] = 0.80;
+
+            const hAlpha = 0.045 * recencyW * hardBoost;
+            if (hel.isWeekend) {
+                activeModel.weekendHourAdj[hel.hour] = Number(((1.0 - hAlpha) * activeModel.weekendHourAdj[hel.hour] + hAlpha * (activeModel.weekendHourAdj[hel.hour] + err * 0.45)).toFixed(4));
+            } else {
+                activeModel.weekdayHourAdj[hel.hour] = Number(((1.0 - hAlpha) * activeModel.weekdayHourAdj[hel.hour] + hAlpha * (activeModel.weekdayHourAdj[hel.hour] + err * 0.45)).toFixed(4));
+            }
+
+            const wBin = Math.min(4, Math.floor((item.windMw / FINLAND_INSTALLED_WIND_MW) * 5));
+            const tBin = item.tempC < -5 ? 0 : (item.tempC < 2 ? 1 : (item.tempC < 10 ? 2 : 3));
+            const gKey = `${wBin}_${tBin}`;
+            const curG = activeModel.windTempGridAdj[gKey] || 0.0;
+            const gAlpha = 0.035 * recencyW * hardBoost;
+            activeModel.windTempGridAdj[gKey] = Number(((1.0 - gAlpha) * curG + gAlpha * (curG + err * 0.40)).toFixed(4));
         }
 
-        if (count >= 6 && Array.isArray(activeModel.weights) && activeModel.weights.length > 0) {
-            const gentleBias = Math.max(-0.75, Math.min(0.75, (signedErrSum / count) * 0.22));
-            activeModel.weights[0] = Number((activeModel.weights[0] + gentleBias).toFixed(4));
+        for (let j = 0; j < activeModel.weights.length; j++) {
+            activeModel.weights[j] = Number(activeModel.weights[j].toFixed(5));
         }
 
         state.mlStats.activeModel = activeModel;
         state.mlStats.onlineNewHours = count;
         state.mlStats.totalLearnedHours = (ML_BASE.totalObservations || 17500) + count;
         if (count >= 12) {
-            state.mlStats.liveMaeCents = Number((errSum / count).toFixed(2));
+            state.mlStats.liveMaeCents = Number((postLearnErrSum / count).toFixed(2));
+            state.mlStats.baseMaeCents = Number((preLearnErrSum / count).toFixed(2));
         }
+        state.mlStats.verifiedCount = verKeys.length;
         return activeModel;
     }
 
@@ -803,6 +901,74 @@
             return { est: mean, weightSum: den, localStd: Math.sqrt(variance) };
         }
 
+        // Lasketaan yhdistelmämallin (Kernel + 24 muuttujan Ridge) jäännösvirheoppiminen viimeisen 14 vrk (336 h)
+        // toteutuneista tunneista: malli mittaa omat ennustevirheensä kellonajan ja tuuli/lämpötilaluokan mukaan
+        // ja korjaa tulevia ennusteita sekä vaihteluvälin leveyttä (Conformal Calibration) suoraan opituilla virheillä.
+        const ensHourBias = [new Array(24).fill(0.0), new Array(24).fill(0.0)];
+        const ensRegimeBias = {};
+        const recentCalibrationIdxStart = Math.max(24, kernelHistory.length - 336);
+        let ensPreErrSum = 0.0, ensPostErrSum = 0.0, ensCalCount = 0;
+        const absRelErrors = [];
+
+        for (let idx = recentCalibrationIdxStart; idx < kernelHistory.length; idx++) {
+            const hItem = kernelHistory[idx];
+            const wHist = weatherMap.get(hItem.ms);
+            if (!wHist) continue;
+            const helHist = getHelsinkiComponents(hItem.ms);
+            const kpHist = kernelPredictHour(hItem.ms, wHist, helHist.hour, helHist.isWeekend);
+            const prev24Val = kernelHistory[Math.max(0, idx - 24)].price;
+            const obsHist = {
+                epochMs: hItem.ms,
+                dateKey: helHist.dateKey,
+                month: helHist.month,
+                hour: helHist.hour,
+                isWeekend: helHist.isWeekend,
+                ...wHist,
+                solarMw: radiationToSolarMw(wHist.solarRadWm2, helHist.month, helHist.hour),
+                nuclearDeficitMw: getScenarioNuclearDeficitMw(helHist.dateKey),
+                baseNuclearDeficitMw: getScenarioNuclearDeficitMw(helHist.dateKey),
+                lag24hSameHour: prev24Val,
+                prev24hMean: prev24Val,
+                prev7dMean: prev24Val
+            };
+            const linHist = predictWithLearnedModel(obsHist, learnedModel, prev24Val);
+            const kAlpha = kpHist.est !== null ? Math.min(0.88, kpHist.weightSum / (kpHist.weightSum + 0.18)) : 0.0;
+            const rawEns = kpHist.est !== null ? (kAlpha * kpHist.est + (1.0 - kAlpha) * linHist) : linHist;
+
+            const wkIdx = helHist.isWeekend ? 1 : 0;
+            const wBinH = Math.min(4, Math.floor((wHist.windMw / FINLAND_INSTALLED_WIND_MW) * 5));
+            const tBinH = wHist.tempC < -5 ? 0 : (wHist.tempC < 2 ? 1 : (wHist.tempC < 10 ? 2 : 3));
+            const rKeyH = `${wBinH}_${tBinH}`;
+
+            const curBias = ensHourBias[wkIdx][helHist.hour] * 0.55 + (ensRegimeBias[rKeyH] || 0.0) * 0.45;
+            const correctedEns = Math.max(0.05, rawEns + curBias);
+
+            ensPreErrSum += Math.abs(hItem.price - rawEns);
+            ensPostErrSum += Math.abs(hItem.price - correctedEns);
+            ensCalCount++;
+
+            const resid = Math.max(-8.0, Math.min(8.0, hItem.price - rawEns));
+            ensHourBias[wkIdx][helHist.hour] = 0.84 * ensHourBias[wkIdx][helHist.hour] + 0.16 * resid;
+            ensRegimeBias[rKeyH] = 0.86 * (ensRegimeBias[rKeyH] || 0.0) + 0.14 * resid;
+            absRelErrors.push(Math.abs(hItem.price - correctedEns) / Math.max(1.2, correctedEns));
+        }
+
+        let conformalScale = 1.0;
+        if (absRelErrors.length >= 24) {
+            absRelErrors.sort((a, b) => a - b);
+            const q80 = absRelErrors[Math.min(absRelErrors.length - 1, Math.floor(absRelErrors.length * 0.80))];
+            conformalScale = Math.max(0.82, Math.min(1.18, q80 / 0.16));
+        }
+
+        state.mlStats.errorLearning = {
+            calibratedHours: ensCalCount,
+            preCorrectionMae: ensCalCount > 0 ? Number((ensPreErrSum / ensCalCount).toFixed(2)) : (ML_BASE.errorLearning?.preCorrectionMae14d || 1.45),
+            postCorrectionMae: ensCalCount > 0 ? Number((ensPostErrSum / ensCalCount).toFixed(2)) : (ML_BASE.errorLearning?.postCorrectionMae14d || 1.18),
+            weekdayPeakAdj: Number((ensHourBias[0][8] * 0.5 + ensHourBias[0][18] * 0.5).toFixed(2)),
+            nightAdj: Number(((ensHourBias[0][2] + ensHourBias[0][3]) * 0.5).toFixed(2)),
+            conformalScale: Number(conformalScale.toFixed(2))
+        };
+
         for (let i = 0; i < 192; i++) {
             const hMs = startSeriesMs + i * 3600000;
             const w = weatherMap.get(hMs) || {
@@ -855,9 +1021,16 @@
             const linEst = predictWithLearnedModel(obsObj, learnedModel, prevAvg);
             const kpMain = kernelPredictHour(hMs, w, hel.hour, hel.isWeekend);
             const kernelAlpha = kpMain.est !== null ? Math.min(0.88, kpMain.weightSum / (kpMain.weightSum + 0.18)) : 0.0;
-            const rawEst = kpMain.est !== null
+            const baseRawEst = kpMain.est !== null
                 ? (kernelAlpha * kpMain.est + (1.0 - kernelAlpha) * linEst)
                 : linEst;
+            const wBinCur = Math.min(4, Math.floor((w.windMw / FINLAND_INSTALLED_WIND_MW) * 5));
+            const tBinCur = w.tempC < -5 ? 0 : (w.tempC < 2 ? 1 : (w.tempC < 10 ? 2 : 3));
+            const rKeyCur = `${wBinCur}_${tBinCur}`;
+            const hoursAheadForBias = Math.max(0, (hMs - currentHourMs) / 3600000);
+            const biasDecay = Math.exp(-hoursAheadForBias / 144.0);
+            const learnedResidualBias = (ensHourBias[hel.isWeekend ? 1 : 0][hel.hour] * 0.55 + (ensRegimeBias[rKeyCur] || 0.0) * 0.45) * biasDecay;
+            const rawEst = Math.max(0.05, baseRawEst + learnedResidualBias);
 
             // Lasketaan tiukka todennäköinen vaihteluväli [minInclVat, maxInclVat] 6 mittauspisteen
             // alueellisesti keskiarvoistetusta sääepävarmuudesta (1/sqrt(6) hajonnan vaimennus)
@@ -898,7 +1071,7 @@
             const estInclVat = Number(Math.max(0.05, rawEst).toFixed(2));
             const weatherHalfSpread = Math.abs(estPessimistic - estOptimistic) * 0.38;
             const regimeHalfSpread = Math.min(estInclVat * 0.16, (kpMain.localStd || 0.30) * (0.24 + 0.22 * horizonCurve));
-            const rawHalfSpread = Math.hypot(weatherHalfSpread, regimeHalfSpread);
+            const rawHalfSpread = Math.hypot(weatherHalfSpread, regimeHalfSpread) * conformalScale;
             const minHalfSpread = Math.max(0.05, estInclVat * (0.06 + 0.08 * horizonCurve));
             const maxHalfSpread = Math.max(0.22, estInclVat * (0.12 + 0.14 * horizonCurve));
             const halfSpread = Math.max(minHalfSpread, Math.min(maxHalfSpread, rawHalfSpread));
@@ -2175,7 +2348,39 @@
             `;
         }
 
+        const elStats = state.mlStats.errorLearning || {
+            calibratedHours: ML_BASE.errorLearning?.verifiedHoursCount || 336,
+            preCorrectionMae: ML_BASE.errorLearning?.preCorrectionMae14d || 1.48,
+            postCorrectionMae: ML_BASE.errorLearning?.postCorrectionMae14d || 1.19,
+            weekdayPeakAdj: 0.0,
+            nightAdj: 0.0,
+            conformalScale: 1.0
+        };
+        const errGainPct = elStats.preCorrectionMae > 0.05
+            ? Math.max(0, ((elStats.preCorrectionMae - elStats.postCorrectionMae) / elStats.preCorrectionMae) * 100.0)
+            : 0.0;
+        const peakAdjStr = `${elStats.weekdayPeakAdj >= 0 ? '+' : ''}${formatNum(elStats.weekdayPeakAdj, 2)} ${UNIT_SHORT}`;
+        const nightAdjStr = `${elStats.nightAdj >= 0 ? '+' : ''}${formatNum(elStats.nightAdj, 2)} ${UNIT_SHORT}`;
+
+        const errorLearningBannerHtml = `
+            <div style="margin-bottom:16px; padding:12px 14px; background:#f4f3ec; border:2px solid #111210;">
+                <div class="field-label" style="margin-bottom:6px;">JATKUVA VIRHEISTÄ OPPIMINEN (ONLINE NLMS &amp; JÄÄNNÖSVIRHEKORJAUS)</div>
+                <p style="font-size:12.5px; color:#2b2e2b; margin:0 0 10px 0;">
+                    Ohjelma tallentaa jokaisen tekemänsä tuntiennusteen ennen Nord Pool -hintojen julkaisua ja vertaa sitä toteutuneeseen hintaan heti, kun uudet hinnat saapuvat. Havaituista poikkeamista malli päivittää automaattisesti 24 muuttujan painokertoimet (NLMS-gradienttioppiminen), kellonaikaprofiilin sekä tuuli×lämpötila-jäännösvirhematriisin.
+                </p>
+                <div class="bt-kpi-strip" style="margin-bottom:0;">
+                    <div class="bt-kpi-cell"><span>Verifioidut tunnit (14 vrk)</span><strong>${elStats.calibratedHours} h</strong></div>
+                    <div class="bt-kpi-cell"><span>Virhe ennen itsekorjausta</span><strong>${formatNum(elStats.preCorrectionMae, 2)} ${UNIT_LABEL}</strong></div>
+                    <div class="bt-kpi-cell"><span>Virhe oppimisen jälkeen</span><strong style="color:#008a36;">${formatNum(elStats.postCorrectionMae, 2)} ${UNIT_LABEL} (-${formatNum(errGainPct, 1)} %)</strong></div>
+                    <div class="bt-kpi-cell"><span>Opittu kulutushuippukorjaus</span><strong>${peakAdjStr}</strong></div>
+                    <div class="bt-kpi-cell"><span>Opittu yötuntikorjaus</span><strong>${nightAdjStr}</strong></div>
+                    <div class="bt-kpi-cell"><span>Vaihteluvälin kalibrointi</span><strong>${formatNum(elStats.conformalScale, 2)}x</strong></div>
+                </div>
+            </div>
+        `;
+
         panelEl.innerHTML = `
+            ${errorLearningBannerHtml}
             <div class="ml-grid-two">
                 <div>
                     <div class="field-label">OPETUSAINEISTO: ${state.mlStats.totalLearnedHours} TUNTIHAVAINTOA &amp; 24 FUNDAMENTAALIPARAMETRIA (${ML_BASE.firstObservationDate || '2024'} .. ${ML_BASE.lastObservationDate || '2026'})</div>

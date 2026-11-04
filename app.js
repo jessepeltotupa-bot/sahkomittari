@@ -1787,6 +1787,13 @@
             legendItems[1].innerHTML = `<span class="legend-swatch" style="background:#0038ff;"></span> ${wNorm} (${formatNum(cheapThresh, 2)}–${formatNum(highThresh, 2)} ${UNIT_LABEL})`;
             legendItems[2].innerHTML = `<span class="legend-swatch" style="background:#ff3b00;"></span> ${wHigh} (&gt; ${formatNum(highThresh, 2)} ${UNIT_LABEL})`;
         }
+        const activeDsoObj = getActiveDso();
+        const activeDsoLabel = activeDsoObj ? activeDsoObj.short_name : '';
+        const totalHeaderTh = document.querySelector('#tuntitaulukko thead th:nth-child(4)');
+        if (totalHeaderTh && activeDsoLabel) {
+            const baseLabel = IS_SE ? 'Totalpris inkl. elnät' : (IS_NO ? 'Totalpris inkl. nettleie' : 'Kokonaishinta siirtoineen');
+            totalHeaderTh.innerHTML = `${baseLabel}<span style="display:block; font-size:10.5px; font-weight:600; color:#4a4f4a; text-transform:none; letter-spacing:0; margin-top:1px;">(${activeDsoLabel})</span>`;
+        }
         let rowsHtml = '';
         let lastDateKey = '';
         for (const x of activeItems) {
@@ -1831,9 +1838,10 @@
                 `;
             }
 
+            const dsoSubLabel = activeDsoLabel ? `<span class="muted-range" style="display:block; font-size:11px; margin-top:1px;">(${activeDsoLabel})</span>` : '';
             const totalHtml = x.slot.isForecast
-                ? `${APPROX_PREFIX}${formatNum(x.br.totalCents, 2)} ${UNIT_LABEL} <span class="muted-range">(${formatNum(x.br.minTotalCents, 1)}–${formatNum(x.br.maxTotalCents, 1)} ${UNIT_SHORT})</span>`
-                : `${formatNum(x.br.totalCents, 2)} ${UNIT_LABEL}`;
+                ? `${APPROX_PREFIX}${formatNum(x.br.totalCents, 2)} ${UNIT_LABEL} <span class="muted-range">(${formatNum(x.br.minTotalCents, 1)}–${formatNum(x.br.maxTotalCents, 1)} ${UNIT_SHORT})</span>${dsoSubLabel}`
+                : `${formatNum(x.br.totalCents, 2)} ${UNIT_LABEL}${dsoSubLabel}`;
 
             rowsHtml += `
                 <tr class="${isNow ? 'row-current-hour' : ''}">

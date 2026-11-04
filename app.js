@@ -1527,7 +1527,10 @@
             prevBtn.disabled = !hasPrev;
             const targetPrevIdx = state.selectedDayIndex === -1 ? maxDayIdx : state.selectedDayIndex - 1;
             prevBtn.onclick = function () {
+                if (typeof this.blur === 'function') this.blur();
                 if (!hasPrev) return;
+                const ft = document.getElementById('chart-floating-tooltip');
+                if (ft) ft.classList.remove('visible');
                 state.selectedDayIndex = targetPrevIdx;
                 renderDayTabsAndChart();
             };
@@ -1538,7 +1541,10 @@
             nextBtn.disabled = !hasNext;
             const targetNextIdx = state.selectedDayIndex === -1 ? 0 : state.selectedDayIndex + 1;
             nextBtn.onclick = function () {
+                if (typeof this.blur === 'function') this.blur();
                 if (!hasNext) return;
+                const ft = document.getElementById('chart-floating-tooltip');
+                if (ft) ft.classList.remove('visible');
                 state.selectedDayIndex = targetNextIdx;
                 renderDayTabsAndChart();
             };
@@ -1655,9 +1661,43 @@
 
         function showFloatingTooltipAt(xObj, clientX, clientY) {
             if (!floatingTooltip || !xObj) return;
+            const isMobileView = typeof window !== 'undefined' && window.innerWidth <= 768;
             const dayPrefix = xObj.slot.dayShort ? `${xObj.slot.dayShort} ` : '';
             const timeRange = `${String(xObj.slot.hour).padStart(2, '0')}:00–${String((xObj.slot.hour + 1) % 24).padStart(2, '0')}:00`;
             const probPct = xObj.slot.probabilityPct !== undefined ? xObj.slot.probabilityPct : (xObj.slot.isForecast ? 82 : 100);
+
+            if (isMobileView) {
+                const pubShort = getPricePublishTimeText(xObj.slot.dateKey, true);
+                if (xObj.slot.isForecast) {
+                    floatingTooltip.innerHTML = `
+                        <div class="mobile-tt-row1">
+                            <span class="mobile-tt-time">${dayPrefix}${timeRange}</span>
+                            <span class="mobile-tt-price">${APPROX_PREFIX}${formatNum(xObj.br.spotCents, 2)} ${UNIT_LABEL}</span>
+                            <span class="mobile-tt-close">×</span>
+                        </div>
+                        <div class="mobile-tt-row2">${RANGE_LABEL}: <strong>${formatNum(xObj.br.minSpotCents, 2)}–${formatNum(xObj.br.maxSpotCents, 2)} ${UNIT_SHORT}</strong> (${probPct} %) · ${pubShort}</div>
+                    `;
+                } else {
+                    floatingTooltip.innerHTML = `
+                        <div class="mobile-tt-row1">
+                            <span class="mobile-tt-time">${dayPrefix}${timeRange}</span>
+                            <span class="mobile-tt-price">${formatNum(xObj.br.spotCents, 2)} ${UNIT_LABEL}</span>
+                            <span class="mobile-tt-close">×</span>
+                        </div>
+                        <div class="mobile-tt-row2">${PRED_SHORT_LABEL}: <strong>${formatNum(xObj.br.predictedSpotCents, 2)} ${UNIT_SHORT}</strong> (${formatNum(xObj.br.predictedMinSpotCents, 2)}–${formatNum(xObj.br.predictedMaxSpotCents, 2)}) · 100 %</div>
+                    `;
+                }
+                floatingTooltip.dataset.activeEpoch = String(xObj.slot.epochMs);
+                floatingTooltip.classList.add('visible');
+                const chartRect = chartContainer.getBoundingClientRect();
+                const vw = window.innerWidth || 360;
+                const boxW = floatingTooltip.offsetWidth || Math.min(300, vw - 48);
+                const leftPx = Math.max(8, Math.min(vw - boxW - 8, Math.round(chartRect.left + (chartRect.width - boxW) / 2)));
+                const topPx = Math.max(6, Math.round(chartRect.top + 6));
+                floatingTooltip.style.left = `${leftPx}px`;
+                floatingTooltip.style.top = `${topPx}px`;
+                return;
+            }
 
             if (xObj.slot.isForecast) {
                 const pubInfo = getPricePublishTimeText(xObj.slot.dateKey, false);
@@ -1695,6 +1735,14 @@
             floatingTooltip.style.top = `${topPx}px`;
         }
 
+        if (floatingTooltip && !floatingTooltip.dataset.boundClose) {
+            floatingTooltip.dataset.boundClose = '1';
+            floatingTooltip.addEventListener('click', function () {
+                this.classList.remove('visible');
+                this.dataset.activeEpoch = '';
+            });
+        }
+
         const nowHourMs = Math.floor(Date.now() / 3600000) * 3600000;
         const defaultReadoutItem = activeItems.find(x => x.slot.epochMs === nowHourMs) || activeItems[0];
         updateReadout(defaultReadoutItem);
@@ -1705,6 +1753,7 @@
 
         chartContainer.querySelectorAll('.svg-hover-slot').forEach(rect => {
             const scheduleTooltipOnStill = function (evt) {
+                if (window.innerWidth <= 768) return;
                 const i = parseInt(this.getAttribute('data-slot-idx'), 10);
                 const item = activeItems[i];
                 if (!item) return;
@@ -1732,6 +1781,7 @@
             rect.addEventListener('mouseenter', scheduleTooltipOnStill);
             rect.addEventListener('mousemove', scheduleTooltipOnStill);
             rect.addEventListener('mouseleave', function () {
+                if (window.innerWidth <= 768) return;
                 if (hoverDwellTimer) {
                     clearTimeout(hoverDwellTimer);
                     hoverDwellTimer = null;
@@ -1739,13 +1789,63 @@
                 if (floatingTooltip) floatingTooltip.classList.remove('visible');
             });
             rect.addEventListener('click', function (evt) {
+                if (chartContainer.dataset.lastSwipeTs && Date.now() - parseInt(chartContainer.dataset.lastSwipeTs, 10) < 400) {
+                    return;
+                }
                 const i = parseInt(this.getAttribute('data-slot-idx'), 10);
-                if (activeItems[i]) {
-                    updateReadout(activeItems[i]);
-                    showFloatingTooltipAt(activeItems[i], evt.clientX || lastMouseX, evt.clientY || lastMouseY);
+                const item = activeItems[i];
+                if (item) {
+                    updateReadout(item);
+                    if (window.innerWidth <= 768 && floatingTooltip && floatingTooltip.classList.contains('visible') && floatingTooltip.dataset.activeEpoch === String(item.slot.epochMs)) {
+                        floatingTooltip.classList.remove('visible');
+                        floatingTooltip.dataset.activeEpoch = '';
+                        return;
+                    }
+                    showFloatingTooltipAt(item, evt.clientX || lastMouseX, evt.clientY || lastMouseY);
                 }
             });
         });
+
+        if (!chartContainer.dataset.swipeBound) {
+            chartContainer.dataset.swipeBound = '1';
+            let touchStartX = 0;
+            let touchStartY = 0;
+            let touchMoved = false;
+
+            chartContainer.addEventListener('touchstart', function (e) {
+                if (!e.touches || e.touches.length !== 1) return;
+                touchStartX = e.touches[0].clientX;
+                touchStartY = e.touches[0].clientY;
+                touchMoved = false;
+            }, { passive: true });
+
+            chartContainer.addEventListener('touchmove', function (e) {
+                if (!e.touches || e.touches.length !== 1) return;
+                const dx = e.touches[0].clientX - touchStartX;
+                const dy = e.touches[0].clientY - touchStartY;
+                if (Math.abs(dx) > 12 || Math.abs(dy) > 12) {
+                    touchMoved = true;
+                }
+            }, { passive: true });
+
+            chartContainer.addEventListener('touchend', function (e) {
+                if (!touchMoved || !e.changedTouches || e.changedTouches.length !== 1) return;
+                const dx = e.changedTouches[0].clientX - touchStartX;
+                const dy = e.changedTouches[0].clientY - touchStartY;
+                if (Math.abs(dx) >= 40 && Math.abs(dx) > Math.abs(dy) * 1.2) {
+                    chartContainer.dataset.lastSwipeTs = String(Date.now());
+                    const ft = document.getElementById('chart-floating-tooltip');
+                    if (ft) ft.classList.remove('visible');
+                    if (dx < 0) {
+                        const nb = document.getElementById('chart-next-day');
+                        if (nb && !nb.disabled) nb.click();
+                    } else {
+                        const pb = document.getElementById('chart-prev-day');
+                        if (pb && !pb.disabled) pb.click();
+                    }
+                }
+            }, { passive: true });
+        }
 
         chartContainer.addEventListener('mouseleave', function () {
             if (hoverDwellTimer) {

@@ -371,9 +371,20 @@ a:hover {
     border-left: var(--border-heavy);
 }
 
-.chart-edge-arrow:hover:not(:disabled) {
+@media (hover: hover) and (pointer: fine) {
+    .chart-edge-arrow:hover:not(:disabled) {
+        background: var(--ink);
+        color: var(--signal-yellow);
+    }
+}
+
+.chart-edge-arrow:active:not(:disabled) {
     background: var(--ink);
     color: var(--signal-yellow);
+}
+
+.chart-edge-arrow:focus {
+    outline: none;
 }
 
 .chart-edge-arrow:disabled {
@@ -696,13 +707,70 @@ a:hover {
     }
 
     .chart-edge-arrow {
-        width: 20px;
-        padding: 2px 0;
+        width: 26px;
+        padding: 4px 0;
+        -webkit-tap-highlight-color: transparent;
+        touch-action: manipulation;
     }
 
     .chart-edge-arrow svg {
-        width: 14px;
-        height: 14px;
+        width: 15px;
+        height: 15px;
+    }
+
+    .chart-floating-tooltip {
+        min-width: 0;
+        width: auto;
+        max-width: calc(100vw - 56px);
+        padding: 5px 9px;
+        font-size: 10.5px;
+        line-height: 1.25;
+        box-shadow: 2px 2px 0px var(--signal-orange);
+        pointer-events: auto;
+    }
+
+    .mobile-tt-row1 {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 8px;
+        border-bottom: 1px solid #33352f;
+        padding-bottom: 2px;
+        margin-bottom: 2px;
+    }
+
+    .mobile-tt-time {
+        font-size: 10px;
+        font-weight: 700;
+        color: #c8cbc0;
+        text-transform: uppercase;
+    }
+
+    .mobile-tt-price {
+        font-family: var(--display);
+        font-size: 13px;
+        font-weight: 700;
+        color: var(--signal-yellow);
+    }
+
+    .mobile-tt-close {
+        font-size: 13px;
+        font-weight: 700;
+        color: #a8aba0;
+        padding-left: 2px;
+        line-height: 1;
+    }
+
+    .mobile-tt-row2 {
+        font-size: 9.5px;
+        color: #e6e8df;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+
+    .mobile-tt-row2 strong {
+        color: #ffffff;
     }
 
     .svg-chart-container {

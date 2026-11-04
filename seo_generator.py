@@ -45,7 +45,7 @@ def render_header(prefix: str = "") -> str:
     <header class="site-header">
         <div class="header-inner">
             <a href="{prefix}index.html" class="brand-link">
-                <span class="brand-title"><img src="{prefix}favicon.svg?v=32" alt="" width="24" height="24" style="vertical-align:-5px; margin-right:8px;">Sähkömittari.fi</span>
+                <span class="brand-title"><img src="{prefix}favicon.svg?v=33" alt="" width="24" height="24" style="vertical-align:-5px; margin-right:8px;">Sähkömittari.fi</span>
                 <span class="brand-subtitle">Pörssisähkön spot-hinta, tarkentuva 7 vrk hintaennuste ja todellinen siirtohinta postinumerolla</span>
             </a>
             <nav class="main-nav" aria-label="Päävalikko">
@@ -343,11 +343,11 @@ def build_index_page() -> str:
     <meta name="geo.region" content="FI">
     <meta name="content-language" content="fi-FI">
     <link rel="canonical" href="{SITE_URL}/" />
-    <link rel="icon" type="image/svg+xml" href="favicon.svg?v=32">
+    <link rel="icon" type="image/svg+xml" href="favicon.svg?v=33">
     <link rel="icon" type="image/x-icon" href="favicon.ico">
     <link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon.png">
     <link rel="manifest" href="site.webmanifest">
-    <link rel="stylesheet" href="styles.css?v=32">
+    <link rel="stylesheet" href="styles.css?v=33">
     <script type="application/ld+json">
 {json.dumps(faq_schema, ensure_ascii=False, indent=2)}
     </script>
@@ -409,7 +409,7 @@ def build_index_page() -> str:
     <script src="dso_data.js"></script>
     <script src="ml_weights.js"></script>
     <script src="nordpool_models.js"></script>
-    <script src="app.js?v=32"></script>
+    <script src="app.js?v=33"></script>
 </body>
 </html>
 """
@@ -447,11 +447,11 @@ def build_dso_page(comp: dict) -> str:
     <link rel="canonical" href="{SITE_URL}/verkkoyhtiot/{slug}.html" />
     <meta name="geo.region" content="FI">
     <meta name="content-language" content="fi-FI">
-    <link rel="icon" type="image/svg+xml" href="../favicon.svg?v=32">
+    <link rel="icon" type="image/svg+xml" href="../favicon.svg?v=33">
     <link rel="icon" type="image/x-icon" href="../favicon.ico">
     <link rel="apple-touch-icon" sizes="180x180" href="../apple-touch-icon.png">
     <link rel="manifest" href="../site.webmanifest">
-    <link rel="stylesheet" href="../styles.css?v=32">
+    <link rel="stylesheet" href="../styles.css?v=33">
 </head>
 <body data-preset-dso="{comp['id']}" data-preset-postal="{sample_postal}" data-preset-city="{html.escape(sample_city)}">
 {render_header("../")}
@@ -533,7 +533,7 @@ def build_dso_page(comp: dict) -> str:
     <script src="../dso_data.js"></script>
     <script src="../ml_weights.js"></script>
     <script src="../nordpool_models.js"></script>
-    <script src="../app.js?v=32"></script>
+    <script src="../app.js?v=33"></script>
 </body>
 </html>
 """
@@ -567,11 +567,11 @@ def build_municipality_page(m: dict) -> str:
     <link rel="canonical" href="{SITE_URL}/paikkakunnat/{mslug}.html" />
     <meta name="geo.region" content="FI">
     <meta name="content-language" content="fi-FI">
-    <link rel="icon" type="image/svg+xml" href="../favicon.svg?v=32">
+    <link rel="icon" type="image/svg+xml" href="../favicon.svg?v=33">
     <link rel="icon" type="image/x-icon" href="../favicon.ico">
     <link rel="apple-touch-icon" sizes="180x180" href="../apple-touch-icon.png">
     <link rel="manifest" href="../site.webmanifest">
-    <link rel="stylesheet" href="../styles.css?v=32">
+    <link rel="stylesheet" href="../styles.css?v=33">
 </head>
 <body data-preset-dso="{comp['id']}" data-preset-postal="{m['postal']}" data-preset-city="{html.escape(m['name'])}">
 {render_header("../")}
@@ -584,7 +584,7 @@ def build_municipality_page(m: dict) -> str:
     <script src="../dso_data.js"></script>
     <script src="../ml_weights.js"></script>
     <script src="../nordpool_models.js"></script>
-    <script src="../app.js?v=32"></script>
+    <script src="../app.js?v=33"></script>
 </body>
 </html>
 """
@@ -601,11 +601,11 @@ def build_directory_page(title: str, lead: str, cards_html: str, canonical_path:
     <link rel="canonical" href="{SITE_URL}/{canonical_path}" />
     <meta name="geo.region" content="FI">
     <meta name="content-language" content="fi-FI">
-    <link rel="icon" type="image/svg+xml" href="../favicon.svg?v=32">
+    <link rel="icon" type="image/svg+xml" href="../favicon.svg?v=33">
     <link rel="icon" type="image/x-icon" href="../favicon.ico">
     <link rel="apple-touch-icon" sizes="180x180" href="../apple-touch-icon.png">
     <link rel="manifest" href="../site.webmanifest">
-    <link rel="stylesheet" href="../styles.css?v=32">
+    <link rel="stylesheet" href="../styles.css?v=33">
 </head>
 <body>
 {render_header("../")}
@@ -639,11 +639,11 @@ def build_guide_page(slug: str, title: str, meta_desc: str, body_html: str) -> s
     <link rel="canonical" href="{SITE_URL}/oppaat/{slug}.html" />
     <meta name="geo.region" content="FI">
     <meta name="content-language" content="fi-FI">
-    <link rel="icon" type="image/svg+xml" href="../favicon.svg?v=32">
+    <link rel="icon" type="image/svg+xml" href="../favicon.svg?v=33">
     <link rel="icon" type="image/x-icon" href="../favicon.ico">
     <link rel="apple-touch-icon" sizes="180x180" href="../apple-touch-icon.png">
     <link rel="manifest" href="../site.webmanifest">
-    <link rel="stylesheet" href="../styles.css?v=32">
+    <link rel="stylesheet" href="../styles.css?v=33">
 </head>
 <body>
 {render_header("../")}

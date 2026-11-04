@@ -581,11 +581,16 @@ a:hover {
     }
 
     .header-inner {
-        min-height: 36px;
-        gap: 6px;
+        min-height: 34px;
+        gap: 4px;
     }
 
-    .brand-kicker {
+    .brand-link {
+        padding: 3px 0;
+    }
+
+    .brand-kicker,
+    .main-nav {
         display: none;
     }
 
@@ -593,22 +598,33 @@ a:hover {
         font-size: 15px;
     }
 
-    .main-nav a {
-        font-size: 10px;
-        padding: 0 8px;
+    .brand-title img {
+        width: 19px;
+        height: 19px;
+        vertical-align: -3px !important;
+        margin-right: 5px !important;
     }
 
     .container {
-        padding: 0 6px 40px;
+        padding: 0 0 36px;
     }
 
     .first-screen-stage {
-        min-height: calc(100dvh - 38px);
-        padding: 4px 0 6px;
+        min-height: calc(100dvh - 36px);
+        padding: 0;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
     }
 
     .hero-chart-box {
-        box-shadow: 3px 3px 0px var(--ink);
+        box-shadow: none;
+        border-left: none;
+        border-right: none;
+        border-top: none;
+        flex: 1;
+        display: flex;
+        flex-direction: column;
     }
 
     .day-tabs {
@@ -616,114 +632,127 @@ a:hover {
     }
 
     .day-tab {
-        padding: 5px 6px;
-        gap: 1px;
+        padding: 3px 3px;
+        gap: 0px;
     }
 
     .day-tab-name {
-        font-size: 9px;
+        font-size: 8.5px;
+        line-height: 1.1;
     }
 
     .day-tab-price {
-        font-size: 12px;
+        font-size: 11px;
+        line-height: 1.15;
     }
 
     .day-tab-meta {
-        font-size: 8.5px;
+        font-size: 8px;
+        line-height: 1.1;
+    }
+
+    .day-tab-pub {
+        display: none !important;
     }
 
     .hero-chart-box .panel-body {
-        padding: 5px 8px !important;
+        padding: 4px 6px !important;
+        flex-shrink: 0;
     }
 
     .chart-readout-strip {
-        padding: 5px 8px;
-        font-size: 10px;
-        gap: 6px;
-        margin-bottom: 4px !important;
+        padding: 4px 6px;
+        font-size: 9.5px;
+        gap: 4px;
+        margin-bottom: 3px !important;
     }
 
     .chart-legend {
-        gap: 6px;
-        font-size: 9.5px;
+        gap: 4px 8px;
+        font-size: 9px;
+        justify-content: flex-start;
     }
 
-    #chart-view-title {
-        display: none;
-    }
-
-    .scroll-down-bar {
-        padding: 4px 8px;
-        justify-content: center;
-    }
-
-    .scroll-down-bar > span {
-        display: none;
-    }
-
-    .scroll-down-links {
+    .legend-basis-label {
+        font-size: 9px !important;
         width: 100%;
-        justify-content: space-between;
-        gap: 4px;
     }
 
-    .scroll-down-links a {
+    .legend-swatch {
+        width: 9px;
+        height: 9px;
+    }
+
+    #chart-view-title,
+    .scroll-down-bar {
+        display: none;
+    }
+
+    .svg-chart-wrapper {
         flex: 1;
-        text-align: center;
-        padding: 3px 4px;
-        font-size: 9.5px;
+        display: flex;
+        align-items: stretch;
+        min-height: 245px;
     }
 
     .chart-edge-arrow {
-        width: 28px;
-        padding: 4px 2px;
+        width: 20px;
+        padding: 2px 0;
     }
 
     .chart-edge-arrow svg {
-        width: 17px;
-        height: 17px;
+        width: 14px;
+        height: 14px;
     }
 
     .svg-chart-container {
         padding: 4px 2px 2px !important;
+        display: flex;
+        flex-direction: column;
+        flex: 1;
     }
 
     .responsive-price-svg {
-        height: clamp(150px, calc(100dvh - 325px), 220px);
+        flex: 1;
+        width: 100%;
+        height: clamp(245px, calc(100dvh - 245px), 460px) !important;
+        min-height: 245px;
     }
 
     .first-screen-summary-strip {
         grid-template-columns: repeat(3, 1fr);
-        margin-top: 6px;
-        padding: 6px 0;
+        margin-top: 0;
+        padding: 5px 4px;
         gap: 0;
+        background: var(--panel);
+        flex-shrink: 0;
     }
 
     .summary-metric-col {
-        padding: 2px 6px;
+        padding: 2px 5px;
         gap: 1px;
     }
 
     .summary-metric-kicker {
+        font-size: 8px;
+        line-height: 1.1;
+    }
+
+    .summary-metric-value {
+        font-size: 14.5px;
+    }
+
+    .summary-metric-value span {
+        font-size: 10px !important;
+    }
+
+    .summary-metric-sub {
         font-size: 8.5px;
         line-height: 1.15;
     }
 
-    .summary-metric-value {
-        font-size: 15.5px;
-    }
-
-    .summary-metric-value span {
-        font-size: 11px !important;
-    }
-
-    .summary-metric-sub {
-        font-size: 9px;
-        line-height: 1.2;
-    }
-
     .below-fold-section {
-        padding-top: 18px;
+        padding: 14px 6px 0;
     }
 
     .panel-box {

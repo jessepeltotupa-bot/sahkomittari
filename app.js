@@ -1326,12 +1326,13 @@
 
     // Tarkka vektoripohjainen SVG-mittarikaavio (Pelkkä pörssisähkön spot-hinta + Todennäköinen vaihteluväli)
     function buildSvgChart(enrichedItems, isWeekView) {
-        const W = 940;
-        const H = 265;
-        const padL = 46;
-        const padR = 16;
+        const isMobile = typeof window !== 'undefined' && window.innerWidth <= 768;
+        const W = isMobile ? 360 : 940;
+        const H = isMobile ? 280 : 265;
+        const padL = isMobile ? 30 : 46;
+        const padR = isMobile ? 6 : 16;
         const padT = 14;
-        const padB = 28;
+        const padB = isMobile ? 22 : 28;
         const plotW = W - padL - padR;
         const plotH = H - padT - padB;
 
@@ -1344,7 +1345,7 @@
         const yForPrice = (c) => padT + plotH - Math.max(0, Math.min(1, c / maxPrice)) * plotH;
         const colW = plotW / n;
 
-        let svg = `<svg class="responsive-price-svg" viewBox="0 0 ${W} ${H}" width="100%" height="265" xmlns="http://www.w3.org/2000/svg" style="display:block; font-family:'IBM Plex Mono', monospace;">`;
+        let svg = `<svg class="responsive-price-svg" viewBox="0 0 ${W} ${H}" preserveAspectRatio="${isMobile ? 'none' : 'xMidYMid meet'}" width="100%" height="${H}" xmlns="http://www.w3.org/2000/svg" style="display:block; font-family:'IBM Plex Mono', monospace;">`;
         svg += `
             <defs>
                 <pattern id="forecastHatchCheap" width="6" height="6" patternTransform="rotate(45 0 0)" patternUnits="userSpaceOnUse">
@@ -1367,8 +1368,9 @@
         for (let s = 0; s <= steps; s++) {
             const pVal = (maxPrice / steps) * s;
             const y = yForPrice(pVal);
+            const yLabel = isMobile ? `${Math.round(pVal)}` : `${Math.round(pVal)} ${UNIT_SHORT}`;
             svg += `<line x1="${padL}" y1="${y.toFixed(1)}" x2="${W - padR}" y2="${y.toFixed(1)}" stroke="${s === 0 ? '#111210' : '#c5c7bd'}" stroke-width="${s === 0 ? '1.5' : '1'}" stroke-dasharray="${s === 0 ? 'none' : '2,2'}" />`;
-            svg += `<text x="${padL - 8}" y="${(y + 4).toFixed(1)}" text-anchor="end" font-size="11" font-weight="700" fill="#111210">${Math.round(pVal)} ${UNIT_SHORT}</text>`;
+            svg += `<text x="${padL - (isMobile ? 5 : 8)}" y="${(y + 4).toFixed(1)}" text-anchor="end" font-size="${isMobile ? '10.5' : '11'}" font-weight="700" fill="#111210">${yLabel}</text>`;
         }
 
         const nowMsExact = Date.now();
@@ -1450,12 +1452,13 @@
             if (isWeekView) {
                 if (xObj.slot.hour === 0) {
                     svg += `<line x1="${x0.toFixed(1)}" y1="${padT}" x2="${x0.toFixed(1)}" y2="${padT + plotH}" stroke="#111210" stroke-width="1" stroke-dasharray="3,3" />`;
-                    svg += `<text x="${(x0 + 4).toFixed(1)}" y="${H - 8}" font-size="11" font-weight="700" fill="#111210">${xObj.slot.dayShort || ''}</text>`;
+                    svg += `<text x="${(x0 + 3).toFixed(1)}" y="${H - (isMobile ? 5 : 8)}" font-size="${isMobile ? '9.5' : '11'}" font-weight="700" fill="#111210">${xObj.slot.dayShort || ''}</text>`;
                 }
             } else {
-                if (i % 2 === 0 || n <= 24) {
+                const showHourTick = isMobile ? (i % 2 === 0) : (i % 2 === 0 || n <= 24);
+                if (showHourTick) {
                     const cx = x0 + colW / 2;
-                    svg += `<text x="${cx.toFixed(1)}" y="${H - 8}" text-anchor="middle" font-size="11" font-weight="700" fill="#111210">${String(xObj.slot.hour).padStart(2, '0')}</text>`;
+                    svg += `<text x="${cx.toFixed(1)}" y="${H - (isMobile ? 5 : 8)}" text-anchor="middle" font-size="${isMobile ? '10' : '11'}" font-weight="700" fill="#111210">${String(xObj.slot.hour).padStart(2, '0')}</text>`;
                 }
             }
 
@@ -2369,6 +2372,15 @@
         renderTelemetryAndDsoPanel();
         renderMlLearningPanel();
         loadSpotAndForecastData();
+
+        let lastIsMobile = window.innerWidth <= 768;
+        window.addEventListener('resize', function () {
+            const nowIsMobile = window.innerWidth <= 768;
+            if (nowIsMobile !== lastIsMobile) {
+                lastIsMobile = nowIsMobile;
+                renderDayTabsAndChart();
+            }
+        });
 
         // Haetaan uudet tiedot Nord Poolista automaattisesti joka tunti (tasatunnein)
         function scheduleNextTopOfHourFetch() {

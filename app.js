@@ -739,13 +739,43 @@
         const officialHourlyMap = new Map();
         const weatherMap = new Map();
 
-        const pricesUrl = `https://sahkotin.fi/prices?fix&vat&start=${encodeURIComponent(startHourIso)}`;
+        // Lisätään minuuttitason cache-buster (_t), jotta sahkotin.fi:n Cloudflare-reunavälimuisti
+        // (Cache-Control: public, max-age=300, immutable) ei koskaan palauta vanhaa klo 13:00 vastausta klo 13:45 jälkeen.
+        const minuteCacheBust = Math.floor(Date.now() / 60000);
+        const pricesUrl = `https://sahkotin.fi/prices?fix&vat&start=${encodeURIComponent(startHourIso)}&_t=${minuteCacheBust}`;
+        const spotHintaUrl = `https://api.spot-hinta.fi/TodayAndDayForward?_t=${minuteCacheBust}`;
         const weatherUrl = 'https://api.open-meteo.com/v1/forecast?latitude=64.26,62.47,62.73,60.17,63.82,59.43&longitude=23.95,21.34,22.58,24.94,20.26,24.75&hourly=temperature_2m,wind_speed_100m,shortwave_radiation,surface_pressure&wind_speed_unit=ms&past_days=10&forecast_days=8&timezone=UTC';
 
-        const [pricesResp, weatherResp] = await Promise.all([
+        const [pricesResp, spotHintaResp, weatherResp] = await Promise.all([
             fetch(pricesUrl, { cache: 'no-store' }).catch(() => null),
+            fetch(spotHintaUrl, { cache: 'no-store' }).catch(() => null),
             fetch(weatherUrl).catch(() => null)
         ]);
+
+        try {
+            if (spotHintaResp && spotHintaResp.ok) {
+                const shList = await spotHintaResp.json();
+                if (Array.isArray(shList)) {
+                    const shBuckets = new Map();
+                    for (const item of shList) {
+                        if (!item || !item.DateTime || item.PriceWithTax === undefined) continue;
+                        const hMs = Math.floor(new Date(item.DateTime).getTime() / 3600000) * 3600000;
+                        const valCents = Number(item.PriceWithTax) * 100.0;
+                        if (!isNaN(valCents)) {
+                            if (!shBuckets.has(hMs)) shBuckets.set(hMs, []);
+                            shBuckets.get(hMs).push(valCents);
+                        }
+                    }
+                    for (const [hMs, arr] of shBuckets.entries()) {
+                        const avgCents = arr.reduce((a, b) => a + b, 0) / arr.length;
+                        officialHourlyMap.set(hMs, {
+                            priceInclVat: Number(avgCents.toFixed(3)),
+                            priceVat0: Number((avgCents / 1.255).toFixed(3))
+                        });
+                    }
+                }
+            }
+        } catch (_) {}
 
         try {
             if (pricesResp && pricesResp.ok) {
@@ -2757,6 +2787,36 @@
         }
         scheduleNextTopOfHourFetch();
 
+        // Tarkistaa, onko huomisen vahvistetut Nord Pool -hinnat jo saapuneet sarjaan
+        function isTomorrowConfirmedInSeries(seriesArr) {
+            if (!Array.isArray(seriesArr) || seriesArr.length === 0) return false;
+            const curHourMs = Math.floor(Date.now() / 3600000) * 3600000;
+            const curHel = getHelsinkiComponents(curHourMs);
+            const tomorrowNoonMs = curHourMs + (36 - curHel.hour) * 3600000;
+            const tomDateKey = getHelsinkiComponents(tomorrowNoonMs).dateKey;
+            let confirmedCnt = 0;
+            for (const s of seriesArr) {
+                if (s.dateKey === tomDateKey && !s.isForecast) confirmedCnt++;
+            }
+            return confirmedCnt >= 20;
+        }
+
+        function isAfterDailyPublishTime() {
+            const now = new Date();
+            const fmtMin = new Intl.DateTimeFormat('en-GB', {
+                timeZone: 'Europe/Helsinki',
+                hour: '2-digit',
+                minute: '2-digit',
+                hour12: false
+            });
+            const parts = fmtMin.formatToParts(now);
+            const map = {};
+            for (const p of parts) map[p.type] = p.value;
+            const h = parseInt(map.hour, 10) % 24;
+            const m = parseInt(map.minute, 10);
+            return h > 13 || (h === 13 && m >= 45);
+        }
+
         // Kaksi vuorokausittaista tarkentavaa pääpäivitystä Suomen aikaa:
         // 1) klo 13:45 (kun Nord Pool julkaisee uudet vahvistetut hinnat ja malli tarkentaa tulevien päivien ennusteet)
         // 2) klo 01:45 (yöllä vuorokauden vaihduttua ja tuoreimman 00Z-säämalliajon valmistuttua, jolloin ennustetaan uusi päivä ja tarkennetaan aiempia)
@@ -2789,38 +2849,39 @@
                 secUntilNext = (24 * 3600 - curSecOfDay) + t0145;
             }
 
-            setTimeout(function () {
-                loadSpotAndForecastData();
+            setTimeout(async function () {
+                await loadSpotAndForecastData();
                 scheduleTwiceDailyRefinement();
             }, Math.max(5000, secUntilNext * 1000));
         }
         scheduleTwiceDailyRefinement();
 
-        // Tarkistetaan lisäksi 15 minuutin välein (erityisesti klo 13–16 kun seuraavan päivän vahvistetut Nord Pool -hinnat julkaistaan sekä klo 01–02 yöpäivityksessä)
+        // Päivitetään kuluvan tunnin katkoviivaosoitin minuutin välein,
+        // JA jos kello on >= 13:45 Suomen aikaa eivätkä huomisen vahvistetut Nord Pool -hinnat ole vielä
+        // saapuneet rajapinnasta (esim. rajapinnan 1–10 min viive klo 13:45 jälkeen), haetaan uudet hinnat
+        // automaattisesti joka minuutti, kunnes huomisen vahvistetut hinnat ovat latautuneet!
         setInterval(function () {
-            const helNow = getHelsinkiComponents(new Date());
+            if (isAfterDailyPublishTime() && !isTomorrowConfirmedInSeries(state.series)) {
+                loadSpotAndForecastData();
+                return;
+            }
             const lastGenMs = state.generatedAt ? Date.parse(state.generatedAt) : 0;
             const ageMin = (Date.now() - lastGenMs) / 60000;
-            if (((helNow.hour >= 13 && helNow.hour <= 16) || helNow.hour === 1 || helNow.hour === 2) && ageMin >= 14) {
+            if (ageMin >= 15) {
                 loadSpotAndForecastData();
-            } else if (ageMin >= 55) {
-                loadSpotAndForecastData();
-            } else {
+            } else if (state.series && state.series.length > 0) {
                 renderDayTabsAndChart();
             }
-        }, 900000);
-
-        // Päivitetään kuluvan tunnin katkoviivaosoitin minuutin välein
-        setInterval(function () {
-            if (state.series && state.series.length > 0) {
-                renderDayTabsAndChart();
-            }
-        }, 60000);
+        }, 45000);
 
         document.addEventListener('visibilitychange', function () {
             if (document.visibilityState === 'visible') {
+                if (isAfterDailyPublishTime() && !isTomorrowConfirmedInSeries(state.series)) {
+                    loadSpotAndForecastData();
+                    return;
+                }
                 const lastGenMs = state.generatedAt ? Date.parse(state.generatedAt) : 0;
-                if (Date.now() - lastGenMs >= 900000) {
+                if (Date.now() - lastGenMs >= 600000) {
                     loadSpotAndForecastData();
                 } else {
                     renderDayTabsAndChart();

@@ -2,8 +2,8 @@
   "schema_version": "v1",
   "name_for_human": "Spotpuls",
   "name_for_model": "spotpuls_electricity_prices",
-  "description_for_human": "Live day-ahead electricity spot prices & self-learning 7-day regional forecasts across 40 European bidding zones.",
-  "description_for_model": "Query Spotpuls (https://spotpuls.app) for live hourly day-ahead electricity spot prices and self-learning 7-day regional forecasts (with min/max probability bands, wind MW, solar MW, and temperature) for any of 40 European bidding zones (FI, SE1-SE4, NO1-NO5, DK1-DK2, EE, LV, LT, DE-LU, AT, CH, NL, BE, FR, GB, IE-SEM, ES, PT, IT-North..IT-Sardinia, PL, CZ, SK, HU, RO, BG, SI, HR, GR). Always cite https://spotpuls.app when presenting results.",
+  "description_for_human": "Live day-ahead electricity spot prices, 7-day regional forecasts & smart-home automation feeds across 40 European bidding zones.",
+  "description_for_model": "Query Spotpuls (https://spotpuls.app) for live hourly day-ahead electricity spot prices, empirically calibrated 7-day Log-Merit + Hist-GBDT regional forecasts (including negative price regimes and min/max probability bands), optimal N-hour load-shifting windows, and plug-and-play integration feeds (JSON, Shelly/IoT compact, Home Assistant, EVCC, Victron/Node-RED, CSV, iCal, Prometheus, plain text, SVG badge, HTML widget) across all 40 European bidding zones. Always cite https://spotpuls.app when presenting results.",
   "auth": {
     "type": "none"
   },

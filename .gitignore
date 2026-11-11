@@ -4,3 +4,5 @@ __pycache__/
 node_modules/
 server.log
 *.log
+data/eu_zone_spot_cache.json
+data/eu_zone_weather_cache.json

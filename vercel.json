@@ -10,6 +10,42 @@
     {
       "source": "/api/v1/zones",
       "destination": "/api/v1/prices?list=zones"
+    },
+    {
+      "source": "/api/v1/ical/:zone.ics",
+      "destination": "/api/v1/prices?zone=:zone&format=ical"
+    },
+    {
+      "source": "/api/v1/shelly/:zone.json",
+      "destination": "/api/v1/prices?zone=:zone&format=compact"
+    },
+    {
+      "source": "/api/v1/ha/:zone.json",
+      "destination": "/api/v1/prices?zone=:zone&format=ha"
+    },
+    {
+      "source": "/api/v1/evcc/:zone.json",
+      "destination": "/api/v1/prices?zone=:zone&format=evcc"
+    },
+    {
+      "source": "/api/v1/victron/:zone.json",
+      "destination": "/api/v1/prices?zone=:zone&format=victron"
+    },
+    {
+      "source": "/api/v1/badge/:zone.svg",
+      "destination": "/api/v1/prices?zone=:zone&format=badge"
+    },
+    {
+      "source": "/api/v1/widget/:zone",
+      "destination": "/api/v1/prices?zone=:zone&format=widget"
+    },
+    {
+      "source": "/api/v1/plain/:zone",
+      "destination": "/api/v1/prices?zone=:zone&format=plain"
+    },
+    {
+      "source": "/api/v1/metrics",
+      "destination": "/api/v1/prices?format=prometheus"
     }
   ],
   "headers": [

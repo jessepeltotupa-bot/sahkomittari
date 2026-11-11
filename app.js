@@ -475,13 +475,80 @@
     }
 
     function windSpeedToCapacityFactor(v100m) {
-        if (v100m === null || v100m === undefined || isNaN(v100m)) return 0.28;
-        const vHub = Number(v100m);
-        if (vHub < 3.0) return 0.02;
-        if (vHub >= 25.0) return 0.08;
-        if (vHub >= 14.5) return 0.85;
-        const norm = (vHub - 3.0) / (14.5 - 3.0);
-        return Math.max(0.02, Math.min(0.85, Math.pow(norm, 1.75) * 0.85));
+        if (v100m === null || v100m === undefined || isNaN(v100m)) return 0.30;
+        const vHub = Number(v100m) * 1.26;
+        if (vHub < 2.8) return 0.02;
+        if (vHub >= 25.0) return 0.05;
+        if (vHub >= 11.8) return 0.90;
+        const norm = (vHub - 2.8) / (11.8 - 2.8);
+        return Math.max(0.02, Math.min(0.90, Math.pow(norm, 1.65) * 0.90));
+    }
+
+    const easterUtcCache = new Map();
+    function getEasterSundayUtcMs(year) {
+        if (easterUtcCache.has(year)) return easterUtcCache.get(year);
+        const a = year % 19;
+        const b = Math.floor(year / 100);
+        const c = year % 100;
+        const d = Math.floor(b / 4);
+        const e = b % 4;
+        const f = Math.floor((b + 8) / 25);
+        const g = Math.floor((b - f + 1) / 3);
+        const h = (19 * a + b - d - g + 15) % 30;
+        const i = Math.floor(c / 4);
+        const k = c % 4;
+        const l = (32 + 2 * e + 2 * i - h - k) % 7;
+        const m = Math.floor((a + 11 * h + 22 * l) / 451);
+        const month = Math.floor((h + l - 7 * m + 114) / 31);
+        const day = ((h + l - 7 * m + 114) % 31) + 1;
+        const ms = Date.UTC(year, month - 1, day);
+        easterUtcCache.set(year, ms);
+        return ms;
+    }
+
+    function isPublicHolidayDateKey(dateKey, isFinland = false) {
+        if (!dateKey || dateKey.length < 10) return false;
+        const md = dateKey.slice(5);
+        if (md === '01-01' || md === '01-06' || md === '05-01' || md === '12-24' || md === '12-25' || md === '12-26') {
+            return true;
+        }
+        if (isFinland && md === '12-06') return true;
+        const yr = parseInt(dateKey.slice(0, 4), 10);
+        const mo = parseInt(dateKey.slice(5, 7), 10);
+        const dy = parseInt(dateKey.slice(8, 10), 10);
+        if (isNaN(yr) || isNaN(mo) || isNaN(dy)) return false;
+        const curMs = Date.UTC(yr, mo - 1, dy);
+        const diffDays = Math.round((curMs - getEasterSundayUtcMs(yr)) / 86400000);
+        if (diffDays === -2 || diffDays === 0 || diffDays === 1 || diffDays === 39) return true;
+        if (isFinland && mo === 6 && dy >= 19 && dy <= 25) {
+            const dow = new Date(curMs).getUTCDay();
+            if (dow === 5 || dow === 6) return true;
+        }
+        return false;
+    }
+
+    function getDayTypeIndex(dateKey, isWeekend, isSat, isFinland = false) {
+        const isHol = isPublicHolidayDateKey(dateKey, isFinland);
+        if ((isWeekend && !isSat) || (isHol && !isSat)) return 2;
+        if (isSat) return 1;
+        return 0;
+    }
+
+    function evalCompactTrees(trees, xt) {
+        if (!Array.isArray(trees) || trees.length === 0) return 0.0;
+        let total = 0.0;
+        for (let t = 0; t < trees.length; t++) {
+            const nodes = trees[t];
+            if (!Array.isArray(nodes) || nodes.length === 0) continue;
+            let nid = 0;
+            let guard = 0;
+            while (nodes[nid] && nodes[nid][0] >= 0 && guard++ < 16) {
+                const featIdx = nodes[nid][0];
+                nid = (xt[featIdx] <= nodes[nid][1]) ? nodes[nid][2] : nodes[nid][3];
+            }
+            if (nodes[nid]) total += Number(nodes[nid][1] || 0.0);
+        }
+        return total;
     }
 
     function radiationToSolarMw(radWm2, month, hour) {
@@ -512,9 +579,7 @@
         const wRatio = Math.max(0.01, Math.min(0.95, obs.windMw / FINLAND_INSTALLED_WIND_MW));
         const tempC = obs.tempC;
         const hour = obs.hour;
-        const fixedHolidays = ['01-01', '01-06', '05-01', '12-06', '12-24', '12-25', '12-26'];
-        const md = obs.dateKey ? obs.dateKey.slice(5) : '';
-        const isFreeDay = obs.isWeekend || fixedHolidays.includes(md);
+        const isFreeDay = obs.isWeekend || isPublicHolidayDateKey(obs.dateKey || '', true);
         const isFree = isFreeDay ? 1.0 : 0.0;
 
         const hdd = Math.max(0.0, 12.0 - tempC) / 20.0;
@@ -613,7 +678,180 @@
         const extraDefMw = Math.max(0, scenDefMw - baseDefMw);
         const extraNucPremium = (extraDefMw / 1000.0) * (1.25 + 3.40 * Math.max(0, 0.65 - wRatio)) * (obs.isWeekend ? 0.65 : 1.0);
 
-        return Math.max(0.05, lin + hAdj + gAdj + extraNucPremium);
+        return Math.max(-3.30, lin + hAdj + gAdj + extraNucPremium);
+    }
+
+    function toFiLogPrice(yCents, shift = 3.5) {
+        return Math.log(Math.max(0.20, Number(yCents) + shift));
+    }
+
+    function fromFiLogPrice(zVal, shift = 3.5) {
+        return Math.max(-3.30, Math.exp(Math.max(-1.61, Math.min(4.85, Number(zVal)))) - shift);
+    }
+
+    function getEstlink2OnlineStatus(dateKey) {
+        if (dateKey && dateKey >= '2024-01-26' && dateKey <= '2024-09-07') return 0.0;
+        if (dateKey && dateKey >= '2024-12-25' && dateKey <= '2025-07-15') return 0.0;
+        return 1.0;
+    }
+
+    function computePhysicalResidualLoadGw(obs) {
+        const temp = Number(obs.tempC ?? 4.0);
+        const t72 = Number(obs.rolling72hTempC ?? temp);
+        const effTemp = 0.65 * temp + 0.35 * t72;
+        const heatingMw = Math.max(0.0, 14.0 - effTemp) * 185.0 + Math.max(0.0, -5.0 - effTemp) * 95.0;
+        const h = Number(obs.hour ?? 12);
+        const dti = obs.dayType !== undefined
+            ? obs.dayType
+            : getDayTypeIndex(obs.dateKey || '', Boolean(obs.isWeekend), Boolean(obs.isSat), true);
+        const isFree = dti > 0;
+        let diurnalMw = 0.0;
+        if (isFree) {
+            diurnalMw = h < 7 ? -650.0 : ((h >= 9 && h <= 21) ? 450.0 : -250.0);
+        } else if (h >= 7 && h <= 10) {
+            diurnalMw = 1450.0;
+        } else if (h >= 11 && h <= 15) {
+            diurnalMw = 1050.0;
+        } else if (h >= 16 && h <= 20) {
+            diurnalMw = 1550.0;
+        } else if (h >= 21 && h <= 22) {
+            diurnalMw = 400.0;
+        } else {
+            diurnalMw = -900.0;
+        }
+        const demandMw = 7600.0 + heatingMw + diurnalMw;
+        const wNow = Number(obs.windMw ?? 2400.0);
+        const w12 = Number(obs.wind12hSmoothMw ?? wNow);
+        const windMw = 0.65 * wNow + 0.35 * w12;
+        const solarMw = Number(obs.solarMw ?? radiationToSolarMw(obs.solarRadWm2, obs.month || 1, h));
+        const nucDef = Number(obs.nuclearDeficitMw ?? getScenarioNuclearDeficitMw(obs.dateKey || ''));
+        const nucMw = FINLAND_NUCLEAR_MAX_MW - nucDef;
+        const seCf = windSpeedToCapacityFactor(obs.seWindSpeed ?? 6.5);
+        const eeCf = windSpeedToCapacityFactor(obs.eeWindSpeed ?? 6.5);
+        const el2 = obs.estlink2Online !== undefined ? Number(obs.estlink2Online) : getEstlink2OnlineStatus(obs.dateKey || '');
+        const netBorderMw = 1500.0 * seCf - (650.0 + 650.0 * el2) * Math.max(0.0, 0.50 - eeCf);
+        return (demandMw - windMw - solarMw - nucMw - netBorderMw) / 1000.0;
+    }
+
+    function extractFiLogMeritFeatures21(obs) {
+        const wNow = Number(obs.windMw ?? 2400.0);
+        const w12 = Number(obs.wind12hSmoothMw ?? wNow);
+        const wRatio = Math.max(0.01, Math.min(0.95, wNow / FINLAND_INSTALLED_WIND_MW));
+        const w12Ratio = Math.max(0.01, Math.min(0.95, w12 / FINLAND_INSTALLED_WIND_MW));
+        const tempC = Number(obs.tempC ?? 4.0);
+        const t72 = Number(obs.rolling72hTempC ?? tempC);
+        const h = Number(obs.hour ?? 12);
+        const dti = obs.dayType !== undefined
+            ? obs.dayType
+            : getDayTypeIndex(obs.dateKey || '', Boolean(obs.isWeekend), Boolean(obs.isSat), true);
+        const isFree = dti > 0 ? 1.0 : 0.0;
+        const isSat = dti === 1 ? 1.0 : 0.0;
+        const isSunHol = dti === 2 ? 1.0 : 0.0;
+        const rl = obs.resLoadGw !== undefined ? Number(obs.resLoadGw) : computePhysicalResidualLoadGw(obs);
+        const hdd = Math.max(0.0, 12.0 - tempC) / 20.0;
+        const rollingHdd = Math.max(0.0, 10.0 - t72) / 20.0;
+        const solarMw = Number(obs.solarMw ?? radiationToSolarMw(obs.solarRadWm2, obs.month || 1, h));
+        const solarRatio = solarMw / FINLAND_SOLAR_MAX_MW;
+        const nucDef = Number(obs.nuclearDeficitMw ?? getScenarioNuclearDeficitMw(obs.dateKey || '')) / 2000.0;
+        const seCf = windSpeedToCapacityFactor(obs.seWindSpeed ?? 6.5);
+        const eeCf = windSpeedToCapacityFactor(obs.eeWindSpeed ?? 6.5);
+        const el2 = obs.estlink2Online !== undefined ? Number(obs.estlink2Online) : getEstlink2OnlineStatus(obs.dateKey || '');
+        const w24Ratio = Math.max(0.01, Math.min(0.95, Number(obs.rolling24hWindMw ?? wNow) / FINLAND_INSTALLED_WIND_MW));
+
+        return {
+            rl,
+            dti,
+            wRatio,
+            w12Ratio,
+            solarMw,
+            seCf,
+            eeCf,
+            feats: [
+                1.0,
+                wRatio,
+                wRatio * wRatio,
+                w12Ratio,
+                Math.pow(Math.max(0.0, 0.25 - wRatio), 2) * 8.0,
+                Math.max(0.0, 2.0 - rl),
+                Math.max(0.0, rl - 2.0),
+                Math.pow(Math.max(0.0, rl - 5.0), 1.3),
+                hdd,
+                rollingHdd,
+                ((isFree === 0.0 && h >= 7 && h <= 10) ? 1.0 : 0.0) * (1.0 - 0.75 * wRatio),
+                ((isFree === 0.0 && h >= 16 && h <= 20) ? 1.0 : 0.0) * (1.0 - 0.75 * wRatio),
+                solarRatio,
+                solarRatio * isFree,
+                (h >= 0 && h <= 5) ? 1.0 : 0.0,
+                isSat,
+                isSunHol,
+                nucDef,
+                seCf * (1.0 - 0.5 * wRatio),
+                (0.65 + 0.35 * el2) * Math.max(0.0, 0.45 - eeCf) * ((h >= 7 && h <= 21) ? 1.0 : 0.35),
+                Math.max(0.0, 0.32 - w24Ratio) * 2.0
+            ]
+        };
+    }
+
+    function predictFiLogFundamental(obs, ens) {
+        const ex = extractFiLogMeritFeatures21(obs);
+        const wLog = ens.wLog || [];
+        let zf = 0.0;
+        for (let i = 0; i < wLog.length && i < ex.feats.length; i++) {
+            zf += wLog[i] * ex.feats[i];
+        }
+        const hrAdj = ens.dayTypeHourLogAdj?.[ex.dti]?.[obs.hour] || 0.0;
+        return { zFund: zf + hrAdj, ex };
+    }
+
+    function predictFiLogMeritEnsemble(obs, ens, arCtx, learnedModelFallback, prevAvgFallback) {
+        if (!ens || !Array.isArray(ens.wLog) || ens.wLog.length < 21) {
+            return predictWithLearnedModel(obs, learnedModelFallback || ML_BASE.model, prevAvgFallback);
+        }
+        const shift = Number(ens.shift || 3.5);
+        const { zFund, ex } = predictFiLogFundamental(obs, ens);
+        const hoursAhead = Math.max(0.0, Number(arCtx?.hoursAhead ?? 12.0));
+        const decay = Math.exp(-hoursAhead / 64.0);
+        const damp = Math.max(0.20, 1.05 - 0.80 * ex.wRatio) * decay;
+        const zanom24 = Number(arCtx?.zanom24 ?? 0.0);
+        const zanom7d = Number(arCtx?.zanom7d ?? 0.0);
+        const zlag24 = Math.max(-1.2, Math.min(1.5, Number(arCtx?.zlag24 ?? zanom24)));
+        const zlag168 = Math.max(-1.0, Math.min(1.2, Number(arCtx?.zlag168 ?? zanom7d)));
+        const wZar = ens.wZar || [0.45, 0.20, 0.18, 0.12];
+        const arTerm = (
+            wZar[0] * zanom24
+            + wZar[1] * zanom7d
+            + wZar[2] * zlag24
+            + wZar[3] * zlag168
+        ) * damp;
+
+        const nucDefMw = Number(obs.nuclearDeficitMw ?? getScenarioNuclearDeficitMw(obs.dateKey || ''));
+        const xt = [
+            ex.wRatio,
+            ex.w12Ratio,
+            ex.rl,
+            Number(obs.tempC ?? 4.0),
+            Number(obs.rolling72hTempC ?? obs.tempC ?? 4.0),
+            Number(obs.hour ?? 12),
+            Number(ex.dti),
+            ex.solarMw,
+            nucDefMw,
+            ex.seCf,
+            ex.eeCf,
+            zanom24 * decay,
+            zanom7d * decay,
+            Number(obs.month ?? 1)
+        ];
+        const treeSum = evalCompactTrees(ens.trees, xt);
+        const zp = zFund + arTerm + treeSum + Number(ens.medShift || 0.0);
+        const baseCents = fromFiLogPrice(zp, shift);
+
+        const scenDefMw = getScenarioNuclearDeficitMw(obs.dateKey || '');
+        const baseDefMw = Number(obs.baseNuclearDeficitMw ?? nucDefMw);
+        const extraDefMw = Math.max(0, scenDefMw - baseDefMw);
+        const extraNucPremium = extraDefMw > 0
+            ? (extraDefMw / 1000.0) * (1.25 + 3.40 * Math.max(0, 0.65 - ex.wRatio)) * (ex.dti > 0 ? 0.65 : 1.0)
+            : 0.0;
+        return Math.max(-3.30, baseCents + extraNucPremium);
     }
 
     function runBrowserOnlineLearning(officialHourlyMap, weatherMap) {
@@ -803,9 +1041,7 @@
         const wRatio = Math.max(0.01, Math.min(0.95, obs.windMw / windCap));
         const tempC = obs.tempC;
         const hour = obs.hour;
-        const fixedHolidays = ['01-01', '01-06', '05-01', '12-24', '12-25', '12-26'];
-        const md = obs.dateKey ? obs.dateKey.slice(5) : '';
-        const isFreeDay = obs.isWeekend || fixedHolidays.includes(md);
+        const isFreeDay = obs.isWeekend || isPublicHolidayDateKey(obs.dateKey || '', false);
         const isFree = isFreeDay ? 1.0 : 0.0;
 
         const hdd = Math.max(0.0, 12.0 - tempC) / 20.0;
@@ -870,7 +1106,120 @@
         const tBin = obs.tempC < -5 ? 0 : (obs.tempC < 5 ? 1 : (obs.tempC < 18 ? 2 : 3));
         const gAdj = zModel.windTempGridAdj?.[`${wBin}_${tBin}`] || 0.0;
         const coolingAdj = Math.max(0.0, obs.tempC - 21.0) * (zcfg.heatSens || 0.15) * (obs.hour >= 11 && obs.hour <= 21 ? 0.42 : 0.15);
-        return Math.max(-0.50, lin + hRaw * hScale + gAdj + coolingAdj);
+        return Math.max(-2.80, lin + hRaw * hScale + gAdj + coolingAdj);
+    }
+
+    function toZoneLogVat0(yVat0, shift = 3.0) {
+        return Math.log(Math.max(0.18, Number(yVat0) + shift));
+    }
+
+    function fromZoneLogVat0(zVal, shift = 3.0) {
+        return Math.max(-2.82, Math.exp(Math.max(-1.71, Math.min(4.75, Number(zVal)))) - shift);
+    }
+
+    function extractZoneLogFeatures15(obs, zcfg) {
+        const wCap = Math.max(50.0, Number(zcfg.windCapMw || 2000));
+        const sCap = Math.max(50.0, Number(zcfg.solarCapMw || 1000));
+        const wRatio = Math.max(0.01, Math.min(0.95, Number(obs.windMw || 0) / wCap));
+        const sRatio = Math.max(0.0, Math.min(1.0, Number(obs.solarMw || 0) / sCap));
+        const tc = Number(obs.tempC ?? 8.0);
+        const t72 = Number(obs.rolling72hTempC ?? tc);
+        const effT = 0.65 * tc + 0.35 * t72;
+        const h = Number(obs.hour ?? 12);
+        const dti = obs.dayType !== undefined
+            ? obs.dayType
+            : getDayTypeIndex(obs.dateKey || '', Boolean(obs.isWeekend), Boolean(obs.isSat), zcfg.code === 'FI');
+        const isFree = dti > 0 ? 1.0 : 0.0;
+        const hdd = Math.max(0.0, 14.0 - effT) / 20.0;
+        const cdd = Math.max(0.0, tc - 21.0) / 12.0;
+        const windSens = Number(zcfg.windSens ?? zcfg.modelVat0EurCents?.windSens ?? 1.0);
+        const solarSens = Number(zcfg.solarSens ?? zcfg.modelVat0EurCents?.solarSens ?? 1.0);
+        const coldSens = Number(zcfg.coldSens ?? 1.0);
+        const heatSens = Number(zcfg.heatSens ?? zcfg.modelVat0EurCents?.heatSens ?? 0.3);
+
+        const rlIdx = (
+            1.0
+            + 0.85 * hdd * coldSens
+            + 0.55 * cdd * heatSens
+            + ((isFree === 0.0 && h >= 7 && h <= 20) ? 0.32 : -0.18)
+            - 0.90 * wRatio * windSens
+            - 0.55 * sRatio * solarSens
+        );
+        const bCf = windSpeedToCapacityFactor(obs.borderWindSpeed ?? obs.windSpeed100m ?? 6.5);
+        return {
+            wRatio,
+            sRatio,
+            rlIdx,
+            dti,
+            bCf,
+            feats: [
+                1.0,
+                wRatio,
+                wRatio * wRatio,
+                Math.pow(Math.max(0.0, 0.26 - wRatio), 2) * 8.0,
+                sRatio,
+                sRatio * isFree,
+                hdd,
+                cdd,
+                Math.max(0.0, rlIdx - 0.45),
+                Math.pow(Math.max(0.0, rlIdx - 1.05), 1.4),
+                ((isFree === 0.0 && h >= 7 && h <= 10) ? 1.0 : 0.0) * (1.0 - 0.65 * wRatio),
+                ((isFree === 0.0 && h >= 17 && h <= 21) ? 1.0 : 0.0) * (1.0 - 0.55 * wRatio + 0.45 * sRatio),
+                dti === 1 ? 1.0 : 0.0,
+                dti === 2 ? 1.0 : 0.0,
+                bCf * (1.0 - 0.40 * wRatio)
+            ]
+        };
+    }
+
+    function predictZoneLogFundamental(obs, lm, zcfg) {
+        const ex = extractZoneLogFeatures15(obs, zcfg);
+        const wLog = lm.wLog || [];
+        let zf = 0.0;
+        for (let i = 0; i < wLog.length && i < ex.feats.length; i++) {
+            zf += wLog[i] * ex.feats[i];
+        }
+        const hrAdj = lm.dayTypeHourLogAdj?.[ex.dti]?.[obs.hour] || 0.0;
+        return { zFund: zf + hrAdj, ex };
+    }
+
+    function predictZoneLogMeritVat0(obs, zModel, zcfg, arCtx, prevVat0Fallback) {
+        const lm = zModel?.logMeritModel;
+        if (!lm || !Array.isArray(lm.wLog) || lm.wLog.length < 15) {
+            return predictRegionalVat0(obs, zModel, zcfg, prevVat0Fallback);
+        }
+        const shift = Number(lm.shift || 3.0);
+        const { zFund, ex } = predictZoneLogFundamental(obs, lm, zcfg);
+        const hoursAhead = Math.max(0.0, Number(arCtx?.hoursAhead ?? 12.0));
+        const decay = Math.exp(-hoursAhead / 64.0);
+        const damp = Math.max(0.20, 1.05 - 0.78 * ex.wRatio) * decay;
+        const zanom24 = Number(arCtx?.zanom24 ?? 0.0);
+        const zanom7d = Number(arCtx?.zanom7d ?? 0.0);
+        const zlag24 = Math.max(-1.2, Math.min(1.5, Number(arCtx?.zlag24 ?? zanom24)));
+        const zlag168 = Math.max(-1.0, Math.min(1.2, Number(arCtx?.zlag168 ?? zanom7d)));
+        const wZar = lm.wZar || [0.45, 0.20, 0.20, 0.12];
+        const arTerm = (
+            wZar[0] * zanom24
+            + wZar[1] * zanom7d
+            + wZar[2] * zlag24
+            + wZar[3] * zlag168
+        ) * damp;
+
+        const xt = [
+            ex.wRatio,
+            ex.sRatio,
+            ex.rlIdx,
+            Number(obs.tempC ?? 8.0),
+            Number(obs.rolling72hTempC ?? obs.tempC ?? 8.0),
+            Number(obs.hour ?? 12),
+            Number(ex.dti),
+            ex.bCf,
+            zanom24 * decay,
+            Number(obs.month ?? 1)
+        ];
+        const treeSum = evalCompactTrees(lm.trees, xt);
+        const zp = zFund + arTerm + treeSum + Number(lm.medShift || 0.0);
+        return fromZoneLogVat0(zp, shift);
     }
 
     async function fetchRegionalZoneWithOnlineML(zoneCode) {
@@ -892,7 +1241,7 @@
             ];
         const lats = coords.map(c => c.lat).join(',');
         const lons = coords.map(c => c.lon).join(',');
-        const weatherUrl = `https://api.open-meteo.com/v1/forecast?latitude=${lats}&longitude=${lons}&hourly=temperature_2m,wind_speed_100m,shortwave_radiation,surface_pressure&wind_speed_unit=ms&past_days=10&forecast_days=8&timezone=UTC`;
+        const weatherUrl = `https://api.open-meteo.com/v1/forecast?latitude=${lats}&longitude=${lons}&hourly=temperature_2m,wind_speed_100m,shortwave_radiation,surface_pressure&wind_speed_unit=ms&past_days=14&forecast_days=8&timezone=UTC`;
 
         const apiUrl = `/api/v1/prices?zone=${encodeURIComponent(zoneCode)}&vat=0&currency=eur_cents&_t=${minuteCacheBust}`;
 
@@ -923,11 +1272,13 @@
         try {
             if (apiResp && apiResp.ok) {
                 const apiJson = await apiResp.json();
-                if (apiJson && Array.isArray(apiJson.hourly)) {
-                    for (const row of apiJson.hourly) {
-                        if (row && !row.isForecast && typeof row.spotPrice === 'number') {
+                const apiRows = Array.isArray(apiJson?.series) ? apiJson.series : (Array.isArray(apiJson?.hourly) ? apiJson.hourly : []);
+                if (apiRows.length > 0) {
+                    for (const row of apiRows) {
+                        const pVal = row?.spotPrice ?? row?.price;
+                        if (row && !row.isForecast && typeof pVal === 'number') {
                             const hMs = Math.floor((row.epochMs || Date.parse(row.timestamp)) / 3600000) * 3600000;
-                            if (!isNaN(hMs)) officialVat0Map.set(hMs, Number(row.spotPrice));
+                            if (!isNaN(hMs)) officialVat0Map.set(hMs, Number(pVal));
                         }
                     }
                 }
@@ -969,8 +1320,12 @@
                     const buckets = new Map();
                     for (const r of dj.results) {
                         const hMs = Math.floor(Date.parse(r.valid_from) / 3600000) * 3600000;
-                        const estWholesaleEurCents = (Number(r.value_exc_vat) / 2.15) * 1.17;
-                        if (!isNaN(hMs) && !isNaN(estWholesaleEurCents)) {
+                        if (isNaN(hMs)) continue;
+                        const ukComp = getHelsinkiComponents(hMs, 'Europe/London');
+                        const peakAdder = (ukComp.hour >= 16 && ukComp.hour < 19) ? 12.0 : 0.0;
+                        const wholesalePence = Math.max(-5.0, (Number(r.value_exc_vat) - peakAdder) / 2.0);
+                        const estWholesaleEurCents = wholesalePence / 0.84;
+                        if (!isNaN(estWholesaleEurCents)) {
                             if (!buckets.has(hMs)) buckets.set(hMs, []);
                             buckets.get(hMs).push(estWholesaleEurCents);
                         }
@@ -1036,6 +1391,12 @@
                 cntW24++;
             }
             w.rolling24hWindMw = Math.round(sumW24 / Math.max(1, cntW24));
+            let sumW12 = 0, cntW12 = 0;
+            for (let j = Math.max(0, i - 6); j < Math.min(sortedWMs.length, i + 6); j++) {
+                sumW12 += weatherMap.get(sortedWMs[j]).windMw;
+                cntW12++;
+            }
+            w.wind12hSmoothMw = Math.round(sumW12 / Math.max(1, cntW12));
             w.windRamp6hMw = w.windMw - weatherMap.get(sortedWMs[Math.max(0, i - 6)]).windMw;
             let sumT72 = 0, cntT72 = 0;
             for (let j = Math.max(0, i - 71); j <= i; j++) {
@@ -1107,10 +1468,15 @@
         if (!Array.isArray(zLearned.weekendHourAdj)) zLearned.weekendHourAdj = new Array(24).fill(0);
 
         const latestObsMs = obsKeys.length > 0 ? obsKeys[obsKeys.length - 1] : Date.now();
+        const lmZone = zLearned.logMeritModel;
+        const zResByMs = new Map();
+        const zHourBias = [new Array(24).fill(0.0), new Array(24).fill(0.0), new Array(24).fill(0.0)];
         const kernelHist = [];
+
         for (const k of obsKeys) {
             const it = nextZObs[k];
             const zc = getHelsinkiComponents(it.epochMs, zcfg.tz);
+            const dti = getDayTypeIndex(zc.dateKey, zc.isWeekend, zc.isSat, zoneCode === 'FI');
             const prev24It = nextZObs[it.epochMs - 24 * 3600000];
             const prevVat0 = prev24It ? prev24It.vat0 : meanVat0;
             const obsObj = {
@@ -1119,8 +1485,14 @@
                 month: zc.month,
                 hour: zc.hour,
                 isWeekend: zc.isWeekend,
+                isSat: zc.isSat,
+                dayType: dti,
                 lag24hSameHour: prevVat0
             };
+            if (lmZone && Array.isArray(lmZone.wLog) && lmZone.wLog.length >= 15) {
+                const { zFund } = predictZoneLogFundamental(obsObj, lmZone, zcfg);
+                zResByMs.set(it.epochMs, toZoneLogVat0(it.vat0, lmZone.shift || 3.0) - zFund);
+            }
             const pred = predictRegionalVat0(obsObj, zLearned, zcfg, prevVat0);
             const err = Math.max(-9.0, Math.min(9.0, it.vat0 - pred));
             const recency = Math.exp(-Math.max(0, (latestObsMs - it.epochMs) / 3600000) / 180.0);
@@ -1140,13 +1512,53 @@
                 solar: it.solarMw || 0,
                 hour: zc.hour,
                 temp: it.tempC || 8.0,
-                isWeekend: zc.isWeekend,
+                dti,
                 vat0: it.vat0
             });
         }
-        state.mlStats.totalLearnedHours = 17520 + obsKeys.length;
+        state.mlStats.totalLearnedHours = (lmZone?.empiricalHours || 2238) + obsKeys.length;
 
-        function regionalKernelPredict(targetMs, wCand, targetHour, targetIsWeekend) {
+        function getZoneArContext(targetMs, latestConfMs) {
+            let s24 = 0, c24 = 0, s7d = 0, c7d = 0;
+            for (let h = 0; h < 168; h++) {
+                const rv = zResByMs.get(latestConfMs - h * 3600000);
+                if (rv !== undefined) {
+                    if (h < 24) { s24 += rv; c24++; }
+                    s7d += rv;
+                    c7d++;
+                }
+            }
+            const zanom24 = c24 > 0 ? (s24 / c24) : 0.0;
+            const zanom7d = c7d > 0 ? (s7d / c7d) : zanom24;
+            let lagMs = targetMs - 24 * 3600000;
+            while (lagMs > latestConfMs) lagMs -= 24 * 3600000;
+            const zlag24 = zResByMs.get(lagMs) ?? zanom24;
+            const zlag168 = zResByMs.get(targetMs - 168 * 3600000) ?? zanom7d;
+            return { zanom24, zanom7d, zlag24, zlag168 };
+        }
+
+        // Calibrate 14-day local hour residual EMA for the Log-Merit + 16-tree ensemble
+        if (lmZone && obsKeys.length >= 24) {
+            const calStart = Math.max(24, obsKeys.length - 336);
+            for (let idx = calStart; idx < obsKeys.length; idx++) {
+                const ms = obsKeys[idx];
+                const it = nextZObs[ms];
+                const zc = getHelsinkiComponents(ms, zcfg.tz);
+                const dti = getDayTypeIndex(zc.dateKey, zc.isWeekend, zc.isSat, zoneCode === 'FI');
+                const arH = getZoneArContext(ms, ms - 24 * 3600000);
+                const pLogM = predictZoneLogMeritVat0(
+                    { ...it, dateKey: zc.dateKey, month: zc.month, hour: zc.hour, isWeekend: zc.isWeekend, isSat: zc.isSat, dayType: dti },
+                    zLearned,
+                    zcfg,
+                    { ...arH, hoursAhead: 18 },
+                    meanVat0
+                );
+                const res = Math.max(-8.0, Math.min(8.0, it.vat0 - pLogM));
+                zHourBias[dti][zc.hour] = 0.86 * zHourBias[dti][zc.hour] + 0.14 * res;
+            }
+        }
+
+        function regionalKernelPredict(targetMs, wCand, targetHour, targetDti) {
             let num = 0, numSq = 0, den = 0;
             const cutoff = targetMs - 12 * 3600000;
             for (let i = 0; i < kernelHist.length; i++) {
@@ -1157,7 +1569,7 @@
                 const hrDiff = Math.abs(targetHour - h.hour);
                 const dHr = Math.min(hrDiff, 24 - hrDiff) / 1.9;
                 const dTemp = ((wCand.tempC || 8.0) - h.temp) / 4.8;
-                const dWk = (targetIsWeekend === h.isWeekend) ? 0.0 : 1.25;
+                const dWk = (targetDti === h.dti) ? 0.0 : ((targetDti > 0 && h.dti > 0) ? 0.55 : 1.30);
                 const ageD = Math.max(0, (targetMs - h.ms) / 86400000);
                 const wt = Math.exp(-0.5 * (dWind * dWind + dSol * dSol + dHr * dHr + dTemp * dTemp + dWk * dWk) - ageD / 12.0);
                 num += wt * h.vat0;
@@ -1182,11 +1594,14 @@
         for (const k of obsKeys) {
             if (!rollingVat0ByMs.has(k)) rollingVat0ByMs.set(k, nextZObs[k].vat0);
         }
+        const sortedConfMs = Array.from(zResByMs.keys()).sort((a, b) => a - b);
+        const latestConfirmedZoneMs = sortedConfMs.length > 0 ? sortedConfMs[sortedConfMs.length - 1] : currentHourMs;
 
         const series = [];
         for (let i = 0; i < 192; i++) {
             const hMs = startSeriesMs + i * 3600000;
             const zc = getHelsinkiComponents(hMs, zcfg.tz);
+            const dti = getDayTypeIndex(zc.dateKey, zc.isWeekend, zc.isSat, zoneCode === 'FI');
             const w = weatherMap.get(hMs) || {
                 windSpeed100m: 6.2,
                 windMw: Math.round(windCap * 0.28),
@@ -1217,16 +1632,24 @@
                 month: zc.month,
                 hour: zc.hour,
                 isWeekend: zc.isWeekend,
+                isSat: zc.isSat,
+                dayType: dti,
                 ...w,
                 lag24hSameHour: lag24Val
             };
 
-            const linVat0 = predictRegionalVat0(obsObj, zLearned, zcfg, prevAvg);
-            const kp = regionalKernelPredict(hMs, w, zc.hour, zc.isWeekend);
-            const kAlpha = kp.est !== null ? Math.min(0.82, kp.weightSum / (kp.weightSum + 0.22)) : 0.0;
-            const estVat0 = Number((kp.est !== null ? (kAlpha * kp.est + (1.0 - kAlpha) * linVat0) : linVat0).toFixed(3));
-
             const hoursAhead = Math.max(1, (hMs - currentHourMs) / 3600000);
+            const arCtx = { ...getZoneArContext(hMs, Math.min(latestConfirmedZoneMs, hMs - 3600000)), hoursAhead };
+            const hasLogMerit = Boolean(lmZone && Array.isArray(lmZone.wLog) && lmZone.wLog.length >= 15);
+            const ensVat0 = predictZoneLogMeritVat0(obsObj, zLearned, zcfg, arCtx, prevAvg);
+            const kp = regionalKernelPredict(hMs, w, zc.hour, dti);
+            const kAlpha = kp.est !== null
+                ? (hasLogMerit ? Math.min(0.24, kp.weightSum / (kp.weightSum + 3.0)) : Math.min(0.75, kp.weightSum / (kp.weightSum + 0.30)))
+                : 0.0;
+            const blendedVat0 = kp.est !== null ? (kAlpha * kp.est + (1.0 - kAlpha) * ensVat0) : ensVat0;
+            const biasDecay = Math.exp(-Math.max(0, hoursAhead) / 144.0);
+            const estVat0 = Number(Math.max(-2.82, blendedVat0 + zHourBias[dti][zc.hour] * 0.45 * biasDecay).toFixed(3));
+
             const horizonFrac = Math.min(1.0, Math.max(0.0, hoursAhead / 168.0));
             const horizonCurve = Math.pow(horizonFrac, 1.30);
             const dWind = 0.30 + horizonCurve * 0.75;
@@ -1234,14 +1657,15 @@
 
             const wHigh = Math.round(windCap * windSpeedToCapacityFactor((w.windSpeed100m || 6.2) + dWind));
             const wLow = Math.round(windCap * windSpeedToCapacityFactor(Math.max(1.2, (w.windSpeed100m || 6.2) - dWind)));
-            const estOpt = predictRegionalVat0({ ...obsObj, windMw: wHigh, tempC: w.tempC + dTemp }, zLearned, zcfg, prevAvg);
-            const estPess = predictRegionalVat0({ ...obsObj, windMw: wLow, tempC: w.tempC - dTemp }, zLearned, zcfg, prevAvg);
+            const estOpt = predictZoneLogMeritVat0({ ...obsObj, windMw: wHigh, tempC: w.tempC + dTemp }, zLearned, zcfg, arCtx, prevAvg);
+            const estPess = predictZoneLogMeritVat0({ ...obsObj, windMw: wLow, tempC: w.tempC - dTemp }, zLearned, zcfg, arCtx, prevAvg);
             const weatherHalf = Math.abs(estPess - estOpt) * 0.42;
-            const baseSpread = Math.max(0.18, Math.abs(estVat0) * (0.08 + 0.11 * horizonCurve));
-            const halfSpread = Math.max(baseSpread, Math.min(Math.max(0.85, Math.abs(estVat0) * 0.28 + 0.5), Math.hypot(weatherHalf, baseSpread)));
+            const priceMag = Math.max(1.8, Math.abs(estVat0));
+            const baseSpread = Math.max(0.22, priceMag * (0.08 + 0.11 * horizonCurve));
+            const halfSpread = Math.max(baseSpread, Math.min(Math.max(0.85, priceMag * 0.28 + 0.5), Math.hypot(weatherHalf, baseSpread)));
 
-            const minVat0 = Number((estVat0 - halfSpread * 0.92).toFixed(3));
-            const maxVat0 = Number((estVat0 + halfSpread * 1.08).toFixed(3));
+            const minVat0 = Number(Math.max(-2.82, estVat0 - halfSpread * 0.92).toFixed(3));
+            const maxVat0 = Number(Math.max(estVat0 + 0.10, estVat0 + halfSpread * 1.08).toFixed(3));
 
             const officialVat0 = officialVat0Map.get(hMs);
             if (officialVat0 !== undefined) {
@@ -1331,7 +1755,7 @@
         const minuteCacheBust = Math.floor(Date.now() / 60000);
         const pricesUrl = `https://sahkotin.fi/prices?fix&vat&start=${encodeURIComponent(startHourIso)}&_t=${minuteCacheBust}`;
         const spotHintaUrl = `https://api.spot-hinta.fi/TodayAndDayForward?_t=${minuteCacheBust}`;
-        const weatherUrl = 'https://api.open-meteo.com/v1/forecast?latitude=64.26,62.47,62.73,60.17,63.82,59.43&longitude=23.95,21.34,22.58,24.94,20.26,24.75&hourly=temperature_2m,wind_speed_100m,shortwave_radiation,surface_pressure&wind_speed_unit=ms&past_days=10&forecast_days=8&timezone=UTC';
+        const weatherUrl = 'https://api.open-meteo.com/v1/forecast?latitude=64.26,62.47,62.73,60.17,63.82,59.43&longitude=23.95,21.34,22.58,24.94,20.26,24.75&hourly=temperature_2m,wind_speed_100m,shortwave_radiation,surface_pressure&wind_speed_unit=ms&past_days=14&forecast_days=8&timezone=UTC';
 
         const [pricesResp, spotHintaResp, weatherResp] = await Promise.all([
             fetch(pricesUrl, { cache: 'no-store' }).catch(() => null),
@@ -1471,25 +1895,66 @@
             if (Number(k) < minKeepMs) delete preConfirmStore[k];
         }
 
+        const fiLogEns = ML_BASE.model?.logMeritEnsemble || null;
+        const hasFiLogEns = Boolean(fiLogEns && Array.isArray(fiLogEns.wLog) && fiLogEns.wLog.length >= 21);
+        const fiResByMs = new Map();
         const sortedOfficialMs = Array.from(officialHourlyMap.keys()).sort((a, b) => a - b);
         const kernelHistory = [];
+
         for (let idx = 0; idx < sortedOfficialMs.length; idx++) {
             const prevMs = sortedOfficialMs[idx];
             const pw = weatherMap.get(prevMs);
             if (!pw) continue;
             const pHel = getHelsinkiComponents(prevMs);
+            const dti = getDayTypeIndex(pHel.dateKey, pHel.isWeekend, pHel.isSat, true);
+            const pVal = officialHourlyMap.get(prevMs).priceInclVat;
+            if (hasFiLogEns) {
+                const { zFund } = predictFiLogFundamental({
+                    epochMs: prevMs,
+                    dateKey: pHel.dateKey,
+                    month: pHel.month,
+                    hour: pHel.hour,
+                    isWeekend: pHel.isWeekend,
+                    isSat: pHel.isSat,
+                    dayType: dti,
+                    ...pw,
+                    solarMw: radiationToSolarMw(pw.solarRadWm2, pHel.month, pHel.hour),
+                    nuclearDeficitMw: getScenarioNuclearDeficitMw(pHel.dateKey)
+                }, fiLogEns);
+                fiResByMs.set(prevMs, toFiLogPrice(pVal, fiLogEns.shift || 3.5) - zFund);
+            }
             kernelHistory.push({
                 ms: prevMs,
                 wind: pw.windSpeed100m || 6.5,
                 seWind: pw.seWindSpeed || pw.windSpeed100m || 6.5,
                 hour: pHel.hour,
                 temp: pw.tempC || 4.0,
+                dti,
                 isWeekend: pHel.isWeekend,
-                price: officialHourlyMap.get(prevMs).priceInclVat
+                price: pVal
             });
         }
 
-        function kernelPredictHour(targetMs, wCand, targetHour, targetIsWeekend) {
+        function getFiArContext(targetMs, latestConfMs) {
+            let s24 = 0.0, c24 = 0, s7d = 0.0, c7d = 0;
+            for (let h = 0; h < 168; h++) {
+                const rv = fiResByMs.get(latestConfMs - h * 3600000);
+                if (rv !== undefined) {
+                    if (h < 24) { s24 += rv; c24++; }
+                    s7d += rv;
+                    c7d++;
+                }
+            }
+            const zanom24 = c24 > 0 ? (s24 / c24) : 0.0;
+            const zanom7d = c7d > 0 ? (s7d / c7d) : zanom24;
+            let lagMs = targetMs - 24 * 3600000;
+            while (lagMs > latestConfMs) lagMs -= 24 * 3600000;
+            const zlag24 = fiResByMs.get(lagMs) ?? zanom24;
+            const zlag168 = fiResByMs.get(targetMs - 168 * 3600000) ?? zanom7d;
+            return { zanom24, zanom7d, zlag24, zlag168 };
+        }
+
+        function kernelPredictHour(targetMs, wCand, targetHour, targetDti) {
             let num = 0.0;
             let numSq = 0.0;
             let den = 0.0;
@@ -1500,12 +1965,12 @@
             for (let idx = 0; idx < kernelHistory.length; idx++) {
                 const h = kernelHistory[idx];
                 if (h.ms > cutoffMs) break;
-                const dWind = (cWind - h.wind) / 1.10;
+                const dWind = (cWind - h.wind) / 1.15;
                 const dSe = (cSe - h.seWind) / 2.50;
                 const hrDiff = Math.abs(targetHour - h.hour);
-                const dHr = Math.min(hrDiff, 24 - hrDiff) / 1.90;
+                const dHr = Math.min(hrDiff, 24 - hrDiff) / 1.85;
                 const dTemp = (cTemp - h.temp) / 4.50;
-                const dWknd = (targetIsWeekend === h.isWeekend) ? 0.0 : 1.25;
+                const dWknd = (targetDti === h.dti) ? 0.0 : ((targetDti > 0 && h.dti > 0) ? 0.55 : 1.30);
                 const ageDays = Math.max(0.0, (targetMs - h.ms) / 86400000);
                 const weight = Math.exp(-0.5 * (dWind * dWind + dSe * dSe + dHr * dHr + dTemp * dTemp + dWknd * dWknd) - ageDays / 12.0);
                 num += weight * h.price;
@@ -1518,10 +1983,9 @@
             return { est: mean, weightSum: den, localStd: Math.sqrt(variance) };
         }
 
-        // Lasketaan yhdistelmämallin (Kernel + 24 muuttujan Ridge) jäännösvirheoppiminen viimeisen 14 vrk (336 h)
-        // toteutuneista tunneista: malli mittaa omat ennustevirheensä kellonajan ja tuuli/lämpötilaluokan mukaan
-        // ja korjaa tulevia ennusteita sekä vaihteluvälin leveyttä (Conformal Calibration) suoraan opituilla virheillä.
-        const ensHourBias = [new Array(24).fill(0.0), new Array(24).fill(0.0)];
+        // Yhdistelmämallin (Log-Merit Ridge + 45 puun Hist-GBDT + sääpuhdistettu log-AR + Analog Kernel)
+        // jäännösvirheoppiminen viimeisen 14 vrk (336 h) toteutuneista tunneista.
+        const ensHourBias = [new Array(24).fill(0.0), new Array(24).fill(0.0), new Array(24).fill(0.0)];
         const ensRegimeBias = {};
         const recentCalibrationIdxStart = Math.max(24, kernelHistory.length - 336);
         let ensPreErrSum = 0.0, ensPostErrSum = 0.0, ensCalCount = 0;
@@ -1532,7 +1996,8 @@
             const wHist = weatherMap.get(hItem.ms);
             if (!wHist) continue;
             const helHist = getHelsinkiComponents(hItem.ms);
-            const kpHist = kernelPredictHour(hItem.ms, wHist, helHist.hour, helHist.isWeekend);
+            const dtiHist = getDayTypeIndex(helHist.dateKey, helHist.isWeekend, helHist.isSat, true);
+            const kpHist = kernelPredictHour(hItem.ms, wHist, helHist.hour, dtiHist);
             const prev24Val = kernelHistory[Math.max(0, idx - 24)].price;
             const obsHist = {
                 epochMs: hItem.ms,
@@ -1540,6 +2005,8 @@
                 month: helHist.month,
                 hour: helHist.hour,
                 isWeekend: helHist.isWeekend,
+                isSat: helHist.isSat,
+                dayType: dtiHist,
                 ...wHist,
                 solarMw: radiationToSolarMw(wHist.solarRadWm2, helHist.month, helHist.hour),
                 nuclearDeficitMw: getScenarioNuclearDeficitMw(helHist.dateKey),
@@ -1548,33 +2015,35 @@
                 prev24hMean: prev24Val,
                 prev7dMean: prev24Val
             };
-            const linHist = predictWithLearnedModel(obsHist, learnedModel, prev24Val);
-            const kAlpha = kpHist.est !== null ? Math.min(0.88, kpHist.weightSum / (kpHist.weightSum + 0.18)) : 0.0;
-            const rawEns = kpHist.est !== null ? (kAlpha * kpHist.est + (1.0 - kAlpha) * linHist) : linHist;
+            const arHist = { ...getFiArContext(hItem.ms, hItem.ms - 24 * 3600000), hoursAhead: 18 };
+            const ensBaseHist = predictFiLogMeritEnsemble(obsHist, fiLogEns, arHist, learnedModel, prev24Val);
+            const kAlpha = kpHist.est !== null
+                ? (hasFiLogEns ? Math.min(0.24, kpHist.weightSum / (kpHist.weightSum + 3.2)) : Math.min(0.82, kpHist.weightSum / (kpHist.weightSum + 0.20)))
+                : 0.0;
+            const rawEns = kpHist.est !== null ? (kAlpha * kpHist.est + (1.0 - kAlpha) * ensBaseHist) : ensBaseHist;
 
-            const wkIdx = helHist.isWeekend ? 1 : 0;
             const wBinH = Math.min(4, Math.floor((wHist.windMw / FINLAND_INSTALLED_WIND_MW) * 5));
             const tBinH = wHist.tempC < -5 ? 0 : (wHist.tempC < 2 ? 1 : (wHist.tempC < 10 ? 2 : 3));
             const rKeyH = `${wBinH}_${tBinH}`;
 
-            const curBias = ensHourBias[wkIdx][helHist.hour] * 0.55 + (ensRegimeBias[rKeyH] || 0.0) * 0.45;
-            const correctedEns = Math.max(0.05, rawEns + curBias);
+            const curBias = ensHourBias[dtiHist][helHist.hour] * 0.55 + (ensRegimeBias[rKeyH] || 0.0) * 0.45;
+            const correctedEns = Math.max(-3.30, rawEns + curBias);
 
             ensPreErrSum += Math.abs(hItem.price - rawEns);
             ensPostErrSum += Math.abs(hItem.price - correctedEns);
             ensCalCount++;
 
             const resid = Math.max(-8.0, Math.min(8.0, hItem.price - rawEns));
-            ensHourBias[wkIdx][helHist.hour] = 0.84 * ensHourBias[wkIdx][helHist.hour] + 0.16 * resid;
-            ensRegimeBias[rKeyH] = 0.86 * (ensRegimeBias[rKeyH] || 0.0) + 0.14 * resid;
-            absRelErrors.push(Math.abs(hItem.price - correctedEns) / Math.max(1.2, correctedEns));
+            ensHourBias[dtiHist][helHist.hour] = 0.85 * ensHourBias[dtiHist][helHist.hour] + 0.15 * resid;
+            ensRegimeBias[rKeyH] = 0.87 * (ensRegimeBias[rKeyH] || 0.0) + 0.13 * resid;
+            absRelErrors.push(Math.abs(hItem.price - correctedEns) / Math.max(1.8, Math.abs(correctedEns)));
         }
 
         let conformalScale = 1.0;
         if (absRelErrors.length >= 24) {
             absRelErrors.sort((a, b) => a - b);
             const q80 = absRelErrors[Math.min(absRelErrors.length - 1, Math.floor(absRelErrors.length * 0.80))];
-            conformalScale = Math.max(0.82, Math.min(1.18, q80 / 0.16));
+            conformalScale = Math.max(0.82, Math.min(1.22, q80 / 0.18));
         }
 
         state.mlStats.errorLearning = {
@@ -1586,22 +2055,22 @@
             conformalScale: Number(conformalScale.toFixed(2))
         };
 
+        const latestConfirmedFiMs = sortedOfficialMs.length > 0 ? sortedOfficialMs[sortedOfficialMs.length - 1] : currentHourMs;
+
         for (let i = 0; i < 192; i++) {
             const hMs = startSeriesMs + i * 3600000;
             const w = weatherMap.get(hMs) || {
-                windSpeed100m: 6.5, windMw: 2400, tempC: 4.0, solarRadWm2: 0,
+                windSpeed100m: 6.5, windMw: 2400, wind12hSmoothMw: 2400, tempC: 4.0, solarRadWm2: 0,
                 pressureHpa: 1013, seWindSpeed: 6.5, eeWindSpeed: 6.5,
                 rolling24hWindMw: 2400, windRamp6hMw: 0, rolling72hTempC: 4.0
             };
             const official = officialHourlyMap.get(hMs);
             const hel = getHelsinkiComponents(new Date(hMs));
+            const dtiCur = getDayTypeIndex(hel.dateKey, hel.isWeekend, hel.isSat, true);
             const solarMw = radiationToSolarMw(w.solarRadWm2, hel.month, hel.hour);
             const baseDefMw = getScenarioNuclearDeficitMw(hel.dateKey);
             const nuclearMw = FINLAND_NUCLEAR_MAX_MW - baseDefMw;
 
-            // Lasketaan jokaiselle tunnille ohjelman ennustemallin antama hinta-arvio ja vaihteluväli.
-            // Huomioidaan vain samankaltaisen tuulitilanteen edeltävät tunnit, jotta tyynen eilisen
-            // korkea hinta ei vääristä tuulisen päivän ennustetta.
             let pastSum = 0, pastCnt = 0;
             for (let lag = 24; lag <= 72; lag++) {
                 const lagMs = hMs - lag * 3600000;
@@ -1627,6 +2096,8 @@
                 month: hel.month,
                 hour: hel.hour,
                 isWeekend: hel.isWeekend,
+                isSat: hel.isSat,
+                dayType: dtiCur,
                 ...w,
                 solarMw,
                 nuclearDeficitMw: baseDefMw,
@@ -1635,24 +2106,25 @@
                 prev24hMean: prevAvg,
                 prev7dMean: prevAvg
             };
-            const linEst = predictWithLearnedModel(obsObj, learnedModel, prevAvg);
-            const kpMain = kernelPredictHour(hMs, w, hel.hour, hel.isWeekend);
-            const kernelAlpha = kpMain.est !== null ? Math.min(0.88, kpMain.weightSum / (kpMain.weightSum + 0.18)) : 0.0;
+
+            const hoursAhead = Math.max(1, (hMs - currentHourMs) / 3600000);
+            const arCtxCur = { ...getFiArContext(hMs, Math.min(latestConfirmedFiMs, hMs - 3600000)), hoursAhead };
+            const ensEst = predictFiLogMeritEnsemble(obsObj, fiLogEns, arCtxCur, learnedModel, prevAvg);
+            const kpMain = kernelPredictHour(hMs, w, hel.hour, dtiCur);
+            const kernelAlpha = kpMain.est !== null
+                ? (hasFiLogEns ? Math.min(0.24, kpMain.weightSum / (kpMain.weightSum + 3.2)) : Math.min(0.82, kpMain.weightSum / (kpMain.weightSum + 0.20)))
+                : 0.0;
             const baseRawEst = kpMain.est !== null
-                ? (kernelAlpha * kpMain.est + (1.0 - kernelAlpha) * linEst)
-                : linEst;
+                ? (kernelAlpha * kpMain.est + (1.0 - kernelAlpha) * ensEst)
+                : ensEst;
             const wBinCur = Math.min(4, Math.floor((w.windMw / FINLAND_INSTALLED_WIND_MW) * 5));
             const tBinCur = w.tempC < -5 ? 0 : (w.tempC < 2 ? 1 : (w.tempC < 10 ? 2 : 3));
             const rKeyCur = `${wBinCur}_${tBinCur}`;
             const hoursAheadForBias = Math.max(0, (hMs - currentHourMs) / 3600000);
             const biasDecay = Math.exp(-hoursAheadForBias / 144.0);
-            const learnedResidualBias = (ensHourBias[hel.isWeekend ? 1 : 0][hel.hour] * 0.55 + (ensRegimeBias[rKeyCur] || 0.0) * 0.45) * biasDecay;
-            const rawEst = Math.max(0.05, baseRawEst + learnedResidualBias);
+            const learnedResidualBias = (ensHourBias[dtiCur][hel.hour] * 0.50 + (ensRegimeBias[rKeyCur] || 0.0) * 0.40) * biasDecay;
+            const rawEst = Math.max(-3.30, baseRawEst + learnedResidualBias);
 
-            // Lasketaan tiukka todennäköinen vaihteluväli [minInclVat, maxInclVat] 6 mittauspisteen
-            // alueellisesti keskiarvoistetusta sääepävarmuudesta (1/sqrt(6) hajonnan vaimennus)
-            // sekä saman tuuli- ja tuntitilanteen historiallisesta hajonnasta ilman keinotekoisia lisäkertoimia.
-            const hoursAhead = Math.max(1, (hMs - currentHourMs) / 3600000);
             const horizonFrac = Math.min(1.0, Math.max(0.0, hoursAhead / 168.0));
             const horizonCurve = Math.pow(horizonFrac, 1.35);
             const deltaWindMs = 0.28 + horizonCurve * 0.65;
@@ -1663,38 +2135,41 @@
             const windHighMw = Math.round(FINLAND_INSTALLED_WIND_MW * windSpeedToCapacityFactor(wOpt.windSpeed100m));
             const windLowMw = Math.round(FINLAND_INSTALLED_WIND_MW * windSpeedToCapacityFactor(wPess.windSpeed100m));
 
-            const linOpt = predictWithLearnedModel({
+            const ensOpt = predictFiLogMeritEnsemble({
                 ...obsObj,
                 windMw: windHighMw,
+                wind12hSmoothMw: Math.round((obsObj.wind12hSmoothMw || w.windMw) * 0.5 + windHighMw * 0.5),
                 rolling24hWindMw: Math.round((obsObj.rolling24hWindMw || w.windMw) * 0.5 + windHighMw * 0.5),
                 tempC: wOpt.tempC
-            }, learnedModel, prevAvg);
-            const kpOpt = kernelPredictHour(hMs, wOpt, hel.hour, hel.isWeekend);
+            }, fiLogEns, arCtxCur, learnedModel, prevAvg);
+            const kpOpt = kernelPredictHour(hMs, wOpt, hel.hour, dtiCur);
             const estOptimistic = kpOpt.est !== null
-                ? (kernelAlpha * kpOpt.est + (1.0 - kernelAlpha) * linOpt)
-                : linOpt;
+                ? (kernelAlpha * kpOpt.est + (1.0 - kernelAlpha) * ensOpt)
+                : ensOpt;
 
-            const linPess = predictWithLearnedModel({
+            const ensPess = predictFiLogMeritEnsemble({
                 ...obsObj,
                 windMw: windLowMw,
+                wind12hSmoothMw: Math.round((obsObj.wind12hSmoothMw || w.windMw) * 0.5 + windLowMw * 0.5),
                 rolling24hWindMw: Math.round((obsObj.rolling24hWindMw || w.windMw) * 0.5 + windLowMw * 0.5),
                 tempC: wPess.tempC
-            }, learnedModel, prevAvg);
-            const kpPess = kernelPredictHour(hMs, wPess, hel.hour, hel.isWeekend);
+            }, fiLogEns, arCtxCur, learnedModel, prevAvg);
+            const kpPess = kernelPredictHour(hMs, wPess, hel.hour, dtiCur);
             const estPessimistic = kpPess.est !== null
-                ? (kernelAlpha * kpPess.est + (1.0 - kernelAlpha) * linPess)
-                : linPess;
+                ? (kernelAlpha * kpPess.est + (1.0 - kernelAlpha) * ensPess)
+                : ensPess;
 
-            const estInclVat = Number(Math.max(0.05, rawEst).toFixed(2));
-            const weatherHalfSpread = Math.abs(estPessimistic - estOptimistic) * 0.38;
-            const regimeHalfSpread = Math.min(estInclVat * 0.16, (kpMain.localStd || 0.30) * (0.24 + 0.22 * horizonCurve));
+            const estInclVat = Number(Math.max(-3.30, rawEst).toFixed(2));
+            const priceMag = Math.max(1.8, Math.abs(estInclVat));
+            const weatherHalfSpread = Math.abs(estPessimistic - estOptimistic) * 0.40;
+            const regimeHalfSpread = Math.min(priceMag * 0.18, (kpMain.localStd || 0.30) * (0.24 + 0.22 * horizonCurve));
             const rawHalfSpread = Math.hypot(weatherHalfSpread, regimeHalfSpread) * conformalScale;
-            const minHalfSpread = Math.max(0.05, estInclVat * (0.06 + 0.08 * horizonCurve));
-            const maxHalfSpread = Math.max(0.22, estInclVat * (0.12 + 0.14 * horizonCurve));
+            const minHalfSpread = Math.max(0.22, priceMag * (0.07 + 0.08 * horizonCurve));
+            const maxHalfSpread = Math.max(0.75, priceMag * (0.18 + 0.16 * horizonCurve));
             const halfSpread = Math.max(minHalfSpread, Math.min(maxHalfSpread, rawHalfSpread));
 
-            const minIncl = Number(Math.max(0.02, estInclVat - halfSpread * 0.92).toFixed(2));
-            const maxIncl = Number(Math.max(estInclVat + 0.08, estInclVat + halfSpread * 1.08).toFixed(2));
+            const minIncl = Number(Math.max(-3.30, estInclVat - halfSpread * 0.92).toFixed(2));
+            const maxIncl = Number(Math.max(estInclVat + 0.10, estInclVat + halfSpread * 1.08).toFixed(2));
 
             if (official) {
                 const savedPred = preConfirmStore[hMs];
@@ -1787,11 +2262,11 @@
             const extraDefMw = Math.max(0, scenDefMw - baseDef);
             const wRatio = Math.max(0.01, Math.min(0.95, (s.windMw || 2400) / FINLAND_INSTALLED_WIND_MW));
             const extraPremium = (extraDefMw / 1000.0) * (1.35 + 3.60 * Math.max(0, 0.65 - wRatio)) * (s.isWeekend ? 0.65 : 1.0);
-            const nextIncl = Number(Math.max(0.10, s.basePriceInclVat + extraPremium).toFixed(2));
-            const spread = Math.max(0.95, nextIncl * 0.32 + 0.8);
+            const nextIncl = Number(Math.max(-3.30, s.basePriceInclVat + extraPremium).toFixed(2));
+            const spread = Math.max(0.95, Math.abs(nextIncl) * 0.32 + 0.8);
             s.priceInclVat = nextIncl;
             s.priceVat0 = Number((nextIncl / 1.255).toFixed(2));
-            s.minInclVat = Number(Math.max(0.0, nextIncl - spread).toFixed(2));
+            s.minInclVat = Number(Math.max(-3.30, nextIncl - spread).toFixed(2));
             s.maxInclVat = Number((nextIncl + spread * 1.15).toFixed(2));
         }
     }
@@ -1846,7 +2321,7 @@
     }
 
     async function loadSpotAndForecastData() {
-        const fastCacheKey = `${storagePrefix}fast_z_${state.activeZone || 'FI'}_v4`;
+        const fastCacheKey = `${storagePrefix}fast_z_${state.activeZone || 'FI'}_v5`;
         try {
             const rawFast = localStorage.getItem(fastCacheKey);
             if (rawFast) {

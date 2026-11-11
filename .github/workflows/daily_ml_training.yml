@@ -23,6 +23,9 @@ jobs:
         with:
           python-version: '3.12'
 
+      - name: Install numerical accelerator
+        run: pip install --quiet numpy
+
       - name: Fetch new spot & weather observations and retrain 40 regional ML models
         run: |
           python train_and_learn.py

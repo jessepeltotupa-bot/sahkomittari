@@ -274,8 +274,13 @@ def build_api_docs_page() -> str:
     zone_rows = []
     for zcode, z in BIDDING_ZONES.items():
         json_href = f"/api/v1/prices?zone={zcode}&vat=1"
+        ha_href = f"/api/v1/ha/{zcode}.json"
+        shelly_href = f"/api/v1/shelly/{zcode}.json"
+        evcc_href = f"/api/v1/evcc/{zcode}.json"
         csv_href = f"/api/v1/prices?zone={zcode}&vat=1&format=csv"
-        badge_href = f"/api/v1/prices?zone={zcode}&vat=1&format=badge"
+        ical_href = f"/api/v1/ical/{zcode}.ics"
+        widget_href = f"/api/v1/widget/{zcode}?theme=light"
+        badge_href = f"/api/v1/badge/{zcode}.svg"
         zone_rows.append(
             f"""                            <tr>
                                 <td><strong><code>{html.escape(zcode)}</code></strong></td>
@@ -285,8 +290,13 @@ def build_api_docs_page() -> str:
                                 <td>{z['windCapMw']} MW / {z['solarCapMw']} MW</td>
                                 <td style="white-space:nowrap;">
                                     <a href="{json_href}">JSON</a> &middot;
+                                    <a href="{ha_href}">HA</a> &middot;
+                                    <a href="{shelly_href}">Shelly</a> &middot;
+                                    <a href="{evcc_href}">EVCC</a> &middot;
                                     <a href="{csv_href}">CSV</a> &middot;
-                                    <a href="{badge_href}">SVG Badge</a>
+                                    <a href="{ical_href}">iCal</a> &middot;
+                                    <a href="{widget_href}">Widget</a> &middot;
+                                    <a href="{badge_href}">Badge</a>
                                 </td>
                             </tr>"""
         )
@@ -299,10 +309,10 @@ def build_api_docs_page() -> str:
     api_schema = {
         "@context": "https://schema.org",
         "@type": "WebAPI",
-        "name": "Spotpuls Open Electricity Spot & 7-Day Forecast REST API",
+        "name": "Spotpuls Open Electricity Spot, 7-Day Forecast & Smart Automation REST API",
         "url": f"{SITE_URL}/api/v1/prices",
         "documentation": f"{SITE_URL}/api-docs/",
-        "description": "Free CORS-enabled REST API serving official day-ahead electricity spot prices and self-learning 7-day regional hourly forecasts for all 40 European bidding zones.",
+        "description": "Free CORS-enabled REST API serving official day-ahead electricity spot prices, 7-day Log-Merit + Hist-GBDT regional forecasts, and native Home Assistant, Shelly, EVCC, Victron/Node-RED, ESPHome, CSV, iCal, Prometheus, plain-text, SVG badge, and iframe widget feeds across all 40 European bidding zones.",
         "provider": {"@type": "Organization", "name": "Spotpuls", "url": SITE_URL},
     }
 
@@ -311,8 +321,8 @@ def build_api_docs_page() -> str:
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Spotpuls Open REST API — Day-Ahead Electricity Spot Prices &amp; 7-Day Forecast (40 European Zones) | spotpuls.app</title>
-    <meta name="description" content="Free, zero-key, CORS-enabled REST API for live European day-ahead electricity spot prices and self-learning 7-day regional hourly forecasts across 40 bidding zones (JSON, CSV, Home Assistant, Google Sheets, SVG Badge).">
+    <title>Spotpuls Open REST API — Day-Ahead Electricity Spot Prices, 7-Day Forecast &amp; Smart-Home Integrations (40 Zones) | spotpuls.app</title>
+    <meta name="description" content="Free, zero-key, CORS-enabled REST API for live European day-ahead electricity spot prices, 7-day Log-Merit + Hist-GBDT forecasts, and plug-and-play integrations for Home Assistant, Shelly, EVCC, ESPHome, Node-RED, Google Sheets, iCal, Prometheus, and iframe widgets.">
     <link rel="canonical" href="{SITE_URL}/api-docs/" />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg?v=37">
     <link rel="icon" type="image/x-icon" href="/favicon.ico">
@@ -328,13 +338,14 @@ def build_api_docs_page() -> str:
         <div class="header-inner">
             <a href="/en/" class="brand-link">
                 <span class="brand-title"><img src="/favicon.svg?v=37" alt="" width="24" height="24" style="vertical-align:-5px; margin-right:8px;">Spotpuls</span>
-                <span class="brand-subtitle">Open Electricity Spot &amp; 7-Day Forecast API — 40 European Bidding Zones</span>
+                <span class="brand-subtitle">Open Electricity Spot, 7-Day Forecast &amp; Universal Automation API — 40 European Bidding Zones</span>
             </a>
             <div class="header-right">
                 <nav class="main-nav" aria-label="API Navigation">
                     <a href="/">FI</a>
                     <a href="/en/">Dashboard (EN)</a>
                     <a href="#endpoints">Endpoints</a>
+                    <a href="#integrations">Integrations</a>
                     <a href="#zones">40 Zones</a>
                     <a href="/openapi.json">OpenAPI 3.1</a>
                 </nav>
@@ -354,52 +365,132 @@ def build_api_docs_page() -> str:
                 <a href="/openapi.json" style="color:var(--signal-yellow); font-family:var(--mono); font-size:12px; font-weight:700;">openapi.json &rarr;</a>
             </div>
             <div class="panel-body">
-                <p style="font-size:14.5px; max-width:920px; margin-bottom:14px;">
-                    <strong>Spotpuls (<code>https://spotpuls.app</code>)</strong> provides a free, open, CORS-enabled REST API delivering official day-ahead electricity spot prices together with a dedicated regional self-learning 7-day (168 h) hourly forecast and probability range for every European spot-electricity bidding zone (Nord Pool, EPEX SPOT, OMIE, GME, TGE, OTE, OKTE, HUPX, OPCOM, IBEX, BSP, CROPEX, HEnEx, SEMOpx).
+                <p style="font-size:14.5px; max-width:940px; margin-bottom:14px;">
+                    <strong>Spotpuls (<code>https://spotpuls.app</code>)</strong> provides a free, zero-key, CORS-enabled REST &amp; automation API delivering official day-ahead electricity spot prices together with an empirically calibrated 7-day (168 h) Log-Merit + Hist-GBDT hourly forecast (including negative price regimes and conformal probability bands) across all 40 European bidding zones. Ten native output formats allow direct integration into smart-home hubs, relays, EV chargers, microcontrollers, calendars, spreadsheets, monitoring stacks, and websites.
                 </p>
 
                 <div class="api-panel-grid">
                     <div class="api-card">
-                        <span class="field-label">1. HOURLY SPOT + 7-DAY FORECAST ENDPOINT</span>
-                        <pre class="api-pre-block">GET https://spotpuls.app/api/v1/prices?zone=FI&amp;vat=1&amp;currency=local&amp;format=json</pre>
+                        <span class="field-label">1. HOURLY SPOT + 7-DAY FORECAST + SMART AUTOMATION</span>
+                        <pre class="api-pre-block">GET https://spotpuls.app/api/v1/prices?zone=FI&amp;vat=1&amp;window=3&amp;format=json</pre>
                         <ul style="margin:10px 0 0 18px; font-family:var(--mono); font-size:12px; line-height:1.65;">
-                            <li><code>zone</code> — Bidding zone code (e.g. <code>FI</code>, <code>SE3</code>, <code>NO1</code>, <code>DK1</code>, <code>DE-LU</code>, <code>FR</code>, <code>NL</code>, <code>ES</code>, <code>IT-North</code>, <code>PL</code>, <code>GB</code>). Default: <code>FI</code>.</li>
+                            <li><code>zone</code> — Any of 40 European zones (<code>FI</code>, <code>SE1..SE4</code>, <code>NO1..NO5</code>, <code>DK1..DK2</code>, <code>EE</code>, <code>LV</code>, <code>LT</code>, <code>DE-LU</code>, <code>FR</code>, <code>NL</code>, <code>ES</code>, <code>IT-North</code>, <code>PL</code>, <code>GB</code>).</li>
                             <li><code>vat</code> — <code>1</code> (incl. national electricity VAT, default) or <code>0</code> (VAT 0 %).</li>
-                            <li><code>currency</code> — <code>local</code> (native subunit/kWh, e.g. snt, öre, øre, ct, p, gr, Ft, Kč), <code>eur_cents</code> (EUR c/kWh), or <code>eur_mwh</code> (EUR/MWh).</li>
-                            <li><code>format</code> — <code>json</code> (default), <code>csv</code> (Google Sheets / Excel), or <code>badge</code> (live embeddable SVG widget).</li>
+                            <li><code>currency</code> — <code>local</code> (snt, öre, øre, ct, p, gr, Ft, Kč), <code>eur_cents</code>, <code>eur_kwh</code>, or <code>eur_mwh</code>.</li>
+                            <li><code>window</code> — <code>1..24</code> (default <code>3</code>): computes <code>cheapestContiguousWindow</code> and <code>cheapestHours</code> for relays, boilers, heat pumps, and EVs.</li>
+                            <li><code>margin</code> / <code>transfer</code> / <code>threshold</code> — Optional contract add-ons &amp; price trigger threshold.</li>
+                            <li><code>format</code> — <code>json</code>, <code>compact</code> (<code>shelly</code>), <code>ha</code>, <code>evcc</code>, <code>victron</code>, <code>csv</code>, <code>ical</code>, <code>prometheus</code>, <code>plain</code>, <code>badge</code>, or <code>widget</code>.</li>
                         </ul>
                     </div>
 
                     <div class="api-card">
-                        <span class="field-label">2. DISCOVER ALL 40 BIDDING ZONES</span>
+                        <span class="field-label">2. CLEAN INTEGRATION SHORTCUT URLS</span>
                         <pre class="api-pre-block">GET https://spotpuls.app/api/v1/zones
-GET https://spotpuls.app/api/v1/prices?list=zones</pre>
-                        <span class="field-label" style="margin-top:12px;">3. EMBEDDABLE LIVE SVG BADGE (BACKLINK WIDGET)</span>
+GET https://spotpuls.app/api/v1/ha/FI.json?window=3
+GET https://spotpuls.app/api/v1/shelly/FI.json?window=3
+GET https://spotpuls.app/api/v1/evcc/DE-LU.json
+GET https://spotpuls.app/api/v1/ical/FI.ics?window=3
+GET https://spotpuls.app/api/v1/metrics?zone=FI
+GET https://spotpuls.app/api/v1/plain/FI?field=run_now&amp;window=3</pre>
+                        <span class="field-label" style="margin-top:12px;">3. LIVE SVG BADGE &amp; IFRAME MINI-CHART WIDGET</span>
                         <div class="api-badge-preview">
-                            <img src="/api/v1/prices?zone=FI&vat=1&format=badge" alt="Spotpuls FI live badge" width="250" height="32" style="border:1px solid #111210;">
-                            <img src="/api/v1/prices?zone=DE-LU&vat=1&format=badge" alt="Spotpuls DE-LU live badge" width="250" height="32" style="border:1px solid #111210;">
+                            <img src="/api/v1/badge/FI.svg" alt="Spotpuls FI live badge" width="256" height="28" style="border:1px solid #111210;">
+                            <img src="/api/v1/badge/DE-LU.svg" alt="Spotpuls DE-LU live badge" width="256" height="28" style="border:1px solid #111210;">
                         </div>
-                        <pre class="api-pre-block">&lt;a href="https://spotpuls.app/?zone=FI" target="_blank" rel="noopener"&gt;
-  &lt;img src="https://spotpuls.app/api/v1/prices?zone=FI&amp;vat=1&amp;format=badge" alt="Spotpuls FI spot electricity price" width="250" height="32"&gt;
-&lt;/a&gt;</pre>
+                        <pre class="api-pre-block">&lt;iframe src="https://spotpuls.app/api/v1/widget/FI?theme=light" width="100%" height="198" style="border:0;max-width:460px;" loading="lazy"&gt;&lt;/iframe&gt;</pre>
                     </div>
                 </div>
+            </div>
+        </section>
 
-                <div class="api-panel-grid" style="margin-top:16px;">
+        <section class="panel-box" id="integrations">
+            <div class="panel-head">
+                <h2>READY-TO-USE APPLICATION &amp; HARDWARE INTEGRATIONS</h2>
+            </div>
+            <div class="panel-body">
+                <div class="api-panel-grid">
                     <div class="api-card">
-                        <span class="field-label">JAVASCRIPT / TYPESCRIPT FETCH EXAMPLE</span>
-                        <pre class="api-pre-block">const res = await fetch("https://spotpuls.app/api/v1/prices?zone=SE3&amp;vat=1");
+                        <span class="field-label">HOME ASSISTANT (CONFIGURATION.YAML + APEXCHARTS)</span>
+                        <pre class="api-pre-block">rest:
+  - resource: "https://spotpuls.app/api/v1/ha/FI.json?window=3&amp;transfer=6.80"
+    scan_interval: 300
+    sensor:
+      - name: "Spotpuls Spot Price"
+        value_template: "{{{{ value_json.state }}}}"
+        unit_of_measurement: "snt/kWh"
+        json_attributes:
+          - total_price
+          - today_min
+          - today_max
+          - raw_today
+          - raw_tomorrow
+          - forecast_7d
+    binary_sensor:
+      - name: "Spotpuls Cheapest 3h Window Active"
+        value_template: "{{{{ value_json.run_contiguous_now }}}}"</pre>
+                    </div>
+
+                    <div class="api-card">
+                        <span class="field-label">SHELLY PLUS / GEN2 / GEN3 / PRO LOCAL RELAY SCRIPT (&lt; 500 B)</span>
+                        <pre class="api-pre-block">// Runs on Shelly Plus 1PM / Pro 3EM — switches relay ON during cheapest 3h window
+const URL = "https://spotpuls.app/api/v1/shelly/FI.json?window=3";
+function pollSpotpuls() {{
+  Shelly.call("HTTP.GET", {{ url: URL, timeout: 10 }}, function (res, err) {{
+    if (err || !res || res.code !== 200) return;
+    const d = JSON.parse(res.body);
+    const shouldRun = d.runContig === 1; // or d.runCheap === 1
+    Shelly.call("Switch.Set", {{ id: 0, on: shouldRun }});
+  }});
+}}
+pollSpotpuls();
+Timer.set(300000, true, pollSpotpuls);</pre>
+                    </div>
+
+                    <div class="api-card">
+                        <span class="field-label">EVCC.IO DYNAMIC EV &amp; BATTERY CHARGING TARIFF (EVCC.YAML)</span>
+                        <pre class="api-pre-block">tariffs:
+  currency: EUR
+  grid:
+    type: custom
+    forecast:
+      source: http
+      uri: https://spotpuls.app/api/v1/evcc/DE-LU.json?vat=1
+      jq: .
+      cache: 15m</pre>
+                    </div>
+
+                    <div class="api-card">
+                        <span class="field-label">ESPHOME / ESP32 / APPLE SHORTCUTS / CURL / PLC</span>
+                        <pre class="api-pre-block"># Single numeric value (current spot price):
+curl -s "https://spotpuls.app/api/v1/plain/FI?field=spot"
+
+# Binary 1 / 0 relay trigger (1 if inside cheapest 4h block):
+curl -s "https://spotpuls.app/api/v1/plain/FI?field=run_now&amp;window=4"
+
+# Google Sheets live 192-hour table:
+=IMPORTDATA("https://spotpuls.app/api/v1/prices?zone=FI&amp;vat=1&amp;format=csv")
+
+# Apple / Google / Outlook Calendar live subscription URL:
+https://spotpuls.app/api/v1/ical/FI.ics?window=3</pre>
+                    </div>
+
+                    <div class="api-card">
+                        <span class="field-label">JAVASCRIPT / TYPESCRIPT SDK-FREE FETCH</span>
+                        <pre class="api-pre-block">const res = await fetch("https://spotpuls.app/api/v1/prices?zone=SE3&amp;vat=1&amp;window=4");
 const data = await res.json();
 console.log(data.current.spotPrice, data.meta.unit);
-console.log("Next 168h series:", data.series.length);</pre>
+console.log("Cheapest 4h:", data.automation.cheapestContiguousWindow);</pre>
                     </div>
+
                     <div class="api-card">
-                        <span class="field-label">PYTHON / DATA SCIENCE EXAMPLE</span>
-                        <pre class="api-pre-block">import requests
-r = requests.get("https://spotpuls.app/api/v1/prices", params={{"zone": "DE-LU", "vat": 1}})
-payload = r.json()
-for slot in payload["series"][:24]:
-    print(slot["timestamp"], slot["spotPrice"], slot["isForecast"])</pre>
+                        <span class="field-label">PYTHON / PANDAS &amp; PROMETHEUS / GRAFANA</span>
+                        <pre class="api-pre-block">import pandas as pd
+df = pd.read_csv("https://spotpuls.app/api/v1/prices?zone=FI&amp;vat=1&amp;format=csv", comment="#")
+print(df.head())
+
+# Prometheus scrape config (prometheus.yml):
+# metrics_path: /api/v1/metrics
+# params: {{ zone: ["FI"] }}</pre>
                     </div>
                 </div>
             </div>
@@ -419,7 +510,7 @@ for slot in payload["series"][:24]:
                                 <th>Power Exchange</th>
                                 <th>IANA Timezone</th>
                                 <th>Wind / Solar Cap.</th>
-                                <th>Live API Feeds</th>
+                                <th>Live API &amp; Integration Feeds</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -453,7 +544,6 @@ for slot in payload["series"][:24]:
 </body>
 </html>
 """
-
 
 def main():
     count = 0

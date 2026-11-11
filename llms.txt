@@ -1,21 +1,33 @@
 # Spotpuls (https://spotpuls.app)
-> Open European Day-Ahead Electricity Spot Price Tracker, Self-Learning 7-Day Regional Forecast (40 Bidding Zones), Postal Grid Tariff Calculator & Free Public REST API.
+> Open European Day-Ahead Electricity Spot Price Tracker, Self-Learning 7-Day Regional Forecast (40 Bidding Zones), Postal Grid Tariff Calculator & Universal Automation REST API.
 
 ## Overview
-Spotpuls (`https://spotpuls.app`) provides live hourly day-ahead electricity spot prices together with a dedicated self-learning 7-day (168 h) hourly forecast and probability range for every European spot-electricity bidding zone across 28 native languages.
+Spotpuls (`https://spotpuls.app`) provides live hourly day-ahead electricity spot prices together with an empirically calibrated 7-day (168 h) Log-Merit + Hist-GBDT hourly forecast (supporting negative spot prices and conformal probability bands) for all 40 European spot-electricity bidding zones across 28 native languages.
 
-## Public REST API (Free, No API Key, CORS `*`)
-- **Primary Endpoint (JSON / CSV / SVG Badge)**:
-  - `GET https://spotpuls.app/api/v1/prices?zone=FI&vat=1&currency=local&format=json`
-  - Query parameters:
-    - `zone`: One of 40 European bidding zones: `FI`, `SE1`, `SE2`, `SE3`, `SE4`, `NO1`, `NO2`, `NO3`, `NO4`, `NO5`, `DK1`, `DK2`, `EE`, `LV`, `LT`, `DE-LU`, `AT`, `CH`, `NL`, `BE`, `FR`, `GB`, `IE-SEM`, `ES`, `PT`, `IT-North`, `IT-Centre-North`, `IT-Centre-South`, `IT-South`, `IT-Sicily`, `IT-Sardinia`, `PL`, `CZ`, `SK`, `HU`, `RO`, `BG`, `SI`, `HR`, `GR`.
-    - `vat`: `1` (incl. national electricity VAT, default) or `0` (VAT 0 %).
-    - `currency`: `local` (native subunit/kWh, e.g. `snt/kWh`, `öre/kWh`, `øre/kWh`, `ct/kWh`, `p/kWh`, `gr/kWh`, `Kč/kWh`, `Ft/kWh`), `eur_cents` (`c/kWh`), or `eur_mwh` (`EUR/MWh`).
-    - `format`: `json` (default), `csv` (for Google Sheets `=IMPORTDATA(...)` & Excel), or `badge` (live embeddable SVG price badge).
-- **List All 40 Bidding Zones**:
-  - `GET https://spotpuls.app/api/v1/zones` (or `GET https://spotpuls.app/api/v1/prices?list=zones`)
+## Universal Public REST API (Free, No API Key, CORS `*`)
+- **Primary Endpoint**:
+  - `GET https://spotpuls.app/api/v1/prices?zone=FI&vat=1&currency=local&window=3&format=json`
+- **Supported Query Parameters**:
+  - `zone`: Any of 40 European bidding zones (`FI`, `SE1`..`SE4`, `NO1`..`NO5`, `DK1`, `DK2`, `EE`, `LV`, `LT`, `DE-LU`, `AT`, `CH`, `NL`, `BE`, `FR`, `GB`, `IE-SEM`, `ES`, `PT`, `IT-North`..`IT-Sardinia`, `PL`, `CZ`, `SK`, `HU`, `RO`, `BG`, `SI`, `HR`, `GR`).
+  - `vat`: `1` (incl. national electricity VAT, default) or `0` (VAT 0 %).
+  - `currency`: `local` (native subunit/kWh, e.g. `snt/kWh`, `öre/kWh`, `øre/kWh`, `ct/kWh`, `p/kWh`, `gr/kWh`, `Kč/kWh`, `Ft/kWh`), `eur_cents` (`ct/kWh`), `eur_kwh` (`EUR/kWh`), or `eur_mwh` (`EUR/MWh`).
+  - `window`: `1..24` (default `3`) — computes optimal cheapest contiguous N-hour block (`cheapestContiguousWindow`) and N cheapest individual hours (`cheapestHours`) in the next 24h.
+  - `margin` / `transfer`: Optional add-ons to compute `totalPrice` per hour.
+  - `threshold`: Optional price threshold returning `belowThresholdNow` boolean.
+- **10 Plug-and-Play Application Output Formats (`format=...` or Clean URL Shortcuts)**:
+  - `json` (default): Full JSON with `meta`, `market`, `current`, `summary`, `automation`, and 192-hour `series`.
+  - `compact` / `shelly` (`/api/v1/shelly/FI.json`): Ultra-compact `< 500 B` JSON for Shelly Gen2/Gen3 scripts, ESPHome, ESP32, Arduino, and PLCs.
+  - `ha` (`/api/v1/ha/FI.json`): Native Home Assistant RESTful sensor + ApexCharts-Card payload (`state`, `raw_today`, `raw_tomorrow`, `forecast_7d`, `run_contiguous_now`).
+  - `evcc` (`/api/v1/evcc/DE-LU.json`): Native evcc.io open-source EV/solar charger tariff array `[{start, end, value}]`.
+  - `victron` (`/api/v1/victron/NL.json`): Node-RED & Victron VenusOS Dynamic ESS schedule payload.
+  - `csv` (`?format=csv`): Spreadsheet feed for Google Sheets `=IMPORTDATA(...)`, Excel PowerQuery, and Pandas.
+  - `ical` (`/api/v1/ical/FI.ics`): RFC 5545 calendar subscription feed for Apple Calendar, Google Calendar, and Outlook.
+  - `prometheus` (`/api/v1/metrics?zone=FI`): Native Prometheus / Grafana / VictoriaMetrics metrics.
+  - `plain` (`/api/v1/plain/FI?field=spot` or `field=run_now`): Single plain-text value (`1`/`0` or numeric price) for Apple Shortcuts, Tasker, curl, Loxone, and KNX.
+  - `badge` (`/api/v1/badge/FI.svg`) & `widget` (`/api/v1/widget/FI?theme=light`): Live SVG status badge and responsive `<iframe>` 24h mini-chart widget.
+- **Zone Directory**: `https://spotpuls.app/api/v1/zones`
 - **OpenAPI 3.1 Specification**: `https://spotpuls.app/openapi.json`
-- **Interactive Developer Documentation**: `https://spotpuls.app/api-docs/`
+- **Developer & Smart-Home Integration Guide**: `https://spotpuls.app/api-docs/`
 
 ## Localized Country & Language Editions (28 Languages)
 - Finland (Suomi): `https://spotpuls.app/`

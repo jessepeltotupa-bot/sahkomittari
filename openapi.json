@@ -1,10 +1,10 @@
 {
   "openapi": "3.1.0",
   "info": {
-    "title": "Spotpuls Open Electricity Spot & 7-Day Forecast API",
-    "version": "1.0.0",
-    "summary": "Free, CORS-enabled European day-ahead electricity spot prices and self-learning 7-day regional hourly forecasts across 40 bidding zones.",
-    "description": "Public REST API by Spotpuls (https://spotpuls.app) providing official day-ahead electricity spot prices (Nord Pool, EPEX SPOT, OMIE, GME, TGE, OTE, OKTE, HUPX, OPCOM, IBEX, BSP, CROPEX, HEnEx, SEMOpx) combined with zone-specific self-learning 7-day (168 h) hourly forecasts, probability bands, wind/solar generation estimates, CSV exports, and live SVG badges.",
+    "title": "Spotpuls Open Electricity Spot, 7-Day Forecast & Smart Automation API",
+    "version": "1.2.0",
+    "summary": "Free, CORS-enabled European day-ahead electricity spot prices, 7-day Log-Merit + Hist-GBDT hourly forecasts, and plug-and-play smart-home / EV / IoT / calendar / telemetry feeds across 40 bidding zones.",
+    "description": "Public REST API by Spotpuls (https://spotpuls.app) providing official day-ahead electricity spot prices (Nord Pool, EPEX SPOT, OMIE, GME, TGE, OTE, OKTE, HUPX, OPCOM, IBEX, BSP, CROPEX, HEnEx, SEMOpx) combined with empirically calibrated 7-day (168 h) hourly forecasts (including negative price regimes), conformal probability bands, optimal load-shifting windows, and native output formats for Home Assistant, Shelly Gen2/Gen3, EVCC, Node-RED/Victron, ESPHome/ESP32, Google Sheets, iCalendar (.ics), Prometheus/Grafana, Apple Shortcuts, SVG badges, and iframe widgets.",
     "contact": {
       "name": "Spotpuls",
       "url": "https://spotpuls.app/api-docs/"
@@ -24,13 +24,13 @@
     "/api/v1/prices": {
       "get": {
         "operationId": "getZoneSpotAndForecast",
-        "summary": "Get hourly day-ahead spot electricity prices and 7-day regional ML forecast for a European bidding zone",
+        "summary": "Get hourly day-ahead spot electricity prices, 7-day ML forecast, and smart-control schedules for any European bidding zone",
         "parameters": [
           {
             "name": "zone",
             "in": "query",
             "required": false,
-            "description": "European bidding zone code (40 supported zones).",
+            "description": "European bidding zone code (40 supported zones, plus country aliases SE, NO, DK, DE, UK, IT, IE, EL).",
             "schema": {
               "type": "string",
               "default": "FI",
@@ -60,28 +60,91 @@
             "name": "currency",
             "in": "query",
             "required": false,
-            "description": "Output price unit: local currency subunit/kWh, EUR cents/kWh, or EUR/MWh.",
+            "description": "Output price unit: local currency subunit/kWh, EUR cents/kWh, EUR/kWh, or EUR/MWh.",
             "schema": {
               "type": "string",
               "default": "local",
-              "enum": ["local", "eur_cents", "eur_mwh"]
+              "enum": ["local", "eur_cents", "eur_kwh", "eur_mwh"]
             }
           },
           {
             "name": "format",
             "in": "query",
             "required": false,
-            "description": "Response format: json, csv (for Google Sheets/Excel), or badge (live SVG status badge).",
+            "description": "Output integration format: json (full), compact/shelly (<500 B IoT), ha (Home Assistant + ApexCharts), evcc (evcc.io tariff array), victron (Node-RED/VenusOS), csv (Sheets/Excel), ical (.ics calendar), prometheus (OpenMetrics), plain (single value/relay 1|0), badge (SVG), or widget (iframe HTML).",
             "schema": {
               "type": "string",
               "default": "json",
-              "enum": ["json", "csv", "badge"]
+              "enum": ["json", "compact", "shelly", "ha", "evcc", "victron", "csv", "ical", "prometheus", "plain", "badge", "widget"]
+            }
+          },
+          {
+            "name": "window",
+            "in": "query",
+            "required": false,
+            "description": "Duration in hours (1..24) for computing optimal cheapest contiguous window and N cheapest hours within the next 24h.",
+            "schema": {
+              "type": "integer",
+              "default": 3,
+              "minimum": 1,
+              "maximum": 24
+            }
+          },
+          {
+            "name": "threshold",
+            "in": "query",
+            "required": false,
+            "description": "Optional price trigger threshold in active unit; sets automation.belowThresholdNow.",
+            "schema": {
+              "type": "number"
+            }
+          },
+          {
+            "name": "margin",
+            "in": "query",
+            "required": false,
+            "description": "Optional retailer margin add-on in active output unit.",
+            "schema": {
+              "type": "number",
+              "default": 0
+            }
+          },
+          {
+            "name": "transfer",
+            "in": "query",
+            "required": false,
+            "description": "Optional grid transfer + electricity tax add-on in active output unit.",
+            "schema": {
+              "type": "number",
+              "default": 0
+            }
+          },
+          {
+            "name": "field",
+            "in": "query",
+            "required": false,
+            "description": "Field selector when format=plain (spot, total, level, rank, run_now, run_cheap, avoid_peak, below_threshold, min24, max24).",
+            "schema": {
+              "type": "string",
+              "default": "spot"
+            }
+          },
+          {
+            "name": "days",
+            "in": "query",
+            "required": false,
+            "description": "Number of days to return (1..8, default 8).",
+            "schema": {
+              "type": "integer",
+              "default": 8,
+              "minimum": 1,
+              "maximum": 8
             }
           }
         ],
         "responses": {
           "200": {
-            "description": "Hourly spot price & 7-day regional forecast payload with Spotpuls attribution metadata."
+            "description": "Hourly spot price, 7-day regional forecast, and smart-control automation payload."
           }
         }
       }
@@ -89,7 +152,7 @@
     "/api/v1/zones": {
       "get": {
         "operationId": "listBiddingZones",
-        "summary": "List all 40 supported European spot-electricity bidding zones, exchanges, timezones, capacities, and direct API URLs",
+        "summary": "List all 40 supported European spot-electricity bidding zones, exchanges, timezones, currencies, and direct API URLs",
         "responses": {
           "200": {
             "description": "List of all 40 European bidding zones."

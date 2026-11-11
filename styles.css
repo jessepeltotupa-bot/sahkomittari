@@ -343,7 +343,7 @@ a:hover {
 
 .responsive-price-svg {
     width: 100%;
-    height: clamp(160px, calc(100dvh - 335px), 250px);
+    height: clamp(225px, calc(100dvh - 315px), 355px);
     display: block;
 }
 
@@ -714,7 +714,7 @@ a:hover {
         flex: 1;
         display: flex;
         align-items: stretch;
-        min-height: 245px;
+        min-height: 270px;
     }
 
     .chart-edge-arrow {
@@ -794,8 +794,8 @@ a:hover {
     .responsive-price-svg {
         flex: 1;
         width: 100%;
-        height: clamp(245px, calc(100dvh - 245px), 460px) !important;
-        min-height: 245px;
+        height: clamp(270px, calc(100dvh - 230px), 495px) !important;
+        min-height: 270px;
     }
 
     .first-screen-summary-strip {

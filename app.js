@@ -2613,11 +2613,23 @@
     // Tarkka vektoripohjainen SVG-mittarikaavio (Pelkkä pörssisähkön spot-hinta + Todennäköinen vaihteluväli)
     function buildSvgChart(enrichedItems, isWeekView) {
         const isMobile = typeof window !== 'undefined' && window.innerWidth <= 768;
-        const W = isMobile ? 360 : 940;
-        const H = isMobile ? 280 : 265;
-        const padL = isMobile ? 30 : 46;
+        const chartBox = typeof document !== 'undefined' ? document.getElementById('price-chart') : null;
+        let innerBoxW = 0;
+        if (chartBox && chartBox.clientWidth > 120 && typeof window !== 'undefined' && window.getComputedStyle) {
+            const cs = window.getComputedStyle(chartBox);
+            const padH = (parseFloat(cs.paddingLeft) || 0) + (parseFloat(cs.paddingRight) || 0);
+            innerBoxW = chartBox.clientWidth - padH;
+        }
+        const vh = (typeof window !== 'undefined' && window.innerHeight) ? window.innerHeight : 900;
+        const W = isMobile
+            ? (innerBoxW > 200 ? Math.round(innerBoxW) : 360)
+            : (innerBoxW > 480 ? Math.round(innerBoxW) : 1180);
+        const H = isMobile
+            ? Math.max(270, Math.min(495, Math.round(vh - 230)))
+            : Math.max(225, Math.min(355, Math.round(vh - 315)));
+        const padL = isMobile ? 30 : 48;
         const padR = isMobile ? 6 : 16;
-        const padT = 14;
+        const padT = 16;
         const padB = isMobile ? 22 : 28;
         const plotW = W - padL - padR;
         const plotH = H - padT - padB;
@@ -2631,7 +2643,7 @@
         const yForPrice = (c) => padT + plotH - Math.max(0, Math.min(1, c / maxPrice)) * plotH;
         const colW = plotW / n;
 
-        let svg = `<svg class="responsive-price-svg" viewBox="0 0 ${W} ${H}" preserveAspectRatio="${isMobile ? 'none' : 'xMidYMid meet'}" width="100%" height="${H}" xmlns="http://www.w3.org/2000/svg" style="display:block; font-family:'IBM Plex Mono', monospace;">`;
+        let svg = `<svg class="responsive-price-svg" viewBox="0 0 ${W} ${H}" preserveAspectRatio="xMidYMid meet" width="100%" height="${H}" xmlns="http://www.w3.org/2000/svg" style="display:block; font-family:'IBM Plex Mono', monospace;">`;
         svg += `
             <defs>
                 <pattern id="forecastHatchCheap" width="6" height="6" patternTransform="rotate(45 0 0)" patternUnits="userSpaceOnUse">
@@ -3951,11 +3963,24 @@
         loadSpotAndForecastData();
 
         let lastIsMobile = window.innerWidth <= 768;
+        let lastResizeW = window.innerWidth || 0;
+        let lastResizeH = window.innerHeight || 0;
+        let resizeDebounceTimer = null;
         window.addEventListener('resize', function () {
             const nowIsMobile = window.innerWidth <= 768;
-            if (nowIsMobile !== lastIsMobile) {
+            const curW = window.innerWidth || 0;
+            const curH = window.innerHeight || 0;
+            const modeChanged = nowIsMobile !== lastIsMobile;
+            const widthChanged = Math.abs(curW - lastResizeW) > 14;
+            const desktopHeightChanged = !nowIsMobile && Math.abs(curH - lastResizeH) > 20;
+            if (modeChanged || widthChanged || desktopHeightChanged) {
                 lastIsMobile = nowIsMobile;
-                renderDayTabsAndChart();
+                lastResizeW = curW;
+                lastResizeH = curH;
+                if (resizeDebounceTimer) clearTimeout(resizeDebounceTimer);
+                resizeDebounceTimer = setTimeout(function () {
+                    renderDayTabsAndChart();
+                }, modeChanged ? 0 : 100);
             }
         });
 

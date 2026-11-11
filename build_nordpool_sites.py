@@ -55,7 +55,7 @@ def build_country_page(cid: str, loc: dict) -> str:
     <link rel="icon" type="image/x-icon" href="/favicon.ico">
     <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
     <link rel="manifest" href="/site.webmanifest">
-    <link rel="stylesheet" href="/styles.css?v=37">
+    <link rel="stylesheet" href="/styles.css?v=38">
     <script type="application/ld+json">
 {json.dumps(full_schema, ensure_ascii=False, indent=2)}
     </script>
@@ -263,7 +263,7 @@ def build_country_page(cid: str, loc: dict) -> str:
     <script src="/dso_data.js"></script>
     <script src="/ml_weights.js"></script>
     <script src="/nordpool_models.js"></script>
-    <script src="/app.js?v=37"></script>
+    <script src="/app.js?v=38"></script>
 </body>
 </html>
 """
@@ -328,7 +328,7 @@ def build_api_docs_page() -> str:
     <link rel="icon" type="image/x-icon" href="/favicon.ico">
     <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
     <link rel="manifest" href="/site.webmanifest">
-    <link rel="stylesheet" href="/styles.css?v=37">
+    <link rel="stylesheet" href="/styles.css?v=38">
     <script type="application/ld+json">
 {json.dumps(api_schema, ensure_ascii=False, indent=2)}
     </script>

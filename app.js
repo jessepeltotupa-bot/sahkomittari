@@ -2625,19 +2625,26 @@
             ? (innerBoxW > 200 ? Math.round(innerBoxW) : 360)
             : (innerBoxW > 480 ? Math.round(innerBoxW) : 1180);
         const H = isMobile
-            ? Math.max(270, Math.min(495, Math.round(vh - 230)))
-            : Math.max(225, Math.min(355, Math.round(vh - 315)));
+            ? Math.max(280, Math.min(500, Math.round(vh - 225)))
+            : Math.max(290, Math.min(550, Math.round(vh - 285)));
         const padL = isMobile ? 30 : 48;
-        const padR = isMobile ? 6 : 16;
-        const padT = 16;
-        const padB = isMobile ? 22 : 28;
+        const padR = isMobile ? 6 : 14;
+        const padT = 14;
+        const padB = isMobile ? 22 : 26;
         const plotW = W - padL - padR;
         const plotH = H - padT - padB;
 
         const n = Math.max(1, enrichedItems.length);
         const vals = enrichedItems.map(x => x.slot.isForecast ? x.br.maxSpotCents : x.br.spotCents);
-        const minTopScale = 15 * FX_SCALE;
-        const maxPrice = Math.max(minTopScale, Math.ceil(Math.max(...vals, 12 * FX_SCALE) / 5) * 5);
+        const rawPeak = Math.max(...vals, 0);
+        const targetTop = Math.max(4 * FX_SCALE, rawPeak * 1.08);
+        const roughStep = targetTop / 5;
+        const mag = Math.pow(10, Math.floor(Math.log10(Math.max(0.1, roughStep))));
+        const residual = roughStep / mag;
+        const niceUnit = residual <= 1 ? 1 : (residual <= 2 ? 2 : (residual <= 3 ? 3 : (residual <= 5 ? 5 : 10)));
+        const tickStep = Math.max(1, Math.round(niceUnit * mag));
+        const steps = Math.max(4, Math.min(6, Math.ceil(targetTop / tickStep)));
+        const maxPrice = tickStep * steps;
         const { cheapThresh, highThresh } = getDynamicPriceThresholds();
 
         const yForPrice = (c) => padT + plotH - Math.max(0, Math.min(1, c / maxPrice)) * plotH;
@@ -2662,7 +2669,6 @@
         `;
 
         // Vaakasuorat hintaviivat (vasen akseli: snt/kWh)
-        const steps = 5;
         for (let s = 0; s <= steps; s++) {
             const pVal = (maxPrice / steps) * s;
             const y = yForPrice(pVal);
@@ -2679,7 +2685,7 @@
         for (let i = 0; i < n; i++) {
             const xObj = enrichedItems[i];
             const x0 = padL + i * colW;
-            const barW = Math.max(2.0, colW * (isWeekView ? 0.84 : 0.74));
+            const barW = Math.max(2.0, colW * (isWeekView ? 0.88 : 0.82));
             const barX = x0 + (colW - barW) / 2;
 
             const spotVal = xObj.br.spotCents;

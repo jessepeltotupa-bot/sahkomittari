@@ -106,6 +106,7 @@ def render_footer(prefix: str = "") -> str:
                 <a href="{prefix}oppaat/porssisahko-ennuste-7-vrk-tuulivoima-ja-lampotila.html">Ennustemalli</a>
                 <a href="{prefix}oppaat/sahkon-siirtohinta-postinumerolla-kaikki-verkkoyhtiot.html">Siirtohinnat</a>
                 <a href="{prefix}oppaat/yleissiirto-yosiirto-vai-kausisiirto-vertailu.html">Siirtotuotteiden vertailu</a>
+                <a href="https://www.laavutkartalla.fi/" target="_blank" rel="noopener">Laavut kartalla</a>
             </div>
             <div style="width:100%; padding-top:12px; border-top:1px solid #2b2e28; font-size:11px; line-height:1.8;">
                 <span style="color:#ffffff; margin-right:8px;">SPOT-MARKKINAT (28 KIELTÄ / 40 ALUETTA):</span>
@@ -386,7 +387,7 @@ def build_index_page() -> str:
     <link rel="icon" type="image/x-icon" href="favicon.ico">
     <link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon.png">
     <link rel="manifest" href="site.webmanifest">
-    <link rel="stylesheet" href="styles.css?v=38">
+    <link rel="stylesheet" href="styles.css?v=39">
     <script type="application/ld+json">
 {json.dumps(full_schema, ensure_ascii=False, indent=2)}
     </script>
@@ -448,7 +449,7 @@ def build_index_page() -> str:
     <script src="dso_data.js"></script>
     <script src="ml_weights.js"></script>
     <script src="nordpool_models.js"></script>
-    <script src="app.js?v=38"></script>
+    <script src="app.js?v=39"></script>
 </body>
 </html>
 """
@@ -490,7 +491,7 @@ def build_dso_page(comp: dict) -> str:
     <link rel="icon" type="image/x-icon" href="../favicon.ico">
     <link rel="apple-touch-icon" sizes="180x180" href="../apple-touch-icon.png">
     <link rel="manifest" href="../site.webmanifest">
-    <link rel="stylesheet" href="../styles.css?v=38">
+    <link rel="stylesheet" href="../styles.css?v=39">
 </head>
 <body data-preset-dso="{comp['id']}" data-preset-postal="{sample_postal}" data-preset-city="{html.escape(sample_city)}">
 {render_header("../")}
@@ -572,7 +573,7 @@ def build_dso_page(comp: dict) -> str:
     <script src="../dso_data.js"></script>
     <script src="../ml_weights.js"></script>
     <script src="../nordpool_models.js"></script>
-    <script src="../app.js?v=38"></script>
+    <script src="../app.js?v=39"></script>
 </body>
 </html>
 """
@@ -610,7 +611,7 @@ def build_municipality_page(m: dict) -> str:
     <link rel="icon" type="image/x-icon" href="../favicon.ico">
     <link rel="apple-touch-icon" sizes="180x180" href="../apple-touch-icon.png">
     <link rel="manifest" href="../site.webmanifest">
-    <link rel="stylesheet" href="../styles.css?v=38">
+    <link rel="stylesheet" href="../styles.css?v=39">
 </head>
 <body data-preset-dso="{comp['id']}" data-preset-postal="{m['postal']}" data-preset-city="{html.escape(m['name'])}">
 {render_header("../")}
@@ -623,7 +624,7 @@ def build_municipality_page(m: dict) -> str:
     <script src="../dso_data.js"></script>
     <script src="../ml_weights.js"></script>
     <script src="../nordpool_models.js"></script>
-    <script src="../app.js?v=38"></script>
+    <script src="../app.js?v=39"></script>
 </body>
 </html>
 """
@@ -644,7 +645,7 @@ def build_directory_page(title: str, lead: str, cards_html: str, canonical_path:
     <link rel="icon" type="image/x-icon" href="../favicon.ico">
     <link rel="apple-touch-icon" sizes="180x180" href="../apple-touch-icon.png">
     <link rel="manifest" href="../site.webmanifest">
-    <link rel="stylesheet" href="../styles.css?v=38">
+    <link rel="stylesheet" href="../styles.css?v=39">
 </head>
 <body>
 {render_header("../")}
@@ -682,7 +683,7 @@ def build_guide_page(slug: str, title: str, meta_desc: str, body_html: str) -> s
     <link rel="icon" type="image/x-icon" href="../favicon.ico">
     <link rel="apple-touch-icon" sizes="180x180" href="../apple-touch-icon.png">
     <link rel="manifest" href="../site.webmanifest">
-    <link rel="stylesheet" href="../styles.css?v=38">
+    <link rel="stylesheet" href="../styles.css?v=39">
 </head>
 <body>
 {render_header("../")}

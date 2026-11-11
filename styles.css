@@ -158,7 +158,7 @@ a:hover {
    ENSIMMÄINEN NÄKYMÄ (100VH): KAAVIO JA ALARIVI NÄKYVÄT KOKONAAN HETI AVAUKSESSA
    ========================================================================== */
 .first-screen-stage {
-    min-height: calc(100dvh - 42px);
+    min-height: 0;
     display: flex;
     flex-direction: column;
     justify-content: flex-start;
@@ -343,7 +343,7 @@ a:hover {
 
 .responsive-price-svg {
     width: 100%;
-    height: clamp(225px, calc(100dvh - 315px), 355px);
+    height: clamp(290px, calc(100dvh - 285px), 550px);
     display: block;
 }
 
@@ -714,7 +714,7 @@ a:hover {
         flex: 1;
         display: flex;
         align-items: stretch;
-        min-height: 270px;
+        min-height: 280px;
     }
 
     .chart-edge-arrow {
@@ -794,8 +794,8 @@ a:hover {
     .responsive-price-svg {
         flex: 1;
         width: 100%;
-        height: clamp(270px, calc(100dvh - 230px), 495px) !important;
-        min-height: 270px;
+        height: clamp(280px, calc(100dvh - 225px), 500px) !important;
+        min-height: 280px;
     }
 
     .first-screen-summary-strip {
@@ -854,7 +854,7 @@ a:hover {
    ALEMMAT OSIOT SAMALLA SIVULLA (TAULUKKO & LASKURIT)
    ========================================================================== */
 .below-fold-section {
-    padding-top: 32px;
+    padding-top: 16px;
 }
 
 .panel-box {

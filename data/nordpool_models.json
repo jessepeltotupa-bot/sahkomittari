@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-11-10T23:53:59.248643+00:00",
+  "generatedAt": "2026-11-11T11:53:19.438697+00:00",
   "countries": {
     "fi": {
       "countryId": "fi",
@@ -41,10 +41,10 @@
         }
       ],
       "weatherCalibration": {
-        "meanTempC": 4.14,
-        "meanWind100m": 27.68,
-        "meanRadWm2": 12.73,
-        "totalPrecipMm": 39.4,
+        "meanTempC": 3.48,
+        "meanWind100m": 27.88,
+        "meanRadWm2": 11.91,
+        "totalPrecipMm": 35.2,
         "sampleHours": 504
       },
       "localDrivers": [
@@ -94,16 +94,16 @@
           "hoursCount": 915
         },
         "1_2": {
-          "avgPrice": 5.62,
-          "hoursCount": 1939
+          "avgPrice": 5.59,
+          "hoursCount": 1937
         },
         "0_2": {
-          "avgPrice": 10.06,
-          "hoursCount": 1386
+          "avgPrice": 10.04,
+          "hoursCount": 1383
         },
         "0_1": {
-          "avgPrice": 11.29,
-          "hoursCount": 907
+          "avgPrice": 11.36,
+          "hoursCount": 912
         },
         "2_2": {
           "avgPrice": 2.66,
@@ -224,10 +224,10 @@
         }
       ],
       "weatherCalibration": {
-        "meanTempC": 2.37,
-        "meanWind100m": 27.03,
-        "meanRadWm2": 16.53,
-        "totalPrecipMm": 47.5,
+        "meanTempC": 1.92,
+        "meanWind100m": 27.67,
+        "meanRadWm2": 15.55,
+        "totalPrecipMm": 42.7,
         "sampleHours": 504
       },
       "localDrivers": [
@@ -277,16 +277,16 @@
           "hoursCount": 915
         },
         "1_2": {
-          "avgPrice": 54.29,
-          "hoursCount": 1939
+          "avgPrice": 54.02,
+          "hoursCount": 1937
         },
         "0_2": {
-          "avgPrice": 97.24,
-          "hoursCount": 1386
+          "avgPrice": 97.06,
+          "hoursCount": 1383
         },
         "0_1": {
-          "avgPrice": 109.13,
-          "hoursCount": 907
+          "avgPrice": 109.76,
+          "hoursCount": 912
         },
         "2_2": {
           "avgPrice": 25.66,
@@ -414,10 +414,10 @@
         }
       ],
       "weatherCalibration": {
-        "meanTempC": 4.28,
-        "meanWind100m": 13.2,
-        "meanRadWm2": 32.81,
-        "totalPrecipMm": 30.8,
+        "meanTempC": 3.69,
+        "meanWind100m": 11.26,
+        "meanRadWm2": 34.49,
+        "totalPrecipMm": 12.7,
         "sampleHours": 504
       },
       "localDrivers": [
@@ -467,16 +467,16 @@
           "hoursCount": 915
         },
         "1_2": {
-          "avgPrice": 43.39,
-          "hoursCount": 1939
+          "avgPrice": 43.17,
+          "hoursCount": 1937
         },
         "0_2": {
-          "avgPrice": 77.71,
-          "hoursCount": 1386
+          "avgPrice": 77.56,
+          "hoursCount": 1383
         },
         "0_1": {
-          "avgPrice": 87.21,
-          "hoursCount": 907
+          "avgPrice": 87.71,
+          "hoursCount": 912
         },
         "2_2": {
           "avgPrice": 20.51,
@@ -577,10 +577,10 @@
         }
       ],
       "weatherCalibration": {
-        "meanTempC": 8.31,
-        "meanWind100m": 22.84,
-        "meanRadWm2": 35.91,
-        "totalPrecipMm": 28.1,
+        "meanTempC": 7.87,
+        "meanWind100m": 21.64,
+        "meanRadWm2": 35.27,
+        "totalPrecipMm": 36.5,
         "sampleHours": 504
       },
       "localDrivers": [
@@ -630,16 +630,16 @@
           "hoursCount": 915
         },
         "1_2": {
-          "avgPrice": 48.85,
-          "hoursCount": 1939
+          "avgPrice": 48.6,
+          "hoursCount": 1937
         },
         "0_2": {
-          "avgPrice": 87.49,
-          "hoursCount": 1386
+          "avgPrice": 87.32,
+          "hoursCount": 1383
         },
         "0_1": {
-          "avgPrice": 98.18,
-          "hoursCount": 907
+          "avgPrice": 98.75,
+          "hoursCount": 912
         },
         "2_2": {
           "avgPrice": 23.09,
@@ -733,10 +733,10 @@
         }
       ],
       "weatherCalibration": {
-        "meanTempC": 6.34,
-        "meanWind100m": 24.37,
-        "meanRadWm2": 23.88,
-        "totalPrecipMm": 23.5,
+        "meanTempC": 6.08,
+        "meanWind100m": 24.45,
+        "meanRadWm2": 21.27,
+        "totalPrecipMm": 32.8,
         "sampleHours": 504
       },
       "localDrivers": [
@@ -786,16 +786,16 @@
           "hoursCount": 915
         },
         "1_2": {
-          "avgPrice": 7.79,
-          "hoursCount": 1939
+          "avgPrice": 7.76,
+          "hoursCount": 1937
         },
         "0_2": {
-          "avgPrice": 13.96,
-          "hoursCount": 1386
+          "avgPrice": 13.93,
+          "hoursCount": 1383
         },
         "0_1": {
-          "avgPrice": 15.67,
-          "hoursCount": 907
+          "avgPrice": 15.76,
+          "hoursCount": 912
         },
         "2_2": {
           "avgPrice": 3.68,
@@ -889,10 +889,10 @@
         }
       ],
       "weatherCalibration": {
-        "meanTempC": 6.45,
-        "meanWind100m": 23.1,
-        "meanRadWm2": 33.38,
-        "totalPrecipMm": 9.2,
+        "meanTempC": 6.32,
+        "meanWind100m": 23.19,
+        "meanRadWm2": 30.13,
+        "totalPrecipMm": 9.8,
         "sampleHours": 504
       },
       "localDrivers": [
@@ -942,16 +942,16 @@
           "hoursCount": 915
         },
         "1_2": {
-          "avgPrice": 6.44,
-          "hoursCount": 1939
+          "avgPrice": 6.4,
+          "hoursCount": 1937
         },
         "0_2": {
-          "avgPrice": 11.53,
-          "hoursCount": 1386
+          "avgPrice": 11.51,
+          "hoursCount": 1383
         },
         "0_1": {
-          "avgPrice": 12.94,
-          "hoursCount": 907
+          "avgPrice": 13.01,
+          "hoursCount": 912
         },
         "2_2": {
           "avgPrice": 3.04,
@@ -1045,10 +1045,10 @@
         }
       ],
       "weatherCalibration": {
-        "meanTempC": 7.45,
-        "meanWind100m": 24.81,
-        "meanRadWm2": 39.26,
-        "totalPrecipMm": 35.1,
+        "meanTempC": 7.5,
+        "meanWind100m": 25.0,
+        "meanRadWm2": 36.02,
+        "totalPrecipMm": 33.9,
         "sampleHours": 504
       },
       "localDrivers": [
@@ -1098,16 +1098,16 @@
           "hoursCount": 915
         },
         "1_2": {
-          "avgPrice": 7.65,
-          "hoursCount": 1939
+          "avgPrice": 7.61,
+          "hoursCount": 1937
         },
         "0_2": {
-          "avgPrice": 13.7,
-          "hoursCount": 1386
+          "avgPrice": 13.68,
+          "hoursCount": 1383
         },
         "0_1": {
-          "avgPrice": 15.38,
-          "hoursCount": 907
+          "avgPrice": 15.47,
+          "hoursCount": 912
         },
         "2_2": {
           "avgPrice": 3.62,

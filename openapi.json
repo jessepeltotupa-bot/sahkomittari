@@ -1,0 +1,101 @@
+{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "Spotpuls Open Electricity Spot & 7-Day Forecast API",
+    "version": "1.0.0",
+    "summary": "Free, CORS-enabled European day-ahead electricity spot prices and self-learning 7-day regional hourly forecasts across 40 bidding zones.",
+    "description": "Public REST API by Spotpuls (https://spotpuls.app) providing official day-ahead electricity spot prices (Nord Pool, EPEX SPOT, OMIE, GME, TGE, OTE, OKTE, HUPX, OPCOM, IBEX, BSP, CROPEX, HEnEx, SEMOpx) combined with zone-specific self-learning 7-day (168 h) hourly forecasts, probability bands, wind/solar generation estimates, CSV exports, and live SVG badges.",
+    "contact": {
+      "name": "Spotpuls",
+      "url": "https://spotpuls.app/api-docs/"
+    },
+    "license": {
+      "name": "CC BY 4.0 (Attribution to spotpuls.app)",
+      "url": "https://creativecommons.org/licenses/by/4.0/"
+    }
+  },
+  "servers": [
+    {
+      "url": "https://spotpuls.app",
+      "description": "Spotpuls Global Edge Production API"
+    }
+  ],
+  "paths": {
+    "/api/v1/prices": {
+      "get": {
+        "operationId": "getZoneSpotAndForecast",
+        "summary": "Get hourly day-ahead spot electricity prices and 7-day regional ML forecast for a European bidding zone",
+        "parameters": [
+          {
+            "name": "zone",
+            "in": "query",
+            "required": false,
+            "description": "European bidding zone code (40 supported zones).",
+            "schema": {
+              "type": "string",
+              "default": "FI",
+              "enum": [
+                "FI", "SE1", "SE2", "SE3", "SE4",
+                "NO1", "NO2", "NO3", "NO4", "NO5",
+                "DK1", "DK2", "EE", "LV", "LT",
+                "DE-LU", "AT", "CH", "NL", "BE", "FR",
+                "GB", "IE-SEM", "ES", "PT",
+                "IT-North", "IT-Centre-North", "IT-Centre-South", "IT-South", "IT-Sicily", "IT-Sardinia",
+                "PL", "CZ", "SK", "HU", "RO", "BG", "SI", "HR", "GR"
+              ]
+            }
+          },
+          {
+            "name": "vat",
+            "in": "query",
+            "required": false,
+            "description": "Include national residential electricity VAT (1 = incl. VAT, 0 = VAT 0%).",
+            "schema": {
+              "type": "string",
+              "default": "1",
+              "enum": ["1", "0"]
+            }
+          },
+          {
+            "name": "currency",
+            "in": "query",
+            "required": false,
+            "description": "Output price unit: local currency subunit/kWh, EUR cents/kWh, or EUR/MWh.",
+            "schema": {
+              "type": "string",
+              "default": "local",
+              "enum": ["local", "eur_cents", "eur_mwh"]
+            }
+          },
+          {
+            "name": "format",
+            "in": "query",
+            "required": false,
+            "description": "Response format: json, csv (for Google Sheets/Excel), or badge (live SVG status badge).",
+            "schema": {
+              "type": "string",
+              "default": "json",
+              "enum": ["json", "csv", "badge"]
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Hourly spot price & 7-day regional forecast payload with Spotpuls attribution metadata."
+          }
+        }
+      }
+    },
+    "/api/v1/zones": {
+      "get": {
+        "operationId": "listBiddingZones",
+        "summary": "List all 40 supported European spot-electricity bidding zones, exchanges, timezones, capacities, and direct API URLs",
+        "responses": {
+          "200": {
+            "description": "List of all 40 European bidding zones."
+          }
+        }
+      }
+    }
+  }
+}

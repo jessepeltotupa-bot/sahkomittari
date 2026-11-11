@@ -1,10 +1,10 @@
-name: Daily ML Spot Forecast Training & Data Accumulation
+name: Daily Spotpuls ML Spot Forecast Training & Data Accumulation
 
 on:
   schedule:
     # Ajetaan kahdesti vuorokaudessa Suomen aikaa:
-    # 1) klo 13:45 (11:45 UTC): kun uudet vahvistetut Nord Pool -hinnat julkaistaan ja malli tarkentaa aiempia ennusteitaan
-    # 2) klo 01:45 (23:45 UTC): yöllä vuorokauden vaihduttua ja tuoreen yö-säämalliajon valmistuttua (uusi tuleva päivä + tarkennus)
+    # 1) klo 13:45 (11:45 UTC): kun uudet vahvistetut sähköpörssihinnat julkaistaan ja malli tarkentaa tulevien päivien ennusteet
+    # 2) klo 01:45 (23:45 UTC): yöllä vuorokauden vaihduttua ja tuoreen yö-säämalliajon valmistuttua
     - cron: '50 11,23 * * *'
   workflow_dispatch:
 
@@ -23,7 +23,7 @@ jobs:
         with:
           python-version: '3.12'
 
-      - name: Fetch new Nord Pool & weather observations and retrain ML model
+      - name: Fetch new spot & weather observations and retrain 40 regional ML models
         run: |
           python train_and_learn.py
           python train_nordpool_countries.py
@@ -32,8 +32,8 @@ jobs:
 
       - name: Commit accumulated observations and updated ML weights
         run: |
-          git config user.name "Sahkomittari ML Bot"
-          git config user.email "bot@sahkomittari.fi"
-          git add data/historical_observations.json data/error_learning_ledger.json data/nordpool_models.json ml_weights.json ml_weights.js nordpool_models.js
-          git diff --staged --quiet || git commit -m "Auto-learn: accumulate new spot/weather observations and retrain ML forecast weights"
+          git config user.name "Spotpuls ML Bot"
+          git config user.email "bot@spotpuls.app"
+          git add data/historical_observations.json data/error_learning_ledger.json data/nordpool_models.json data/global_zones.json ml_weights.json ml_weights.js nordpool_models.js
+          git diff --staged --quiet || git commit -m "Auto-learn: accumulate new spot/weather observations and retrain 40-zone Spotpuls ML weights"
           git push

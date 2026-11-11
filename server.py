@@ -1,4 +1,6 @@
+import json
 import os
+import subprocess
 import sys
 import threading
 from http.server import ThreadingHTTPServer, SimpleHTTPRequestHandler
@@ -8,6 +10,8 @@ ROOT_DIR = os.path.dirname(os.path.abspath(__file__))
 LOG_PATH = os.path.join(ROOT_DIR, "server.log")
 
 LANG_TO_COUNTRY_DIR = {
+    "fi": "",
+    "en": "en",
     "sv": "se",
     "se": "se",
     "no": "no",
@@ -19,38 +23,54 @@ LANG_TO_COUNTRY_DIR = {
     "ee": "ee",
     "lv": "lv",
     "lt": "lt",
-    "fi": "",
+    "de": "de",
+    "at": "at",
+    "ch": "ch",
+    "nl": "nl",
+    "be": "be",
+    "fr": "fr",
+    "gb": "gb",
+    "ie": "ie",
+    "es": "es",
+    "pt": "pt",
+    "it": "it",
+    "pl": "pl",
+    "cs": "cz",
+    "cz": "cz",
+    "sk": "sk",
+    "hu": "hu",
+    "ro": "ro",
+    "bg": "bg",
+    "sl": "si",
+    "si": "si",
+    "hr": "hr",
+    "el": "gr",
+    "gr": "gr",
 }
 
 
 def detect_country_dir(headers, query_string: str) -> str:
-    # 1. Explicit test override ?lang=se|no|dk|ee|lv|lt|fi
     if query_string:
         qs = parse_qs(query_string)
         lang_override = (qs.get("lang") or qs.get("country") or [""])[0].strip().lower()
         if lang_override in LANG_TO_COUNTRY_DIR:
             return LANG_TO_COUNTRY_DIR[lang_override]
 
-    # 2. Country-specific domain / TLD detection (.se, .no, .dk, .ee, .lv, .lt, .fi)
-    host = (headers.get("Host") or "").split(":")[0].lower()
-    for tld, cdir in (
-        (".se", "se"),
-        (".no", "no"),
-        (".dk", "dk"),
-        (".ee", "ee"),
-        (".lv", "lv"),
-        (".lt", "lt"),
-        (".fi", ""),
-    ):
-        if host.endswith(tld):
-            return cdir
-
-    # 3. Browser Accept-Language detection (strictly serves the user's native country site)
     accept_lang = (headers.get("Accept-Language") or "").lower()
     for part in accept_lang.split(","):
         tag = part.split(";")[0].strip()
         if not tag:
             continue
+        if tag in ("de-at",):
+            return "at"
+        if tag in ("de-ch", "fr-ch", "it-ch"):
+            return "ch"
+        if tag in ("nl-be", "fr-be"):
+            return "be"
+        if tag in ("en-gb",):
+            return "gb"
+        if tag in ("en-ie",):
+            return "ie"
         primary = tag.split("-")[0]
         if primary in LANG_TO_COUNTRY_DIR:
             return LANG_TO_COUNTRY_DIR[primary]
@@ -62,11 +82,59 @@ class CleanUrlHandler(SimpleHTTPRequestHandler):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, directory=ROOT_DIR, **kwargs)
 
+    def do_GET(self):
+        parsed = urlsplit(self.path)
+        if parsed.path in ("/api/v1/prices", "/api/v1/zones", "/api/spot-and-forecast"):
+            qs = parse_qs(parsed.query)
+            qmap = {k: v[0] for k, v in qs.items() if v}
+            if parsed.path == "/api/v1/zones":
+                qmap["list"] = "zones"
+            node_code = (
+                "import('./api/v1/prices.js').then(m => {"
+                f"const q = {json.dumps(qmap)};"
+                "const hdrs = {}; let code = 200;"
+                "const res = {"
+                "  setHeader(k,v){ hdrs[k]=v; },"
+                "  status(c){ code=c; return this; },"
+                "  send(b){ process.stdout.write(JSON.stringify({code, hdrs, body: String(b)})); },"
+                "  json(o){ hdrs['Content-Type']='application/json; charset=utf-8'; process.stdout.write(JSON.stringify({code, hdrs, body: JSON.stringify(o)})); },"
+                "  end(){ process.stdout.write(JSON.stringify({code, hdrs, body: ''})); }"
+                "};"
+                "m.default({method:'GET', query:q}, res);"
+                "});"
+            )
+            try:
+                proc = subprocess.run(
+                    ["node", "-e", node_code],
+                    cwd=ROOT_DIR,
+                    capture_output=True,
+                    text=True,
+                    encoding="utf-8",
+                    timeout=18,
+                )
+                out = json.loads(proc.stdout)
+                self.send_response(out.get("code", 200))
+                for hk, hv in (out.get("hdrs") or {}).items():
+                    self.send_header(hk, hv)
+                body_bytes = (out.get("body") or "").encode("utf-8")
+                self.send_header("Content-Length", str(len(body_bytes)))
+                self.end_headers()
+                self.wfile.write(body_bytes)
+                return
+            except Exception as exc:
+                err_bytes = json.dumps({"error": str(exc)}).encode("utf-8")
+                self.send_response(500)
+                self.send_header("Content-Type", "application/json; charset=utf-8")
+                self.send_header("Content-Length", str(len(err_bytes)))
+                self.end_headers()
+                self.wfile.write(err_bytes)
+                return
+        super().do_GET()
+
     def translate_path(self, path):
         parsed = urlsplit(path)
         clean_path = unquote(parsed.path)
 
-        # Serve native country site automatically on root entry based on user's language/country
         if clean_path in ("/", "/index.html"):
             cdir = detect_country_dir(self.headers, parsed.query)
             if cdir:
@@ -76,7 +144,6 @@ class CleanUrlHandler(SimpleHTTPRequestHandler):
 
         full_path = super().translate_path(clean_path)
 
-        # Support Vercel-style cleanUrls (e.g. /verkkoyhtiot/caruna -> /verkkoyhtiot/caruna.html)
         if not os.path.exists(full_path) and not clean_path.endswith(".html"):
             html_candidate = full_path + ".html"
             if os.path.isfile(html_candidate):

@@ -1432,3 +1432,152 @@ a:hover {
     color: var(--signal-yellow);
     margin-right: 16px;
 }
+
+
+/* ==========================================================================
+   SPOTPULS GLOBAL HEADER CONTROLS & OPEN API VISIBILITY PANEL
+   ========================================================================== */
+.header-right {
+    display: flex;
+    align-items: stretch;
+    gap: 10px;
+}
+
+.header-market-controls {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 4px 0;
+}
+
+.header-select {
+    background: #1c1e1a;
+    color: var(--panel);
+    border: 1px solid #4a4d44;
+    font-family: var(--mono);
+    font-size: 11.5px;
+    font-weight: 700;
+    padding: 4px 6px;
+    cursor: pointer;
+    max-width: 175px;
+}
+
+.header-select:hover,
+.header-select:focus {
+    border-color: var(--signal-yellow);
+    color: var(--signal-yellow);
+    outline: none;
+}
+
+.header-select option,
+.header-select optgroup {
+    background: #111210;
+    color: #f6f7f3;
+}
+
+@media (max-width: 768px) {
+    .header-inner {
+        flex-wrap: nowrap;
+        align-items: center;
+    }
+
+    .brand-subtitle {
+        display: none;
+    }
+
+    .header-right {
+        gap: 4px;
+        align-items: center;
+    }
+
+    .header-market-controls {
+        padding: 2px 0;
+        gap: 4px;
+    }
+
+    .header-select {
+        font-size: 10.5px;
+        padding: 2px 4px;
+        max-width: 96px;
+        height: 24px;
+    }
+}
+
+.api-panel-grid {
+    display: grid;
+    grid-template-columns: 1.2fr 1fr;
+    gap: 18px;
+    margin-top: 12px;
+}
+
+@media (max-width: 920px) {
+    .api-panel-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+.api-card {
+    background: #ffffff;
+    border: var(--border-thin);
+    padding: 12px 14px;
+}
+
+.api-copy-row {
+    display: flex;
+    gap: 8px;
+    align-items: stretch;
+    margin-top: 6px;
+}
+
+.api-code-line {
+    flex: 1;
+    background: #111210;
+    color: var(--signal-yellow);
+    font-family: var(--mono);
+    font-size: 12px;
+    padding: 8px 10px;
+    overflow-x: auto;
+    white-space: nowrap;
+    border: var(--border-thin);
+}
+
+.api-pre-block {
+    background: #111210;
+    color: #e3e4de;
+    font-family: var(--mono);
+    font-size: 11.5px;
+    line-height: 1.45;
+    padding: 10px 12px;
+    overflow-x: auto;
+    border: var(--border-thin);
+    margin-top: 6px;
+}
+
+.api-copy-btn {
+    background: var(--ink);
+    color: #ffffff;
+    border: var(--border-thin);
+    padding: 6px 12px;
+    font-family: var(--mono);
+    font-size: 11.5px;
+    font-weight: 700;
+    text-transform: uppercase;
+    cursor: pointer;
+    white-space: nowrap;
+}
+
+.api-copy-btn:hover {
+    background: var(--signal-orange);
+    color: #ffffff;
+}
+
+.api-badge-preview {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    flex-wrap: wrap;
+    padding: 10px 12px;
+    background: var(--panel-muted);
+    border: var(--border-thin);
+    margin-top: 8px;
+}

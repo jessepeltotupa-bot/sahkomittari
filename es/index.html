@@ -1,0 +1,378 @@
+<!DOCTYPE html>
+<html lang="es-ES">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Spotpuls — Precio de la luz por horas (OMIE / PVPC), previsión solar y eólica a 7 días y calculadora de peajes | spotpuls.app</title>
+    <meta name="description" content="Introduce tu código postal (ej. 28001 Madrid, 08001 Barcelona, 41001 Sevilla, 46001 Valencia) para calcular el precio total con peajes de distribución.">
+    <meta name="geo.region" content="ES">
+    <meta name="content-language" content="es-ES">
+    <link rel="canonical" href="https://spotpuls.app/es/" />
+    <link rel="alternate" hreflang="fi" href="https://spotpuls.app/" />
+    <link rel="alternate" hreflang="en" href="https://spotpuls.app/en/" />
+    <link rel="alternate" hreflang="sv" href="https://spotpuls.app/se/" />
+    <link rel="alternate" hreflang="no" href="https://spotpuls.app/no/" />
+    <link rel="alternate" hreflang="da" href="https://spotpuls.app/dk/" />
+    <link rel="alternate" hreflang="et" href="https://spotpuls.app/ee/" />
+    <link rel="alternate" hreflang="lv" href="https://spotpuls.app/lv/" />
+    <link rel="alternate" hreflang="lt" href="https://spotpuls.app/lt/" />
+    <link rel="alternate" hreflang="de" href="https://spotpuls.app/de/" />
+    <link rel="alternate" hreflang="de-AT" href="https://spotpuls.app/at/" />
+    <link rel="alternate" hreflang="de-CH" href="https://spotpuls.app/ch/" />
+    <link rel="alternate" hreflang="nl" href="https://spotpuls.app/nl/" />
+    <link rel="alternate" hreflang="nl-BE" href="https://spotpuls.app/be/" />
+    <link rel="alternate" hreflang="fr" href="https://spotpuls.app/fr/" />
+    <link rel="alternate" hreflang="en-GB" href="https://spotpuls.app/gb/" />
+    <link rel="alternate" hreflang="en-IE" href="https://spotpuls.app/ie/" />
+    <link rel="alternate" hreflang="es" href="https://spotpuls.app/es/" />
+    <link rel="alternate" hreflang="pt" href="https://spotpuls.app/pt/" />
+    <link rel="alternate" hreflang="it" href="https://spotpuls.app/it/" />
+    <link rel="alternate" hreflang="pl" href="https://spotpuls.app/pl/" />
+    <link rel="alternate" hreflang="cs" href="https://spotpuls.app/cz/" />
+    <link rel="alternate" hreflang="sk" href="https://spotpuls.app/sk/" />
+    <link rel="alternate" hreflang="hu" href="https://spotpuls.app/hu/" />
+    <link rel="alternate" hreflang="ro" href="https://spotpuls.app/ro/" />
+    <link rel="alternate" hreflang="bg" href="https://spotpuls.app/bg/" />
+    <link rel="alternate" hreflang="sl" href="https://spotpuls.app/si/" />
+    <link rel="alternate" hreflang="hr" href="https://spotpuls.app/hr/" />
+    <link rel="alternate" hreflang="el" href="https://spotpuls.app/gr/" />
+    <link rel="alternate" hreflang="x-default" href="https://spotpuls.app/en/" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg?v=37">
+    <link rel="icon" type="image/x-icon" href="/favicon.ico">
+    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+    <link rel="manifest" href="/site.webmanifest">
+    <link rel="stylesheet" href="/styles.css?v=37">
+    <script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "WebApplication",
+      "@id": "https://spotpuls.app/es/#app",
+      "name": "Spotpuls",
+      "alternateName": "spotpuls.app",
+      "url": "https://spotpuls.app/es/",
+      "description": "Precio de la luz por horas (OMIE / PVPC), previsión solar y eólica a 7 días y calculadora de peajes",
+      "applicationCategory": "UtilitiesApplication",
+      "operatingSystem": "Web",
+      "inLanguage": "es-ES",
+      "isAccessibleForFree": true,
+      "areaServed": {
+        "@type": "Country",
+        "name": "España",
+        "identifier": "ES"
+      },
+      "offers": {
+        "@type": "Offer",
+        "price": "0",
+        "priceCurrency": "EUR"
+      }
+    },
+    {
+      "@type": "Dataset",
+      "@id": "https://spotpuls.app/es/#dataset",
+      "name": "Spotpuls España (ES) Day-Ahead Spot Electricity Prices & 7-Day Hourly Forecast",
+      "description": "Consulta los precios horarios OMIE España y la previsión solar/eólica a 7 días en JSON o CSV para Home Assistant y domótica.",
+      "url": "https://spotpuls.app/es/",
+      "inLanguage": "es-ES",
+      "isAccessibleForFree": true,
+      "license": "https://creativecommons.org/licenses/by/4.0/",
+      "creator": {
+        "@type": "Organization",
+        "name": "Spotpuls",
+        "url": "https://spotpuls.app"
+      },
+      "temporalCoverage": "2024-01-01/..",
+      "spatialCoverage": {
+        "@type": "Place",
+        "name": "España (ES)"
+      },
+      "distribution": [
+        {
+          "@type": "DataDownload",
+          "encodingFormat": "application/json",
+          "contentUrl": "https://spotpuls.app/api/v1/prices?zone=ES&vat=1"
+        },
+        {
+          "@type": "DataDownload",
+          "encodingFormat": "text/csv",
+          "contentUrl": "https://spotpuls.app/api/v1/prices?zone=ES&vat=1&format=csv"
+        }
+      ]
+    },
+    {
+      "@type": "WebAPI",
+      "@id": "https://spotpuls.app/api/v1/prices#webapi",
+      "name": "Spotpuls Open Electricity Spot & 7-Day Forecast API",
+      "description": "Free CORS-enabled REST API for European day-ahead electricity spot prices and self-learning 7-day regional hourly forecasts across 40 bidding zones.",
+      "url": "https://spotpuls.app/api/v1/prices",
+      "documentation": "https://spotpuls.app/api-docs/",
+      "termsOfService": "https://spotpuls.app/api-docs/",
+      "provider": {
+        "@type": "Organization",
+        "name": "Spotpuls",
+        "url": "https://spotpuls.app"
+      }
+    }
+  ]
+}
+    </script>
+    <script>
+    window.ACTIVE_COUNTRY_LOCALE = {"countryId": "es", "lang": "es-ES", "hreflang": "es", "path": "/es/", "languageLabel": "Español (ES)", "geoRegion": "ES", "countryName": "España", "defaultZone": "ES", "zones": ["ES"], "unit": "cént./kWh", "currencyMajor": "€", "subunitsPerMajor": 100, "fxFromEurCents": 1.0, "vatRate": 1.21, "vatPctText": "21 %", "defaultMargin": 1.1, "taxInclVat": 0.65, "defaultPostal": "28001", "defaultCity": "Madrid", "brandSubtitle": "Precio de la luz por horas (OMIE / PVPC), previsión solar y eólica a 7 días y calculadora de peajes", "navChart": "Gráfico por horas", "navTable": "Tabla horaria", "navTransfer": "Peajes 2.0TD", "navOptimizer": "Optimizador 36 h", "navApi": "API Abierta", "zoneSelectLabel": "Zona de mercado", "langSelectLabel": "País / Idioma", "chartTitle": "Precio spot de la luz en España (OMIE) y previsión a 7 días (cént./kWh)", "hoverHint": "Pasa el cursor o pulsa sobre una barra para ver el precio horario y el rango probable.", "tierBasisIntro": "Nivel de precio (según media 30 días", "tierCheap": "Valle / Barato", "tierNorm": "Normal", "tierHigh": "Punta / Caro", "legendRange": "Rango de previsión (mín–máx)", "scrollDownText": "Desliza hacia abajo: tabla por horas, calculadora peajes 2.0TD, carga coche eléctrico y API", "approxPrefix": "aprox. ", "rangePrefix": "Rango probable", "fixedText": "Precio OMIE confirmado", "probLabel": "Probabilidad", "predWasLabel": "La previsión fue", "predShortLabel": "Previsión", "pubShortTpl": "Publ. {date} {time}", "pubFullTpl": "Precio oficial publicado: {date} a las {time}", "weekdaysShort": ["Dom", "Lun", "Mar", "Mié", "Jue", "Vie", "Sáb"], "todayWord": "Hoy", "tomorrowWord": "Mañana", "atClockWord": "", "sumNowTitle": "PRECIO DE LA LUZ AHORA", "sumMinTitle": "HORA MÁS BARATA HOY", "sumMaxTitle": "HORA MÁS CARA HOY", "tableHeading": "Precio de la luz hora a hora y previsión a 7 días", "colTime": "Tramo horario", "colSpot": "Precio OMIE (previsión / oficial)", "colRange": "Rango probable", "colTotal": "Precio total con peajes e IVA", "colWeather": "Eólica y temperatura", "transferHeading": "Calculadora de peajes y cargos (Tarifa 2.0TD) por código postal en España", "transferLead": "Introduce tu código postal (ej. 28001 Madrid, 08001 Barcelona, 41001 Sevilla, 46001 Valencia) para calcular el precio total con peajes de distribución.", "postalLabel": "Código postal o ciudad", "postalPlaceholder": "28001, 08001, 41001...", "setBtn": "Aplicar", "tariffLabel": "Peaje 2.0TD", "tariffGeneral": "Media ponderada", "tariffTime": "Punta / Llano / Valle", "marginLabel": "Margen comercializadora (cént./kWh)", "vatLabel": "IVA", "vatIncl": "Con IVA 21 %", "vatZero": "Sin IVA (0 %)", "dsoNetworkKicker": "DISTRIBUIDORA", "receiptNowTitle": "PRECIO TOTAL AHORA", "receiptSpotRow": "Mercado diario OMIE ES", "receiptMarginRow": "Margen comercializadora", "receiptTaxRow": "Impuesto eléctrico", "receiptTotalRow": "PRECIO TOTAL CON IVA", "receiptCheapestToday": "Hora más barata hoy", "receiptAvgToday": "Media de hoy (total)", "receiptAvgTomorrow": "Media de mañana (total)", "expectWord": "esperado", "optBestWindowTpl": "TRAMO DE {h} H MÁS BARATO (PRÓXIMAS 36 H)", "optDurationLabel": "Duración", "optKwLabel": "Potencia (kW)", "optProbTotalLabel": "Precio total probable", "optAvgTotalLabel": "Precio medio total", "optTransferTaxLabel": "Peajes e impuestos", "optConsumptionLabel": "Consumo", "optSavedLabel": "Ahorro frente al tramo más caro", "apiHeading": "API Abierta Precio de la Luz y Previsión 7 Días (Spotpuls API)", "apiLead": "Consulta los precios horarios OMIE España y la previsión solar/eólica a 7 días en JSON o CSV para Home Assistant y domótica.", "apiCopyBtn": "Copiar URL", "apiCopiedBtn": "¡Copiado!", "apiDocsBtn": "Documentación API", "apiEmbedLabel": "Insignia de precio en vivo para tu web o blog", "dsos": [{"id": "ide_edist", "name": "i-DE Iberdrola / UFD Naturgy (Centro, Norte & Levante — 2.0TD)", "gen": 4.2, "day": 7.8, "night": 0.9, "zone": "ES", "postals": ["0", "1", "2", "3", "4"]}, {"id": "endesa_viesgo", "name": "e-distribución Endesa / Viesgo (Cataluña, Sur, Aragón & Islas — 2.0TD)", "gen": 4.2, "day": 7.8, "night": 0.9, "zone": "ES", "postals": ["5", "6", "7", "8", "9"]}]};
+    </script>
+</head>
+<body>
+    <header class="site-header">
+        <div class="header-inner">
+            <a href="./" class="brand-link">
+                <span class="brand-title"><img src="/favicon.svg?v=37" alt="" width="24" height="24" style="vertical-align:-5px; margin-right:8px;">Spotpuls</span>
+                <span class="brand-subtitle">Precio de la luz por horas (OMIE / PVPC), previsión solar y eólica a 7 días y calculadora de peajes</span>
+            </a>
+            <div class="header-right">
+                <nav class="main-nav" aria-label="Navigation">
+                    <a href="./">Gráfico por horas</a>
+                    <a href="#tuntitaulukko">Tabla horaria</a>
+                    <a href="#siirtohintalaskuri">Peajes 2.0TD</a>
+                    <a href="#optimoija">Optimizador 36 h</a>
+                    <a href="#avoin-api">API Abierta</a>
+                </nav>
+                <div class="header-market-controls">
+                    <select id="zone-select" class="header-select" aria-label="Zona de mercado">
+                        <optgroup label="España"><option value="ES" selected>España / Spain (ES — OMIE)</option></optgroup><optgroup label="Europe (40 Zones)"><option value="FI">Suomi / Finland (FI)</option><option value="SE1">SE1 — Luleå / Norra Norrland</option><option value="SE2">SE2 — Sundsvall / Södra Norrland</option><option value="SE3">SE3 — Stockholm / Mellansverige</option><option value="SE4">SE4 — Malmö / Södra Sverige</option><option value="NO1">NO1 — Oslo / Øst-Norge</option><option value="NO2">NO2 — Kristiansand / Sør-Norge</option><option value="NO3">NO3 — Trondheim / Midt-Norge</option><option value="NO4">NO4 — Tromsø / Nord-Norge (0 % MVA)</option><option value="NO5">NO5 — Bergen / Vest-Norge</option><option value="DK1">DK1 — Vestdanmark (Jylland &amp; Fyn)</option><option value="DK2">DK2 — Østdanmark (Sjælland &amp; Bornholm)</option><option value="EE">Eesti / Estonia (EE)</option><option value="LV">Latvija / Latvia (LV)</option><option value="LT">Lietuva / Lithuania (LT)</option><option value="DE-LU">Deutschland &amp; Luxemburg (DE-LU)</option><option value="AT">Österreich / Austria (AT)</option><option value="NL">Nederland / Netherlands (NL)</option><option value="BE">België / Belgique (BE)</option><option value="FR">France (FR)</option><option value="CH">Schweiz / Suisse / Svizzera (CH)</option><option value="PT">Portugal (PT — OMIE)</option><option value="GB">Great Britain (GB)</option><option value="IE-SEM">Ireland Single Electricity Market (IE-SEM)</option><option value="IT-North">Italia Nord (Milano / Torino / Venezia)</option><option value="IT-Centre-North">Italia Centro-Nord (Firenze / Toscana / Marche)</option><option value="IT-Centre-South">Italia Centro-Sud (Roma / Napoli / Lazio)</option><option value="IT-South">Italia Sud (Puglia / Calabria / Basilicata)</option><option value="IT-Sicily">Italia Sicilia (Palermo / Catania)</option><option value="IT-Sardinia">Italia Sardegna (Cagliari / Sassari)</option><option value="PL">Polska / Poland (PL — TGE)</option><option value="CZ">Česko / Czechia (CZ — OTE)</option><option value="SK">Slovensko / Slovakia (SK — OKTE)</option><option value="HU">Magyarország / Hungary (HU — HUPX)</option><option value="RO">România / Romania (RO — OPCOM)</option><option value="BG">България / Bulgaria (BG — IBEX)</option><option value="SI">Slovenija / Slovenia (SI — BSP)</option><option value="HR">Hrvatska / Croatia (HR — CROPEX)</option><option value="GR">Ελλάδα / Greece (GR — HEnEx)</option></optgroup>
+                    </select>
+                    <select id="lang-select" class="header-select" aria-label="País / Idioma">
+                        <option value="/">Suomi (FI)</option><option value="/en/">English (Europe)</option><option value="/se/">Svenska (SE)</option><option value="/no/">Norsk (NO)</option><option value="/dk/">Dansk (DK)</option><option value="/ee/">Eesti (EE)</option><option value="/lv/">Latviešu (LV)</option><option value="/lt/">Lietuvių (LT)</option><option value="/de/">Deutsch (DE)</option><option value="/at/">Deutsch (AT)</option><option value="/ch/">Deutsch (CH)</option><option value="/nl/">Nederlands (NL)</option><option value="/be/">België (NL/FR)</option><option value="/fr/">Français (FR)</option><option value="/gb/">English (UK)</option><option value="/ie/">English (IE)</option><option value="/es/" selected>Español (ES)</option><option value="/pt/">Português (PT)</option><option value="/it/">Italiano (IT)</option><option value="/pl/">Polski (PL)</option><option value="/cz/">Čeština (CZ)</option><option value="/sk/">Slovenčina (SK)</option><option value="/hu/">Magyar (HU)</option><option value="/ro/">Română (RO)</option><option value="/bg/">Български (BG)</option><option value="/si/">Slovenščina (SI)</option><option value="/hr/">Hrvatski (HR)</option><option value="/gr/">Ελληνικά (GR)</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <main class="container">
+        <div class="first-screen-stage">
+            <section class="hero-chart-box">
+                <div id="day-tabs" class="day-tabs"></div>
+
+                <div class="panel-body" style="padding:10px 14px; border-bottom:var(--border-heavy);">
+                    <div id="chart-readout-strip" class="chart-readout-strip" style="margin-bottom:8px;">
+                        Pasa el cursor o pulsa sobre una barra para ver el precio horario y el rango probable.
+                    </div>
+
+                    <div class="chart-legend" style="padding-top:4px;">
+                        <span class="legend-item"><span class="legend-swatch" style="background:#009e3d;"></span> Valle / Barato</span>
+                        <span class="legend-item"><span class="legend-swatch" style="background:#0038ff;"></span> Normal</span>
+                        <span class="legend-item"><span class="legend-swatch" style="background:#ff3b00;"></span> Punta / Caro</span>
+                        <span class="legend-item"><span class="legend-swatch" style="background:#ffd000;"></span> Rango de previsión (mín–máx)</span>
+                        <h1 id="chart-view-title" style="font-family:var(--mono); font-size:11.5px; font-weight:700; text-transform:uppercase; margin-left:auto;">Precio spot de la luz en España (OMIE) y previsión a 7 días (cént./kWh)</h1>
+                    </div>
+                </div>
+
+                <div class="scroll-down-bar" style="margin-top:0; border:none; border-bottom:var(--border-heavy);">
+                    <span>Desliza hacia abajo: tabla por horas, calculadora peajes 2.0TD, carga coche eléctrico y API</span>
+                    <div class="scroll-down-links">
+                        <a href="#tuntitaulukko">Tabla horaria</a>
+                        <a href="#siirtohintalaskuri">Peajes 2.0TD</a>
+                        <a href="#optimoija">Optimizador 36 h</a>
+                        <a href="#avoin-api">API Abierta</a>
+                    </div>
+                </div>
+
+                <div class="svg-chart-wrapper">
+                    <button type="button" id="chart-prev-day" class="chart-edge-arrow chart-edge-prev" aria-label="Prev">
+                        <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="square" stroke-linejoin="miter"><polyline points="15 18 9 12 15 6"></polyline></svg>
+                    </button>
+                    <div id="chart-floating-tooltip" class="chart-floating-tooltip" aria-live="polite"></div>
+                    <div id="price-chart" class="svg-chart-container" style="border:none; padding:12px 8px 6px;">
+                        ...
+                    </div>
+                    <button type="button" id="chart-next-day" class="chart-edge-arrow chart-edge-next" aria-label="Next">
+                        <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="square" stroke-linejoin="miter"><polyline points="9 18 15 12 9 6"></polyline></svg>
+                    </button>
+                </div>
+            </section>
+
+            <div id="first-screen-summary-strip" class="first-screen-summary-strip" aria-live="polite"></div>
+        </div>
+
+        <div class="below-fold-section">
+            <section class="panel-box" id="tuntitaulukko">
+                <div class="panel-head">
+                    <h2>Precio de la luz hora a hora y previsión a 7 días</h2>
+                </div>
+                <div class="panel-body">
+                    <div class="table-wrap">
+                        <table class="data-table">
+                            <thead>
+                                <tr>
+                                    <th>Tramo horario</th>
+                                    <th>Precio OMIE (previsión / oficial)</th>
+                                    <th>Rango probable</th>
+                                    <th>Precio total con peajes e IVA</th>
+                                    <th>Eólica y temperatura</th>
+                                </tr>
+                            </thead>
+                            <tbody id="hourly-table-body">
+                                <tr><td colspan="5">...</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </section>
+
+            <section class="instrument-strip" id="siirtohintalaskuri">
+                <div class="instrument-strip-top">
+                    <h2>Calculadora de peajes y cargos (Tarifa 2.0TD) por código postal en España</h2>
+                    <p>Introduce tu código postal (ej. 28001 Madrid, 08001 Barcelona, 41001 Sevilla, 46001 Valencia) para calcular el precio total con peajes de distribución.</p>
+                </div>
+
+                <div class="control-matrix">
+                    <form id="postal-search-form" class="control-cell" onsubmit="return false;">
+                        <label for="postal-input" class="field-label">Código postal o ciudad</label>
+                        <div class="postal-input-group">
+                            <input type="text" id="postal-input" class="input-control" value="28001" placeholder="28001, 08001, 41001...">
+                            <button type="submit" class="btn-primary">Aplicar</button>
+                        </div>
+                    </form>
+
+                    <div class="control-cell">
+                        <span class="field-label">Peaje 2.0TD</span>
+                        <div class="seg-group">
+                            <button type="button" class="seg-btn active" data-tariff-btn="general">Media ponderada</button>
+                            <button type="button" class="seg-btn" data-tariff-btn="time">Punta / Llano / Valle</button>
+                        </div>
+                    </div>
+
+                    <div class="control-cell">
+                        <label for="margin-input" class="field-label">Margen comercializadora (cént./kWh)</label>
+                        <input type="number" id="margin-input" class="input-control" step="0.05" min="0" max="500" value="1.1">
+                    </div>
+
+                    <div class="control-cell">
+                        <label for="vat-select" class="field-label">IVA</label>
+                        <select id="vat-select" class="select-control">
+                            <option value="1" selected>Con IVA 21 %</option>
+                            <option value="0">Sin IVA (0 %)</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div id="detected-dso-banner" class="detected-dso-banner"></div>
+            </section>
+
+            <div class="desk-grid">
+                <section class="panel-box">
+                    <div class="panel-head">
+                        <h2>PRECIO TOTAL AHORA</h2>
+                    </div>
+                    <div class="panel-body" id="receipt-ledger-body"></div>
+                </section>
+
+                <section class="panel-box" id="optimoija">
+                    <div class="panel-head">
+                        <h2>Optimizador 36 h</h2>
+                    </div>
+                    <div class="panel-body">
+                        <div class="opt-controls-row">
+                            <div style="flex:1; min-width:180px;">
+                                <span class="field-label">Duración</span>
+                                <div class="seg-group">
+                                    <button type="button" class="seg-btn" data-win-hours="1">1h</button>
+                                    <button type="button" class="seg-btn" data-win-hours="2">2h</button>
+                                    <button type="button" class="seg-btn active" data-win-hours="3">3h</button>
+                                    <button type="button" class="seg-btn" data-win-hours="4">4h</button>
+                                    <button type="button" class="seg-btn" data-win-hours="6">6h</button>
+                                    <button type="button" class="seg-btn" data-win-hours="8">8h</button>
+                                </div>
+                            </div>
+                            <div style="width:110px;">
+                                <label for="appliance-kw-input" class="field-label">Potencia (kW)</label>
+                                <input type="number" id="appliance-kw-input" class="input-control" step="0.1" min="0.1" max="50" value="11">
+                            </div>
+                        </div>
+                        <div id="cheapest-window-result"></div>
+                    </div>
+                </section>
+            </div>
+
+            <section class="panel-box" id="avoin-api">
+                <div class="panel-head">
+                    <h2>API Abierta Precio de la Luz y Previsión 7 Días (Spotpuls API)</h2>
+                    <a href="/api-docs/" style="color:var(--signal-yellow); font-family:var(--mono); font-size:12px; font-weight:700; text-decoration:underline;">Documentación API &rarr;</a>
+                </div>
+                <div class="panel-body">
+                    <p style="font-size:13.5px; color:var(--ink-secondary); max-width:920px;">
+                        Consulta los precios horarios OMIE España y la previsión solar/eólica a 7 días en JSON o CSV para Home Assistant y domótica.
+                    </p>
+                    <div class="api-panel-grid">
+                        <div class="api-card">
+                            <span class="field-label">REST JSON API (CORS * &middot; 40 BIDDING ZONES &middot; 7-DAY FORECAST)</span>
+                            <div class="api-copy-row">
+                                <code id="api-json-url" class="api-code-line">https://spotpuls.app/api/v1/prices?zone=ES&amp;vat=1</code>
+                                <button type="button" class="api-copy-btn" data-copy-target="api-json-url">Copiar URL</button>
+                            </div>
+                            <span class="field-label" style="margin-top:12px;">GOOGLE SHEETS / EXCEL LIVE CSV</span>
+                            <div class="api-copy-row">
+                                <code id="api-csv-url" class="api-code-line">=IMPORTDATA(&quot;https://spotpuls.app/api/v1/prices?zone=ES&amp;vat=1&amp;format=csv&quot;)</code>
+                                <button type="button" class="api-copy-btn" data-copy-target="api-csv-url">Copiar URL</button>
+                            </div>
+                            <span class="field-label" style="margin-top:12px;">Insignia de precio en vivo para tu web o blog</span>
+                            <div class="api-badge-preview">
+                                <img id="api-badge-img" data-zone="ES_1" src="/api/v1/prices?zone=ES&vat=1&format=badge" alt="Spotpuls ES live spot electricity badge" width="250" height="32" loading="lazy" style="border:1px solid #111210;">
+                                <a href="/openapi.json" style="font-family:var(--mono); font-size:11.5px;">OpenAPI 3.1 (openapi.json)</a>
+                                <a href="/llms.txt" style="font-family:var(--mono); font-size:11.5px;">AI / LLM Spec (llms.txt)</a>
+                            </div>
+                            <div class="api-copy-row">
+                                <code id="api-embed-code" class="api-code-line">&lt;a href=&quot;https://spotpuls.app/es/?zone=ES&quot; target=&quot;_blank&quot; rel=&quot;noopener&quot;&gt;&lt;img src=&quot;https://spotpuls.app/api/v1/prices?zone=ES&amp;vat=1&amp;format=badge&quot; alt=&quot;Spotpuls ES spot electricity price &amp; 7-day forecast&quot; width=&quot;250&quot; height=&quot;32&quot;&gt;&lt;/a&gt;</code>
+                                <button type="button" class="api-copy-btn" data-copy-target="api-embed-code">Copiar URL</button>
+                            </div>
+                        </div>
+                        <div class="api-card">
+                            <div style="display:flex; justify-content:space-between; align-items:center; gap:8px;">
+                                <span class="field-label" style="margin-bottom:0;">HOME ASSISTANT (CONFIGURATION.YAML)</span>
+                                <button type="button" class="api-copy-btn" data-copy-target="api-ha-yaml">Copiar URL</button>
+                            </div>
+                            <pre id="api-ha-yaml" class="api-pre-block">rest:
+  - resource: &quot;https://spotpuls.app/api/v1/prices?zone=ES&amp;vat=1&quot;
+    scan_interval: 900
+    sensor:
+      - name: &quot;Spotpuls ES Current Spot&quot;
+        value_template: &quot;{{ value_json.current.spotPrice }}&quot;
+        unit_of_measurement: &quot;cént./kWh&quot;
+        json_attributes_path: &quot;$.summary&quot;
+        json_attributes:
+          - todayMin
+          - todayMax
+          - rolling30dAvg</pre>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </div>
+    </main>
+
+    <footer class="site-footer">
+        <div class="footer-inner">
+            <div>
+                <strong style="color:#ffffff;">Spotpuls (spotpuls.app) — España</strong>
+                <p style="margin-top:6px; max-width:680px;">Precio de la luz por horas (OMIE / PVPC), previsión solar y eólica a 7 días y calculadora de peajes</p>
+            </div>
+            <div class="footer-links">
+                <a href="./">Gráfico por horas</a>
+                <a href="#avoin-api">API Abierta</a>
+                <a href="/api-docs/">API Docs</a>
+                <a href="/openapi.json">OpenAPI 3.1</a>
+                <a href="/llms.txt">llms.txt</a>
+            </div>
+            <div style="width:100%; padding-top:12px; border-top:1px solid #2b2e28; font-size:11px; line-height:1.8;">
+                <span style="color:#ffffff; margin-right:8px;">SPOT MARKETS (28 LANGUAGES / 40 ZONES):</span>
+                <a href="/" style="margin-right:10px;">Suomi (FI)</a> <a href="/en/" style="margin-right:10px;">English (Europe)</a> <a href="/se/" style="margin-right:10px;">Svenska (SE)</a> <a href="/no/" style="margin-right:10px;">Norsk (NO)</a> <a href="/dk/" style="margin-right:10px;">Dansk (DK)</a> <a href="/ee/" style="margin-right:10px;">Eesti (EE)</a> <a href="/lv/" style="margin-right:10px;">Latviešu (LV)</a> <a href="/lt/" style="margin-right:10px;">Lietuvių (LT)</a> <a href="/de/" style="margin-right:10px;">Deutsch (DE)</a> <a href="/at/" style="margin-right:10px;">Deutsch (AT)</a> <a href="/ch/" style="margin-right:10px;">Deutsch (CH)</a> <a href="/nl/" style="margin-right:10px;">Nederlands (NL)</a> <a href="/be/" style="margin-right:10px;">België (NL/FR)</a> <a href="/fr/" style="margin-right:10px;">Français (FR)</a> <a href="/gb/" style="margin-right:10px;">English (UK)</a> <a href="/ie/" style="margin-right:10px;">English (IE)</a> <a href="/es/" style="margin-right:10px;">Español (ES)</a> <a href="/pt/" style="margin-right:10px;">Português (PT)</a> <a href="/it/" style="margin-right:10px;">Italiano (IT)</a> <a href="/pl/" style="margin-right:10px;">Polski (PL)</a> <a href="/cz/" style="margin-right:10px;">Čeština (CZ)</a> <a href="/sk/" style="margin-right:10px;">Slovenčina (SK)</a> <a href="/hu/" style="margin-right:10px;">Magyar (HU)</a> <a href="/ro/" style="margin-right:10px;">Română (RO)</a> <a href="/bg/" style="margin-right:10px;">Български (BG)</a> <a href="/si/" style="margin-right:10px;">Slovenščina (SI)</a> <a href="/hr/" style="margin-right:10px;">Hrvatski (HR)</a> <a href="/gr/" style="margin-right:10px;">Ελληνικά (GR)</a>
+            </div>
+        </div>
+    </footer>
+
+    <script src="/dso_data.js"></script>
+    <script src="/ml_weights.js"></script>
+    <script src="/nordpool_models.js"></script>
+    <script src="/app.js?v=37"></script>
+</body>
+</html>

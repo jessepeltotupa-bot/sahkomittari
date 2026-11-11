@@ -3,16 +3,16 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Suomen sähköverkkoyhtiöt ja siirtohinnat 2026 | Sähkömittari — Pörssisähkö & Siirtohintalaskuri</title>
+    <title>Suomen sähköverkkoyhtiöt ja siirtohinnat 2026 | Spotpuls — Pörssisähkö, 7 vrk Ennuste & Siirtohintalaskuri</title>
     <meta name="description" content="Valitse oma paikallinen jakeluverkkoyhtiösi tarkistaaksesi yleissiirron, yösiirron ja kausisiirron hinnat sekä pörssisähkön reaaliaikaisen kokonaishinnan.">
-    <link rel="canonical" href="https://xn--shkmittari-q5a2t.fi/verkkoyhtiot/index.html" />
+    <link rel="canonical" href="https://spotpuls.app/verkkoyhtiot/index.html" />
     <meta name="geo.region" content="FI">
     <meta name="content-language" content="fi-FI">
-    <link rel="icon" type="image/svg+xml" href="../favicon.svg?v=36">
+    <link rel="icon" type="image/svg+xml" href="../favicon.svg?v=37">
     <link rel="icon" type="image/x-icon" href="../favicon.ico">
     <link rel="apple-touch-icon" sizes="180x180" href="../apple-touch-icon.png">
     <link rel="manifest" href="../site.webmanifest">
-    <link rel="stylesheet" href="../styles.css?v=36">
+    <link rel="stylesheet" href="../styles.css?v=37">
 </head>
 <body>
     <div class="telemetry-bar">
@@ -29,17 +29,27 @@
     <header class="site-header">
         <div class="header-inner">
             <a href="../index.html" class="brand-link">
-                <span class="brand-title"><img src="../favicon.svg?v=36" alt="" width="24" height="24" style="vertical-align:-5px; margin-right:8px;">Sähkömittari.fi</span>
-                <span class="brand-subtitle">Pörssisähkön spot-hinta, tarkentuva 7 vrk hintaennuste ja todellinen siirtohinta postinumerolla</span>
+                <span class="brand-title"><img src="../favicon.svg?v=37" alt="" width="24" height="24" style="vertical-align:-5px; margin-right:8px;">Spotpuls</span>
+                <span class="brand-subtitle">Pörssisähkön spot-hinta, itseoppiva 7 vrk ennuste ja siirtohinta postinumerolla</span>
             </a>
-            <nav class="main-nav" aria-label="Päävalikko">
-                <a href="../index.html">Spot-kaavio</a>
-                <a href="../index.html#tuntitaulukko">Tuntitaulukko</a>
-                <a href="../index.html#siirtohintalaskuri">Siirtohintalaskuri</a>
-                <a href="../index.html#optimoija">Kuorman ajoitus</a>
-                <a href="../verkkoyhtiot/index.html">Jakeluverkkoyhtiöt</a>
-                <a href="../paikkakunnat/index.html">Postinumerot &amp; Kunnat</a>
-            </nav>
+            <div class="header-right">
+                <nav class="main-nav" aria-label="Päävalikko">
+                    <a href="../index.html">Spot-kaavio</a>
+                    <a href="../index.html#tuntitaulukko">Tuntitaulukko</a>
+                    <a href="../index.html#siirtohintalaskuri">Siirtohintalaskuri</a>
+                    <a href="../index.html#optimoija">Kuorman ajoitus</a>
+                    <a href="../index.html#avoin-api">Avoin API</a>
+                    <a href="../verkkoyhtiot/index.html">Verkkoyhtiöt</a>
+                </nav>
+                <div class="header-market-controls">
+                    <select id="zone-select" class="header-select" aria-label="Hinta-alue">
+                        <optgroup label="Suomi"><option value="FI" selected>Suomi / Finland (FI)</option></optgroup><optgroup label="Europe (40 Zones)"><option value="SE1">SE1 — Luleå / Norra Norrland</option><option value="SE2">SE2 — Sundsvall / Södra Norrland</option><option value="SE3">SE3 — Stockholm / Mellansverige</option><option value="SE4">SE4 — Malmö / Södra Sverige</option><option value="NO1">NO1 — Oslo / Øst-Norge</option><option value="NO2">NO2 — Kristiansand / Sør-Norge</option><option value="NO3">NO3 — Trondheim / Midt-Norge</option><option value="NO4">NO4 — Tromsø / Nord-Norge (0 % MVA)</option><option value="NO5">NO5 — Bergen / Vest-Norge</option><option value="DK1">DK1 — Vestdanmark (Jylland &amp; Fyn)</option><option value="DK2">DK2 — Østdanmark (Sjælland &amp; Bornholm)</option><option value="EE">Eesti / Estonia (EE)</option><option value="LV">Latvija / Latvia (LV)</option><option value="LT">Lietuva / Lithuania (LT)</option><option value="DE-LU">Deutschland &amp; Luxemburg (DE-LU)</option><option value="AT">Österreich / Austria (AT)</option><option value="NL">Nederland / Netherlands (NL)</option><option value="BE">België / Belgique (BE)</option><option value="FR">France (FR)</option><option value="CH">Schweiz / Suisse / Svizzera (CH)</option><option value="ES">España / Spain (ES — OMIE)</option><option value="PT">Portugal (PT — OMIE)</option><option value="GB">Great Britain (GB)</option><option value="IE-SEM">Ireland Single Electricity Market (IE-SEM)</option><option value="IT-North">Italia Nord (Milano / Torino / Venezia)</option><option value="IT-Centre-North">Italia Centro-Nord (Firenze / Toscana / Marche)</option><option value="IT-Centre-South">Italia Centro-Sud (Roma / Napoli / Lazio)</option><option value="IT-South">Italia Sud (Puglia / Calabria / Basilicata)</option><option value="IT-Sicily">Italia Sicilia (Palermo / Catania)</option><option value="IT-Sardinia">Italia Sardegna (Cagliari / Sassari)</option><option value="PL">Polska / Poland (PL — TGE)</option><option value="CZ">Česko / Czechia (CZ — OTE)</option><option value="SK">Slovensko / Slovakia (SK — OKTE)</option><option value="HU">Magyarország / Hungary (HU — HUPX)</option><option value="RO">România / Romania (RO — OPCOM)</option><option value="BG">България / Bulgaria (BG — IBEX)</option><option value="SI">Slovenija / Slovenia (SI — BSP)</option><option value="HR">Hrvatska / Croatia (HR — CROPEX)</option><option value="GR">Ελλάδα / Greece (GR — HEnEx)</option></optgroup>
+                    </select>
+                    <select id="lang-select" class="header-select" aria-label="Maa / Kieli">
+                        <option value="/" selected>Suomi (FI)</option><option value="/en/">English (Europe)</option><option value="/se/">Svenska (SE)</option><option value="/no/">Norsk (NO)</option><option value="/dk/">Dansk (DK)</option><option value="/ee/">Eesti (EE)</option><option value="/lv/">Latviešu (LV)</option><option value="/lt/">Lietuvių (LT)</option><option value="/de/">Deutsch (DE)</option><option value="/at/">Deutsch (AT)</option><option value="/ch/">Deutsch (CH)</option><option value="/nl/">Nederlands (NL)</option><option value="/be/">België (NL/FR)</option><option value="/fr/">Français (FR)</option><option value="/gb/">English (UK)</option><option value="/ie/">English (IE)</option><option value="/es/">Español (ES)</option><option value="/pt/">Português (PT)</option><option value="/it/">Italiano (IT)</option><option value="/pl/">Polski (PL)</option><option value="/cz/">Čeština (CZ)</option><option value="/sk/">Slovenčina (SK)</option><option value="/hu/">Magyar (HU)</option><option value="/ro/">Română (RO)</option><option value="/bg/">Български (BG)</option><option value="/si/">Slovenščina (SI)</option><option value="/hr/">Hrvatski (HR)</option><option value="/gr/">Ελληνικά (GR)</option>
+                    </select>
+                </div>
+            </div>
         </div>
     </header>
     <main class="container">
@@ -94,18 +104,23 @@
     <footer class="site-footer">
         <div class="footer-inner">
             <div>
-                <strong style="color:#ffffff;">Sähkömittari — Pörssisähkö & Siirtohintalaskuri</strong>
+                <strong style="color:#ffffff;">Spotpuls (spotpuls.app)</strong>
                 <p style="margin-top:6px; max-width:580px;">
-                    Tekninen pörssisähkön ja sähkönsiirron laskentatyökalu. Yhdistää Nord Pool FI -spot-tuntihinnat, Suomen tuulipuistojen (8 450 MW) ja lämpötilan historialliseen regressiomalliin sekä 33 paikallisen jakeluverkkoyhtiön siirtotariffit ja sähköveron.
+                    Reaaliaikainen pörssisähkön spot-hinta, itseoppiva aluekohtainen 7 vrk tuntiennuste (40 Euroopan tarjousaluetta), 33 suomalaisen jakeluverkkoyhtiön siirtohintalaskuri sekä avoin REST API.
                 </p>
             </div>
             <div class="footer-links">
                 <a href="../index.html">Etusivu</a>
+                <a href="../api-docs/index.html">Avoin REST API</a>
                 <a href="../verkkoyhtiot/index.html">Sähköverkkoyhtiöt</a>
                 <a href="../paikkakunnat/index.html">Kunnat &amp; Postinumerot</a>
                 <a href="../oppaat/porssisahko-ennuste-7-vrk-tuulivoima-ja-lampotila.html">Ennustemalli</a>
                 <a href="../oppaat/sahkon-siirtohinta-postinumerolla-kaikki-verkkoyhtiot.html">Siirtohinnat</a>
                 <a href="../oppaat/yleissiirto-yosiirto-vai-kausisiirto-vertailu.html">Siirtotuotteiden vertailu</a>
+            </div>
+            <div style="width:100%; padding-top:12px; border-top:1px solid #2b2e28; font-size:11px; line-height:1.8;">
+                <span style="color:#ffffff; margin-right:8px;">SPOT-MARKKINAT (28 KIELTÄ / 40 ALUETTA):</span>
+                <a href="/" style="margin-right:10px;">Suomi (FI)</a> <a href="/en/" style="margin-right:10px;">English (Europe)</a> <a href="/se/" style="margin-right:10px;">Svenska (SE)</a> <a href="/no/" style="margin-right:10px;">Norsk (NO)</a> <a href="/dk/" style="margin-right:10px;">Dansk (DK)</a> <a href="/ee/" style="margin-right:10px;">Eesti (EE)</a> <a href="/lv/" style="margin-right:10px;">Latviešu (LV)</a> <a href="/lt/" style="margin-right:10px;">Lietuvių (LT)</a> <a href="/de/" style="margin-right:10px;">Deutsch (DE)</a> <a href="/at/" style="margin-right:10px;">Deutsch (AT)</a> <a href="/ch/" style="margin-right:10px;">Deutsch (CH)</a> <a href="/nl/" style="margin-right:10px;">Nederlands (NL)</a> <a href="/be/" style="margin-right:10px;">België (NL/FR)</a> <a href="/fr/" style="margin-right:10px;">Français (FR)</a> <a href="/gb/" style="margin-right:10px;">English (UK)</a> <a href="/ie/" style="margin-right:10px;">English (IE)</a> <a href="/es/" style="margin-right:10px;">Español (ES)</a> <a href="/pt/" style="margin-right:10px;">Português (PT)</a> <a href="/it/" style="margin-right:10px;">Italiano (IT)</a> <a href="/pl/" style="margin-right:10px;">Polski (PL)</a> <a href="/cz/" style="margin-right:10px;">Čeština (CZ)</a> <a href="/sk/" style="margin-right:10px;">Slovenčina (SK)</a> <a href="/hu/" style="margin-right:10px;">Magyar (HU)</a> <a href="/ro/" style="margin-right:10px;">Română (RO)</a> <a href="/bg/" style="margin-right:10px;">Български (BG)</a> <a href="/si/" style="margin-right:10px;">Slovenščina (SI)</a> <a href="/hr/" style="margin-right:10px;">Hrvatski (HR)</a> <a href="/gr/" style="margin-right:10px;">Ελληνικά (GR)</a>
             </div>
         </div>
     </footer>

@@ -1,7 +1,7 @@
 {
-  "name": "Sähkömittari — Pörssisähkö & Siirtohintalaskuri",
-  "short_name": "Sähkömittari",
-  "description": "Pörssisähkön spot-hinta, tarkentuva 7 vrk hintaennuste ja todellinen siirtohinta postinumerolla.",
+  "name": "Spotpuls — Spot Electricity & 7-Day Forecast",
+  "short_name": "Spotpuls",
+  "description": "Real-time day-ahead electricity spot prices, self-learning 7-day regional hourly forecasts across 40 European bidding zones, grid tariff calculator & open REST API (spotpuls.app).",
   "start_url": "/",
   "display": "standalone",
   "background_color": "#f5f3ec",

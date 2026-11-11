@@ -1,13 +1,49 @@
 {
   "version": 2,
   "cleanUrls": false,
+  "functions": {
+    "api/**/*.js": {
+      "includeFiles": "{data/global_zones.json,ml_weights.json}"
+    }
+  },
+  "rewrites": [
+    {
+      "source": "/api/v1/zones",
+      "destination": "/api/v1/prices?list=zones"
+    }
+  ],
   "headers": [
     {
       "source": "/api/(.*)",
       "headers": [
         {
+          "key": "Access-Control-Allow-Origin",
+          "value": "*"
+        },
+        {
+          "key": "Access-Control-Allow-Methods",
+          "value": "GET, OPTIONS"
+        },
+        {
           "key": "Cache-Control",
-          "value": "public, s-maxage=600, stale-while-revalidate=1800"
+          "value": "public, s-maxage=300, stale-while-revalidate=1800"
+        },
+        {
+          "key": "X-Powered-By-Data",
+          "value": "Spotpuls (https://spotpuls.app)"
+        }
+      ]
+    },
+    {
+      "source": "/(openapi\\.json|llms\\.txt|\\.well-known/ai-plugin\\.json)",
+      "headers": [
+        {
+          "key": "Access-Control-Allow-Origin",
+          "value": "*"
+        },
+        {
+          "key": "Cache-Control",
+          "value": "public, max-age=3600"
         }
       ]
     }

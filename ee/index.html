@@ -3,48 +3,148 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Elektriarvesti // EE-Spot — Börsielektri hind tundide kaupa, 7 päeva prognoos ja võrgutasu kalkulaator postiindeksiga</title>
-    <meta name="description" content="Sisesta oma 5-kohaline postiindeks (nt 10111 Tallinn, 51003 Tartu, 80010 Pärnu, 20308 Narva), et leida automaatselt võrguettevõtja (Elektrilevi, Imatra Elekter, VKG Elektrivõrgud).">
+    <title>Spotpuls — Börsielektri hind tundide kaupa, 7 päeva prognoos ja võrgutasu kalkulaator postiindeksiga | spotpuls.app</title>
+    <meta name="description" content="Sisesta oma 5-kohaline postiindeks (nt 10111 Tallinn, 51003 Tartu, 80010 Pärnu, 20308 Narva), et leida võrguettevõtja.">
     <meta name="geo.region" content="EE">
     <meta name="content-language" content="et-EE">
-    <link rel="icon" type="image/svg+xml" href="/favicon.svg">
+    <link rel="canonical" href="https://spotpuls.app/ee/" />
+    <link rel="alternate" hreflang="fi" href="https://spotpuls.app/" />
+    <link rel="alternate" hreflang="en" href="https://spotpuls.app/en/" />
+    <link rel="alternate" hreflang="sv" href="https://spotpuls.app/se/" />
+    <link rel="alternate" hreflang="no" href="https://spotpuls.app/no/" />
+    <link rel="alternate" hreflang="da" href="https://spotpuls.app/dk/" />
+    <link rel="alternate" hreflang="et" href="https://spotpuls.app/ee/" />
+    <link rel="alternate" hreflang="lv" href="https://spotpuls.app/lv/" />
+    <link rel="alternate" hreflang="lt" href="https://spotpuls.app/lt/" />
+    <link rel="alternate" hreflang="de" href="https://spotpuls.app/de/" />
+    <link rel="alternate" hreflang="de-AT" href="https://spotpuls.app/at/" />
+    <link rel="alternate" hreflang="de-CH" href="https://spotpuls.app/ch/" />
+    <link rel="alternate" hreflang="nl" href="https://spotpuls.app/nl/" />
+    <link rel="alternate" hreflang="nl-BE" href="https://spotpuls.app/be/" />
+    <link rel="alternate" hreflang="fr" href="https://spotpuls.app/fr/" />
+    <link rel="alternate" hreflang="en-GB" href="https://spotpuls.app/gb/" />
+    <link rel="alternate" hreflang="en-IE" href="https://spotpuls.app/ie/" />
+    <link rel="alternate" hreflang="es" href="https://spotpuls.app/es/" />
+    <link rel="alternate" hreflang="pt" href="https://spotpuls.app/pt/" />
+    <link rel="alternate" hreflang="it" href="https://spotpuls.app/it/" />
+    <link rel="alternate" hreflang="pl" href="https://spotpuls.app/pl/" />
+    <link rel="alternate" hreflang="cs" href="https://spotpuls.app/cz/" />
+    <link rel="alternate" hreflang="sk" href="https://spotpuls.app/sk/" />
+    <link rel="alternate" hreflang="hu" href="https://spotpuls.app/hu/" />
+    <link rel="alternate" hreflang="ro" href="https://spotpuls.app/ro/" />
+    <link rel="alternate" hreflang="bg" href="https://spotpuls.app/bg/" />
+    <link rel="alternate" hreflang="sl" href="https://spotpuls.app/si/" />
+    <link rel="alternate" hreflang="hr" href="https://spotpuls.app/hr/" />
+    <link rel="alternate" hreflang="el" href="https://spotpuls.app/gr/" />
+    <link rel="alternate" hreflang="x-default" href="https://spotpuls.app/en/" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg?v=37">
     <link rel="icon" type="image/x-icon" href="/favicon.ico">
     <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
     <link rel="manifest" href="/site.webmanifest">
-    <link rel="stylesheet" href="/styles.css?v=36">
+    <link rel="stylesheet" href="/styles.css?v=37">
     <script type="application/ld+json">
 {
   "@context": "https://schema.org",
-  "@type": "WebApplication",
-  "name": "Elektriarvesti // EE-Spot",
-  "description": "Börsielektri hind tundide kaupa, 7 päeva prognoos ja võrgutasu kalkulaator postiindeksiga",
-  "applicationCategory": "FinanceApplication",
-  "operatingSystem": "Web",
-  "inLanguage": "et-EE",
-  "areaServed": {
-    "@type": "Country",
-    "name": "Eesti",
-    "identifier": "EE"
-  }
+  "@graph": [
+    {
+      "@type": "WebApplication",
+      "@id": "https://spotpuls.app/ee/#app",
+      "name": "Spotpuls",
+      "alternateName": "spotpuls.app",
+      "url": "https://spotpuls.app/ee/",
+      "description": "Börsielektri hind tundide kaupa, 7 päeva prognoos ja võrgutasu kalkulaator postiindeksiga",
+      "applicationCategory": "UtilitiesApplication",
+      "operatingSystem": "Web",
+      "inLanguage": "et-EE",
+      "isAccessibleForFree": true,
+      "areaServed": {
+        "@type": "Country",
+        "name": "Eesti",
+        "identifier": "EE"
+      },
+      "offers": {
+        "@type": "Offer",
+        "price": "0",
+        "priceCurrency": "EUR"
+      }
+    },
+    {
+      "@type": "Dataset",
+      "@id": "https://spotpuls.app/ee/#dataset",
+      "name": "Spotpuls Eesti (EE) Day-Ahead Spot Electricity Prices & 7-Day Hourly Forecast",
+      "description": "Päri reaalajas Nord Pool EE börsihindu ja 7 päeva prognoosi JSON- või CSV-vormingus targa kodu ja rakenduste jaoks.",
+      "url": "https://spotpuls.app/ee/",
+      "inLanguage": "et-EE",
+      "isAccessibleForFree": true,
+      "license": "https://creativecommons.org/licenses/by/4.0/",
+      "creator": {
+        "@type": "Organization",
+        "name": "Spotpuls",
+        "url": "https://spotpuls.app"
+      },
+      "temporalCoverage": "2024-01-01/..",
+      "spatialCoverage": {
+        "@type": "Place",
+        "name": "Eesti (EE)"
+      },
+      "distribution": [
+        {
+          "@type": "DataDownload",
+          "encodingFormat": "application/json",
+          "contentUrl": "https://spotpuls.app/api/v1/prices?zone=EE&vat=1"
+        },
+        {
+          "@type": "DataDownload",
+          "encodingFormat": "text/csv",
+          "contentUrl": "https://spotpuls.app/api/v1/prices?zone=EE&vat=1&format=csv"
+        }
+      ]
+    },
+    {
+      "@type": "WebAPI",
+      "@id": "https://spotpuls.app/api/v1/prices#webapi",
+      "name": "Spotpuls Open Electricity Spot & 7-Day Forecast API",
+      "description": "Free CORS-enabled REST API for European day-ahead electricity spot prices and self-learning 7-day regional hourly forecasts across 40 bidding zones.",
+      "url": "https://spotpuls.app/api/v1/prices",
+      "documentation": "https://spotpuls.app/api-docs/",
+      "termsOfService": "https://spotpuls.app/api-docs/",
+      "provider": {
+        "@type": "Organization",
+        "name": "Spotpuls",
+        "url": "https://spotpuls.app"
+      }
+    }
+  ]
 }
     </script>
     <script>
-    window.ACTIVE_COUNTRY_LOCALE = {"countryId": "ee", "lang": "et-EE", "geoRegion": "EE", "countryName": "Eesti", "siteName": "Elektriarvesti // EE-Spot", "brandKicker": "NORD POOL EESTI (EE)", "brandSubtitle": "Börsielektri hind tundide kaupa, 7 päeva prognoos ja võrgutasu kalkulaator postiindeksiga", "navChart": "Börsigraafik", "navTable": "Tunnitabel", "navTransfer": "Võrgutasu kalkulaator", "navOptimizer": "Tarbimise ajastamine (36 h)", "chartTitle": "Börsielektri tunnihind ja 7 päeva prognoos (senti/kWh)", "hoverHint": "Liiguta kursor tulba kohale, et näha hinda ja tõenäolist hinnavahemikku", "legendCheap": "Soodne (< 4 senti/kWh)", "legendNorm": "Keskmine (4–10 senti/kWh)", "legendHigh": "Kõrge (> 10 senti/kWh)", "legendRange": "Prognoosi hinnavahemik (min–max senti/kWh)", "legendWind": "Tuuleenergia võimsus (GW, katkendjoon)", "scrollDownText": "Keri alla: tunnitabel, võrgutasu kalkulaator postiindeksi järgi ja tarbimise ajastamine", "tableHeading": "Tunnipõhine hinnaprognoos ja tõenäoline hinnavahemik (24 h/ööpäev)", "colTime": "Kellaaeg (Tund)", "colSpot": "Börsihind (prognoos / hind)", "colRange": "Tõenäoline hinnavahemik", "colTotal": "Koguhind koos võrgutasu ja maksudega", "colWeather": "Tuuleenergia ja temperatuur", "transferHeading": "Võrgutasu ja elektri koguhinna kalkulaator postiindeksi järgi Eestis", "transferLead": "Sisesta oma 5-kohaline postiindeks (nt 10111 Tallinn, 51003 Tartu, 80010 Pärnu, 20308 Narva), et leida automaatselt võrguettevõtja (Elektrilevi, Imatra Elekter, VKG Elektrivõrgud).", "postalLabel": "Postiindeks või linn", "postalPlaceholder": "10111, 51003, 80010, 20308...", "setBtn": "Vali", "tariffLabel": "Võrgupakett", "tariffGeneral": "Võrk 1 (Põhitariif)", "tariffTime": "Võrk 2 / Võrk 4 (Päev / Öö)", "marginLabel": "Elektrimüüja marginaal (senti/kWh)", "vatLabel": "Käibemaksumäär", "vatIncl": "Koos käibemaksuga 22 %", "vatZero": "Ilma käibemaksuta (0 %)", "unit": "senti/kWh", "approxPrefix": "u ", "rangePrefix": "Hinnavahemik", "fixedText": "Avaldatud fikseeritud hind", "defaultPostal": "10111", "defaultCity": "Tallinn (EE)", "taxInclVat": 1.56, "dsos": [{"id": "elektrilevi", "name": "Elektrilevi OÜ (Üle-eestiline jaotusvõrk — Võrk 1 / Võrk 2)", "gen": 5.38, "day": 6.25, "night": 3.62, "zone": "EE", "postals": ["1", "3", "4", "5", "6", "7", "8", "9"]}, {"id": "vkg", "name": "VKG Elektrivõrgud OÜ (Narva, Narva-Jõesuu & Sillamäe)", "gen": 4.92, "day": 5.75, "night": 3.4, "zone": "EE", "postals": ["2"]}]};
+    window.ACTIVE_COUNTRY_LOCALE = {"countryId": "ee", "lang": "et-EE", "hreflang": "et", "path": "/ee/", "languageLabel": "Eesti (EE)", "geoRegion": "EE", "countryName": "Eesti", "defaultZone": "EE", "zones": ["EE"], "unit": "senti/kWh", "currencyMajor": "€", "subunitsPerMajor": 100, "fxFromEurCents": 1.0, "vatRate": 1.22, "vatPctText": "22 %", "defaultMargin": 0.45, "taxInclVat": 1.56, "defaultPostal": "10111", "defaultCity": "Tallinn (EE)", "brandSubtitle": "Börsielektri hind tundide kaupa, 7 päeva prognoos ja võrgutasu kalkulaator postiindeksiga", "navChart": "Börsigraafik", "navTable": "Tunnitabel", "navTransfer": "Võrgutasu", "navOptimizer": "Ajastamine", "navApi": "Avatud API", "zoneSelectLabel": "Hinnapiirkond", "langSelectLabel": "Riik / Keel", "chartTitle": "Börsielektri tunnihind ja 7 päeva prognoos (senti/kWh)", "hoverHint": "Liiguta kursor tulba kohale või puuduta tulpa, et näha hinda ja tõenäolist hinnavahemikku.", "tierBasisIntro": "Hinnatase (30 p keskmise hinna alusel", "tierCheap": "Soodne", "tierNorm": "Tavapärane", "tierHigh": "Kõrge", "legendRange": "Prognoosi hinnavahemik (min–max)", "scrollDownText": "Keri alla: tunnitabel, võrgutasu kalkulaator, tarbimise ajastamine ja avatud API", "approxPrefix": "u ", "rangePrefix": "Hinnavahemik", "fixedText": "Avaldatud fikseeritud hind", "probLabel": "Tõenäosus", "predWasLabel": "Programmi prognoos oli", "predShortLabel": "Prognoos oli", "pubShortTpl": "Avald. {date} kl {time}", "pubFullTpl": "Hind avaldatakse: {date} kl {time}", "weekdaysShort": ["P", "E", "T", "K", "N", "R", "L"], "todayWord": "Täna", "tomorrowWord": "Homme", "atClockWord": "kl", "sumNowTitle": "HETKE TUNNIHIND PRAEGU", "sumMinTitle": "PÄEVA SOODSAIM HIND", "sumMaxTitle": "PÄEVA KALLEIM HIND", "tableHeading": "Tunnipõhine hinnaprognoos ja tõenäoline hinnavahemik", "colTime": "Kellaaeg", "colSpot": "Börsihind (prognoos / hind)", "colRange": "Tõenäoline hinnavahemik", "colTotal": "Koguhind koos võrgutasuga", "colWeather": "Tuul ja temperatuur", "transferHeading": "Võrgutasu ja elektri koguhinna kalkulaator Eestis", "transferLead": "Sisesta oma 5-kohaline postiindeks (nt 10111 Tallinn, 51003 Tartu, 80010 Pärnu, 20308 Narva), et leida võrguettevõtja.", "postalLabel": "Postiindeks või linn", "postalPlaceholder": "10111, 51003, 80010...", "setBtn": "Vali", "tariffLabel": "Võrgupakett", "tariffGeneral": "Võrk 1 (Põhitariif)", "tariffTime": "Võrk 2 / 4 (Päev / Öö)", "marginLabel": "Müüja marginaal (senti/kWh)", "vatLabel": "Käibemaks", "vatIncl": "Koos KM-ga 22 %", "vatZero": "Ilma KM-ta (0 %)", "dsoNetworkKicker": "JAOTUSVÕRK", "receiptNowTitle": "KOGUHIND PRAEGU", "receiptSpotRow": "Börsihind (Nord Pool EE)", "receiptMarginRow": "Müüja marginaal", "receiptTaxRow": "Aktsiis ja taastuvenergia tasu", "receiptTotalRow": "KOGUHIND KOKKU", "receiptCheapestToday": "Tänane soodsaim tund", "receiptAvgToday": "Tänane keskmine koguhind", "receiptAvgTomorrow": "Homne keskmine koguhind", "expectWord": "ootus", "optBestWindowTpl": "SOODSAIM {h}-TUNNINE AKEN (JÄRGMISED 36 H)", "optDurationLabel": "Kestus", "optKwLabel": "Võimsus (kW)", "optProbTotalLabel": "Tõenäoline koguhind", "optAvgTotalLabel": "Keskmine koguhind", "optTransferTaxLabel": "Võrk ja maksud", "optConsumptionLabel": "Tarbimine", "optSavedLabel": "Sääst võrreldes kalleima ajaga", "apiHeading": "Avatud Elektrihinna ja Prognoosi API (Spotpuls API)", "apiLead": "Päri reaalajas Nord Pool EE börsihindu ja 7 päeva prognoosi JSON- või CSV-vormingus targa kodu ja rakenduste jaoks.", "apiCopyBtn": "Kopeeri URL", "apiCopiedBtn": "Kopeeritud!", "apiDocsBtn": "API dokumentatsioon", "apiEmbedLabel": "Manustatav reaalajas hinnamärk veebilehele", "dsos": [{"id": "elektrilevi", "name": "Elektrilevi OÜ (Võrk 1 / Võrk 2)", "gen": 5.38, "day": 6.25, "night": 3.62, "zone": "EE", "postals": ["1", "3", "4", "5", "6", "7", "8", "9"]}, {"id": "vkg", "name": "VKG Elektrivõrgud OÜ (Ida-Virumaa)", "gen": 4.92, "day": 5.75, "night": 3.4, "zone": "EE", "postals": ["2"]}]};
     </script>
 </head>
 <body>
     <header class="site-header">
         <div class="header-inner">
             <a href="./" class="brand-link">
-                <span class="brand-title"><img src="/favicon.svg?v=36" alt="" width="24" height="24" style="vertical-align:-5px; margin-right:8px;">Elektriarvesti // EE-Spot</span>
+                <span class="brand-title"><img src="/favicon.svg?v=37" alt="" width="24" height="24" style="vertical-align:-5px; margin-right:8px;">Spotpuls</span>
                 <span class="brand-subtitle">Börsielektri hind tundide kaupa, 7 päeva prognoos ja võrgutasu kalkulaator postiindeksiga</span>
             </a>
-            <nav class="main-nav" aria-label="Navigation">
-                <a href="./">Börsigraafik</a>
-                <a href="#tuntitaulukko">Tunnitabel</a>
-                <a href="#siirtohintalaskuri">Võrgutasu kalkulaator</a>
-                <a href="#optimoija">Tarbimise ajastamine (36 h)</a>
-            </nav>
+            <div class="header-right">
+                <nav class="main-nav" aria-label="Navigation">
+                    <a href="./">Börsigraafik</a>
+                    <a href="#tuntitaulukko">Tunnitabel</a>
+                    <a href="#siirtohintalaskuri">Võrgutasu</a>
+                    <a href="#optimoija">Ajastamine</a>
+                    <a href="#avoin-api">Avatud API</a>
+                </nav>
+                <div class="header-market-controls">
+                    <select id="zone-select" class="header-select" aria-label="Hinnapiirkond">
+                        <optgroup label="Eesti"><option value="EE" selected>Eesti / Estonia (EE)</option></optgroup><optgroup label="Europe (40 Zones)"><option value="FI">Suomi / Finland (FI)</option><option value="SE1">SE1 — Luleå / Norra Norrland</option><option value="SE2">SE2 — Sundsvall / Södra Norrland</option><option value="SE3">SE3 — Stockholm / Mellansverige</option><option value="SE4">SE4 — Malmö / Södra Sverige</option><option value="NO1">NO1 — Oslo / Øst-Norge</option><option value="NO2">NO2 — Kristiansand / Sør-Norge</option><option value="NO3">NO3 — Trondheim / Midt-Norge</option><option value="NO4">NO4 — Tromsø / Nord-Norge (0 % MVA)</option><option value="NO5">NO5 — Bergen / Vest-Norge</option><option value="DK1">DK1 — Vestdanmark (Jylland &amp; Fyn)</option><option value="DK2">DK2 — Østdanmark (Sjælland &amp; Bornholm)</option><option value="LV">Latvija / Latvia (LV)</option><option value="LT">Lietuva / Lithuania (LT)</option><option value="DE-LU">Deutschland &amp; Luxemburg (DE-LU)</option><option value="AT">Österreich / Austria (AT)</option><option value="NL">Nederland / Netherlands (NL)</option><option value="BE">België / Belgique (BE)</option><option value="FR">France (FR)</option><option value="CH">Schweiz / Suisse / Svizzera (CH)</option><option value="ES">España / Spain (ES — OMIE)</option><option value="PT">Portugal (PT — OMIE)</option><option value="GB">Great Britain (GB)</option><option value="IE-SEM">Ireland Single Electricity Market (IE-SEM)</option><option value="IT-North">Italia Nord (Milano / Torino / Venezia)</option><option value="IT-Centre-North">Italia Centro-Nord (Firenze / Toscana / Marche)</option><option value="IT-Centre-South">Italia Centro-Sud (Roma / Napoli / Lazio)</option><option value="IT-South">Italia Sud (Puglia / Calabria / Basilicata)</option><option value="IT-Sicily">Italia Sicilia (Palermo / Catania)</option><option value="IT-Sardinia">Italia Sardegna (Cagliari / Sassari)</option><option value="PL">Polska / Poland (PL — TGE)</option><option value="CZ">Česko / Czechia (CZ — OTE)</option><option value="SK">Slovensko / Slovakia (SK — OKTE)</option><option value="HU">Magyarország / Hungary (HU — HUPX)</option><option value="RO">România / Romania (RO — OPCOM)</option><option value="BG">България / Bulgaria (BG — IBEX)</option><option value="SI">Slovenija / Slovenia (SI — BSP)</option><option value="HR">Hrvatska / Croatia (HR — CROPEX)</option><option value="GR">Ελλάδα / Greece (GR — HEnEx)</option></optgroup>
+                    </select>
+                    <select id="lang-select" class="header-select" aria-label="Riik / Keel">
+                        <option value="/">Suomi (FI)</option><option value="/en/">English (Europe)</option><option value="/se/">Svenska (SE)</option><option value="/no/">Norsk (NO)</option><option value="/dk/">Dansk (DK)</option><option value="/ee/" selected>Eesti (EE)</option><option value="/lv/">Latviešu (LV)</option><option value="/lt/">Lietuvių (LT)</option><option value="/de/">Deutsch (DE)</option><option value="/at/">Deutsch (AT)</option><option value="/ch/">Deutsch (CH)</option><option value="/nl/">Nederlands (NL)</option><option value="/be/">België (NL/FR)</option><option value="/fr/">Français (FR)</option><option value="/gb/">English (UK)</option><option value="/ie/">English (IE)</option><option value="/es/">Español (ES)</option><option value="/pt/">Português (PT)</option><option value="/it/">Italiano (IT)</option><option value="/pl/">Polski (PL)</option><option value="/cz/">Čeština (CZ)</option><option value="/sk/">Slovenčina (SK)</option><option value="/hu/">Magyar (HU)</option><option value="/ro/">Română (RO)</option><option value="/bg/">Български (BG)</option><option value="/si/">Slovenščina (SI)</option><option value="/hr/">Hrvatski (HR)</option><option value="/gr/">Ελληνικά (GR)</option>
+                    </select>
+                </div>
+            </div>
         </div>
     </header>
 
@@ -55,24 +155,25 @@
 
                 <div class="panel-body" style="padding:10px 14px; border-bottom:var(--border-heavy);">
                     <div id="chart-readout-strip" class="chart-readout-strip" style="margin-bottom:8px;">
-                        Liiguta kursor tulba kohale, et näha hinda ja tõenäolist hinnavahemikku
+                        Liiguta kursor tulba kohale või puuduta tulpa, et näha hinda ja tõenäolist hinnavahemikku.
                     </div>
 
                     <div class="chart-legend" style="padding-top:4px;">
-                        <span class="legend-item"><span class="legend-swatch" style="background:#009e3d;"></span> Soodne (< 4 senti/kWh)</span>
-                        <span class="legend-item"><span class="legend-swatch" style="background:#0038ff;"></span> Keskmine (4–10 senti/kWh)</span>
-                        <span class="legend-item"><span class="legend-swatch" style="background:#ff3b00;"></span> Kõrge (> 10 senti/kWh)</span>
-                        <span class="legend-item"><span class="legend-swatch" style="background:#ffd000;"></span> Prognoosi hinnavahemik (min–max senti/kWh)</span>
+                        <span class="legend-item"><span class="legend-swatch" style="background:#009e3d;"></span> Soodne</span>
+                        <span class="legend-item"><span class="legend-swatch" style="background:#0038ff;"></span> Tavapärane</span>
+                        <span class="legend-item"><span class="legend-swatch" style="background:#ff3b00;"></span> Kõrge</span>
+                        <span class="legend-item"><span class="legend-swatch" style="background:#ffd000;"></span> Prognoosi hinnavahemik (min–max)</span>
                         <h1 id="chart-view-title" style="font-family:var(--mono); font-size:11.5px; font-weight:700; text-transform:uppercase; margin-left:auto;">Börsielektri tunnihind ja 7 päeva prognoos (senti/kWh)</h1>
                     </div>
                 </div>
 
                 <div class="scroll-down-bar" style="margin-top:0; border:none; border-bottom:var(--border-heavy);">
-                    <span>Keri alla: tunnitabel, võrgutasu kalkulaator postiindeksi järgi ja tarbimise ajastamine</span>
+                    <span>Keri alla: tunnitabel, võrgutasu kalkulaator, tarbimise ajastamine ja avatud API</span>
                     <div class="scroll-down-links">
                         <a href="#tuntitaulukko">Tunnitabel</a>
-                        <a href="#siirtohintalaskuri">Võrgutasu kalkulaator</a>
-                        <a href="#optimoija">Tarbimise ajastamine (36 h)</a>
+                        <a href="#siirtohintalaskuri">Võrgutasu</a>
+                        <a href="#optimoija">Ajastamine</a>
+                        <a href="#avoin-api">Avatud API</a>
                     </div>
                 </div>
 
@@ -96,18 +197,18 @@
         <div class="below-fold-section">
             <section class="panel-box" id="tuntitaulukko">
                 <div class="panel-head">
-                    <h2>Tunnipõhine hinnaprognoos ja tõenäoline hinnavahemik (24 h/ööpäev)</h2>
+                    <h2>Tunnipõhine hinnaprognoos ja tõenäoline hinnavahemik</h2>
                 </div>
                 <div class="panel-body">
                     <div class="table-wrap">
                         <table class="data-table">
                             <thead>
                                 <tr>
-                                    <th>Kellaaeg (Tund)</th>
+                                    <th>Kellaaeg</th>
                                     <th>Börsihind (prognoos / hind)</th>
                                     <th>Tõenäoline hinnavahemik</th>
-                                    <th>Koguhind koos võrgutasu ja maksudega</th>
-                                    <th>Tuuleenergia ja temperatuur</th>
+                                    <th>Koguhind koos võrgutasuga</th>
+                                    <th>Tuul ja temperatuur</th>
                                 </tr>
                             </thead>
                             <tbody id="hourly-table-body">
@@ -120,15 +221,15 @@
 
             <section class="instrument-strip" id="siirtohintalaskuri">
                 <div class="instrument-strip-top">
-                    <h2>Võrgutasu ja elektri koguhinna kalkulaator postiindeksi järgi Eestis</h2>
-                    <p>Sisesta oma 5-kohaline postiindeks (nt 10111 Tallinn, 51003 Tartu, 80010 Pärnu, 20308 Narva), et leida automaatselt võrguettevõtja (Elektrilevi, Imatra Elekter, VKG Elektrivõrgud).</p>
+                    <h2>Võrgutasu ja elektri koguhinna kalkulaator Eestis</h2>
+                    <p>Sisesta oma 5-kohaline postiindeks (nt 10111 Tallinn, 51003 Tartu, 80010 Pärnu, 20308 Narva), et leida võrguettevõtja.</p>
                 </div>
 
                 <div class="control-matrix">
                     <form id="postal-search-form" class="control-cell" onsubmit="return false;">
                         <label for="postal-input" class="field-label">Postiindeks või linn</label>
                         <div class="postal-input-group">
-                            <input type="text" id="postal-input" class="input-control" value="10111" placeholder="10111, 51003, 80010, 20308...">
+                            <input type="text" id="postal-input" class="input-control" value="10111" placeholder="10111, 51003, 80010...">
                             <button type="submit" class="btn-primary">Vali</button>
                         </div>
                     </form>
@@ -137,20 +238,20 @@
                         <span class="field-label">Võrgupakett</span>
                         <div class="seg-group">
                             <button type="button" class="seg-btn active" data-tariff-btn="general">Võrk 1 (Põhitariif)</button>
-                            <button type="button" class="seg-btn" data-tariff-btn="time">Võrk 2 / Võrk 4 (Päev / Öö)</button>
+                            <button type="button" class="seg-btn" data-tariff-btn="time">Võrk 2 / 4 (Päev / Öö)</button>
                         </div>
                     </div>
 
                     <div class="control-cell">
-                        <label for="margin-input" class="field-label">Elektrimüüja marginaal (senti/kWh)</label>
-                        <input type="number" id="margin-input" class="input-control" step="0.05" min="0" max="50" value="0.45">
+                        <label for="margin-input" class="field-label">Müüja marginaal (senti/kWh)</label>
+                        <input type="number" id="margin-input" class="input-control" step="0.05" min="0" max="500" value="0.45">
                     </div>
 
                     <div class="control-cell">
-                        <label for="vat-select" class="field-label">Käibemaksumäär</label>
+                        <label for="vat-select" class="field-label">Käibemaks</label>
                         <select id="vat-select" class="select-control">
-                            <option value="1" selected>Koos käibemaksuga 22 %</option>
-                            <option value="0">Ilma käibemaksuta (0 %)</option>
+                            <option value="1" selected>Koos KM-ga 22 %</option>
+                            <option value="0">Ilma KM-ta (0 %)</option>
                         </select>
                     </div>
                 </div>
@@ -161,29 +262,30 @@
             <div class="desk-grid">
                 <section class="panel-box">
                     <div class="panel-head">
-                        <h2>Koguhind koos võrgutasu ja maksudega</h2>
+                        <h2>KOGUHIND PRAEGU</h2>
                     </div>
                     <div class="panel-body" id="receipt-ledger-body"></div>
                 </section>
 
                 <section class="panel-box" id="optimoija">
                     <div class="panel-head">
-                        <h2>Tarbimise ajastamine (36 h)</h2>
+                        <h2>Ajastamine</h2>
                     </div>
                     <div class="panel-body">
                         <div class="opt-controls-row">
                             <div style="flex:1; min-width:180px;">
-                                <span class="field-label">Duration</span>
+                                <span class="field-label">Kestus</span>
                                 <div class="seg-group">
                                     <button type="button" class="seg-btn" data-win-hours="1">1h</button>
                                     <button type="button" class="seg-btn" data-win-hours="2">2h</button>
                                     <button type="button" class="seg-btn active" data-win-hours="3">3h</button>
                                     <button type="button" class="seg-btn" data-win-hours="4">4h</button>
                                     <button type="button" class="seg-btn" data-win-hours="6">6h</button>
+                                    <button type="button" class="seg-btn" data-win-hours="8">8h</button>
                                 </div>
                             </div>
                             <div style="width:110px;">
-                                <label for="appliance-kw-input" class="field-label">kW</label>
+                                <label for="appliance-kw-input" class="field-label">Võimsus (kW)</label>
                                 <input type="number" id="appliance-kw-input" class="input-control" step="0.1" min="0.1" max="50" value="11">
                             </div>
                         </div>
@@ -191,14 +293,79 @@
                     </div>
                 </section>
             </div>
+
+            <section class="panel-box" id="avoin-api">
+                <div class="panel-head">
+                    <h2>Avatud Elektrihinna ja Prognoosi API (Spotpuls API)</h2>
+                    <a href="/api-docs/" style="color:var(--signal-yellow); font-family:var(--mono); font-size:12px; font-weight:700; text-decoration:underline;">API dokumentatsioon &rarr;</a>
+                </div>
+                <div class="panel-body">
+                    <p style="font-size:13.5px; color:var(--ink-secondary); max-width:920px;">
+                        Päri reaalajas Nord Pool EE börsihindu ja 7 päeva prognoosi JSON- või CSV-vormingus targa kodu ja rakenduste jaoks.
+                    </p>
+                    <div class="api-panel-grid">
+                        <div class="api-card">
+                            <span class="field-label">REST JSON API (CORS * &middot; 40 BIDDING ZONES &middot; 7-DAY FORECAST)</span>
+                            <div class="api-copy-row">
+                                <code id="api-json-url" class="api-code-line">https://spotpuls.app/api/v1/prices?zone=EE&amp;vat=1</code>
+                                <button type="button" class="api-copy-btn" data-copy-target="api-json-url">Kopeeri URL</button>
+                            </div>
+                            <span class="field-label" style="margin-top:12px;">GOOGLE SHEETS / EXCEL LIVE CSV</span>
+                            <div class="api-copy-row">
+                                <code id="api-csv-url" class="api-code-line">=IMPORTDATA(&quot;https://spotpuls.app/api/v1/prices?zone=EE&amp;vat=1&amp;format=csv&quot;)</code>
+                                <button type="button" class="api-copy-btn" data-copy-target="api-csv-url">Kopeeri URL</button>
+                            </div>
+                            <span class="field-label" style="margin-top:12px;">Manustatav reaalajas hinnamärk veebilehele</span>
+                            <div class="api-badge-preview">
+                                <img id="api-badge-img" data-zone="EE_1" src="/api/v1/prices?zone=EE&vat=1&format=badge" alt="Spotpuls EE live spot electricity badge" width="250" height="32" loading="lazy" style="border:1px solid #111210;">
+                                <a href="/openapi.json" style="font-family:var(--mono); font-size:11.5px;">OpenAPI 3.1 (openapi.json)</a>
+                                <a href="/llms.txt" style="font-family:var(--mono); font-size:11.5px;">AI / LLM Spec (llms.txt)</a>
+                            </div>
+                            <div class="api-copy-row">
+                                <code id="api-embed-code" class="api-code-line">&lt;a href=&quot;https://spotpuls.app/ee/?zone=EE&quot; target=&quot;_blank&quot; rel=&quot;noopener&quot;&gt;&lt;img src=&quot;https://spotpuls.app/api/v1/prices?zone=EE&amp;vat=1&amp;format=badge&quot; alt=&quot;Spotpuls EE spot electricity price &amp; 7-day forecast&quot; width=&quot;250&quot; height=&quot;32&quot;&gt;&lt;/a&gt;</code>
+                                <button type="button" class="api-copy-btn" data-copy-target="api-embed-code">Kopeeri URL</button>
+                            </div>
+                        </div>
+                        <div class="api-card">
+                            <div style="display:flex; justify-content:space-between; align-items:center; gap:8px;">
+                                <span class="field-label" style="margin-bottom:0;">HOME ASSISTANT (CONFIGURATION.YAML)</span>
+                                <button type="button" class="api-copy-btn" data-copy-target="api-ha-yaml">Kopeeri URL</button>
+                            </div>
+                            <pre id="api-ha-yaml" class="api-pre-block">rest:
+  - resource: &quot;https://spotpuls.app/api/v1/prices?zone=EE&amp;vat=1&quot;
+    scan_interval: 900
+    sensor:
+      - name: &quot;Spotpuls EE Current Spot&quot;
+        value_template: &quot;{{ value_json.current.spotPrice }}&quot;
+        unit_of_measurement: &quot;senti/kWh&quot;
+        json_attributes_path: &quot;$.summary&quot;
+        json_attributes:
+          - todayMin
+          - todayMax
+          - rolling30dAvg</pre>
+                        </div>
+                    </div>
+                </div>
+            </section>
         </div>
     </main>
 
     <footer class="site-footer">
         <div class="footer-inner">
             <div>
-                <strong style="color:#ffffff;">Elektriarvesti // EE-Spot (Eesti)</strong>
+                <strong style="color:#ffffff;">Spotpuls (spotpuls.app) — Eesti</strong>
                 <p style="margin-top:6px; max-width:680px;">Börsielektri hind tundide kaupa, 7 päeva prognoos ja võrgutasu kalkulaator postiindeksiga</p>
+            </div>
+            <div class="footer-links">
+                <a href="./">Börsigraafik</a>
+                <a href="#avoin-api">Avatud API</a>
+                <a href="/api-docs/">API Docs</a>
+                <a href="/openapi.json">OpenAPI 3.1</a>
+                <a href="/llms.txt">llms.txt</a>
+            </div>
+            <div style="width:100%; padding-top:12px; border-top:1px solid #2b2e28; font-size:11px; line-height:1.8;">
+                <span style="color:#ffffff; margin-right:8px;">SPOT MARKETS (28 LANGUAGES / 40 ZONES):</span>
+                <a href="/" style="margin-right:10px;">Suomi (FI)</a> <a href="/en/" style="margin-right:10px;">English (Europe)</a> <a href="/se/" style="margin-right:10px;">Svenska (SE)</a> <a href="/no/" style="margin-right:10px;">Norsk (NO)</a> <a href="/dk/" style="margin-right:10px;">Dansk (DK)</a> <a href="/ee/" style="margin-right:10px;">Eesti (EE)</a> <a href="/lv/" style="margin-right:10px;">Latviešu (LV)</a> <a href="/lt/" style="margin-right:10px;">Lietuvių (LT)</a> <a href="/de/" style="margin-right:10px;">Deutsch (DE)</a> <a href="/at/" style="margin-right:10px;">Deutsch (AT)</a> <a href="/ch/" style="margin-right:10px;">Deutsch (CH)</a> <a href="/nl/" style="margin-right:10px;">Nederlands (NL)</a> <a href="/be/" style="margin-right:10px;">België (NL/FR)</a> <a href="/fr/" style="margin-right:10px;">Français (FR)</a> <a href="/gb/" style="margin-right:10px;">English (UK)</a> <a href="/ie/" style="margin-right:10px;">English (IE)</a> <a href="/es/" style="margin-right:10px;">Español (ES)</a> <a href="/pt/" style="margin-right:10px;">Português (PT)</a> <a href="/it/" style="margin-right:10px;">Italiano (IT)</a> <a href="/pl/" style="margin-right:10px;">Polski (PL)</a> <a href="/cz/" style="margin-right:10px;">Čeština (CZ)</a> <a href="/sk/" style="margin-right:10px;">Slovenčina (SK)</a> <a href="/hu/" style="margin-right:10px;">Magyar (HU)</a> <a href="/ro/" style="margin-right:10px;">Română (RO)</a> <a href="/bg/" style="margin-right:10px;">Български (BG)</a> <a href="/si/" style="margin-right:10px;">Slovenščina (SI)</a> <a href="/hr/" style="margin-right:10px;">Hrvatski (HR)</a> <a href="/gr/" style="margin-right:10px;">Ελληνικά (GR)</a>
             </div>
         </div>
     </footer>
@@ -206,6 +373,6 @@
     <script src="/dso_data.js"></script>
     <script src="/ml_weights.js"></script>
     <script src="/nordpool_models.js"></script>
-    <script src="/app.js?v=36"></script>
+    <script src="/app.js?v=37"></script>
 </body>
 </html>

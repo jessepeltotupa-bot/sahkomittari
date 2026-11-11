@@ -5,14 +5,14 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Pörssisähkö &amp; Sähkön Siirtohinta Ilomantsi (82900) | PKS Sähkönsiirto</title>
     <meta name="description" content="Paljonko pörssisähkö maksaa siirtohinnan kanssa paikkakunnalla Ilomantsi (82810-82980)? Verkkoyhtiö: PKS Sähkönsiirto Oy, yleissiirto 5,38 snt/kWh + sähkövero 2,83 snt/kWh. Katso tuntihinnat ja 7 vrk ennuste.">
-    <link rel="canonical" href="https://xn--shkmittari-q5a2t.fi/paikkakunnat/ilomantsi.html" />
+    <link rel="canonical" href="https://spotpuls.app/paikkakunnat/ilomantsi.html" />
     <meta name="geo.region" content="FI">
     <meta name="content-language" content="fi-FI">
-    <link rel="icon" type="image/svg+xml" href="../favicon.svg?v=36">
+    <link rel="icon" type="image/svg+xml" href="../favicon.svg?v=37">
     <link rel="icon" type="image/x-icon" href="../favicon.ico">
     <link rel="apple-touch-icon" sizes="180x180" href="../apple-touch-icon.png">
     <link rel="manifest" href="../site.webmanifest">
-    <link rel="stylesheet" href="../styles.css?v=36">
+    <link rel="stylesheet" href="../styles.css?v=37">
 </head>
 <body data-preset-dso="pks" data-preset-postal="82900" data-preset-city="Ilomantsi">
     <div class="telemetry-bar">
@@ -29,17 +29,27 @@
     <header class="site-header">
         <div class="header-inner">
             <a href="../index.html" class="brand-link">
-                <span class="brand-title"><img src="../favicon.svg?v=36" alt="" width="24" height="24" style="vertical-align:-5px; margin-right:8px;">Sähkömittari.fi</span>
-                <span class="brand-subtitle">Pörssisähkön spot-hinta, tarkentuva 7 vrk hintaennuste ja todellinen siirtohinta postinumerolla</span>
+                <span class="brand-title"><img src="../favicon.svg?v=37" alt="" width="24" height="24" style="vertical-align:-5px; margin-right:8px;">Spotpuls</span>
+                <span class="brand-subtitle">Pörssisähkön spot-hinta, itseoppiva 7 vrk ennuste ja siirtohinta postinumerolla</span>
             </a>
-            <nav class="main-nav" aria-label="Päävalikko">
-                <a href="../index.html">Spot-kaavio</a>
-                <a href="../index.html#tuntitaulukko">Tuntitaulukko</a>
-                <a href="../index.html#siirtohintalaskuri">Siirtohintalaskuri</a>
-                <a href="../index.html#optimoija">Kuorman ajoitus</a>
-                <a href="../verkkoyhtiot/index.html">Jakeluverkkoyhtiöt</a>
-                <a href="../paikkakunnat/index.html">Postinumerot &amp; Kunnat</a>
-            </nav>
+            <div class="header-right">
+                <nav class="main-nav" aria-label="Päävalikko">
+                    <a href="../index.html">Spot-kaavio</a>
+                    <a href="../index.html#tuntitaulukko">Tuntitaulukko</a>
+                    <a href="../index.html#siirtohintalaskuri">Siirtohintalaskuri</a>
+                    <a href="../index.html#optimoija">Kuorman ajoitus</a>
+                    <a href="../index.html#avoin-api">Avoin API</a>
+                    <a href="../verkkoyhtiot/index.html">Verkkoyhtiöt</a>
+                </nav>
+                <div class="header-market-controls">
+                    <select id="zone-select" class="header-select" aria-label="Hinta-alue">
+                        <optgroup label="Suomi"><option value="FI" selected>Suomi / Finland (FI)</option></optgroup><optgroup label="Europe (40 Zones)"><option value="SE1">SE1 — Luleå / Norra Norrland</option><option value="SE2">SE2 — Sundsvall / Södra Norrland</option><option value="SE3">SE3 — Stockholm / Mellansverige</option><option value="SE4">SE4 — Malmö / Södra Sverige</option><option value="NO1">NO1 — Oslo / Øst-Norge</option><option value="NO2">NO2 — Kristiansand / Sør-Norge</option><option value="NO3">NO3 — Trondheim / Midt-Norge</option><option value="NO4">NO4 — Tromsø / Nord-Norge (0 % MVA)</option><option value="NO5">NO5 — Bergen / Vest-Norge</option><option value="DK1">DK1 — Vestdanmark (Jylland &amp; Fyn)</option><option value="DK2">DK2 — Østdanmark (Sjælland &amp; Bornholm)</option><option value="EE">Eesti / Estonia (EE)</option><option value="LV">Latvija / Latvia (LV)</option><option value="LT">Lietuva / Lithuania (LT)</option><option value="DE-LU">Deutschland &amp; Luxemburg (DE-LU)</option><option value="AT">Österreich / Austria (AT)</option><option value="NL">Nederland / Netherlands (NL)</option><option value="BE">België / Belgique (BE)</option><option value="FR">France (FR)</option><option value="CH">Schweiz / Suisse / Svizzera (CH)</option><option value="ES">España / Spain (ES — OMIE)</option><option value="PT">Portugal (PT — OMIE)</option><option value="GB">Great Britain (GB)</option><option value="IE-SEM">Ireland Single Electricity Market (IE-SEM)</option><option value="IT-North">Italia Nord (Milano / Torino / Venezia)</option><option value="IT-Centre-North">Italia Centro-Nord (Firenze / Toscana / Marche)</option><option value="IT-Centre-South">Italia Centro-Sud (Roma / Napoli / Lazio)</option><option value="IT-South">Italia Sud (Puglia / Calabria / Basilicata)</option><option value="IT-Sicily">Italia Sicilia (Palermo / Catania)</option><option value="IT-Sardinia">Italia Sardegna (Cagliari / Sassari)</option><option value="PL">Polska / Poland (PL — TGE)</option><option value="CZ">Česko / Czechia (CZ — OTE)</option><option value="SK">Slovensko / Slovakia (SK — OKTE)</option><option value="HU">Magyarország / Hungary (HU — HUPX)</option><option value="RO">România / Romania (RO — OPCOM)</option><option value="BG">България / Bulgaria (BG — IBEX)</option><option value="SI">Slovenija / Slovenia (SI — BSP)</option><option value="HR">Hrvatska / Croatia (HR — CROPEX)</option><option value="GR">Ελλάδα / Greece (GR — HEnEx)</option></optgroup>
+                    </select>
+                    <select id="lang-select" class="header-select" aria-label="Maa / Kieli">
+                        <option value="/" selected>Suomi (FI)</option><option value="/en/">English (Europe)</option><option value="/se/">Svenska (SE)</option><option value="/no/">Norsk (NO)</option><option value="/dk/">Dansk (DK)</option><option value="/ee/">Eesti (EE)</option><option value="/lv/">Latviešu (LV)</option><option value="/lt/">Lietuvių (LT)</option><option value="/de/">Deutsch (DE)</option><option value="/at/">Deutsch (AT)</option><option value="/ch/">Deutsch (CH)</option><option value="/nl/">Nederlands (NL)</option><option value="/be/">België (NL/FR)</option><option value="/fr/">Français (FR)</option><option value="/gb/">English (UK)</option><option value="/ie/">English (IE)</option><option value="/es/">Español (ES)</option><option value="/pt/">Português (PT)</option><option value="/it/">Italiano (IT)</option><option value="/pl/">Polski (PL)</option><option value="/cz/">Čeština (CZ)</option><option value="/sk/">Slovenčina (SK)</option><option value="/hu/">Magyar (HU)</option><option value="/ro/">Română (RO)</option><option value="/bg/">Български (BG)</option><option value="/si/">Slovenščina (SI)</option><option value="/hr/">Hrvatski (HR)</option><option value="/gr/">Ελληνικά (GR)</option>
+                    </select>
+                </div>
+            </div>
         </div>
     </header>
 
@@ -63,11 +73,12 @@
                 </div>
 
                 <div class="scroll-down-bar" style="margin-top:0; border:none; border-bottom:var(--border-heavy);">
-                    <span>Vieritä alas: tuntikohtainen hintataulukko, postinumeron siirtohintalaskuri ja kuorman ajoitus</span>
+                    <span>Vieritä alas: tuntikohtainen hintataulukko, postinumeron siirtohintalaskuri, kuorman ajoitus ja avoin REST API</span>
                     <div class="scroll-down-links">
                         <a href="#tuntitaulukko">Tuntitaulukko</a>
                         <a href="#siirtohintalaskuri">Siirtohintalaskuri</a>
                         <a href="#optimoija">Kuorman ajoitus (36 h)</a>
+                        <a href="#avoin-api">Avoin API</a>
                     </div>
                 </div>
 
@@ -234,30 +245,89 @@
                     </p>
                 </div>
             </section>
+
+            <section class="panel-box" id="avoin-api">
+                <div class="panel-head">
+                    <h2>Avoin Pörssisähkö- ja Ennuste-API (Spotpuls REST API)</h2>
+                    <a href="../api-docs/index.html" style="color:var(--signal-yellow); font-family:var(--mono); font-size:12px; font-weight:700; text-decoration:underline;">Avaa API-dokumentaatio &rarr;</a>
+                </div>
+                <div class="panel-body">
+                    <p style="font-size:13.5px; color:var(--ink-secondary); max-width:920px;">
+                        Hae reaaliaikaiset tuntihinnat ja oppiva 7 vrk aluekohtainen ennuste suoraan kotiautomaatioon (Home Assistant), sovelluksiin tai taulukkolaskentaan maksuttomalla JSON/CSV-rajapinnalla.
+                    </p>
+                    <div class="api-panel-grid">
+                        <div class="api-card">
+                            <span class="field-label">REST JSON API (CORS * &middot; 40 BIDDING ZONES &middot; 7-DAY FORECAST)</span>
+                            <div class="api-copy-row">
+                                <code id="api-json-url" class="api-code-line">https://spotpuls.app/api/v1/prices?zone=FI&amp;vat=1</code>
+                                <button type="button" class="api-copy-btn" data-copy-target="api-json-url">Kopioi URL</button>
+                            </div>
+                            <span class="field-label" style="margin-top:12px;">GOOGLE SHEETS / EXCEL LIVE CSV</span>
+                            <div class="api-copy-row">
+                                <code id="api-csv-url" class="api-code-line">=IMPORTDATA(&quot;https://spotpuls.app/api/v1/prices?zone=FI&amp;vat=1&amp;format=csv&quot;)</code>
+                                <button type="button" class="api-copy-btn" data-copy-target="api-csv-url">Kopioi URL</button>
+                            </div>
+                            <span class="field-label" style="margin-top:12px;">Upotettava live-hintamerkki sivustollesi (sis. lähdelinkin)</span>
+                            <div class="api-badge-preview">
+                                <img id="api-badge-img" data-zone="FI_1" src="/api/v1/prices?zone=FI&vat=1&format=badge" alt="Spotpuls FI live spot electricity badge" width="250" height="32" loading="lazy" style="border:1px solid #111210;">
+                                <a href="/openapi.json" style="font-family:var(--mono); font-size:11.5px;">OpenAPI 3.1 (openapi.json)</a>
+                                <a href="/llms.txt" style="font-family:var(--mono); font-size:11.5px;">AI / LLM Spec (llms.txt)</a>
+                            </div>
+                            <div class="api-copy-row">
+                                <code id="api-embed-code" class="api-code-line">&lt;a href=&quot;https://spotpuls.app/?zone=FI&quot; target=&quot;_blank&quot; rel=&quot;noopener&quot;&gt;&lt;img src=&quot;https://spotpuls.app/api/v1/prices?zone=FI&amp;vat=1&amp;format=badge&quot; alt=&quot;Spotpuls FI spot electricity price &amp; 7-day forecast&quot; width=&quot;250&quot; height=&quot;32&quot;&gt;&lt;/a&gt;</code>
+                                <button type="button" class="api-copy-btn" data-copy-target="api-embed-code">Kopioi URL</button>
+                            </div>
+                        </div>
+                        <div class="api-card">
+                            <div style="display:flex; justify-content:space-between; align-items:center; gap:8px;">
+                                <span class="field-label" style="margin-bottom:0;">HOME ASSISTANT (CONFIGURATION.YAML)</span>
+                                <button type="button" class="api-copy-btn" data-copy-target="api-ha-yaml">Kopioi URL</button>
+                            </div>
+                            <pre id="api-ha-yaml" class="api-pre-block">rest:
+  - resource: &quot;https://spotpuls.app/api/v1/prices?zone=FI&amp;vat=1&quot;
+    scan_interval: 900
+    sensor:
+      - name: &quot;Spotpuls FI Current Spot&quot;
+        value_template: &quot;{{ value_json.current.spotPrice }}&quot;
+        unit_of_measurement: &quot;snt/kWh&quot;
+        json_attributes_path: &quot;$.summary&quot;
+        json_attributes:
+          - todayMin
+          - todayMax
+          - rolling30dAvg</pre>
+                        </div>
+                    </div>
+                </div>
+            </section>
         </div>
     </main>
 
     <footer class="site-footer">
         <div class="footer-inner">
             <div>
-                <strong style="color:#ffffff;">Sähkömittari — Pörssisähkö & Siirtohintalaskuri</strong>
+                <strong style="color:#ffffff;">Spotpuls (spotpuls.app)</strong>
                 <p style="margin-top:6px; max-width:580px;">
-                    Tekninen pörssisähkön ja sähkönsiirron laskentatyökalu. Yhdistää Nord Pool FI -spot-tuntihinnat, Suomen tuulipuistojen (8 450 MW) ja lämpötilan historialliseen regressiomalliin sekä 33 paikallisen jakeluverkkoyhtiön siirtotariffit ja sähköveron.
+                    Reaaliaikainen pörssisähkön spot-hinta, itseoppiva aluekohtainen 7 vrk tuntiennuste (40 Euroopan tarjousaluetta), 33 suomalaisen jakeluverkkoyhtiön siirtohintalaskuri sekä avoin REST API.
                 </p>
             </div>
             <div class="footer-links">
                 <a href="../index.html">Etusivu</a>
+                <a href="../api-docs/index.html">Avoin REST API</a>
                 <a href="../verkkoyhtiot/index.html">Sähköverkkoyhtiöt</a>
                 <a href="../paikkakunnat/index.html">Kunnat &amp; Postinumerot</a>
                 <a href="../oppaat/porssisahko-ennuste-7-vrk-tuulivoima-ja-lampotila.html">Ennustemalli</a>
                 <a href="../oppaat/sahkon-siirtohinta-postinumerolla-kaikki-verkkoyhtiot.html">Siirtohinnat</a>
                 <a href="../oppaat/yleissiirto-yosiirto-vai-kausisiirto-vertailu.html">Siirtotuotteiden vertailu</a>
             </div>
+            <div style="width:100%; padding-top:12px; border-top:1px solid #2b2e28; font-size:11px; line-height:1.8;">
+                <span style="color:#ffffff; margin-right:8px;">SPOT-MARKKINAT (28 KIELTÄ / 40 ALUETTA):</span>
+                <a href="/" style="margin-right:10px;">Suomi (FI)</a> <a href="/en/" style="margin-right:10px;">English (Europe)</a> <a href="/se/" style="margin-right:10px;">Svenska (SE)</a> <a href="/no/" style="margin-right:10px;">Norsk (NO)</a> <a href="/dk/" style="margin-right:10px;">Dansk (DK)</a> <a href="/ee/" style="margin-right:10px;">Eesti (EE)</a> <a href="/lv/" style="margin-right:10px;">Latviešu (LV)</a> <a href="/lt/" style="margin-right:10px;">Lietuvių (LT)</a> <a href="/de/" style="margin-right:10px;">Deutsch (DE)</a> <a href="/at/" style="margin-right:10px;">Deutsch (AT)</a> <a href="/ch/" style="margin-right:10px;">Deutsch (CH)</a> <a href="/nl/" style="margin-right:10px;">Nederlands (NL)</a> <a href="/be/" style="margin-right:10px;">België (NL/FR)</a> <a href="/fr/" style="margin-right:10px;">Français (FR)</a> <a href="/gb/" style="margin-right:10px;">English (UK)</a> <a href="/ie/" style="margin-right:10px;">English (IE)</a> <a href="/es/" style="margin-right:10px;">Español (ES)</a> <a href="/pt/" style="margin-right:10px;">Português (PT)</a> <a href="/it/" style="margin-right:10px;">Italiano (IT)</a> <a href="/pl/" style="margin-right:10px;">Polski (PL)</a> <a href="/cz/" style="margin-right:10px;">Čeština (CZ)</a> <a href="/sk/" style="margin-right:10px;">Slovenčina (SK)</a> <a href="/hu/" style="margin-right:10px;">Magyar (HU)</a> <a href="/ro/" style="margin-right:10px;">Română (RO)</a> <a href="/bg/" style="margin-right:10px;">Български (BG)</a> <a href="/si/" style="margin-right:10px;">Slovenščina (SI)</a> <a href="/hr/" style="margin-right:10px;">Hrvatski (HR)</a> <a href="/gr/" style="margin-right:10px;">Ελληνικά (GR)</a>
+            </div>
         </div>
     </footer>
     <script src="../dso_data.js"></script>
     <script src="../ml_weights.js"></script>
     <script src="../nordpool_models.js"></script>
-    <script src="../app.js?v=36"></script>
+    <script src="../app.js?v=37"></script>
 </body>
 </html>

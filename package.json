@@ -1,6 +1,6 @@
 {
-  "name": "porssisahko-ennuste-siirtohintalaskuri",
-  "version": "1.0.0",
+  "name": "spotpuls-app",
+  "version": "2.0.0",
   "private": true,
   "type": "module"
 }

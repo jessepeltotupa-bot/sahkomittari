@@ -1,111 +1,57 @@
-// Sähkömittari — Nord Pool FI, 2 vuoden historiasta oppiva 7 vrk ennustemalli ja postinumeropohjainen siirtohintalaskuri
+// Spotpuls (https://spotpuls.app) — 40 European bidding zones, self-learning regional 7-day forecast & postal grid tariff calculator
 (function () {
     const ACTIVE_LOC = window.ACTIVE_COUNTRY_LOCALE || null;
     const COUNTRY_ID = ACTIVE_LOC ? ACTIVE_LOC.countryId : 'fi';
+    const GLOBAL_MODELS = window.SPOTPULS_GLOBAL_MODELS || null;
+    const ALL_ZONES = (GLOBAL_MODELS && GLOBAL_MODELS.zones) || {};
     const COUNTRY_MODEL = (window.NORDPOOL_COUNTRY_MODELS && window.NORDPOOL_COUNTRY_MODELS.countries && window.NORDPOOL_COUNTRY_MODELS.countries[COUNTRY_ID]) || null;
 
     const UNIT_LABEL = ACTIVE_LOC ? ACTIVE_LOC.unit : 'snt/kWh';
     const UNIT_SHORT = UNIT_LABEL.split('/')[0];
+    const CURRENCY_MAJOR = ACTIVE_LOC ? (ACTIVE_LOC.currencyMajor || '€') : '€';
+    const SUBUNITS_PER_MAJOR = ACTIVE_LOC ? (ACTIVE_LOC.subunitsPerMajor || 100) : 100;
     const APPROX_PREFIX = ACTIVE_LOC ? ACTIVE_LOC.approxPrefix : 'noin ';
     const RANGE_LABEL = ACTIVE_LOC ? ACTIVE_LOC.rangePrefix : 'Vaihteluväli';
     const FIXED_LABEL = ACTIVE_LOC ? ACTIVE_LOC.fixedText : 'Julkaistu kiinteä hinta';
-    const FX_SCALE = COUNTRY_MODEL ? (COUNTRY_MODEL.fxFromEurCents || 1.0) : 1.0;
+    const FX_SCALE = ACTIVE_LOC ? (ACTIVE_LOC.fxFromEurCents || (COUNTRY_MODEL ? (COUNTRY_MODEL.fxFromEurCents || 1.0) : 1.0)) : 1.0;
     const ACTIVE_COUNTRY_ID = COUNTRY_ID.toUpperCase();
-    const probLabelsMap = {
-        FI: 'Todennäköisyys',
-        SE: 'Sannolikhet',
-        NO: 'Sannsynlighet',
-        DK: 'Sandsynlighed',
-        EE: 'Tõenäosus',
-        LV: 'Varbūtība',
-        LT: 'Tikimybė',
-    };
-    const PROB_LABEL = probLabelsMap[ACTIVE_COUNTRY_ID] || probLabelsMap.FI;
 
-    const predWasLabelsMap = {
-        FI: 'Ohjelman ennuste oli',
-        SE: 'Programmets prognos var',
-        NO: 'Programmets prognose var',
-        DK: 'Programmets prognose var',
-        EE: 'Programmi prognoos oli',
-        LV: 'Programmas prognoze bija',
-        LT: 'Programos prognozė buvo',
-    };
-    const PRED_WAS_LABEL = predWasLabelsMap[ACTIVE_COUNTRY_ID] || predWasLabelsMap.FI;
-
-    const predShortLabelsMap = {
-        FI: 'Ennuste oli',
-        SE: 'Prognos var',
-        NO: 'Prognose var',
-        DK: 'Prognose var',
-        EE: 'Prognoos oli',
-        LV: 'Prognoze bija',
-        LT: 'Prognozė buvo',
-    };
-    const PRED_SHORT_LABEL = predShortLabelsMap[ACTIVE_COUNTRY_ID] || predShortLabelsMap.FI;
-
-    const confirmedPriceLabelsMap = {
-        FI: 'Uusi vahvistettu hinta',
-        SE: 'Nytt bekräftat pris',
-        NO: 'Ny bekreftet pris',
-        DK: 'Ny bekræftet pris',
-        EE: 'Uus kinnitatud hind',
-        LV: 'Jaunā apstiprinātā cena',
-        LT: 'Nauja patvirtinta kaina',
-    };
-    const CONFIRMED_PRICE_LABEL = confirmedPriceLabelsMap[ACTIVE_COUNTRY_ID] || confirmedPriceLabelsMap.FI;
-
-    function getPricePublishTimeText(dateKey, shortForm = false) {
-        if (!dateKey || typeof dateKey !== 'string') return '';
-        const parts = dateKey.split('-').map(Number);
-        if (parts.length !== 3 || isNaN(parts[0])) return '';
-        const [y, m, d] = parts;
-        const pubUtcMs = Date.UTC(y, m - 1, d, 12, 0, 0) - 86400000;
-        const pubDt = new Date(pubUtcMs);
-        const pubDay = pubDt.getUTCDate();
-        const pubMonth = pubDt.getUTCMonth() + 1;
-        const wdIdx = pubDt.getUTCDay();
-
-        const wdShortMap = {
-            FI: ['Su', 'Ma', 'Ti', 'Ke', 'To', 'Pe', 'La'],
-            SE: ['Sön', 'Mån', 'Tis', 'Ons', 'Tor', 'Fre', 'Lör'],
-            NO: ['Søn', 'Man', 'Tir', 'Ons', 'Tor', 'Fre', 'Lør'],
-            DK: ['Søn', 'Man', 'Tir', 'Ons', 'Tor', 'Fre', 'Lør'],
-            EE: ['P', 'E', 'T', 'K', 'N', 'R', 'L'],
-            LV: ['Sv', 'P', 'O', 'T', 'C', 'Pk', 'S'],
-            LT: ['Sk', 'Pr', 'An', 'Tr', 'Kt', 'Pn', 'Št'],
-        };
-        const wdArr = wdShortMap[ACTIVE_COUNTRY_ID] || wdShortMap.FI;
-        const wdStr = wdArr[wdIdx] || '';
-        const dateStr = `${wdStr} ${pubDay}.${pubMonth}.`;
-
-        const isCet = ['SE', 'NO', 'DK'].includes(ACTIVE_COUNTRY_ID);
-        const clockTime = isCet ? '12:45' : '13:45';
-
-        if (shortForm) {
-            const shortMap = {
-                FI: `Julk. ${dateStr} klo ${clockTime}`,
-                SE: `Publ. ${dateStr} kl. ${clockTime}`,
-                NO: `Publ. ${dateStr} kl. ${clockTime}`,
-                DK: `Offentl. ${dateStr} kl. ${clockTime}`,
-                EE: `Avald. ${dateStr} kl ${clockTime}`,
-                LV: `Publ. ${dateStr} ${clockTime}`,
-                LT: `Skelb. ${dateStr} ${clockTime}`,
-            };
-            return shortMap[ACTIVE_COUNTRY_ID] || shortMap.FI;
-        }
-
-        const fullMap = {
-            FI: `Hinta julkaistaan: ${dateStr} klo ${clockTime}`,
-            SE: `Pris publiceras: ${dateStr} kl. ${clockTime}`,
-            NO: `Pris publiseres: ${dateStr} kl. ${clockTime}`,
-            DK: `Pris offentliggøres: ${dateStr} kl. ${clockTime}`,
-            EE: `Hind avaldatakse: ${dateStr} kl ${clockTime}`,
-            LV: `Cena tiek publicēta: ${dateStr} plkst. ${clockTime}`,
-            LT: `Kaina skelbiama: ${dateStr} ${clockTime} val.`,
-        };
-        return fullMap[ACTIVE_COUNTRY_ID] || fullMap.FI;
-    }
+    const PROB_LABEL = (ACTIVE_LOC && ACTIVE_LOC.probLabel) || 'Todennäköisyys';
+    const PRED_WAS_LABEL = (ACTIVE_LOC && ACTIVE_LOC.predWasLabel) || 'Ohjelman ennuste oli';
+    const PRED_SHORT_LABEL = (ACTIVE_LOC && ACTIVE_LOC.predShortLabel) || 'Ennuste oli';
+    const PUB_SHORT_TPL = (ACTIVE_LOC && ACTIVE_LOC.pubShortTpl) || 'Julk. {date} klo {time}';
+    const PUB_FULL_TPL = (ACTIVE_LOC && ACTIVE_LOC.pubFullTpl) || 'Hinta julkaistaan: {date} klo {time}';
+    const WEEKDAYS_SHORT = (ACTIVE_LOC && Array.isArray(ACTIVE_LOC.weekdaysShort) && ACTIVE_LOC.weekdaysShort.length === 7)
+        ? ACTIVE_LOC.weekdaysShort
+        : ['Su', 'Ma', 'Ti', 'Ke', 'To', 'Pe', 'La'];
+    const TODAY_WORD = (ACTIVE_LOC && ACTIVE_LOC.todayWord) || 'Tänään';
+    const TOMORROW_WORD = (ACTIVE_LOC && ACTIVE_LOC.tomorrowWord) || 'Huomenna';
+    const AT_CLOCK_WORD = (ACTIVE_LOC && ACTIVE_LOC.atClockWord !== undefined) ? ACTIVE_LOC.atClockWord : 'klo';
+    const SUM_NOW_TITLE = (ACTIVE_LOC && ACTIVE_LOC.sumNowTitle) || 'KULUVAN TUNNIN SÄHKÖHINTA';
+    const SUM_MIN_TITLE = (ACTIVE_LOC && ACTIVE_LOC.sumMinTitle) || 'PÄIVÄN HALVIN HINTA';
+    const SUM_MAX_TITLE = (ACTIVE_LOC && ACTIVE_LOC.sumMaxTitle) || 'PÄIVÄN KALLEIN HINTA';
+    const TIER_BASIS_INTRO = (ACTIVE_LOC && ACTIVE_LOC.tierBasisIntro) || 'Hintataso (30 pv keskihinnan perusteella';
+    const TIER_CHEAP = (ACTIVE_LOC && ACTIVE_LOC.tierCheap) || 'Edullinen';
+    const TIER_NORM = (ACTIVE_LOC && ACTIVE_LOC.tierNorm) || 'Normaali';
+    const TIER_HIGH = (ACTIVE_LOC && ACTIVE_LOC.tierHigh) || 'Korkea';
+    const DSO_NETWORK_KICKER = (ACTIVE_LOC && ACTIVE_LOC.dsoNetworkKicker) || 'JAKELUVERKKO';
+    const RECEIPT_NOW_TITLE = (ACTIVE_LOC && ACTIVE_LOC.receiptNowTitle) || 'PISTORASIAHINTA NYT';
+    const RECEIPT_SPOT_ROW = (ACTIVE_LOC && ACTIVE_LOC.receiptSpotRow) || 'Spot-hinta';
+    const RECEIPT_MARGIN_ROW = (ACTIVE_LOC && ACTIVE_LOC.receiptMarginRow) || 'Myyjän marginaali';
+    const RECEIPT_TAX_ROW = (ACTIVE_LOC && ACTIVE_LOC.receiptTaxRow) || 'Sähkövero';
+    const RECEIPT_TOTAL_ROW = (ACTIVE_LOC && ACTIVE_LOC.receiptTotalRow) || 'KOKONAISHINTA YHTEENSÄ';
+    const RECEIPT_CHEAPEST_TODAY = (ACTIVE_LOC && ACTIVE_LOC.receiptCheapestToday) || 'Päivän halvin tunti tänään';
+    const RECEIPT_AVG_TODAY = (ACTIVE_LOC && ACTIVE_LOC.receiptAvgToday) || 'Tämän päivän keskihinta (kok.)';
+    const RECEIPT_AVG_TOMORROW = (ACTIVE_LOC && ACTIVE_LOC.receiptAvgTomorrow) || 'Huomisen keskihinta (kok.)';
+    const EXPECT_WORD = (ACTIVE_LOC && ACTIVE_LOC.expectWord) || 'odotus';
+    const OPT_BEST_WINDOW_TPL = (ACTIVE_LOC && ACTIVE_LOC.optBestWindowTpl) || 'EDULLISIN {h} TUNNIN KÄYTTÖIKKUNA (SEURAAVAT 36 H)';
+    const OPT_PROB_TOTAL_LABEL = (ACTIVE_LOC && ACTIVE_LOC.optProbTotalLabel) || 'Todennäköinen kokonaishinta';
+    const OPT_AVG_TOTAL_LABEL = (ACTIVE_LOC && ACTIVE_LOC.optAvgTotalLabel) || 'Kokonaiskeskihinta';
+    const OPT_TRANSFER_TAX_LABEL = (ACTIVE_LOC && ACTIVE_LOC.optTransferTaxLabel) || 'Siirto & vero';
+    const OPT_CONSUMPTION_LABEL = (ACTIVE_LOC && ACTIVE_LOC.optConsumptionLabel) || 'Kulutus';
+    const OPT_SAVED_LABEL = (ACTIVE_LOC && ACTIVE_LOC.optSavedLabel) || 'Säästö kalleimpaan jaksoon verrattuna';
+    const API_COPY_BTN = (ACTIVE_LOC && ACTIVE_LOC.apiCopyBtn) || 'Kopioi URL';
+    const API_COPIED_BTN = (ACTIVE_LOC && ACTIVE_LOC.apiCopiedBtn) || 'Kopioitu!';
 
     let DSO_DATA = window.PORSSISAHKO_DSO_DATA || {
         vatRate: 1.255,
@@ -139,7 +85,7 @@
                 prefixRules.push({ prefix: pref, city: `${ACTIVE_LOC.countryName} (${d.zone})`, dso: d.id, alt: [] });
             }
         }
-        const vatR = COUNTRY_MODEL ? COUNTRY_MODEL.vatRate : 1.25;
+        const vatR = ACTIVE_LOC.vatRate || (COUNTRY_MODEL ? COUNTRY_MODEL.vatRate : 1.25);
         DSO_DATA = {
             vatRate: vatR,
             electricityTaxInclVat: ACTIVE_LOC.taxInclVat || 0,
@@ -175,14 +121,36 @@
     const defaultDsoKey = Object.keys(DSO_DATA.companies)[0] || 'helen';
     const storagePrefix = `ps_${COUNTRY_ID}_`;
 
+    let urlZoneOverride = null;
+    try {
+        const sp = new URLSearchParams(window.location.search || '');
+        const zParam = (sp.get('zone') || sp.get('bzn') || '').trim();
+        if (zParam && ALL_ZONES[zParam]) {
+            urlZoneOverride = zParam;
+        }
+    } catch (_) {}
+
+    const defaultZoneForMarket = (ACTIVE_LOC && ACTIVE_LOC.defaultZone)
+        || (COUNTRY_MODEL && COUNTRY_MODEL.defaultZone)
+        || 'FI';
+    const savedZone = localStorage.getItem(storagePrefix + 'zone');
+    const initialZone = urlZoneOverride
+        || (savedZone && ALL_ZONES[savedZone] ? savedZone : null)
+        || defaultZoneForMarket;
+
+    const defaultMarginStr = ACTIVE_LOC && ACTIVE_LOC.defaultMargin !== undefined
+        ? String(ACTIVE_LOC.defaultMargin)
+        : (FX_SCALE > 3 ? '4.50' : '0.45');
+
     const state = {
+        activeZone: initialZone,
         hasUserPostal: localStorage.getItem(storagePrefix + 'has_user_postal') === '1',
         postalCode: localStorage.getItem(storagePrefix + 'postal') || (ACTIVE_LOC ? ACTIVE_LOC.defaultPostal : '00100'),
         cityName: localStorage.getItem(storagePrefix + 'city') || (ACTIVE_LOC ? ACTIVE_LOC.defaultCity : 'Helsinki'),
         dsoId: localStorage.getItem(storagePrefix + 'dso') || (ACTIVE_LOC ? defaultDsoKey : 'helen'),
         altDsoIds: [],
         tariffType: localStorage.getItem(storagePrefix + 'tariff') || 'general',
-        marginCents: parseFloat(localStorage.getItem(storagePrefix + 'margin') || (FX_SCALE > 3 ? '4.50' : '0.45')),
+        marginCents: parseFloat(localStorage.getItem(storagePrefix + 'margin') || defaultMarginStr),
         includeVat: localStorage.getItem(storagePrefix + 'vat') !== '0',
         showTotalInChart: localStorage.getItem(storagePrefix + 'show_total') !== '0',
         nuclearScenario: 'auto',
@@ -204,6 +172,41 @@
         }
     };
 
+    function getActiveZoneConfig() {
+        return ALL_ZONES[state.activeZone] || ALL_ZONES[defaultZoneForMarket] || ALL_ZONES['FI'] || {
+            code: state.activeZone || 'FI',
+            bzn: state.activeZone || 'FI',
+            exchange: 'Nord Pool',
+            tz: 'Europe/Helsinki',
+            pubHour: 13,
+            pubMin: 45,
+            baseSpotEurCentsVat0: 5.2,
+            windCapMw: 8450,
+            solarCapMw: 1250,
+            nuclearCapMw: 4394
+        };
+    }
+
+    function getPricePublishTimeText(dateKey, shortForm = false) {
+        if (!dateKey || typeof dateKey !== 'string') return '';
+        const parts = dateKey.split('-').map(Number);
+        if (parts.length !== 3 || isNaN(parts[0])) return '';
+        const [y, m, d] = parts;
+        const pubUtcMs = Date.UTC(y, m - 1, d, 12, 0, 0) - 86400000;
+        const pubDt = new Date(pubUtcMs);
+        const pubDay = pubDt.getUTCDate();
+        const pubMonth = pubDt.getUTCMonth() + 1;
+        const wdIdx = pubDt.getUTCDay();
+        const wdStr = WEEKDAYS_SHORT[wdIdx] || '';
+        const dateStr = `${wdStr} ${pubDay}.${pubMonth}.`;
+        const zcfg = getActiveZoneConfig();
+        const ph = zcfg.pubHour !== undefined ? zcfg.pubHour : 13;
+        const pm = zcfg.pubMin !== undefined ? zcfg.pubMin : 45;
+        const clockTime = `${String(ph).padStart(2, '0')}:${String(pm).padStart(2, '0')}`;
+        const tpl = shortForm ? PUB_SHORT_TPL : PUB_FULL_TPL;
+        return tpl.replace('{date}', dateStr).replace('{time}', clockTime);
+    }
+
     const bodyEl = document.body;
     if (bodyEl && !state.hasUserPostal) {
         const presetDso = bodyEl.getAttribute('data-preset-dso');
@@ -216,6 +219,7 @@
 
     function saveSettings() {
         try {
+            localStorage.setItem(storagePrefix + 'zone', state.activeZone);
             localStorage.setItem(storagePrefix + 'has_user_postal', state.hasUserPostal ? '1' : '0');
             localStorage.setItem(storagePrefix + 'postal', state.postalCode);
             localStorage.setItem(storagePrefix + 'city', state.cityName);
@@ -230,19 +234,22 @@
     // Liukuvaan 30 vrk (720 h) keskiarvoon perustuvat dynaamiset hintarajat:
     // Lähellä 30 vrk keskiarvoa (±25 %) = Normaali, alle = Edullinen, yli = Korkea
     function getDynamicPriceThresholds() {
-        const base30dInclVat = (state.rolling30dMeanInclVat && state.rolling30dMeanInclVat > 0.5)
+        const base30dInclVat = (state.rolling30dMeanInclVat && state.rolling30dMeanInclVat > 0.2)
             ? state.rolling30dMeanInclVat
             : 5.60;
-        const vatFactor = state.includeVat ? 1.0 : (1.0 / (DSO_DATA.vatRate || 1.255));
+        const isNo4 = state.activeZone === 'NO4';
+        const vatFactor = (state.includeVat && !isNo4) ? 1.0 : (1.0 / (DSO_DATA.vatRate || 1.255));
         const avg30d = Number((base30dInclVat * vatFactor * FX_SCALE).toFixed(2));
-        const cheapThresh = Number(Math.max(0.50 * FX_SCALE, avg30d * 0.75).toFixed(2));
-        const highThresh = Number(Math.max(cheapThresh + 1.0 * FX_SCALE, avg30d * 1.25).toFixed(2));
+        const cheapThresh = Number(Math.max(0.25 * FX_SCALE, avg30d * 0.75).toFixed(2));
+        const highThresh = Number(Math.max(cheapThresh + 0.60 * FX_SCALE, avg30d * 1.25).toFixed(2));
         return { avg30d, cheapThresh, highThresh };
     }
 
     function formatNum(val, decimals = 2) {
         if (val === null || val === undefined || isNaN(val)) return '—';
-        return Number(val).toFixed(decimals).replace('.', ',');
+        const useDot = ['en', 'gb', 'ie', 'ch'].includes(COUNTRY_ID);
+        const s = Number(val).toFixed(decimals);
+        return useDot ? s : s.replace('.', ',');
     }
 
     function resolvePostalOrCity(inputRaw) {
@@ -311,15 +318,9 @@
 
     function calculateHourBreakdown(slot) {
         const dso = getActiveDso();
-        const zoneCode = dso.zone || (COUNTRY_MODEL ? COUNTRY_MODEL.defaultZone : 'FI');
-        const zoneCfg = (COUNTRY_MODEL && COUNTRY_MODEL.zones && COUNTRY_MODEL.zones[zoneCode]) || { spotScale: 1.0 };
-        const zoneMult = FX_SCALE * (zoneCfg.spotScale || 1.0);
+        const zoneCode = state.activeZone || (dso && dso.zone) || defaultZoneForMarket;
         const isNo4VatExempt = zoneCode === 'NO4';
         const vatDivider = (state.includeVat && !isNo4VatExempt) ? 1.0 : DSO_DATA.vatRate;
-
-        const baseSpotIncl = slot.priceInclVat * zoneMult;
-        const baseSpotVat0 = (slot.priceInclVat / 1.255) * zoneMult;
-        const spotCents = (state.includeVat && !isNo4VatExempt) ? baseSpotIncl : baseSpotVat0;
         const marginCents = state.marginCents / vatDivider;
         const taxCents = (state.includeVat && !isNo4VatExempt) ? DSO_DATA.electricityTaxInclVat : DSO_DATA.electricityTaxVat0;
 
@@ -343,6 +344,40 @@
 
         const transferCents = transferCentsInclVat / vatDivider;
         const fixedAdd = marginCents + transferCents + taxCents;
+
+        if (slot.isZoneNative && slot.spotVat0EurCents !== undefined) {
+            const vatMult = (state.includeVat && !isNo4VatExempt) ? DSO_DATA.vatRate : 1.0;
+            const scale = FX_SCALE * vatMult;
+            const spotCents = slot.spotVat0EurCents * scale;
+            const minSpotCents = (slot.minVat0EurCents !== undefined ? slot.minVat0EurCents : slot.spotVat0EurCents) * scale;
+            const maxSpotCents = (slot.maxVat0EurCents !== undefined ? slot.maxVat0EurCents : slot.spotVat0EurCents) * scale;
+            const predictedSpotCents = (slot.predVat0EurCents !== undefined ? slot.predVat0EurCents : slot.spotVat0EurCents) * scale;
+            const predictedMinSpotCents = (slot.predMinVat0EurCents !== undefined ? slot.predMinVat0EurCents : predictedSpotCents / scale) * scale;
+            const predictedMaxSpotCents = (slot.predMaxVat0EurCents !== undefined ? slot.predMaxVat0EurCents : predictedSpotCents / scale) * scale;
+            return {
+                spotCents,
+                minSpotCents,
+                maxSpotCents,
+                predictedSpotCents,
+                predictedMinSpotCents,
+                predictedMaxSpotCents,
+                predictedTotalCents: predictedSpotCents + fixedAdd,
+                marginCents,
+                transferCents,
+                transferLabel,
+                isNightRate,
+                taxCents,
+                totalCents: spotCents + fixedAdd,
+                minTotalCents: minSpotCents + fixedAdd,
+                maxTotalCents: maxSpotCents + fixedAdd
+            };
+        }
+
+        const zoneCfg = (COUNTRY_MODEL && COUNTRY_MODEL.zones && COUNTRY_MODEL.zones[zoneCode]) || { spotScale: 1.0 };
+        const zoneMult = FX_SCALE * (zoneCfg.spotScale || 1.0);
+        const baseSpotIncl = slot.priceInclVat * zoneMult;
+        const baseSpotVat0 = (slot.priceInclVat / 1.255) * zoneMult;
+        const spotCents = (state.includeVat && !isNo4VatExempt) ? baseSpotIncl : baseSpotVat0;
         const totalCents = spotCents + fixedAdd;
 
         const rawMinIncl = (slot.minInclVat !== undefined ? slot.minInclVat : slot.priceInclVat) * zoneMult;
@@ -379,24 +414,48 @@
         };
     }
 
-    const HELSINKI_FMT = new Intl.DateTimeFormat('en-GB', {
-        timeZone: 'Europe/Helsinki',
-        year: 'numeric',
-        month: '2-digit',
-        day: '2-digit',
-        hour: '2-digit',
-        weekday: 'short',
-        hour12: false
-    });
+    const tzFmtCache = new Map();
     const helsinkiComponentsCache = new Map();
 
-    function getHelsinkiComponents(dateObj) {
+    function getZoneFormatter(tzName) {
+        const tz = tzName || 'Europe/Helsinki';
+        let fmt = tzFmtCache.get(tz);
+        if (!fmt) {
+            try {
+                fmt = new Intl.DateTimeFormat('en-GB', {
+                    timeZone: tz,
+                    year: 'numeric',
+                    month: '2-digit',
+                    day: '2-digit',
+                    hour: '2-digit',
+                    weekday: 'short',
+                    hour12: false
+                });
+            } catch (_) {
+                fmt = new Intl.DateTimeFormat('en-GB', {
+                    timeZone: 'Europe/Helsinki',
+                    year: 'numeric',
+                    month: '2-digit',
+                    day: '2-digit',
+                    hour: '2-digit',
+                    weekday: 'short',
+                    hour12: false
+                });
+            }
+            tzFmtCache.set(tz, fmt);
+        }
+        return fmt;
+    }
+
+    function getHelsinkiComponents(dateObj, explicitTz) {
         const ms = typeof dateObj === 'number' ? dateObj : dateObj.getTime();
         const hourBucket = Math.floor(ms / 3600000) * 3600000;
-        const cached = helsinkiComponentsCache.get(hourBucket);
+        const tz = explicitTz || getActiveZoneConfig().tz || 'Europe/Helsinki';
+        const cacheKey = `${tz}_${hourBucket}`;
+        const cached = helsinkiComponentsCache.get(cacheKey);
         if (cached) return cached;
 
-        const parts = HELSINKI_FMT.formatToParts(new Date(hourBucket));
+        const parts = getZoneFormatter(tz).formatToParts(new Date(hourBucket));
         const map = {};
         for (const p of parts) map[p.type] = p.value;
         const hour = parseInt(map.hour, 10) % 24;
@@ -411,7 +470,7 @@
             isSat: (wd === 'Sat'),
             dateKey: `${map.year}-${map.month}-${map.day}`
         };
-        helsinkiComponentsCache.set(hourBucket, res);
+        helsinkiComponentsCache.set(cacheKey, res);
         return res;
     }
 
@@ -732,7 +791,535 @@
         return activeModel;
     }
 
+    const NORDIC_BALTIC_SPOT_ZONES = new Set([
+        'FI', 'SE1', 'SE2', 'SE3', 'SE4',
+        'NO1', 'NO2', 'NO3', 'NO4', 'NO5',
+        'DK1', 'DK2', 'EE', 'LV', 'LT'
+    ]);
+
+    function extractRegionalFeatures(obs, zcfg, prevVat0 = 6.5) {
+        const windCap = Math.max(100, zcfg.windCapMw || 3000);
+        const solarCap = Math.max(50, zcfg.solarCapMw || 1000);
+        const wRatio = Math.max(0.01, Math.min(0.95, obs.windMw / windCap));
+        const tempC = obs.tempC;
+        const hour = obs.hour;
+        const fixedHolidays = ['01-01', '01-06', '05-01', '12-24', '12-25', '12-26'];
+        const md = obs.dateKey ? obs.dateKey.slice(5) : '';
+        const isFreeDay = obs.isWeekend || fixedHolidays.includes(md);
+        const isFree = isFreeDay ? 1.0 : 0.0;
+
+        const hdd = Math.max(0.0, 12.0 - tempC) / 20.0;
+        const severeCold = Math.max(0.0, -3.0 - tempC) / 15.0;
+        const workdayActive = (!isFreeDay && hour >= 6 && hour <= 22) ? 1.25 : 0.45;
+        const lowWindScarcity = Math.pow(Math.max(0.0, 0.25 - wRatio), 2) * 10.0
+            + Math.pow(Math.max(0.0, 0.13 - wRatio), 2) * 45.0 * workdayActive;
+
+        const morningPeak = (!isFreeDay && hour >= 7 && hour <= 10 ? 1.0 : 0.0) * Math.max(0.0, 1.0 - wRatio * 1.1);
+        const eveningPeak = (!isFreeDay && hour >= 16 && hour <= 21 ? 1.0 : 0.0) * Math.max(0.0, 1.0 - wRatio * 1.1);
+        const nightTrough = (hour >= 0 && hour <= 5) ? 1.0 : 0.0;
+        const calmColdInter = (1.0 - wRatio) * hdd;
+
+        const windMemoryDamping = Math.max(0.12, 1.0 - 0.85 * wRatio);
+        const prev24 = (prevVat0 !== null && !isNaN(prevVat0)) ? prevVat0 : (zcfg.baseSpotEurCentsVat0 || 6.5);
+        const arLevel = (Math.min(25.0, prev24) / 10.0) * windMemoryDamping;
+
+        const isHeatingSeason = [10, 11, 12, 1, 2, 3, 4].includes(obs.month) ? 1.0 : 0.0;
+        const heatingPeak = isHeatingSeason * (!isFreeDay && ((hour >= 7 && hour <= 10) || (hour >= 16 && hour <= 21)) ? 1.0 : 0.0) * (1.0 - wRatio);
+
+        const t72 = obs.rolling72hTempC !== undefined ? obs.rolling72hTempC : tempC;
+        const rolling72hHdd = Math.max(0.0, 10.0 - t72) / 20.0;
+
+        const solarRatio = Math.max(0.0, Math.min(0.90, (obs.solarMw || 0) / solarCap));
+        const w24Ratio = Math.max(0.01, Math.min(0.95, (obs.rolling24hWindMw || obs.windMw) / windCap));
+        const rolling24hLowWind = Math.max(0.0, 0.35 - w24Ratio) * 2.0;
+        const windRampDrop = Math.max(0.0, -(obs.windRamp6hMw || 0.0)) / Math.max(250.0, windCap * 0.30);
+
+        const borderCf = windSpeedToCapacityFactor(obs.borderWindSpeed !== undefined ? obs.borderWindSpeed : 6.5);
+        const importRelief = borderCf * (1.0 - wRatio * 0.5);
+        const exportPull = Math.max(0.0, 0.45 - borderCf) * (hour >= 7 && hour <= 21 ? 1.0 : 0.3);
+
+        const pressHpa = obs.pressureHpa !== undefined ? obs.pressureHpa : 1013.0;
+        const blockingHigh = Math.max(0.0, (pressHpa - 1018.0) / 25.0) * isHeatingSeason;
+
+        const lag24Same = Math.min(30.0, obs.lag24hSameHour !== undefined ? obs.lag24hSameHour : prev24);
+        const arComposite = ((0.55 * lag24Same + 0.45 * prev24) / 10.0) * windMemoryDamping;
+
+        return [
+            1.0, wRatio, wRatio * wRatio, lowWindScarcity, hdd, severeCold,
+            morningPeak, eveningPeak, nightTrough, isFree, calmColdInter,
+            arLevel, isHeatingSeason, heatingPeak, rolling72hHdd, solarRatio,
+            0.0, 0.0, rolling24hLowWind, windRampDrop, importRelief,
+            exportPull, blockingHigh, arComposite
+        ];
+    }
+
+    function predictRegionalVat0(obs, zModel, zcfg, prevVat0) {
+        const windCap = Math.max(100, zcfg.windCapMw || 3000);
+        const x = extractRegionalFeatures(obs, zcfg, prevVat0);
+        let lin = 0.0;
+        const wArr = (zModel && Array.isArray(zModel.weights)) ? zModel.weights : [6.5, -8.0, 1.5, 2.2, 1.2, 1.8, 2.1, 1.9, -1.8, -1.4, 2.0, 0.3, 1.2, 1.4, -1.5, -4.5, 0, 0, -2.0, -0.7, -0.7, 1.2, 1.3, 3.0];
+        for (let i = 0; i < x.length && i < wArr.length; i++) {
+            lin += wArr[i] * x[i];
+        }
+        const wRatio = Math.max(0.01, Math.min(0.95, obs.windMw / windCap));
+        const hRaw = obs.isWeekend
+            ? (zModel.weekendHourAdj?.[obs.hour] || 0.0)
+            : (zModel.weekdayHourAdj?.[obs.hour] || 0.0);
+        const hScale = hRaw > 0 ? Math.max(0.22, 1.15 - 0.85 * wRatio) : 1.0;
+        const wBin = Math.min(4, Math.floor(wRatio * 5));
+        const tBin = obs.tempC < -5 ? 0 : (obs.tempC < 5 ? 1 : (obs.tempC < 18 ? 2 : 3));
+        const gAdj = zModel.windTempGridAdj?.[`${wBin}_${tBin}`] || 0.0;
+        const coolingAdj = Math.max(0.0, obs.tempC - 21.0) * (zcfg.heatSens || 0.15) * (obs.hour >= 11 && obs.hour <= 21 ? 0.42 : 0.15);
+        return Math.max(-0.50, lin + hRaw * hScale + gAdj + coolingAdj);
+    }
+
+    async function fetchRegionalZoneWithOnlineML(zoneCode) {
+        const now = new Date();
+        const zcfg = getActiveZoneConfig();
+        const windCap = Math.max(100, zcfg.windCapMw || 3000);
+        const solarCap = Math.max(50, zcfg.solarCapMw || 1000);
+        const nuclearCap = zcfg.nuclearCapMw || 0;
+        const baseVat0 = zcfg.baseSpotEurCentsVat0 || ((zcfg.baseEurMwh || 65.0) / 10.0);
+        const minuteCacheBust = Math.floor(Date.now() / 60000);
+
+        const coords = (Array.isArray(zcfg.coords) && zcfg.coords.length >= 3)
+            ? zcfg.coords
+            : [
+                { lat: 54.18, lon: 7.89 },
+                { lat: 52.85, lon: 9.85 },
+                { lat: 50.11, lon: 8.68 },
+                { lat: 55.47, lon: 8.45 }
+            ];
+        const lats = coords.map(c => c.lat).join(',');
+        const lons = coords.map(c => c.lon).join(',');
+        const weatherUrl = `https://api.open-meteo.com/v1/forecast?latitude=${lats}&longitude=${lons}&hourly=temperature_2m,wind_speed_100m,shortwave_radiation,surface_pressure&wind_speed_unit=ms&past_days=10&forecast_days=8&timezone=UTC`;
+
+        const apiUrl = `/api/v1/prices?zone=${encodeURIComponent(zoneCode)}&vat=0&currency=eur_cents&_t=${minuteCacheBust}`;
+
+        let directMarketPromise = Promise.resolve(null);
+        if (NORDIC_BALTIC_SPOT_ZONES.has(zoneCode)) {
+            directMarketPromise = fetch(`https://api.spot-hinta.fi/TodayAndDayForward?region=${encodeURIComponent(zoneCode)}&_t=${minuteCacheBust}`, { cache: 'no-store' }).catch(() => null);
+        } else if (zoneCode === 'DE-LU' || zoneCode === 'AT') {
+            const host = zoneCode === 'AT' ? 'api.awattar.at' : 'api.awattar.de';
+            const sMs = Date.now() - 8 * 86400000;
+            const eMs = Date.now() + 2 * 86400000;
+            directMarketPromise = fetch(`https://${host}/v1/marketdata?start=${sMs}&end=${eMs}`, { cache: 'no-store' }).catch(() => null);
+        } else if (zoneCode === 'ES' || zoneCode === 'PT') {
+            const sIso = new Date(Date.now() - 3 * 86400000).toISOString().slice(0, 16);
+            const eIso = new Date(Date.now() + 2 * 86400000).toISOString().slice(0, 16);
+            directMarketPromise = fetch(`https://apidatos.ree.es/es/datos/mercados/precios-mercados-tiempo-real?start_date=${sIso}&end_date=${eIso}&time_trunc=hour`, { cache: 'no-store' }).catch(() => null);
+        } else if (zoneCode === 'GB') {
+            directMarketPromise = fetch('https://api.octopus.energy/v1/products/AGILE-24-10-01/electricity-tariffs/E-1R-AGILE-24-10-01-C/standard-unit-rates/?page_size=240', { cache: 'no-store' }).catch(() => null);
+        }
+
+        const [apiResp, directResp, weatherResp] = await Promise.all([
+            fetch(apiUrl, { cache: 'no-store' }).catch(() => null),
+            directMarketPromise,
+            fetch(weatherUrl).catch(() => null)
+        ]);
+
+        const officialVat0Map = new Map();
+
+        try {
+            if (apiResp && apiResp.ok) {
+                const apiJson = await apiResp.json();
+                if (apiJson && Array.isArray(apiJson.hourly)) {
+                    for (const row of apiJson.hourly) {
+                        if (row && !row.isForecast && typeof row.spotPrice === 'number') {
+                            const hMs = Math.floor((row.epochMs || Date.parse(row.timestamp)) / 3600000) * 3600000;
+                            if (!isNaN(hMs)) officialVat0Map.set(hMs, Number(row.spotPrice));
+                        }
+                    }
+                }
+            }
+        } catch (_) {}
+
+        try {
+            if (directResp && directResp.ok) {
+                const dj = await directResp.json();
+                if (NORDIC_BALTIC_SPOT_ZONES.has(zoneCode) && Array.isArray(dj)) {
+                    const buckets = new Map();
+                    for (const it of dj) {
+                        if (!it || !it.DateTime || it.PriceNoTax === undefined) continue;
+                        const hMs = Math.floor(Date.parse(it.DateTime) / 3600000) * 3600000;
+                        const cVat0 = Number(it.PriceNoTax) * 100.0;
+                        if (!isNaN(hMs) && !isNaN(cVat0)) {
+                            if (!buckets.has(hMs)) buckets.set(hMs, []);
+                            buckets.get(hMs).push(cVat0);
+                        }
+                    }
+                    for (const [hMs, arr] of buckets.entries()) {
+                        officialVat0Map.set(hMs, Number((arr.reduce((a, b) => a + b, 0) / arr.length).toFixed(3)));
+                    }
+                } else if ((zoneCode === 'DE-LU' || zoneCode === 'AT') && dj && Array.isArray(dj.data)) {
+                    for (const it of dj.data) {
+                        if (!it || it.start_timestamp === undefined || it.marketprice === undefined) continue;
+                        const hMs = Math.floor(Number(it.start_timestamp) / 3600000) * 3600000;
+                        officialVat0Map.set(hMs, Number((Number(it.marketprice) / 10.0).toFixed(3)));
+                    }
+                } else if ((zoneCode === 'ES' || zoneCode === 'PT') && dj && Array.isArray(dj.included)) {
+                    const spotInd = dj.included.find(x => String(x.id) === '1001') || dj.included[0];
+                    const vals = spotInd?.attributes?.values || [];
+                    for (const v of vals) {
+                        const hMs = Math.floor(Date.parse(v.datetime) / 3600000) * 3600000;
+                        const cVat0 = Number(v.value) / 10.0;
+                        if (!isNaN(hMs) && !isNaN(cVat0)) officialVat0Map.set(hMs, Number(cVat0.toFixed(3)));
+                    }
+                } else if (zoneCode === 'GB' && dj && Array.isArray(dj.results)) {
+                    const buckets = new Map();
+                    for (const r of dj.results) {
+                        const hMs = Math.floor(Date.parse(r.valid_from) / 3600000) * 3600000;
+                        const estWholesaleEurCents = (Number(r.value_exc_vat) / 2.15) * 1.17;
+                        if (!isNaN(hMs) && !isNaN(estWholesaleEurCents)) {
+                            if (!buckets.has(hMs)) buckets.set(hMs, []);
+                            buckets.get(hMs).push(estWholesaleEurCents);
+                        }
+                    }
+                    for (const [hMs, arr] of buckets.entries()) {
+                        if (!officialVat0Map.has(hMs)) {
+                            officialVat0Map.set(hMs, Number((arr.reduce((a, b) => a + b, 0) / arr.length).toFixed(3)));
+                        }
+                    }
+                }
+            }
+        } catch (_) {}
+
+        const weatherMap = new Map();
+        try {
+            if (weatherResp && weatherResp.ok) {
+                const dw = await weatherResp.json();
+                const locs = Array.isArray(dw) ? dw : [dw];
+                if (locs.length >= 1 && locs[0].hourly && Array.isArray(locs[0].hourly.time)) {
+                    const times = locs[0].hourly.time;
+                    const l0 = locs[0];
+                    const l1 = locs[1] || l0;
+                    const l2 = locs[2] || l0;
+                    const l3 = locs[3] || l0;
+                    for (let i = 0; i < times.length; i++) {
+                        const tMs = Date.parse(times[i] + ':00Z');
+                        const w1 = l0.hourly.wind_speed_100m?.[i] ?? 6.2;
+                        const w2 = l1.hourly.wind_speed_100m?.[i] ?? 6.0;
+                        const w3 = l2.hourly.wind_speed_100m?.[i] ?? 5.5;
+                        const weightedWind = w1 * 0.50 + w2 * 0.35 + w3 * 0.15;
+                        const windMw = Math.round(windCap * windSpeedToCapacityFactor(weightedWind));
+                        const tLoad = l2.hourly.temperature_2m?.[i] ?? 8.0;
+                        const tW1 = l0.hourly.temperature_2m?.[i] ?? tLoad;
+                        const weightedTemp = Number((tLoad * 0.70 + tW1 * 0.30).toFixed(1));
+                        const radLoad = l2.hourly.shortwave_radiation?.[i] ?? 0;
+                        const rad2 = l1.hourly.shortwave_radiation?.[i] ?? radLoad;
+                        const solarRadWm2 = Number((radLoad * 0.60 + rad2 * 0.40).toFixed(1));
+                        const solarCf = Math.max(0.0, Math.min(0.82, (solarRadWm2 / 820.0) * 0.80));
+                        const solarMw = Math.round(solarCap * solarCf);
+                        const pressureHpa = l2.hourly.surface_pressure?.[i] ?? 1013.0;
+                        const borderWindSpeed = l3.hourly.wind_speed_100m?.[i] ?? weightedWind;
+                        weatherMap.set(tMs, {
+                            windSpeed100m: Number(weightedWind.toFixed(1)),
+                            windMw,
+                            solarMw,
+                            tempC: weightedTemp,
+                            solarRadWm2,
+                            pressureHpa,
+                            borderWindSpeed
+                        });
+                    }
+                }
+            }
+        } catch (_) {}
+
+        const sortedWMs = Array.from(weatherMap.keys()).sort((a, b) => a - b);
+        for (let i = 0; i < sortedWMs.length; i++) {
+            const ms = sortedWMs[i];
+            const w = weatherMap.get(ms);
+            let sumW24 = 0, cntW24 = 0;
+            for (let j = Math.max(0, i - 23); j <= i; j++) {
+                sumW24 += weatherMap.get(sortedWMs[j]).windMw;
+                cntW24++;
+            }
+            w.rolling24hWindMw = Math.round(sumW24 / Math.max(1, cntW24));
+            w.windRamp6hMw = w.windMw - weatherMap.get(sortedWMs[Math.max(0, i - 6)]).windMw;
+            let sumT72 = 0, cntT72 = 0;
+            for (let j = Math.max(0, i - 71); j <= i; j++) {
+                sumT72 += weatherMap.get(sortedWMs[j]).tempC;
+                cntT72++;
+            }
+            w.rolling72hTempC = Number((sumT72 / Math.max(1, cntT72)).toFixed(2));
+        }
+
+        // Per-zone browser online learning & pre-confirmation tracking
+        const zObsKey = `ps_z_${zoneCode}_obs_v1`;
+        const zPreKey = `ps_z_${zoneCode}_pre_v1`;
+        let zObsStore = {};
+        let zPreStore = {};
+        try {
+            const r1 = localStorage.getItem(zObsKey);
+            if (r1) zObsStore = JSON.parse(r1) || {};
+            const r2 = localStorage.getItem(zPreKey);
+            if (r2) zPreStore = JSON.parse(r2) || {};
+        } catch (_) {}
+
+        for (const [hMs, vat0Val] of officialVat0Map.entries()) {
+            const w = weatherMap.get(hMs);
+            if (w) {
+                zObsStore[hMs] = {
+                    epochMs: Number(hMs),
+                    vat0: vat0Val,
+                    windMw: w.windMw,
+                    windSpeed100m: w.windSpeed100m,
+                    solarMw: w.solarMw,
+                    tempC: w.tempC,
+                    rolling24hWindMw: w.rolling24hWindMw,
+                    windRamp6hMw: w.windRamp6hMw,
+                    rolling72hTempC: w.rolling72hTempC,
+                    pressureHpa: w.pressureHpa,
+                    borderWindSpeed: w.borderWindSpeed
+                };
+            }
+        }
+
+        const obsKeys = Object.keys(zObsStore).map(Number).sort((a, b) => a - b).slice(-720);
+        const nextZObs = {};
+        let sumObsVat0 = 0;
+        for (const k of obsKeys) {
+            nextZObs[k] = zObsStore[k];
+            sumObsVat0 += zObsStore[k].vat0;
+        }
+        try { localStorage.setItem(zObsKey, JSON.stringify(nextZObs)); } catch (_) {}
+
+        let meanVat0 = baseVat0;
+        if (obsKeys.length >= 18) {
+            meanVat0 = sumObsVat0 / obsKeys.length;
+        } else if (officialVat0Map.size >= 12) {
+            let s = 0;
+            for (const v of officialVat0Map.values()) s += v;
+            meanVat0 = s / officialVat0Map.size;
+        }
+        state.rolling30dMeanInclVat = Number((Math.max(0.8, meanVat0) * (DSO_DATA.vatRate || 1.25)).toFixed(2));
+
+        const baseZModel = zcfg.modelVat0EurCents || {
+            weights: [baseVat0 * 1.35, -9.5, 1.5, 2.5, 1.2, 1.8, 2.2, 2.0, -2.0, -1.5, 2.0, 0.3, 1.2, 1.4, -1.5, -5.0, 0, 0, -2.0, -0.7, -0.7, 1.3, 1.3, 3.0],
+            weekdayHourAdj: new Array(24).fill(0),
+            weekendHourAdj: new Array(24).fill(0),
+            windTempGridAdj: {}
+        };
+        const zLearned = JSON.parse(JSON.stringify(baseZModel));
+        if (!zLearned.windTempGridAdj) zLearned.windTempGridAdj = {};
+        if (!Array.isArray(zLearned.weekdayHourAdj)) zLearned.weekdayHourAdj = new Array(24).fill(0);
+        if (!Array.isArray(zLearned.weekendHourAdj)) zLearned.weekendHourAdj = new Array(24).fill(0);
+
+        const latestObsMs = obsKeys.length > 0 ? obsKeys[obsKeys.length - 1] : Date.now();
+        const kernelHist = [];
+        for (const k of obsKeys) {
+            const it = nextZObs[k];
+            const zc = getHelsinkiComponents(it.epochMs, zcfg.tz);
+            const prev24It = nextZObs[it.epochMs - 24 * 3600000];
+            const prevVat0 = prev24It ? prev24It.vat0 : meanVat0;
+            const obsObj = {
+                ...it,
+                dateKey: zc.dateKey,
+                month: zc.month,
+                hour: zc.hour,
+                isWeekend: zc.isWeekend,
+                lag24hSameHour: prevVat0
+            };
+            const pred = predictRegionalVat0(obsObj, zLearned, zcfg, prevVat0);
+            const err = Math.max(-9.0, Math.min(9.0, it.vat0 - pred));
+            const recency = Math.exp(-Math.max(0, (latestObsMs - it.epochMs) / 3600000) / 180.0);
+            const x = extractRegionalFeatures(obsObj, zcfg, prevVat0);
+            let normSq = 1.0;
+            for (let j = 0; j < x.length; j++) normSq += x[j] * x[j];
+            const step = (0.015 * recency * err) / normSq;
+            for (let j = 0; j < x.length && j < zLearned.weights.length; j++) {
+                zLearned.weights[j] += step * x[j];
+            }
+            if (zLearned.weights[15] > 0) zLearned.weights[15] = 0;
+            const hArr = zc.isWeekend ? zLearned.weekendHourAdj : zLearned.weekdayHourAdj;
+            hArr[zc.hour] = Number((hArr[zc.hour] + 0.03 * recency * err).toFixed(4));
+            kernelHist.push({
+                ms: it.epochMs,
+                wind: it.windSpeed100m || 6.2,
+                solar: it.solarMw || 0,
+                hour: zc.hour,
+                temp: it.tempC || 8.0,
+                isWeekend: zc.isWeekend,
+                vat0: it.vat0
+            });
+        }
+        state.mlStats.totalLearnedHours = 17520 + obsKeys.length;
+
+        function regionalKernelPredict(targetMs, wCand, targetHour, targetIsWeekend) {
+            let num = 0, numSq = 0, den = 0;
+            const cutoff = targetMs - 12 * 3600000;
+            for (let i = 0; i < kernelHist.length; i++) {
+                const h = kernelHist[i];
+                if (h.ms > cutoff) break;
+                const dWind = ((wCand.windSpeed100m || 6.2) - h.wind) / 1.35;
+                const dSol = ((wCand.solarMw || 0) - h.solar) / Math.max(120, solarCap * 0.25);
+                const hrDiff = Math.abs(targetHour - h.hour);
+                const dHr = Math.min(hrDiff, 24 - hrDiff) / 1.9;
+                const dTemp = ((wCand.tempC || 8.0) - h.temp) / 4.8;
+                const dWk = (targetIsWeekend === h.isWeekend) ? 0.0 : 1.25;
+                const ageD = Math.max(0, (targetMs - h.ms) / 86400000);
+                const wt = Math.exp(-0.5 * (dWind * dWind + dSol * dSol + dHr * dHr + dTemp * dTemp + dWk * dWk) - ageD / 12.0);
+                num += wt * h.vat0;
+                numSq += wt * h.vat0 * h.vat0;
+                den += wt;
+            }
+            if (den <= 1e-5) return { est: null, weightSum: 0, localStd: 0.8 };
+            const mean = num / den;
+            return { est: mean, weightSum: den, localStd: Math.sqrt(Math.max(0, numSq / den - mean * mean)) };
+        }
+
+        const currentHourMs = Math.floor(now.getTime() / 3600000) * 3600000;
+        const nowZ = getHelsinkiComponents(currentHourMs, zcfg.tz);
+        const startSeriesMs = currentHourMs - nowZ.hour * 3600000;
+        const minKeepMs = currentHourMs - 168 * 3600000;
+        for (const k of Object.keys(zPreStore)) {
+            if (Number(k) < minKeepMs) delete zPreStore[k];
+        }
+
+        const rollingVat0ByMs = new Map();
+        for (const [k, v] of officialVat0Map.entries()) rollingVat0ByMs.set(k, v);
+        for (const k of obsKeys) {
+            if (!rollingVat0ByMs.has(k)) rollingVat0ByMs.set(k, nextZObs[k].vat0);
+        }
+
+        const series = [];
+        for (let i = 0; i < 192; i++) {
+            const hMs = startSeriesMs + i * 3600000;
+            const zc = getHelsinkiComponents(hMs, zcfg.tz);
+            const w = weatherMap.get(hMs) || {
+                windSpeed100m: 6.2,
+                windMw: Math.round(windCap * 0.28),
+                solarMw: 0,
+                tempC: 8.0,
+                solarRadWm2: 0,
+                pressureHpa: 1013,
+                borderWindSpeed: 6.2,
+                rolling24hWindMw: Math.round(windCap * 0.28),
+                windRamp6hMw: 0,
+                rolling72hTempC: 8.0
+            };
+
+            let pastSum = 0, pastCnt = 0;
+            for (let lag = 24; lag <= 72; lag++) {
+                const pVal = rollingVat0ByMs.get(hMs - lag * 3600000);
+                if (pVal !== undefined) {
+                    pastSum += pVal;
+                    pastCnt++;
+                }
+            }
+            const prevAvg = pastCnt > 0 ? (pastSum / pastCnt) : meanVat0;
+            const lag24Val = rollingVat0ByMs.get(hMs - 24 * 3600000) ?? prevAvg;
+
+            const obsObj = {
+                epochMs: hMs,
+                dateKey: zc.dateKey,
+                month: zc.month,
+                hour: zc.hour,
+                isWeekend: zc.isWeekend,
+                ...w,
+                lag24hSameHour: lag24Val
+            };
+
+            const linVat0 = predictRegionalVat0(obsObj, zLearned, zcfg, prevAvg);
+            const kp = regionalKernelPredict(hMs, w, zc.hour, zc.isWeekend);
+            const kAlpha = kp.est !== null ? Math.min(0.82, kp.weightSum / (kp.weightSum + 0.22)) : 0.0;
+            const estVat0 = Number((kp.est !== null ? (kAlpha * kp.est + (1.0 - kAlpha) * linVat0) : linVat0).toFixed(3));
+
+            const hoursAhead = Math.max(1, (hMs - currentHourMs) / 3600000);
+            const horizonFrac = Math.min(1.0, Math.max(0.0, hoursAhead / 168.0));
+            const horizonCurve = Math.pow(horizonFrac, 1.30);
+            const dWind = 0.30 + horizonCurve * 0.75;
+            const dTemp = 0.30 + horizonCurve * 0.80;
+
+            const wHigh = Math.round(windCap * windSpeedToCapacityFactor((w.windSpeed100m || 6.2) + dWind));
+            const wLow = Math.round(windCap * windSpeedToCapacityFactor(Math.max(1.2, (w.windSpeed100m || 6.2) - dWind)));
+            const estOpt = predictRegionalVat0({ ...obsObj, windMw: wHigh, tempC: w.tempC + dTemp }, zLearned, zcfg, prevAvg);
+            const estPess = predictRegionalVat0({ ...obsObj, windMw: wLow, tempC: w.tempC - dTemp }, zLearned, zcfg, prevAvg);
+            const weatherHalf = Math.abs(estPess - estOpt) * 0.42;
+            const baseSpread = Math.max(0.18, Math.abs(estVat0) * (0.08 + 0.11 * horizonCurve));
+            const halfSpread = Math.max(baseSpread, Math.min(Math.max(0.85, Math.abs(estVat0) * 0.28 + 0.5), Math.hypot(weatherHalf, baseSpread)));
+
+            const minVat0 = Number((estVat0 - halfSpread * 0.92).toFixed(3));
+            const maxVat0 = Number((estVat0 + halfSpread * 1.08).toFixed(3));
+
+            const officialVat0 = officialVat0Map.get(hMs);
+            if (officialVat0 !== undefined) {
+                const savedPred = zPreStore[hMs];
+                const predEst = (savedPred && typeof savedPred.estVat0 === 'number') ? savedPred.estVat0 : estVat0;
+                const predMin = (savedPred && typeof savedPred.minVat0 === 'number') ? savedPred.minVat0 : minVat0;
+                const predMax = (savedPred && typeof savedPred.maxVat0 === 'number') ? savedPred.maxVat0 : maxVat0;
+                if (!savedPred) {
+                    zPreStore[hMs] = { estVat0: predEst, minVat0: predMin, maxVat0: predMax, wasForecast: false };
+                }
+                series.push({
+                    isZoneNative: true,
+                    zone: zoneCode,
+                    timestamp: new Date(hMs).toISOString(),
+                    epochMs: hMs,
+                    dateKey: zc.dateKey,
+                    hour: zc.hour,
+                    isWeekend: zc.isWeekend,
+                    isSat: zc.isSat,
+                    month: zc.month,
+                    isForecast: false,
+                    spotVat0EurCents: officialVat0,
+                    minVat0EurCents: officialVat0,
+                    maxVat0EurCents: officialVat0,
+                    predVat0EurCents: predEst,
+                    predMinVat0EurCents: predMin,
+                    predMaxVat0EurCents: predMax,
+                    priceInclVat: Number((officialVat0 * 1.255).toFixed(2)),
+                    priceVat0: officialVat0,
+                    probabilityPct: 100,
+                    windMw: w.windMw,
+                    windSpeed100m: w.windSpeed100m,
+                    tempC: w.tempC,
+                    solarMw: w.solarMw,
+                    nuclearMw: nuclearCap
+                });
+            } else {
+                rollingVat0ByMs.set(hMs, estVat0);
+                zPreStore[hMs] = { estVat0, minVat0, maxVat0, wasForecast: true };
+                const horizonProb = 92.0 - (hoursAhead / 168.0) * 23.0;
+                const probabilityPct = Math.max(62, Math.min(94, Math.round(horizonProb + (zc.hour <= 5 ? 2 : 0))));
+                series.push({
+                    isZoneNative: true,
+                    zone: zoneCode,
+                    timestamp: new Date(hMs).toISOString(),
+                    epochMs: hMs,
+                    dateKey: zc.dateKey,
+                    hour: zc.hour,
+                    isWeekend: zc.isWeekend,
+                    isSat: zc.isSat,
+                    month: zc.month,
+                    isForecast: true,
+                    spotVat0EurCents: estVat0,
+                    minVat0EurCents: minVat0,
+                    maxVat0EurCents: maxVat0,
+                    predVat0EurCents: estVat0,
+                    predMinVat0EurCents: minVat0,
+                    predMaxVat0EurCents: maxVat0,
+                    priceInclVat: Number((estVat0 * 1.255).toFixed(2)),
+                    priceVat0: estVat0,
+                    probabilityPct,
+                    windMw: w.windMw,
+                    windSpeed100m: w.windSpeed100m,
+                    tempC: w.tempC,
+                    solarMw: w.solarMw,
+                    nuclearMw: nuclearCap
+                });
+            }
+        }
+
+        try { localStorage.setItem(zPreKey, JSON.stringify(zPreStore)); } catch (_) {}
+        return { generatedAt: new Date().toISOString(), zone: zoneCode, series };
+    }
+
     async function fetchClientSideWithOnlineML() {
+        if (state.activeZone && state.activeZone !== 'FI') {
+            return fetchRegionalZoneWithOnlineML(state.activeZone);
+        }
         const now = new Date();
         // Haetaan viimeisen 30 vuorokauden (720 h) toteutuneet tuntihinnat ja säädata rinnakkain (Promise.all)
         const startHourIso = new Date(Math.floor(now.getTime() / 3600000) * 3600000 - 720 * 3600000).toISOString();
@@ -1213,7 +1800,7 @@
         if (!data || !Array.isArray(data.series) || data.series.length === 0) return;
         state.series = data.series;
         state.generatedAt = data.generatedAt;
-        if (typeof data.rolling30dMeanInclVat === 'number' && data.rolling30dMeanInclVat > 0.5) {
+        if (typeof data.rolling30dMeanInclVat === 'number' && data.rolling30dMeanInclVat > 0.2) {
             state.rolling30dMeanInclVat = data.rolling30dMeanInclVat;
         }
 
@@ -1225,7 +1812,6 @@
             byDate.get(item.dateKey).push(item);
         }
 
-        const weekdayNamesFi = ['Su', 'Ma', 'Ti', 'Ke', 'To', 'Pe', 'La'];
         const daysList = [];
         let idx = 0;
         for (const [dateKey, items] of byDate.entries()) {
@@ -1233,15 +1819,15 @@
             items.sort((a, b) => a.hour - b.hour);
             const parts = dateKey.split('-');
             const dt = new Date(Date.UTC(parseInt(parts[0], 10), parseInt(parts[1], 10) - 1, parseInt(parts[2], 10), 12, 0, 0));
-            const wdName = weekdayNamesFi[dt.getUTCDay()];
+            const wdName = WEEKDAYS_SHORT[dt.getUTCDay()] || 'Ma';
             const dayNum = parseInt(parts[2], 10);
             const monthNum = parseInt(parts[1], 10);
             const hasForecast = items.some(x => x.isForecast);
             const allForecast = items.every(x => x.isForecast);
 
             let label = `${wdName} ${dayNum}.${monthNum}.`;
-            if (idx === 0) label = `Tänään (${wdName} ${dayNum}.${monthNum}.)`;
-            else if (idx === 1) label = `Huomenna (${wdName} ${dayNum}.${monthNum}.)`;
+            if (idx === 0) label = `${TODAY_WORD} (${wdName} ${dayNum}.${monthNum}.)`;
+            else if (idx === 1) label = `${TOMORROW_WORD} (${wdName} ${dayNum}.${monthNum}.)`;
 
             daysList.push({
                 index: idx,
@@ -1260,7 +1846,7 @@
     }
 
     async function loadSpotAndForecastData() {
-        const fastCacheKey = storagePrefix + 'fast_series_cache_v3';
+        const fastCacheKey = `${storagePrefix}fast_z_${state.activeZone || 'FI'}_v4`;
         try {
             const rawFast = localStorage.getItem(fastCacheKey);
             if (rawFast) {
@@ -1285,6 +1871,12 @@
         if (postalInput && document.activeElement !== postalInput) {
             postalInput.value = state.hasUserPostal ? state.postalCode : '';
         }
+        const zoneSelEl = document.getElementById('zone-select');
+        if (zoneSelEl && state.activeZone && zoneSelEl.value !== state.activeZone) {
+            if (Array.from(zoneSelEl.options).some(o => o.value === state.activeZone)) {
+                zoneSelEl.value = state.activeZone;
+            }
+        }
 
         const nowHourMs = Math.floor(Date.now() / 3600000) * 3600000;
         const curSlot = state.series.find(s => s.epochMs === nowHourMs) || state.series[0];
@@ -1294,8 +1886,8 @@
             const tTrans = document.getElementById('tel-transfer');
             const tWind = document.getElementById('tel-wind');
             const tHours = document.getElementById('tel-hours');
-            if (tSpot) tSpot.textContent = `${formatNum(br.spotCents, 2)} snt/kWh`;
-            if (tTrans) tTrans.textContent = `${formatNum(br.transferCents + br.taxCents, 2)} snt/kWh (${dso.short_name})`;
+            if (tSpot) tSpot.textContent = `${formatNum(br.spotCents, 2)} ${UNIT_LABEL}`;
+            if (tTrans) tTrans.textContent = `${formatNum(br.transferCents + br.taxCents, 2)} ${UNIT_LABEL} (${dso.short_name})`;
             if (tWind) tWind.textContent = `${curSlot.windMw} MW (${formatNum(curSlot.tempC, 1)} °C)`;
             if (tHours) tHours.textContent = `${state.mlStats.totalLearnedHours} h`;
         }
@@ -1314,9 +1906,6 @@
         const timeBaseStr = formatNum(dso.time_base_eur * vatFactor, 2);
         const vatText = state.includeVat ? 'sis. ALV 25,5 %' : 'ALV 0 %';
 
-        // Päivitetään siirtohintalaskurin yläotsikko sekä paikallisen jakeluverkkoyhtiön tietolaatikko:
-        // Kun postinumero on syötetty, näytetään kyseisen postinumeron ja kunnan tarkat tiedot;
-        // muuten näytetään geneerinen teksti ilman lukuja.
         const calcHeadingEl = document.getElementById('transfer-calc-heading') || document.querySelector('.instrument-strip-top h2');
         const calcLeadEl = document.getElementById('transfer-calc-lead') || document.querySelector('.instrument-strip-top p');
         const infoHeadingEl = document.getElementById('local-dso-info-heading');
@@ -1380,9 +1969,8 @@
 
         const detectedEl = document.getElementById('detected-dso-banner');
         if (detectedEl) {
-
             let altHtml = '';
-            if (state.altDsoIds && state.altDsoIds.length > 0) {
+            if (!ACTIVE_LOC && state.altDsoIds && state.altDsoIds.length > 0) {
                 const btns = state.altDsoIds
                     .filter(id => DSO_DATA.companies[id])
                     .map(id => `<button type="button" class="alt-dso-btn" data-dso="${id}">Vaihda: ${DSO_DATA.companies[id].short_name}</button>`)
@@ -1392,15 +1980,21 @@
                 }
             }
 
+            const tGenWord = ACTIVE_LOC ? ACTIVE_LOC.tariffGeneral : 'Yleissiirto';
+            const tNightWord = ACTIVE_LOC ? (ACTIVE_LOC.tariffTime || ACTIVE_LOC.tariffGeneral) : 'Yösiirto';
+            const dsoSubHtml = ACTIVE_LOC
+                ? `${tGenWord}: ${genC} ${UNIT_LABEL} | ${tNightWord}: 07–22 ${dayC} / 22–07 ${nightC} ${UNIT_LABEL} | ${RECEIPT_TAX_ROW}: ${taxC} ${UNIT_LABEL}`
+                : `Yleissiirto ${genC} snt/kWh (${formatNum(dso.general_base_eur, 2)} €/kk) | Yösiirto päivä ${dayC} / yö ${nightC} snt/kWh | Sähkövero ${taxC} snt/kWh`;
+
             detectedEl.innerHTML = `
                 <div class="dso-summary-main">
                     <div>
-                        <span class="dso-kicker">JAKELUVERKKO [${state.postalCode} ${state.cityName.toUpperCase()}]</span>
+                        <span class="dso-kicker">${DSO_NETWORK_KICKER} [${state.postalCode} ${(state.cityName || '').toUpperCase()} · ${state.activeZone}]</span>
                         <span class="dso-title">${dso.name}</span>
-                        <div class="dso-sub">Yleissiirto ${genC} snt/kWh (${formatNum(dso.general_base_eur, 2)} €/kk) | Yösiirto päivä ${dayC} / yö ${nightC} snt/kWh | Sähkövero ${taxC} snt/kWh</div>
+                        <div class="dso-sub">${dsoSubHtml}</div>
                     </div>
                     <div class="dso-manual-select-wrap">
-                        <select id="dso-select" class="select-control" aria-label="Valitse sähköverkkoyhtiö">
+                        <select id="dso-select" class="select-control" aria-label="${DSO_NETWORK_KICKER}">
                             ${Object.values(DSO_DATA.companies).map(c => `<option value="${c.id}" ${c.id === state.dsoId ? 'selected' : ''}>${c.name}</option>`).join('')}
                         </select>
                     </div>
@@ -1412,8 +2006,18 @@
             if (selectEl) {
                 selectEl.addEventListener('change', function () {
                     state.dsoId = this.value;
+                    const chosen = DSO_DATA.companies[state.dsoId];
+                    const nextZone = chosen && chosen.zone ? chosen.zone : null;
+                    const zoneChanged = nextZone && nextZone !== state.activeZone;
+                    if (zoneChanged) {
+                        state.activeZone = nextZone;
+                    }
                     saveSettings();
-                    renderAll();
+                    if (zoneChanged) {
+                        loadSpotAndForecastData();
+                    } else {
+                        renderAll();
+                    }
                 });
             }
 
@@ -1451,6 +2055,7 @@
 
         const curBreak = calculateHourBreakdown(currentSlot);
         const dso = getActiveDso();
+        const atPrefix = AT_CLOCK_WORD ? `${AT_CLOCK_WORD} ` : '';
 
         const todayObj = state.daysList[0];
         let minText = '—', avgText = '—';
@@ -1458,8 +2063,8 @@
             const enr = todayObj.items.map(s => ({ slot: s, br: calculateHourBreakdown(s) }));
             const minItem = enr.reduce((a, b) => (b.br.totalCents < a.br.totalCents ? b : a), enr[0]);
             const avgTot = enr.reduce((a, b) => a + b.br.totalCents, 0) / enr.length;
-            minText = `klo ${String(minItem.slot.hour).padStart(2, '0')}:00 (${formatNum(minItem.br.totalCents, 2)} snt)`;
-            avgText = `${formatNum(avgTot, 2)} snt/kWh`;
+            minText = `${atPrefix}${String(minItem.slot.hour).padStart(2, '0')}:00 (${formatNum(minItem.br.totalCents, 2)} ${UNIT_SHORT})`;
+            avgText = `${formatNum(avgTot, 2)} ${UNIT_LABEL}`;
         }
 
         const tomObj = state.daysList[1];
@@ -1472,54 +2077,57 @@
                 const avgMinT = enrT.reduce((a, b) => a + b.br.minTotalCents, 0) / enrT.length;
                 const avgMaxT = enrT.reduce((a, b) => a + b.br.maxTotalCents, 0) / enrT.length;
                 const pubStr = getPricePublishTimeText(tomObj.dateKey, false);
-                tomText = `<strong>${formatNum(avgMinT, 1)}–${formatNum(avgMaxT, 1)} snt/kWh</strong> (odotus ${formatNum(avgT, 2)})<br><span style="font-size:11px; color:#4a4f4a;">${pubStr}</span>`;
+                tomText = `<strong>${formatNum(avgMinT, 1)}–${formatNum(avgMaxT, 1)} ${UNIT_LABEL}</strong> (${EXPECT_WORD} ${formatNum(avgT, 2)})<br><span style="font-size:11px; color:#4a4f4a;">${pubStr}</span>`;
             } else {
-                tomText = `${formatNum(avgT, 2)} snt/kWh (ennuste oli ${formatNum(avgPredT, 2)})`;
+                tomText = `${formatNum(avgT, 2)} ${UNIT_LABEL} (${PRED_SHORT_LABEL.toLowerCase()} ${formatNum(avgPredT, 2)})`;
             }
         }
+
+        const activeZCfg = getActiveZoneConfig();
+        const exchName = activeZCfg.exchange || 'Day-Ahead';
 
         container.innerHTML = `
             <div class="receipt-ledger">
                 <div class="receipt-big-total">
                     <div>
-                        <div class="field-label" style="margin:0;">PISTORASIAHINTA NYT (KLO ${String(currentSlot.hour).padStart(2, '0')}:00)</div>
+                        <div class="field-label" style="margin:0;">${RECEIPT_NOW_TITLE} (${String(currentSlot.hour).padStart(2, '0')}:00 · ${state.activeZone})</div>
                         <div style="font-size:11.5px; color:#4a4f4a;">${dso.short_name} (${state.postalCode})</div>
                     </div>
-                    <div class="receipt-big-num">${formatNum(curBreak.totalCents, 2)} <span style="font-size:13px; font-weight:600;">snt/kWh</span></div>
+                    <div class="receipt-big-num">${formatNum(curBreak.totalCents, 2)} <span style="font-size:13px; font-weight:600;">${UNIT_LABEL}</span></div>
                 </div>
 
                 <div class="receipt-row">
-                    <span>Nord Pool FI spot-hinta</span>
-                    <strong>${formatNum(curBreak.spotCents, 2)} snt/kWh <span style="font-weight:400; font-size:11.5px; color:#4a4f4a;">(${PRED_SHORT_LABEL.toLowerCase()} ${formatNum(curBreak.predictedSpotCents, 2)})</span></strong>
+                    <span>${exchName} ${state.activeZone} (${RECEIPT_SPOT_ROW})</span>
+                    <strong>${formatNum(curBreak.spotCents, 2)} ${UNIT_LABEL} <span style="font-weight:400; font-size:11.5px; color:#4a4f4a;">(${PRED_SHORT_LABEL.toLowerCase()} ${formatNum(curBreak.predictedSpotCents, 2)})</span></strong>
                 </div>
                 <div class="receipt-row">
-                    <span>Myyjän marginaali</span>
-                    <span>${formatNum(curBreak.marginCents, 2)} snt/kWh</span>
+                    <span>${RECEIPT_MARGIN_ROW}</span>
+                    <span>${formatNum(curBreak.marginCents, 2)} ${UNIT_LABEL}</span>
                 </div>
                 <div class="receipt-row">
                     <span>${curBreak.transferLabel} (${dso.short_name})</span>
-                    <span>${formatNum(curBreak.transferCents, 2)} snt/kWh</span>
+                    <span>${formatNum(curBreak.transferCents, 2)} ${UNIT_LABEL}</span>
                 </div>
                 <div class="receipt-row">
-                    <span>Sähkövero + huoltovarmuus</span>
-                    <span>${formatNum(curBreak.taxCents, 2)} snt/kWh</span>
+                    <span>${RECEIPT_TAX_ROW}</span>
+                    <span>${formatNum(curBreak.taxCents, 2)} ${UNIT_LABEL}</span>
                 </div>
                 <div class="receipt-row total-row">
-                    <span>KOKONAISHINTA YHTEENSÄ</span>
-                    <span>${formatNum(curBreak.totalCents, 2)} snt/kWh</span>
+                    <span>${RECEIPT_TOTAL_ROW}</span>
+                    <span>${formatNum(curBreak.totalCents, 2)} ${UNIT_LABEL}</span>
                 </div>
 
                 <div style="margin-top:14px; padding-top:10px; border-top:1px solid #cbc7ba;">
                     <div class="receipt-row">
-                        <span>Päivän halvin tunti tänään</span>
+                        <span>${RECEIPT_CHEAPEST_TODAY}</span>
                         <strong>${minText}</strong>
                     </div>
                     <div class="receipt-row">
-                        <span>Tämän päivän keskihinta (kok.)</span>
+                        <span>${RECEIPT_AVG_TODAY}</span>
                         <span>${avgText}</span>
                     </div>
                     <div class="receipt-row">
-                        <span>Huomisen keskihinta (kok.)</span>
+                        <span>${RECEIPT_AVG_TOMORROW}</span>
                         <span>${tomText}</span>
                     </div>
                 </div>
@@ -1781,21 +2389,15 @@
         // Täytetään kaavion alapuolella oleva koosterivi: Kuluvan tunnin hinta, Päivän halvin hinta ja Päivän kallein hinta
         const summaryStripEl = document.getElementById('first-screen-summary-strip');
         if (summaryStripEl && activeItems.length > 0) {
-            const summaryLabelsMap = {
-                FI: ['KULUVAN TUNNIN SÄHKÖHINTA', 'PÄIVÄN HALVIN HINTA', 'PÄIVÄN KALLEIN HINTA', 'klo'],
-                SE: ['ELPRIS JUST NU (AKTUELL TIMME)', 'DAGENS LÄGSTA PRIS', 'DAGENS HÖGSTA PRIS', 'kl.'],
-                NO: ['STRØMPRIS NÅ (DENNE TIMEN)', 'DAGENS LAVESTE PRIS', 'DAGENS HØYESTE PRIS', 'kl.'],
-                DK: ['ELPRIS LIGE NU (AKTUEL TIME)', 'DAGENS LAVESTE PRIS', 'DAGENS HØJESTE PRIS', 'kl.'],
-                EE: ['HETKE TUNNIHIND PRAEGU', 'PÄEVA SOODSAIM HIND', 'PÄEVA KALLEIM HIND', 'kl'],
-                LV: ['PAŠREIZĒJĀS STUNDAS CENA', 'DIENAS ZEMĀKĀ CENA', 'DIENAS AUGSTĀKĀ CENA', 'plkst.'],
-                LT: ['DABARTINĖS VALANDOS KAINA', 'DIENOS MAŽIAUSIA KAINA', 'DIENOS DIDŽIAUSIA KAINA', 'val.'],
-            };
-            const [lblNow, lblMin, lblMax, lblAt] = summaryLabelsMap[ACTIVE_COUNTRY_ID] || summaryLabelsMap.FI;
+            const lblNow = SUM_NOW_TITLE;
+            const lblMin = SUM_MIN_TITLE;
+            const lblMax = SUM_MAX_TITLE;
+            const lblAt = AT_CLOCK_WORD ? `${AT_CLOCK_WORD} ` : '';
             const nowMs = Math.floor(Date.now() / 3600000) * 3600000;
             const currentSlotRaw = state.series.find(s => s.epochMs === nowMs) || state.series[0];
             const currentBr = currentSlotRaw ? calculateHourBreakdown(currentSlotRaw) : activeItems[0].br;
             const curH = currentSlotRaw ? currentSlotRaw.hour : activeItems[0].slot.hour;
-            const curWindow = `${lblAt} ${String(curH).padStart(2, '0')}:00–${String((curH + 1) % 24).padStart(2, '0')}:00`;
+            const curWindow = `${lblAt}${String(curH).padStart(2, '0')}:00–${String((curH + 1) % 24).padStart(2, '0')}:00`;
 
             const minObj = activeItems.reduce((a, b) => (b.br.spotCents < a.br.spotCents ? b : a), activeItems[0]);
             const maxObj = activeItems.reduce((a, b) => (b.br.spotCents > a.br.spotCents ? b : a), activeItems[0]);
@@ -1824,19 +2426,19 @@
 
             summaryStripEl.innerHTML = `
                 <div class="summary-metric-col">
-                    <span class="summary-metric-kicker">${lblNow}</span>
+                    <span class="summary-metric-kicker">${lblNow} (${state.activeZone})</span>
                     <div class="summary-metric-value">${formatNum(currentBr.spotCents, 2)} <span style="font-size:15px;">${UNIT_LABEL}</span></div>
                     <span class="summary-metric-sub">${curWindow}${curPredSub}</span>
                 </div>
                 <div class="summary-metric-col">
                     <span class="summary-metric-kicker">${lblMin} (${minObj.slot.dayShort || ''})</span>
                     <div class="summary-metric-value" style="color:#008a36;">${minValText.replace(UNIT_LABEL, `<span style="font-size:15px;">${UNIT_LABEL}</span>`)}</div>
-                    <span class="summary-metric-sub">${minDayPrefix}${lblAt} ${String(minH).padStart(2, '0')}:00–${String((minH + 1) % 24).padStart(2, '0')}:00${minRangeSub}</span>
+                    <span class="summary-metric-sub">${minDayPrefix}${lblAt}${String(minH).padStart(2, '0')}:00–${String((minH + 1) % 24).padStart(2, '0')}:00${minRangeSub}</span>
                 </div>
                 <div class="summary-metric-col">
                     <span class="summary-metric-kicker">${lblMax} (${maxObj.slot.dayShort || ''})</span>
                     <div class="summary-metric-value" style="color:#d92b00;">${maxValText.replace(UNIT_LABEL, `<span style="font-size:15px;">${UNIT_LABEL}</span>`)}</div>
-                    <span class="summary-metric-sub">${maxDayPrefix}${lblAt} ${String(maxH).padStart(2, '0')}:00–${String((maxH + 1) % 24).padStart(2, '0')}:00${maxRangeSub}</span>
+                    <span class="summary-metric-sub">${maxDayPrefix}${lblAt}${String(maxH).padStart(2, '0')}:00–${String((maxH + 1) % 24).padStart(2, '0')}:00${maxRangeSub}</span>
                 </div>
             `;
         }
@@ -2114,16 +2716,10 @@
         const legendEl = document.querySelector('.chart-legend');
         const legendItems = document.querySelectorAll('.chart-legend .legend-item');
         if (legendItems.length >= 3) {
-            const tierWordsMap = {
-                FI: ['Hintataso (30 pv keskihinnan perusteella', 'Edullinen', 'Normaali', 'Korkea'],
-                SE: ['Prisnivå (baserat på 30 dgr snittpris', 'Lågt pris', 'Normalt', 'Högt pris'],
-                NO: ['Prisnivå (basert på 30 d. snittpris', 'Lav pris', 'Normal', 'Høy pris'],
-                DK: ['Prisniveau (baseret på 30 d. snitpris', 'Lav pris', 'Normal', 'Høj pris'],
-                EE: ['Hinnatase (30 p keskmise hinna alusel', 'Soodne', 'Tavapärane', 'Kõrge'],
-                LV: ['Cenu līmenis (pēc 30 d. vidējās cenas', 'Zema cena', 'Vidēja', 'Augsta cena'],
-                LT: ['Kainų lygis (pagal 30 d. vidutinę kainą', 'Žema kaina', 'Vidutinė', 'Aukšta kaina'],
-            };
-            const [wIntro, wCheap, wNorm, wHigh] = tierWordsMap[ACTIVE_COUNTRY_ID] || tierWordsMap.FI;
+            const wIntro = TIER_BASIS_INTRO;
+            const wCheap = TIER_CHEAP;
+            const wNorm = TIER_NORM;
+            const wHigh = TIER_HIGH;
             if (legendEl) {
                 let basisEl = legendEl.querySelector('.legend-basis-label');
                 if (!basisEl) {
@@ -2488,35 +3084,39 @@
 
         if (!bestWindow) return;
 
+        const subDiv = SUBUNITS_PER_MAJOR || 100.0;
         const totalKwh = state.applianceKw * wLen;
-        const bestEur = (bestWindow.avgTotal * totalKwh) / 100.0;
-        const minEur = (bestWindow.avgMinTotal * totalKwh) / 100.0;
-        const maxEur = (bestWindow.avgMaxTotal * totalKwh) / 100.0;
-        const worstEur = (worstWindow.avgTotal * totalKwh) / 100.0;
-        const savedEur = Math.max(0, worstEur - bestEur);
+        const bestMaj = (bestWindow.avgTotal * totalKwh) / subDiv;
+        const minMaj = (bestWindow.avgMinTotal * totalKwh) / subDiv;
+        const maxMaj = (bestWindow.avgMaxTotal * totalKwh) / subDiv;
+        const worstMaj = (worstWindow.avgTotal * totalKwh) / subDiv;
+        const savedMaj = Math.max(0, worstMaj - bestMaj);
 
         const startHel = getHelsinkiComponents(new Date(bestWindow.startSlot.epochMs));
         const endHel = getHelsinkiComponents(new Date(bestWindow.endSlot.epochMs + 3600000));
 
         const eurLabel = bestWindow.hasFc
-            ? `${formatNum(minEur, 2)}–${formatNum(maxEur, 2)} €`
-            : `${formatNum(bestEur, 2)} €`;
+            ? `${formatNum(minMaj, 2)}–${formatNum(maxMaj, 2)} ${CURRENCY_MAJOR}`
+            : `${formatNum(bestMaj, 2)} ${CURRENCY_MAJOR}`;
         const priceDetailLabel = bestWindow.hasFc
-            ? `Todennäköinen kokonaishinta <strong>${formatNum(bestWindow.avgMinTotal, 2)}–${formatNum(bestWindow.avgMaxTotal, 2)} snt/kWh</strong> (odotus ${formatNum(bestWindow.avgTotal, 2)} snt | Siirto &amp; vero ${formatNum(bestWindow.avgTransferAndTax, 2)} snt)<br><span style="font-size:11px; color:#4a4f4a;">${getPricePublishTimeText(bestWindow.endSlot.dateKey, false)}</span>`
-            : `Kokonaiskeskihinta <strong>${formatNum(bestWindow.avgTotal, 2)} snt/kWh</strong> (Spot ${formatNum(bestWindow.avgSpot, 2)} + Siirto &amp; vero ${formatNum(bestWindow.avgTransferAndTax, 2)})`;
+            ? `${OPT_PROB_TOTAL_LABEL} <strong>${formatNum(bestWindow.avgMinTotal, 2)}–${formatNum(bestWindow.avgMaxTotal, 2)} ${UNIT_LABEL}</strong> (${EXPECT_WORD} ${formatNum(bestWindow.avgTotal, 2)} ${UNIT_SHORT} | ${OPT_TRANSFER_TAX_LABEL} ${formatNum(bestWindow.avgTransferAndTax, 2)} ${UNIT_SHORT})<br><span style="font-size:11px; color:#4a4f4a;">${getPricePublishTimeText(bestWindow.endSlot.dateKey, false)}</span>`
+            : `${OPT_AVG_TOTAL_LABEL} <strong>${formatNum(bestWindow.avgTotal, 2)} ${UNIT_LABEL}</strong> (Spot ${formatNum(bestWindow.avgSpot, 2)} + ${OPT_TRANSFER_TAX_LABEL} ${formatNum(bestWindow.avgTransferAndTax, 2)})`;
+
+        const winKicker = OPT_BEST_WINDOW_TPL.replace('{h}', String(wLen));
+        const atPrefix = AT_CLOCK_WORD ? `${AT_CLOCK_WORD} ` : '';
 
         resultEl.innerHTML = `
             <div class="opt-result-ledger">
-                <div class="opt-kicker">EDULLISIN ${wLen} TUNNIN KÄYTTÖIKKUNA (SEURAAVAT 36 H)</div>
+                <div class="opt-kicker">${winKicker}</div>
                 <div style="display:flex; justify-content:space-between; align-items:baseline; flex-wrap:wrap; gap:8px; margin:4px 0;">
-                    <div class="opt-time-large">Klo ${String(startHel.hour).padStart(2, '0')}:00–${String(endHel.hour).padStart(2, '0')}:00 (${startHel.day}.${startHel.month}.)</div>
+                    <div class="opt-time-large">${atPrefix}${String(startHel.hour).padStart(2, '0')}:00–${String(endHel.hour).padStart(2, '0')}:00 (${startHel.day}.${startHel.month}.)</div>
                     <div class="opt-eur-large">${eurLabel}</div>
                 </div>
                 <div style="font-size:12px; color:#161816;">
                     ${priceDetailLabel}
                 </div>
                 <div style="font-size:11.5px; color:#4a4f4a; margin-top:4px;">
-                    Kulutus ${formatNum(totalKwh, 1)} kWh | Säästö kalleimpaan jaksoon (${formatNum(worstEur, 2)} €) verrattuna: <strong>${formatNum(savedEur, 2)} €</strong>
+                    ${OPT_CONSUMPTION_LABEL} ${formatNum(totalKwh, 1)} kWh | ${OPT_SAVED_LABEL} (${formatNum(worstMaj, 2)} ${CURRENCY_MAJOR}): <strong>${formatNum(savedMaj, 2)} ${CURRENCY_MAJOR}</strong>
                 </div>
             </div>
         `;
@@ -2527,17 +3127,15 @@
         const container = document.getElementById('annual-comparison-result');
         if (!container || !dso) return;
 
+        const subDiv = SUBUNITS_PER_MAJOR || 100.0;
         const kwh = Math.max(500, state.annualKwh);
         const nightShare = Math.max(0, Math.min(100, state.nightSharePct)) / 100.0;
         const dayShare = 1.0 - nightShare;
 
-        // Koko vuoden kulutuspainotettu keskiarvo ("keskiarvojen keskiarvo"):
-        // Huomioi talvi-, väli- ja kesäkuukausien tyypillisen hintatason, sähkölämmityksen
-        // talvipainotuksen (suuremmalla vuosikulutuksella enemmän talvikulutusta) sekä yöpainotuksen.
         const heatingWeight = Math.max(0.0, Math.min(1.0, (kwh - 2500) / 15500));
-        const winterShare = 0.44 + 0.18 * heatingWeight;     // tammi–maalis, marras–joulu
-        const shoulderShare = 0.31 - 0.06 * heatingWeight;   // huhti–touko, syys–loka
-        const summerShare = 1.0 - winterShare - shoulderShare; // kesä–elo
+        const winterShare = 0.44 + 0.18 * heatingWeight;
+        const shoulderShare = 0.31 - 0.06 * heatingWeight;
+        const summerShare = 1.0 - winterShare - shoulderShare;
 
         const winterAvgSpot = 7.65 * FX_SCALE;
         const shoulderAvgSpot = 4.85 * FX_SCALE;
@@ -2550,27 +3148,31 @@
         const taxC = state.includeVat ? DSO_DATA.electricityTaxInclVat : DSO_DATA.electricityTaxVat0;
         const marginC = state.marginCents * vatFactor;
 
-        const energyAndMarginEur = ((avgSpot + marginC) * kwh) / 100.0;
-        const taxEur = (taxC * kwh) / 100.0;
+        const energyAndMarginMaj = ((avgSpot + marginC) * kwh) / subDiv;
+        const taxMaj = (taxC * kwh) / subDiv;
 
         const genAvgC = dso.general_c_kwh * vatFactor;
-        const genTransferEur = (genAvgC * kwh) / 100.0 + (dso.general_base_eur * vatFactor * 12);
-        const genTotalEur = energyAndMarginEur + taxEur + genTransferEur;
+        const genTransferMaj = (genAvgC * kwh) / subDiv + (dso.general_base_eur * vatFactor * 12);
+        const genTotalMaj = energyAndMarginMaj + taxMaj + genTransferMaj;
 
         const timeAvgC = (dso.day_c_kwh * dayShare + dso.night_c_kwh * nightShare) * vatFactor;
-        const timeTransferEur = (timeAvgC * kwh) / 100.0 + (dso.time_base_eur * vatFactor * 12);
-        const timeTotalEur = energyAndMarginEur + taxEur + timeTransferEur;
+        const timeTransferMaj = (timeAvgC * kwh) / subDiv + (dso.time_base_eur * vatFactor * 12);
+        const timeTotalMaj = energyAndMarginMaj + taxMaj + timeTransferMaj;
 
         const winterDayShare = Math.max(0.10, dayShare * winterShare);
         const otherSeasonShare = 1.0 - winterDayShare;
         const seasonAvgC = (dso.winter_day_c_kwh * winterDayShare + dso.other_c_kwh * otherSeasonShare) * vatFactor;
-        const seasonTransferEur = (seasonAvgC * kwh) / 100.0 + (dso.season_base_eur * vatFactor * 12);
-        const seasonTotalEur = energyAndMarginEur + taxEur + seasonTransferEur;
+        const seasonTransferMaj = (seasonAvgC * kwh) / subDiv + (dso.season_base_eur * vatFactor * 12);
+        const seasonTotalMaj = energyAndMarginMaj + taxMaj + seasonTransferMaj;
+
+        const tGenTitle = ACTIVE_LOC ? ACTIVE_LOC.tariffGeneral : 'Yleissiirto';
+        const tNightTitle = ACTIVE_LOC ? (ACTIVE_LOC.tariffTime || '07–22 / 22–07') : 'Yösiirto / Aikasiirto';
+        const tSeasonTitle = ACTIVE_LOC ? (ACTIVE_LOC.tariffSeason || '07–22 / 22–07') : 'Kausisiirto';
 
         const options = [
-            { id: 'general', title: 'Yleissiirto', transferEur: genTransferEur, totalEur: genTotalEur, transferC: genAvgC, avgC: avgSpot + marginC + genAvgC + taxC },
-            { id: 'time', title: 'Yösiirto / Aikasiirto', transferEur: timeTransferEur, totalEur: timeTotalEur, transferC: timeAvgC, avgC: avgSpot + marginC + timeAvgC + taxC },
-            { id: 'season', title: 'Kausisiirto', transferEur: seasonTransferEur, totalEur: seasonTotalEur, transferC: seasonAvgC, avgC: avgSpot + marginC + seasonAvgC + taxC }
+            { id: 'general', title: tGenTitle, transferEur: genTransferMaj, totalEur: genTotalMaj, transferC: genAvgC, avgC: avgSpot + marginC + genAvgC + taxC },
+            { id: 'time', title: tNightTitle, transferEur: timeTransferMaj, totalEur: timeTotalMaj, transferC: timeAvgC, avgC: avgSpot + marginC + timeAvgC + taxC },
+            { id: 'season', title: tSeasonTitle, transferEur: seasonTransferMaj, totalEur: seasonTotalMaj, transferC: seasonAvgC, avgC: avgSpot + marginC + seasonAvgC + taxC }
         ];
 
         const cheapest = options.reduce((a, b) => (b.totalEur < a.totalEur ? b : a), options[0]);
@@ -2581,18 +3183,62 @@
                 <div class="comp-card ${isBest ? 'best-choice' : ''}">
                     <div class="comp-card-header">
                         <span class="comp-title">${opt.title}</span>
-                        ${isBest ? '<span style="font-size:11px; font-weight:700; color:#ff3b00; text-transform:uppercase;">● Edullisin valinta</span>' : ''}
+                        ${isBest ? `<span style="font-size:11px; font-weight:700; color:#ff3b00; text-transform:uppercase;">● ${TIER_CHEAP}</span>` : ''}
                     </div>
-                    <div class="comp-total-eur">~${formatNum(opt.totalEur, 0)} €/v <span style="font-size:13px; font-weight:400;">(${formatNum(opt.totalEur / 12, 0)} €/kk)</span></div>
-                    <div>Keskihinta: <strong>~${formatNum(opt.avgC, 2)} snt/kWh</strong></div>
+                    <div class="comp-total-eur">~${formatNum(opt.totalEur, 0)} ${CURRENCY_MAJOR}/a <span style="font-size:13px; font-weight:400;">(${formatNum(opt.totalEur / 12, 0)} ${CURRENCY_MAJOR}/m)</span></div>
+                    <div><strong>~${formatNum(opt.avgC, 2)} ${UNIT_LABEL}</strong></div>
                     <ul class="comp-list">
-                        <li>Sähköenergia: ~${formatNum(energyAndMarginEur, 0)} €/v</li>
-                        <li>Sähkönsiirto ja perusmaksut: ${formatNum(opt.transferEur, 0)} €/v</li>
-                        <li>Sähkövero: ${formatNum(taxEur, 0)} €/v</li>
+                        <li>Spot + margin: ~${formatNum(energyAndMarginMaj, 0)} ${CURRENCY_MAJOR}</li>
+                        <li>${DSO_NETWORK_KICKER}: ${formatNum(opt.transferEur, 0)} ${CURRENCY_MAJOR}</li>
+                        <li>${RECEIPT_TAX_ROW}: ${formatNum(taxMaj, 0)} ${CURRENCY_MAJOR}</li>
                     </ul>
                 </div>
             `;
         }).join('');
+    }
+
+    function updateOpenApiPanel() {
+        const z = encodeURIComponent(state.activeZone || 'FI');
+        const vatFlag = state.includeVat ? '1' : '0';
+        const jsonUrl = `https://spotpuls.app/api/v1/prices?zone=${z}&vat=${vatFlag}`;
+        const csvUrl = `https://spotpuls.app/api/v1/prices?zone=${z}&vat=${vatFlag}&format=csv`;
+        const badgeUrl = `https://spotpuls.app/api/v1/prices?zone=${z}&vat=${vatFlag}&format=badge`;
+        const marketPath = COUNTRY_ID === 'fi' ? '/' : `/${COUNTRY_ID}/`;
+        const backlinkUrl = `https://spotpuls.app${marketPath}?zone=${z}`;
+
+        const jsonEl = document.getElementById('api-json-url');
+        if (jsonEl) jsonEl.textContent = jsonUrl;
+
+        const csvEl = document.getElementById('api-csv-url');
+        if (csvEl) csvEl.textContent = `=IMPORTDATA("${csvUrl}")`;
+
+        const badgeImg = document.getElementById('api-badge-img');
+        if (badgeImg && badgeImg.getAttribute('data-zone') !== `${z}_${vatFlag}`) {
+            badgeImg.setAttribute('data-zone', `${z}_${vatFlag}`);
+            badgeImg.src = `/api/v1/prices?zone=${z}&vat=${vatFlag}&format=badge`;
+        }
+
+        const embedEl = document.getElementById('api-embed-code');
+        if (embedEl) {
+            embedEl.textContent = `<a href="${backlinkUrl}" target="_blank" rel="noopener"><img src="${badgeUrl}" alt="Spotpuls ${state.activeZone} spot electricity price & 7-day forecast" width="250" height="32"></a>`;
+        }
+
+        const haEl = document.getElementById('api-ha-yaml');
+        if (haEl) {
+            haEl.textContent =
+`rest:
+  - resource: "${jsonUrl}"
+    scan_interval: 900
+    sensor:
+      - name: "Spotpuls ${state.activeZone} Current Spot"
+        value_template: "{{ value_json.current.spotPrice }}"
+        unit_of_measurement: "${UNIT_LABEL}"
+        json_attributes_path: "$.summary"
+        json_attributes:
+          - todayMin
+          - todayMax
+          - rolling30dAvg`;
+        }
     }
 
     function renderAll() {
@@ -2602,9 +3248,60 @@
         renderMlLearningPanel();
         renderCheapestWindowCalculator();
         renderAnnualTransferComparison();
+        updateOpenApiPanel();
     }
 
     function bindEvents() {
+        const zoneSelect = document.getElementById('zone-select');
+        if (zoneSelect) {
+            if (state.activeZone && Array.from(zoneSelect.options).some(o => o.value === state.activeZone)) {
+                zoneSelect.value = state.activeZone;
+            }
+            zoneSelect.addEventListener('change', function () {
+                const nextZ = this.value;
+                if (!nextZ || nextZ === state.activeZone) return;
+                state.activeZone = nextZ;
+                const matchingDso = Object.values(DSO_DATA.companies).find(c => c.zone === nextZ);
+                if (matchingDso) {
+                    state.dsoId = matchingDso.id;
+                }
+                saveSettings();
+                try {
+                    const u = new URL(window.location.href);
+                    u.searchParams.set('zone', nextZ);
+                    window.history.replaceState({}, '', u.toString());
+                } catch (_) {}
+                updateOpenApiPanel();
+                loadSpotAndForecastData();
+            });
+        }
+
+        const langSelect = document.getElementById('lang-select');
+        if (langSelect) {
+            langSelect.addEventListener('change', function () {
+                if (this.value) {
+                    window.location.href = this.value;
+                }
+            });
+        }
+
+        document.querySelectorAll('[data-copy-target]').forEach(btn => {
+            btn.addEventListener('click', function () {
+                const targetId = this.getAttribute('data-copy-target');
+                const targetEl = targetId ? document.getElementById(targetId) : null;
+                if (!targetEl) return;
+                const txt = targetEl.textContent || '';
+                const origLabel = this.getAttribute('data-orig-label') || this.textContent;
+                this.setAttribute('data-orig-label', origLabel);
+                if (navigator.clipboard && navigator.clipboard.writeText) {
+                    navigator.clipboard.writeText(txt).then(() => {
+                        this.textContent = API_COPIED_BTN;
+                        setTimeout(() => { this.textContent = origLabel; }, 1800);
+                    }).catch(() => {});
+                }
+            });
+        });
+
         const postalForm = document.getElementById('postal-search-form');
         const postalInput = document.getElementById('postal-input');
 
@@ -2624,8 +3321,18 @@
                 state.cityName = res.city;
                 state.dsoId = res.dsoId;
                 state.altDsoIds = res.alt || [];
+                const chosenDso = DSO_DATA.companies[state.dsoId];
+                const nextZone = chosenDso && chosenDso.zone ? chosenDso.zone : null;
+                const zoneChanged = nextZone && nextZone !== state.activeZone;
+                if (zoneChanged) {
+                    state.activeZone = nextZone;
+                }
                 saveSettings();
-                renderAll();
+                if (zoneChanged) {
+                    loadSpotAndForecastData();
+                } else {
+                    renderAll();
+                }
             }
         }
 
@@ -2638,7 +3345,7 @@
         if (postalInput) {
             postalInput.addEventListener('input', function () {
                 const v = this.value.trim();
-                if (!v || /^\d{5}$/.test(v)) {
+                if (!v || /^\d{4,5}$/.test(v)) {
                     handlePostalLookup();
                 }
             });
@@ -2665,7 +3372,7 @@
             marginInput.value = state.marginCents;
             marginInput.addEventListener('input', function () {
                 const v = parseFloat(String(this.value).replace(',', '.'));
-                if (!isNaN(v) && v >= 0 && v <= 5) {
+                if (!isNaN(v) && v >= 0 && v <= 500) {
                     state.marginCents = v;
                     saveSettings();
                     renderAll();
@@ -2765,6 +3472,7 @@
         bindEvents();
         renderTelemetryAndDsoPanel();
         renderMlLearningPanel();
+        updateOpenApiPanel();
         loadSpotAndForecastData();
 
         let lastIsMobile = window.innerWidth <= 768;
@@ -2776,7 +3484,6 @@
             }
         });
 
-        // Haetaan uudet tiedot Nord Poolista automaattisesti joka tunti (tasatunnein)
         function scheduleNextTopOfHourFetch() {
             const nowMs = Date.now();
             const msToNextHour = 3600000 - (nowMs % 3600000) + 4000;
@@ -2787,7 +3494,6 @@
         }
         scheduleNextTopOfHourFetch();
 
-        // Tarkistaa, onko huomisen vahvistetut Nord Pool -hinnat jo saapuneet sarjaan
         function isTomorrowConfirmedInSeries(seriesArr) {
             if (!Array.isArray(seriesArr) || seriesArr.length === 0) return false;
             const curHourMs = Math.floor(Date.now() / 3600000) * 3600000;
@@ -2802,9 +3508,12 @@
         }
 
         function isAfterDailyPublishTime() {
+            const zcfg = getActiveZoneConfig();
+            const pubH = zcfg.pubHour !== undefined ? zcfg.pubHour : 13;
+            const pubM = zcfg.pubMin !== undefined ? zcfg.pubMin : 45;
             const now = new Date();
             const fmtMin = new Intl.DateTimeFormat('en-GB', {
-                timeZone: 'Europe/Helsinki',
+                timeZone: zcfg.tz || 'Europe/Helsinki',
                 hour: '2-digit',
                 minute: '2-digit',
                 hour12: false
@@ -2814,16 +3523,16 @@
             for (const p of parts) map[p.type] = p.value;
             const h = parseInt(map.hour, 10) % 24;
             const m = parseInt(map.minute, 10);
-            return h > 13 || (h === 13 && m >= 45);
+            return h > pubH || (h === pubH && m >= pubM);
         }
 
-        // Kaksi vuorokausittaista tarkentavaa pääpäivitystä Suomen aikaa:
-        // 1) klo 13:45 (kun Nord Pool julkaisee uudet vahvistetut hinnat ja malli tarkentaa tulevien päivien ennusteet)
-        // 2) klo 01:45 (yöllä vuorokauden vaihduttua ja tuoreimman 00Z-säämalliajon valmistuttua, jolloin ennustetaan uusi päivä ja tarkennetaan aiempia)
         function scheduleTwiceDailyRefinement() {
+            const zcfg = getActiveZoneConfig();
+            const pubH = zcfg.pubHour !== undefined ? zcfg.pubHour : 13;
+            const pubM = zcfg.pubMin !== undefined ? zcfg.pubMin : 45;
             const now = new Date();
             const fmtMin = new Intl.DateTimeFormat('en-GB', {
-                timeZone: 'Europe/Helsinki',
+                timeZone: zcfg.tz || 'Europe/Helsinki',
                 hour: '2-digit',
                 minute: '2-digit',
                 second: '2-digit',
@@ -2837,16 +3546,16 @@
             const s = parseInt(map.second, 10);
             const curSecOfDay = h * 3600 + m * 60 + s;
 
-            const t0145 = 1 * 3600 + 45 * 60 + 5;  // 01:45:05
-            const t1345 = 13 * 3600 + 45 * 60 + 5; // 13:45:05
+            const tNight = 1 * 3600 + 45 * 60 + 5;
+            const tPub = pubH * 3600 + pubM * 60 + 5;
 
             let secUntilNext;
-            if (curSecOfDay < t0145) {
-                secUntilNext = t0145 - curSecOfDay;
-            } else if (curSecOfDay < t1345) {
-                secUntilNext = t1345 - curSecOfDay;
+            if (curSecOfDay < tNight) {
+                secUntilNext = tNight - curSecOfDay;
+            } else if (curSecOfDay < tPub) {
+                secUntilNext = tPub - curSecOfDay;
             } else {
-                secUntilNext = (24 * 3600 - curSecOfDay) + t0145;
+                secUntilNext = (24 * 3600 - curSecOfDay) + tNight;
             }
 
             setTimeout(async function () {
@@ -2856,10 +3565,6 @@
         }
         scheduleTwiceDailyRefinement();
 
-        // Päivitetään kuluvan tunnin katkoviivaosoitin minuutin välein,
-        // JA jos kello on >= 13:45 Suomen aikaa eivätkä huomisen vahvistetut Nord Pool -hinnat ole vielä
-        // saapuneet rajapinnasta (esim. rajapinnan 1–10 min viive klo 13:45 jälkeen), haetaan uudet hinnat
-        // automaattisesti joka minuutti, kunnes huomisen vahvistetut hinnat ovat latautuneet!
         setInterval(function () {
             if (isAfterDailyPublishTime() && !isTomorrowConfirmedInSeries(state.series)) {
                 loadSpotAndForecastData();

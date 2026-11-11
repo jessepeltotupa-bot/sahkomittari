@@ -1,8 +1,48 @@
-# Pörssisähkö & Siirtohintalaskuri
-> Reaaliaikainen Suomen pörssisähkön spot-hintaseuranta, 7 vuorokauden tuulivoima- ja lämpötilaennuste sekä postinumeropohjainen sähkönsiirto- ja kokonaishintalaskuri.
+# Spotpuls (https://spotpuls.app)
+> Open European Day-Ahead Electricity Spot Price Tracker, Self-Learning 7-Day Regional Forecast (40 Bidding Zones), Postal Grid Tariff Calculator & Free Public REST API.
 
-## Keskeiset ominaisuudet
-- Viralliset Nord Pool FI -spot-hinnat ja 7 vrk (168 h) tuntikohtainen hintaennuste (`/api/spot-and-forecast`)
-- Postinumerohaku, joka tunnistaa automaattisesti paikallisen sähköverkkoyhtiön (30+ verkkoyhtiötä ja 134+ Suomen kuntaa)
-- Todellinen tuntikohtainen kokonaishinta: Spot + Myyjän marginaali + Paikallinen siirtohinta (Yleissiirto, Yösiirto tai Kausisiirto) + Sähkövero (2,83 snt/kWh sis. ALV 25,5 %)
-- Halvimmat peräkkäiset tunnit -optimoija kokonaishinnalla (huomioi klo 22:00 alkavan yösiirron)
+## Overview
+Spotpuls (`https://spotpuls.app`) provides live hourly day-ahead electricity spot prices together with a dedicated self-learning 7-day (168 h) hourly forecast and probability range for every European spot-electricity bidding zone across 28 native languages.
+
+## Public REST API (Free, No API Key, CORS `*`)
+- **Primary Endpoint (JSON / CSV / SVG Badge)**:
+  - `GET https://spotpuls.app/api/v1/prices?zone=FI&vat=1&currency=local&format=json`
+  - Query parameters:
+    - `zone`: One of 40 European bidding zones: `FI`, `SE1`, `SE2`, `SE3`, `SE4`, `NO1`, `NO2`, `NO3`, `NO4`, `NO5`, `DK1`, `DK2`, `EE`, `LV`, `LT`, `DE-LU`, `AT`, `CH`, `NL`, `BE`, `FR`, `GB`, `IE-SEM`, `ES`, `PT`, `IT-North`, `IT-Centre-North`, `IT-Centre-South`, `IT-South`, `IT-Sicily`, `IT-Sardinia`, `PL`, `CZ`, `SK`, `HU`, `RO`, `BG`, `SI`, `HR`, `GR`.
+    - `vat`: `1` (incl. national electricity VAT, default) or `0` (VAT 0 %).
+    - `currency`: `local` (native subunit/kWh, e.g. `snt/kWh`, `öre/kWh`, `øre/kWh`, `ct/kWh`, `p/kWh`, `gr/kWh`, `Kč/kWh`, `Ft/kWh`), `eur_cents` (`c/kWh`), or `eur_mwh` (`EUR/MWh`).
+    - `format`: `json` (default), `csv` (for Google Sheets `=IMPORTDATA(...)` & Excel), or `badge` (live embeddable SVG price badge).
+- **List All 40 Bidding Zones**:
+  - `GET https://spotpuls.app/api/v1/zones` (or `GET https://spotpuls.app/api/v1/prices?list=zones`)
+- **OpenAPI 3.1 Specification**: `https://spotpuls.app/openapi.json`
+- **Interactive Developer Documentation**: `https://spotpuls.app/api-docs/`
+
+## Localized Country & Language Editions (28 Languages)
+- Finland (Suomi): `https://spotpuls.app/`
+- Europe / International (English): `https://spotpuls.app/en/`
+- Sweden (Svenska, SE1–SE4): `https://spotpuls.app/se/`
+- Norway (Norsk, NO1–NO5): `https://spotpuls.app/no/`
+- Denmark (Dansk, DK1–DK2): `https://spotpuls.app/dk/`
+- Estonia (Eesti, EE): `https://spotpuls.app/ee/`
+- Latvia (Latviešu, LV): `https://spotpuls.app/lv/`
+- Lithuania (Lietuvių, LT): `https://spotpuls.app/lt/`
+- Germany (Deutsch, DE-LU): `https://spotpuls.app/de/`
+- Austria (Deutsch, AT): `https://spotpuls.app/at/`
+- Switzerland (Deutsch, CH): `https://spotpuls.app/ch/`
+- Netherlands (Nederlands, NL): `https://spotpuls.app/nl/`
+- Belgium (Nederlands, BE): `https://spotpuls.app/be/`
+- France (Français, FR): `https://spotpuls.app/fr/`
+- United Kingdom (English, GB): `https://spotpuls.app/gb/`
+- Ireland (English, IE-SEM): `https://spotpuls.app/ie/`
+- Spain (Español, ES / PVPC / OMIE): `https://spotpuls.app/es/`
+- Portugal (Português, PT / OMIE): `https://spotpuls.app/pt/`
+- Italy (Italiano, 6 GME zones): `https://spotpuls.app/it/`
+- Poland (Polski, PL / TGE): `https://spotpuls.app/pl/`
+- Czechia (Čeština, CZ / OTE): `https://spotpuls.app/cz/`
+- Slovakia (Slovenčina, SK / OKTE): `https://spotpuls.app/sk/`
+- Hungary (Magyar, HU / HUPX): `https://spotpuls.app/hu/`
+- Romania (Română, RO / OPCOM): `https://spotpuls.app/ro/`
+- Bulgaria (Български, BG / IBEX): `https://spotpuls.app/bg/`
+- Slovenia (Slovenščina, SI / BSP): `https://spotpuls.app/si/`
+- Croatia (Hrvatski, HR / CROPEX): `https://spotpuls.app/hr/`
+- Greece (Ελληνικά, GR / HEnEx): `https://spotpuls.app/gr/`

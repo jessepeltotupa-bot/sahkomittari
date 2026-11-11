@@ -3,48 +3,148 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Elmäklaren // SE-Spot — Spotpris på el timme för timme, 7-dygnsprognos och elnätsavgift via postnummer</title>
-    <meta name="description" content="Ange ditt 5-siffriga postnummer (t.ex. 11122 Stockholm, 41101 Göteborg, 21120 Malmö, 97231 Luleå) så identifieras ditt elområde (SE1–SE4), ditt lokala elnätsbolag och energiskatt automatiskt.">
+    <title>Spotpuls — Spotpris på el timme för timme i SE1–SE4, lokal 7-dygnsprognos och elnätskalkylator | spotpuls.app</title>
+    <meta name="description" content="Ange ditt 5-siffriga postnummer (t.ex. 11122 Stockholm, 41101 Göteborg, 21120 Malmö, 97231 Luleå) så identifieras elområde (SE1–SE4) och elnätsbolag automatiskt.">
     <meta name="geo.region" content="SE">
     <meta name="content-language" content="sv-SE">
-    <link rel="icon" type="image/svg+xml" href="/favicon.svg">
+    <link rel="canonical" href="https://spotpuls.app/se/" />
+    <link rel="alternate" hreflang="fi" href="https://spotpuls.app/" />
+    <link rel="alternate" hreflang="en" href="https://spotpuls.app/en/" />
+    <link rel="alternate" hreflang="sv" href="https://spotpuls.app/se/" />
+    <link rel="alternate" hreflang="no" href="https://spotpuls.app/no/" />
+    <link rel="alternate" hreflang="da" href="https://spotpuls.app/dk/" />
+    <link rel="alternate" hreflang="et" href="https://spotpuls.app/ee/" />
+    <link rel="alternate" hreflang="lv" href="https://spotpuls.app/lv/" />
+    <link rel="alternate" hreflang="lt" href="https://spotpuls.app/lt/" />
+    <link rel="alternate" hreflang="de" href="https://spotpuls.app/de/" />
+    <link rel="alternate" hreflang="de-AT" href="https://spotpuls.app/at/" />
+    <link rel="alternate" hreflang="de-CH" href="https://spotpuls.app/ch/" />
+    <link rel="alternate" hreflang="nl" href="https://spotpuls.app/nl/" />
+    <link rel="alternate" hreflang="nl-BE" href="https://spotpuls.app/be/" />
+    <link rel="alternate" hreflang="fr" href="https://spotpuls.app/fr/" />
+    <link rel="alternate" hreflang="en-GB" href="https://spotpuls.app/gb/" />
+    <link rel="alternate" hreflang="en-IE" href="https://spotpuls.app/ie/" />
+    <link rel="alternate" hreflang="es" href="https://spotpuls.app/es/" />
+    <link rel="alternate" hreflang="pt" href="https://spotpuls.app/pt/" />
+    <link rel="alternate" hreflang="it" href="https://spotpuls.app/it/" />
+    <link rel="alternate" hreflang="pl" href="https://spotpuls.app/pl/" />
+    <link rel="alternate" hreflang="cs" href="https://spotpuls.app/cz/" />
+    <link rel="alternate" hreflang="sk" href="https://spotpuls.app/sk/" />
+    <link rel="alternate" hreflang="hu" href="https://spotpuls.app/hu/" />
+    <link rel="alternate" hreflang="ro" href="https://spotpuls.app/ro/" />
+    <link rel="alternate" hreflang="bg" href="https://spotpuls.app/bg/" />
+    <link rel="alternate" hreflang="sl" href="https://spotpuls.app/si/" />
+    <link rel="alternate" hreflang="hr" href="https://spotpuls.app/hr/" />
+    <link rel="alternate" hreflang="el" href="https://spotpuls.app/gr/" />
+    <link rel="alternate" hreflang="x-default" href="https://spotpuls.app/en/" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg?v=37">
     <link rel="icon" type="image/x-icon" href="/favicon.ico">
     <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
     <link rel="manifest" href="/site.webmanifest">
-    <link rel="stylesheet" href="/styles.css?v=36">
+    <link rel="stylesheet" href="/styles.css?v=37">
     <script type="application/ld+json">
 {
   "@context": "https://schema.org",
-  "@type": "WebApplication",
-  "name": "Elmäklaren // SE-Spot",
-  "description": "Spotpris på el timme för timme, 7-dygnsprognos och elnätsavgift via postnummer",
-  "applicationCategory": "FinanceApplication",
-  "operatingSystem": "Web",
-  "inLanguage": "sv-SE",
-  "areaServed": {
-    "@type": "Country",
-    "name": "Sverige",
-    "identifier": "SE"
-  }
+  "@graph": [
+    {
+      "@type": "WebApplication",
+      "@id": "https://spotpuls.app/se/#app",
+      "name": "Spotpuls",
+      "alternateName": "spotpuls.app",
+      "url": "https://spotpuls.app/se/",
+      "description": "Spotpris på el timme för timme i SE1–SE4, lokal 7-dygnsprognos och elnätskalkylator",
+      "applicationCategory": "UtilitiesApplication",
+      "operatingSystem": "Web",
+      "inLanguage": "sv-SE",
+      "isAccessibleForFree": true,
+      "areaServed": {
+        "@type": "Country",
+        "name": "Sverige",
+        "identifier": "SE"
+      },
+      "offers": {
+        "@type": "Offer",
+        "price": "0",
+        "priceCurrency": "EUR"
+      }
+    },
+    {
+      "@type": "Dataset",
+      "@id": "https://spotpuls.app/se/#dataset",
+      "name": "Spotpuls Sverige (SE3) Day-Ahead Spot Electricity Prices & 7-Day Hourly Forecast",
+      "description": "Hämta spotpriser och 7-dygnsprognoser för SE1, SE2, SE3 och SE4 direkt till Home Assistant, appar eller Google Sheets via vårt kostnadsfria REST-API.",
+      "url": "https://spotpuls.app/se/",
+      "inLanguage": "sv-SE",
+      "isAccessibleForFree": true,
+      "license": "https://creativecommons.org/licenses/by/4.0/",
+      "creator": {
+        "@type": "Organization",
+        "name": "Spotpuls",
+        "url": "https://spotpuls.app"
+      },
+      "temporalCoverage": "2024-01-01/..",
+      "spatialCoverage": {
+        "@type": "Place",
+        "name": "Sverige (SE1, SE2, SE3, SE4)"
+      },
+      "distribution": [
+        {
+          "@type": "DataDownload",
+          "encodingFormat": "application/json",
+          "contentUrl": "https://spotpuls.app/api/v1/prices?zone=SE3&vat=1"
+        },
+        {
+          "@type": "DataDownload",
+          "encodingFormat": "text/csv",
+          "contentUrl": "https://spotpuls.app/api/v1/prices?zone=SE3&vat=1&format=csv"
+        }
+      ]
+    },
+    {
+      "@type": "WebAPI",
+      "@id": "https://spotpuls.app/api/v1/prices#webapi",
+      "name": "Spotpuls Open Electricity Spot & 7-Day Forecast API",
+      "description": "Free CORS-enabled REST API for European day-ahead electricity spot prices and self-learning 7-day regional hourly forecasts across 40 bidding zones.",
+      "url": "https://spotpuls.app/api/v1/prices",
+      "documentation": "https://spotpuls.app/api-docs/",
+      "termsOfService": "https://spotpuls.app/api-docs/",
+      "provider": {
+        "@type": "Organization",
+        "name": "Spotpuls",
+        "url": "https://spotpuls.app"
+      }
+    }
+  ]
 }
     </script>
     <script>
-    window.ACTIVE_COUNTRY_LOCALE = {"countryId": "se", "lang": "sv-SE", "geoRegion": "SE", "countryName": "Sverige", "siteName": "Elmäklaren // SE-Spot", "brandKicker": "NORD POOL SE1–SE4", "brandSubtitle": "Spotpris på el timme för timme, 7-dygnsprognos och elnätsavgift via postnummer", "navChart": "Spotgraf", "navTable": "Timtabell", "navTransfer": "Elnätskalkylator", "navOptimizer": "Laststyrning (36 h)", "chartTitle": "Spotpris på el och 7-dygnsprognos (öre/kWh)", "hoverHint": "För muspekaren över en stapel för att se pris och sannolikt prisintervall", "legendCheap": "Lågt pris (< 35 öre/kWh)", "legendNorm": "Normalt (35–95 öre/kWh)", "legendHigh": "Högt pris (> 95 öre/kWh)", "legendRange": "Prognosens prisintervall (min–max öre/kWh)", "legendWind": "Svensk vindkraft (GW, streckad linje)", "scrollDownText": "Scrolla ned för timtabell, elnätskalkylator via postnummer och laststyrning", "tableHeading": "Timvis prisuppskattning och sannolikt prisintervall (24 h/dygn)", "colTime": "Klockslag (Timme)", "colSpot": "Spotpris (uppskattning / pris)", "colRange": "Sannolikt prisintervall", "colTotal": "Totalpris inkl. elnät & skatt", "colWeather": "Vindkraft och temperatur", "transferHeading": "Elnätskalkylator och totalt elpris via postnummer i Sverige", "transferLead": "Ange ditt 5-siffriga postnummer (t.ex. 11122 Stockholm, 41101 Göteborg, 21120 Malmö, 97231 Luleå) så identifieras ditt elområde (SE1–SE4), ditt lokala elnätsbolag och energiskatt automatiskt.", "postalLabel": "Postnummer eller ort", "postalPlaceholder": "11122, 41101, 21120, 97231...", "setBtn": "Välj", "tariffLabel": "Elnätstariff", "tariffGeneral": "Enkeltariff", "tariffTime": "Tidstariff (Dag / Natt)", "marginLabel": "Elhandlares påslag (öre/kWh)", "vatLabel": "Momssats", "vatIncl": "Inkl. moms 25 %", "vatZero": "Exkl. moms (0 %)", "unit": "öre/kWh", "approxPrefix": "ca ", "rangePrefix": "Prisintervall", "fixedText": "Publicerat fast pris", "defaultPostal": "11122", "defaultCity": "Stockholm (SE3)", "taxInclVat": 53.5, "dsos": [{"id": "ellevio", "name": "Ellevio AB (Stockholm / Mellansverige — SE3)", "gen": 32.5, "day": 44.0, "night": 19.5, "zone": "SE3", "postals": ["10", "11", "12", "13", "14", "15", "16", "17", "18", "19", "65", "66", "67", "68", "69", "82"]}, {"id": "eon_se4", "name": "E.ON Energidistribution (Södra Sverige — SE4)", "gen": 41.2, "day": 54.0, "night": 24.5, "zone": "SE4", "postals": ["20", "21", "22", "23", "24", "25", "26", "27", "28", "29", "30", "35", "36", "37", "38", "39", "57"]}, {"id": "vattenfall_se3", "name": "Vattenfall Eldistribution (Uppsala / Östergötland / Väst — SE3)", "gen": 36.8, "day": 49.5, "night": 21.0, "zone": "SE3", "postals": ["58", "59", "60", "61", "62", "63", "64", "74", "75", "76", "45", "46", "47"]}, {"id": "goteborg", "name": "Göteborg Energi Nät AB (Göteborg — SE3)", "gen": 26.4, "day": 35.0, "night": 16.0, "zone": "SE3", "postals": ["40", "41", "42", "43", "44"]}, {"id": "vattenfall_se1", "name": "Vattenfall / Luleå Energi Elnät (Norra Norrland — SE1)", "gen": 28.0, "day": 36.0, "night": 16.5, "zone": "SE1", "postals": ["95", "96", "97", "98"]}, {"id": "sundsvall_se2", "name": "Sundsvalls Elnät / Jämtkraft (Södra Norrland — SE2)", "gen": 29.5, "day": 38.0, "night": 17.5, "zone": "SE2", "postals": ["83", "84", "85", "86", "87", "88", "89", "90", "91", "92", "93", "94"]}]};
+    window.ACTIVE_COUNTRY_LOCALE = {"countryId": "se", "lang": "sv-SE", "hreflang": "sv", "path": "/se/", "languageLabel": "Svenska (SE)", "geoRegion": "SE", "countryName": "Sverige", "defaultZone": "SE3", "zones": ["SE1", "SE2", "SE3", "SE4"], "unit": "öre/kWh", "currencyMajor": "kr", "subunitsPerMajor": 100, "fxFromEurCents": 11.45, "vatRate": 1.25, "vatPctText": "25 %", "defaultMargin": 4.5, "taxInclVat": 53.5, "defaultPostal": "11122", "defaultCity": "Stockholm (SE3)", "brandSubtitle": "Spotpris på el timme för timme i SE1–SE4, lokal 7-dygnsprognos och elnätskalkylator", "navChart": "Spotgraf", "navTable": "Timtabell", "navTransfer": "Elnätskalkylator", "navOptimizer": "Laststyrning", "navApi": "Öppet API", "zoneSelectLabel": "Elområde", "langSelectLabel": "Land / Språk", "chartTitle": "Spotpris på el och 7-dygnsprognos (öre/kWh)", "hoverHint": "För muspekaren över eller tryck på en stapel för att se timpris och sannolikt prisintervall.", "tierBasisIntro": "Prisnivå (baserat på 30 dgr snittpris", "tierCheap": "Lågt pris", "tierNorm": "Normalt", "tierHigh": "Högt pris", "legendRange": "Prognosens prisintervall (min–max)", "scrollDownText": "Scrolla ned för timtabell, elnätskalkylator via postnummer, laststyrning och öppet API", "approxPrefix": "ca ", "rangePrefix": "Prisintervall", "fixedText": "Publicerat fast pris", "probLabel": "Sannolikhet", "predWasLabel": "Programmets prognos var", "predShortLabel": "Prognos var", "pubShortTpl": "Publ. {date} kl. {time}", "pubFullTpl": "Pris publiceras: {date} kl. {time}", "weekdaysShort": ["Sön", "Mån", "Tis", "Ons", "Tor", "Fre", "Lör"], "todayWord": "Idag", "tomorrowWord": "Imorgon", "atClockWord": "kl.", "sumNowTitle": "ELPRIS JUST NU (AKTUELL TIMME)", "sumMinTitle": "DAGENS LÄGSTA PRIS", "sumMaxTitle": "DAGENS HÖGSTA PRIS", "tableHeading": "Timvis prisuppskattning och sannolikt prisintervall (SE1–SE4)", "colTime": "Klockslag", "colSpot": "Spotpris (prognos / fast)", "colRange": "Sannolikt prisintervall", "colTotal": "Totalpris inkl. elnät & skatt", "colWeather": "Vindkraft och temperatur", "transferHeading": "Elnätskalkylator och totalt elpris via postnummer i Sverige", "transferLead": "Ange ditt 5-siffriga postnummer (t.ex. 11122 Stockholm, 41101 Göteborg, 21120 Malmö, 97231 Luleå) så identifieras elområde (SE1–SE4) och elnätsbolag automatiskt.", "postalLabel": "Postnummer eller ort", "postalPlaceholder": "11122, 41101, 21120, 97231...", "setBtn": "Välj", "tariffLabel": "Elnätstariff", "tariffGeneral": "Enkeltariff", "tariffTime": "Tidstariff (Dag / Natt)", "marginLabel": "Elhandlares påslag (öre/kWh)", "vatLabel": "Momssats", "vatIncl": "Inkl. moms 25 %", "vatZero": "Exkl. moms (0 %)", "dsoNetworkKicker": "ELNÄTSBOLAG", "receiptNowTitle": "TOTALPRIS I UTTAGET NU", "receiptSpotRow": "Spotpris (Nord Pool)", "receiptMarginRow": "Elhandlares påslag", "receiptTaxRow": "Energiskatt", "receiptTotalRow": "TOTALPRIS SAMMANLAGT", "receiptCheapestToday": "Dagens billigaste timme", "receiptAvgToday": "Dagens snittpris (totalt)", "receiptAvgTomorrow": "Morgondagens snittpris (totalt)", "expectWord": "väntevärde", "optBestWindowTpl": "BILLIGASTE {h}-TIMMARSFÖNSTER (KOMMANDE 36 H)", "optDurationLabel": "Drifttid", "optKwLabel": "Effekt (kW)", "optProbTotalLabel": "Sannolikt totalpris", "optAvgTotalLabel": "Genomsnittligt totalpris", "optTransferTaxLabel": "Elnät & skatt", "optConsumptionLabel": "Förbrukning", "optSavedLabel": "Besparing jämfört med dyraste perioden", "apiHeading": "Öppet Elpris- och Prognos-API (Spotpuls API)", "apiLead": "Hämta spotpriser och 7-dygnsprognoser för SE1, SE2, SE3 och SE4 direkt till Home Assistant, appar eller Google Sheets via vårt kostnadsfria REST-API.", "apiCopyBtn": "Kopiera URL", "apiCopiedBtn": "Kopierad!", "apiDocsBtn": "API-dokumentation", "apiEmbedLabel": "Inbäddningsbar prisbricka för webbplats eller blogg", "dsos": [{"id": "ellevio", "name": "Ellevio AB (Stockholm / Mellansverige — SE3)", "gen": 32.5, "day": 44.0, "night": 19.5, "zone": "SE3", "postals": ["10", "11", "12", "13", "14", "15", "16", "17", "18", "19", "65", "66", "67", "68", "69", "82"]}, {"id": "eon_se4", "name": "E.ON Energidistribution (Södra Sverige — SE4)", "gen": 41.2, "day": 54.0, "night": 24.5, "zone": "SE4", "postals": ["20", "21", "22", "23", "24", "25", "26", "27", "28", "29", "30", "35", "36", "37", "38", "39", "57"]}, {"id": "vattenfall_se3", "name": "Vattenfall Eldistribution (Uppsala / Östergötland / Väst — SE3)", "gen": 36.8, "day": 49.5, "night": 21.0, "zone": "SE3", "postals": ["58", "59", "60", "61", "62", "63", "64", "74", "75", "76", "45", "46", "47"]}, {"id": "goteborg", "name": "Göteborg Energi Nät AB (Göteborg — SE3)", "gen": 26.4, "day": 35.0, "night": 16.0, "zone": "SE3", "postals": ["40", "41", "42", "43", "44"]}, {"id": "vattenfall_se1", "name": "Vattenfall / Luleå Energi Elnät (Norra Norrland — SE1)", "gen": 28.0, "day": 36.0, "night": 16.5, "zone": "SE1", "postals": ["95", "96", "97", "98"]}, {"id": "sundsvall_se2", "name": "Sundsvalls Elnät / Jämtkraft (Södra Norrland — SE2)", "gen": 29.5, "day": 38.0, "night": 17.5, "zone": "SE2", "postals": ["83", "84", "85", "86", "87", "88", "89", "90", "91", "92", "93", "94"]}]};
     </script>
 </head>
 <body>
     <header class="site-header">
         <div class="header-inner">
             <a href="./" class="brand-link">
-                <span class="brand-title"><img src="/favicon.svg?v=36" alt="" width="24" height="24" style="vertical-align:-5px; margin-right:8px;">Elmäklaren // SE-Spot</span>
-                <span class="brand-subtitle">Spotpris på el timme för timme, 7-dygnsprognos och elnätsavgift via postnummer</span>
+                <span class="brand-title"><img src="/favicon.svg?v=37" alt="" width="24" height="24" style="vertical-align:-5px; margin-right:8px;">Spotpuls</span>
+                <span class="brand-subtitle">Spotpris på el timme för timme i SE1–SE4, lokal 7-dygnsprognos och elnätskalkylator</span>
             </a>
-            <nav class="main-nav" aria-label="Navigation">
-                <a href="./">Spotgraf</a>
-                <a href="#tuntitaulukko">Timtabell</a>
-                <a href="#siirtohintalaskuri">Elnätskalkylator</a>
-                <a href="#optimoija">Laststyrning (36 h)</a>
-            </nav>
+            <div class="header-right">
+                <nav class="main-nav" aria-label="Navigation">
+                    <a href="./">Spotgraf</a>
+                    <a href="#tuntitaulukko">Timtabell</a>
+                    <a href="#siirtohintalaskuri">Elnätskalkylator</a>
+                    <a href="#optimoija">Laststyrning</a>
+                    <a href="#avoin-api">Öppet API</a>
+                </nav>
+                <div class="header-market-controls">
+                    <select id="zone-select" class="header-select" aria-label="Elområde">
+                        <optgroup label="Sverige"><option value="SE1">SE1 — Luleå / Norra Norrland</option><option value="SE2">SE2 — Sundsvall / Södra Norrland</option><option value="SE3" selected>SE3 — Stockholm / Mellansverige</option><option value="SE4">SE4 — Malmö / Södra Sverige</option></optgroup><optgroup label="Europe (40 Zones)"><option value="FI">Suomi / Finland (FI)</option><option value="NO1">NO1 — Oslo / Øst-Norge</option><option value="NO2">NO2 — Kristiansand / Sør-Norge</option><option value="NO3">NO3 — Trondheim / Midt-Norge</option><option value="NO4">NO4 — Tromsø / Nord-Norge (0 % MVA)</option><option value="NO5">NO5 — Bergen / Vest-Norge</option><option value="DK1">DK1 — Vestdanmark (Jylland &amp; Fyn)</option><option value="DK2">DK2 — Østdanmark (Sjælland &amp; Bornholm)</option><option value="EE">Eesti / Estonia (EE)</option><option value="LV">Latvija / Latvia (LV)</option><option value="LT">Lietuva / Lithuania (LT)</option><option value="DE-LU">Deutschland &amp; Luxemburg (DE-LU)</option><option value="AT">Österreich / Austria (AT)</option><option value="NL">Nederland / Netherlands (NL)</option><option value="BE">België / Belgique (BE)</option><option value="FR">France (FR)</option><option value="CH">Schweiz / Suisse / Svizzera (CH)</option><option value="ES">España / Spain (ES — OMIE)</option><option value="PT">Portugal (PT — OMIE)</option><option value="GB">Great Britain (GB)</option><option value="IE-SEM">Ireland Single Electricity Market (IE-SEM)</option><option value="IT-North">Italia Nord (Milano / Torino / Venezia)</option><option value="IT-Centre-North">Italia Centro-Nord (Firenze / Toscana / Marche)</option><option value="IT-Centre-South">Italia Centro-Sud (Roma / Napoli / Lazio)</option><option value="IT-South">Italia Sud (Puglia / Calabria / Basilicata)</option><option value="IT-Sicily">Italia Sicilia (Palermo / Catania)</option><option value="IT-Sardinia">Italia Sardegna (Cagliari / Sassari)</option><option value="PL">Polska / Poland (PL — TGE)</option><option value="CZ">Česko / Czechia (CZ — OTE)</option><option value="SK">Slovensko / Slovakia (SK — OKTE)</option><option value="HU">Magyarország / Hungary (HU — HUPX)</option><option value="RO">România / Romania (RO — OPCOM)</option><option value="BG">България / Bulgaria (BG — IBEX)</option><option value="SI">Slovenija / Slovenia (SI — BSP)</option><option value="HR">Hrvatska / Croatia (HR — CROPEX)</option><option value="GR">Ελλάδα / Greece (GR — HEnEx)</option></optgroup>
+                    </select>
+                    <select id="lang-select" class="header-select" aria-label="Land / Språk">
+                        <option value="/">Suomi (FI)</option><option value="/en/">English (Europe)</option><option value="/se/" selected>Svenska (SE)</option><option value="/no/">Norsk (NO)</option><option value="/dk/">Dansk (DK)</option><option value="/ee/">Eesti (EE)</option><option value="/lv/">Latviešu (LV)</option><option value="/lt/">Lietuvių (LT)</option><option value="/de/">Deutsch (DE)</option><option value="/at/">Deutsch (AT)</option><option value="/ch/">Deutsch (CH)</option><option value="/nl/">Nederlands (NL)</option><option value="/be/">België (NL/FR)</option><option value="/fr/">Français (FR)</option><option value="/gb/">English (UK)</option><option value="/ie/">English (IE)</option><option value="/es/">Español (ES)</option><option value="/pt/">Português (PT)</option><option value="/it/">Italiano (IT)</option><option value="/pl/">Polski (PL)</option><option value="/cz/">Čeština (CZ)</option><option value="/sk/">Slovenčina (SK)</option><option value="/hu/">Magyar (HU)</option><option value="/ro/">Română (RO)</option><option value="/bg/">Български (BG)</option><option value="/si/">Slovenščina (SI)</option><option value="/hr/">Hrvatski (HR)</option><option value="/gr/">Ελληνικά (GR)</option>
+                    </select>
+                </div>
+            </div>
         </div>
     </header>
 
@@ -55,24 +155,25 @@
 
                 <div class="panel-body" style="padding:10px 14px; border-bottom:var(--border-heavy);">
                     <div id="chart-readout-strip" class="chart-readout-strip" style="margin-bottom:8px;">
-                        För muspekaren över en stapel för att se pris och sannolikt prisintervall
+                        För muspekaren över eller tryck på en stapel för att se timpris och sannolikt prisintervall.
                     </div>
 
                     <div class="chart-legend" style="padding-top:4px;">
-                        <span class="legend-item"><span class="legend-swatch" style="background:#009e3d;"></span> Lågt pris (< 35 öre/kWh)</span>
-                        <span class="legend-item"><span class="legend-swatch" style="background:#0038ff;"></span> Normalt (35–95 öre/kWh)</span>
-                        <span class="legend-item"><span class="legend-swatch" style="background:#ff3b00;"></span> Högt pris (> 95 öre/kWh)</span>
-                        <span class="legend-item"><span class="legend-swatch" style="background:#ffd000;"></span> Prognosens prisintervall (min–max öre/kWh)</span>
+                        <span class="legend-item"><span class="legend-swatch" style="background:#009e3d;"></span> Lågt pris</span>
+                        <span class="legend-item"><span class="legend-swatch" style="background:#0038ff;"></span> Normalt</span>
+                        <span class="legend-item"><span class="legend-swatch" style="background:#ff3b00;"></span> Högt pris</span>
+                        <span class="legend-item"><span class="legend-swatch" style="background:#ffd000;"></span> Prognosens prisintervall (min–max)</span>
                         <h1 id="chart-view-title" style="font-family:var(--mono); font-size:11.5px; font-weight:700; text-transform:uppercase; margin-left:auto;">Spotpris på el och 7-dygnsprognos (öre/kWh)</h1>
                     </div>
                 </div>
 
                 <div class="scroll-down-bar" style="margin-top:0; border:none; border-bottom:var(--border-heavy);">
-                    <span>Scrolla ned för timtabell, elnätskalkylator via postnummer och laststyrning</span>
+                    <span>Scrolla ned för timtabell, elnätskalkylator via postnummer, laststyrning och öppet API</span>
                     <div class="scroll-down-links">
                         <a href="#tuntitaulukko">Timtabell</a>
                         <a href="#siirtohintalaskuri">Elnätskalkylator</a>
-                        <a href="#optimoija">Laststyrning (36 h)</a>
+                        <a href="#optimoija">Laststyrning</a>
+                        <a href="#avoin-api">Öppet API</a>
                     </div>
                 </div>
 
@@ -96,17 +197,17 @@
         <div class="below-fold-section">
             <section class="panel-box" id="tuntitaulukko">
                 <div class="panel-head">
-                    <h2>Timvis prisuppskattning och sannolikt prisintervall (24 h/dygn)</h2>
+                    <h2>Timvis prisuppskattning och sannolikt prisintervall (SE1–SE4)</h2>
                 </div>
                 <div class="panel-body">
                     <div class="table-wrap">
                         <table class="data-table">
                             <thead>
                                 <tr>
-                                    <th>Klockslag (Timme)</th>
-                                    <th>Spotpris (uppskattning / pris)</th>
+                                    <th>Klockslag</th>
+                                    <th>Spotpris (prognos / fast)</th>
                                     <th>Sannolikt prisintervall</th>
-                                    <th>Totalpris inkl. elnät & skatt</th>
+                                    <th>Totalpris inkl. elnät &amp; skatt</th>
                                     <th>Vindkraft och temperatur</th>
                                 </tr>
                             </thead>
@@ -121,7 +222,7 @@
             <section class="instrument-strip" id="siirtohintalaskuri">
                 <div class="instrument-strip-top">
                     <h2>Elnätskalkylator och totalt elpris via postnummer i Sverige</h2>
-                    <p>Ange ditt 5-siffriga postnummer (t.ex. 11122 Stockholm, 41101 Göteborg, 21120 Malmö, 97231 Luleå) så identifieras ditt elområde (SE1–SE4), ditt lokala elnätsbolag och energiskatt automatiskt.</p>
+                    <p>Ange ditt 5-siffriga postnummer (t.ex. 11122 Stockholm, 41101 Göteborg, 21120 Malmö, 97231 Luleå) så identifieras elområde (SE1–SE4) och elnätsbolag automatiskt.</p>
                 </div>
 
                 <div class="control-matrix">
@@ -143,7 +244,7 @@
 
                     <div class="control-cell">
                         <label for="margin-input" class="field-label">Elhandlares påslag (öre/kWh)</label>
-                        <input type="number" id="margin-input" class="input-control" step="0.05" min="0" max="50" value="0.45">
+                        <input type="number" id="margin-input" class="input-control" step="0.05" min="0" max="500" value="4.5">
                     </div>
 
                     <div class="control-cell">
@@ -161,29 +262,30 @@
             <div class="desk-grid">
                 <section class="panel-box">
                     <div class="panel-head">
-                        <h2>Totalpris inkl. elnät & skatt</h2>
+                        <h2>TOTALPRIS I UTTAGET NU</h2>
                     </div>
                     <div class="panel-body" id="receipt-ledger-body"></div>
                 </section>
 
                 <section class="panel-box" id="optimoija">
                     <div class="panel-head">
-                        <h2>Laststyrning (36 h)</h2>
+                        <h2>Laststyrning</h2>
                     </div>
                     <div class="panel-body">
                         <div class="opt-controls-row">
                             <div style="flex:1; min-width:180px;">
-                                <span class="field-label">Duration</span>
+                                <span class="field-label">Drifttid</span>
                                 <div class="seg-group">
                                     <button type="button" class="seg-btn" data-win-hours="1">1h</button>
                                     <button type="button" class="seg-btn" data-win-hours="2">2h</button>
                                     <button type="button" class="seg-btn active" data-win-hours="3">3h</button>
                                     <button type="button" class="seg-btn" data-win-hours="4">4h</button>
                                     <button type="button" class="seg-btn" data-win-hours="6">6h</button>
+                                    <button type="button" class="seg-btn" data-win-hours="8">8h</button>
                                 </div>
                             </div>
                             <div style="width:110px;">
-                                <label for="appliance-kw-input" class="field-label">kW</label>
+                                <label for="appliance-kw-input" class="field-label">Effekt (kW)</label>
                                 <input type="number" id="appliance-kw-input" class="input-control" step="0.1" min="0.1" max="50" value="11">
                             </div>
                         </div>
@@ -191,14 +293,79 @@
                     </div>
                 </section>
             </div>
+
+            <section class="panel-box" id="avoin-api">
+                <div class="panel-head">
+                    <h2>Öppet Elpris- och Prognos-API (Spotpuls API)</h2>
+                    <a href="/api-docs/" style="color:var(--signal-yellow); font-family:var(--mono); font-size:12px; font-weight:700; text-decoration:underline;">API-dokumentation &rarr;</a>
+                </div>
+                <div class="panel-body">
+                    <p style="font-size:13.5px; color:var(--ink-secondary); max-width:920px;">
+                        Hämta spotpriser och 7-dygnsprognoser för SE1, SE2, SE3 och SE4 direkt till Home Assistant, appar eller Google Sheets via vårt kostnadsfria REST-API.
+                    </p>
+                    <div class="api-panel-grid">
+                        <div class="api-card">
+                            <span class="field-label">REST JSON API (CORS * &middot; 40 BIDDING ZONES &middot; 7-DAY FORECAST)</span>
+                            <div class="api-copy-row">
+                                <code id="api-json-url" class="api-code-line">https://spotpuls.app/api/v1/prices?zone=SE3&amp;vat=1</code>
+                                <button type="button" class="api-copy-btn" data-copy-target="api-json-url">Kopiera URL</button>
+                            </div>
+                            <span class="field-label" style="margin-top:12px;">GOOGLE SHEETS / EXCEL LIVE CSV</span>
+                            <div class="api-copy-row">
+                                <code id="api-csv-url" class="api-code-line">=IMPORTDATA(&quot;https://spotpuls.app/api/v1/prices?zone=SE3&amp;vat=1&amp;format=csv&quot;)</code>
+                                <button type="button" class="api-copy-btn" data-copy-target="api-csv-url">Kopiera URL</button>
+                            </div>
+                            <span class="field-label" style="margin-top:12px;">Inbäddningsbar prisbricka för webbplats eller blogg</span>
+                            <div class="api-badge-preview">
+                                <img id="api-badge-img" data-zone="SE3_1" src="/api/v1/prices?zone=SE3&vat=1&format=badge" alt="Spotpuls SE3 live spot electricity badge" width="250" height="32" loading="lazy" style="border:1px solid #111210;">
+                                <a href="/openapi.json" style="font-family:var(--mono); font-size:11.5px;">OpenAPI 3.1 (openapi.json)</a>
+                                <a href="/llms.txt" style="font-family:var(--mono); font-size:11.5px;">AI / LLM Spec (llms.txt)</a>
+                            </div>
+                            <div class="api-copy-row">
+                                <code id="api-embed-code" class="api-code-line">&lt;a href=&quot;https://spotpuls.app/se/?zone=SE3&quot; target=&quot;_blank&quot; rel=&quot;noopener&quot;&gt;&lt;img src=&quot;https://spotpuls.app/api/v1/prices?zone=SE3&amp;vat=1&amp;format=badge&quot; alt=&quot;Spotpuls SE3 spot electricity price &amp; 7-day forecast&quot; width=&quot;250&quot; height=&quot;32&quot;&gt;&lt;/a&gt;</code>
+                                <button type="button" class="api-copy-btn" data-copy-target="api-embed-code">Kopiera URL</button>
+                            </div>
+                        </div>
+                        <div class="api-card">
+                            <div style="display:flex; justify-content:space-between; align-items:center; gap:8px;">
+                                <span class="field-label" style="margin-bottom:0;">HOME ASSISTANT (CONFIGURATION.YAML)</span>
+                                <button type="button" class="api-copy-btn" data-copy-target="api-ha-yaml">Kopiera URL</button>
+                            </div>
+                            <pre id="api-ha-yaml" class="api-pre-block">rest:
+  - resource: &quot;https://spotpuls.app/api/v1/prices?zone=SE3&amp;vat=1&quot;
+    scan_interval: 900
+    sensor:
+      - name: &quot;Spotpuls SE3 Current Spot&quot;
+        value_template: &quot;{{ value_json.current.spotPrice }}&quot;
+        unit_of_measurement: &quot;öre/kWh&quot;
+        json_attributes_path: &quot;$.summary&quot;
+        json_attributes:
+          - todayMin
+          - todayMax
+          - rolling30dAvg</pre>
+                        </div>
+                    </div>
+                </div>
+            </section>
         </div>
     </main>
 
     <footer class="site-footer">
         <div class="footer-inner">
             <div>
-                <strong style="color:#ffffff;">Elmäklaren // SE-Spot (Sverige)</strong>
-                <p style="margin-top:6px; max-width:680px;">Spotpris på el timme för timme, 7-dygnsprognos och elnätsavgift via postnummer</p>
+                <strong style="color:#ffffff;">Spotpuls (spotpuls.app) — Sverige</strong>
+                <p style="margin-top:6px; max-width:680px;">Spotpris på el timme för timme i SE1–SE4, lokal 7-dygnsprognos och elnätskalkylator</p>
+            </div>
+            <div class="footer-links">
+                <a href="./">Spotgraf</a>
+                <a href="#avoin-api">Öppet API</a>
+                <a href="/api-docs/">API Docs</a>
+                <a href="/openapi.json">OpenAPI 3.1</a>
+                <a href="/llms.txt">llms.txt</a>
+            </div>
+            <div style="width:100%; padding-top:12px; border-top:1px solid #2b2e28; font-size:11px; line-height:1.8;">
+                <span style="color:#ffffff; margin-right:8px;">SPOT MARKETS (28 LANGUAGES / 40 ZONES):</span>
+                <a href="/" style="margin-right:10px;">Suomi (FI)</a> <a href="/en/" style="margin-right:10px;">English (Europe)</a> <a href="/se/" style="margin-right:10px;">Svenska (SE)</a> <a href="/no/" style="margin-right:10px;">Norsk (NO)</a> <a href="/dk/" style="margin-right:10px;">Dansk (DK)</a> <a href="/ee/" style="margin-right:10px;">Eesti (EE)</a> <a href="/lv/" style="margin-right:10px;">Latviešu (LV)</a> <a href="/lt/" style="margin-right:10px;">Lietuvių (LT)</a> <a href="/de/" style="margin-right:10px;">Deutsch (DE)</a> <a href="/at/" style="margin-right:10px;">Deutsch (AT)</a> <a href="/ch/" style="margin-right:10px;">Deutsch (CH)</a> <a href="/nl/" style="margin-right:10px;">Nederlands (NL)</a> <a href="/be/" style="margin-right:10px;">België (NL/FR)</a> <a href="/fr/" style="margin-right:10px;">Français (FR)</a> <a href="/gb/" style="margin-right:10px;">English (UK)</a> <a href="/ie/" style="margin-right:10px;">English (IE)</a> <a href="/es/" style="margin-right:10px;">Español (ES)</a> <a href="/pt/" style="margin-right:10px;">Português (PT)</a> <a href="/it/" style="margin-right:10px;">Italiano (IT)</a> <a href="/pl/" style="margin-right:10px;">Polski (PL)</a> <a href="/cz/" style="margin-right:10px;">Čeština (CZ)</a> <a href="/sk/" style="margin-right:10px;">Slovenčina (SK)</a> <a href="/hu/" style="margin-right:10px;">Magyar (HU)</a> <a href="/ro/" style="margin-right:10px;">Română (RO)</a> <a href="/bg/" style="margin-right:10px;">Български (BG)</a> <a href="/si/" style="margin-right:10px;">Slovenščina (SI)</a> <a href="/hr/" style="margin-right:10px;">Hrvatski (HR)</a> <a href="/gr/" style="margin-right:10px;">Ελληνικά (GR)</a>
             </div>
         </div>
     </footer>
@@ -206,6 +373,6 @@
     <script src="/dso_data.js"></script>
     <script src="/ml_weights.js"></script>
     <script src="/nordpool_models.js"></script>
-    <script src="/app.js?v=36"></script>
+    <script src="/app.js?v=37"></script>
 </body>
 </html>

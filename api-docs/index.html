@@ -1,0 +1,637 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Spotpuls Open REST API — Day-Ahead Electricity Spot Prices &amp; 7-Day Forecast (40 European Zones) | spotpuls.app</title>
+    <meta name="description" content="Free, zero-key, CORS-enabled REST API for live European day-ahead electricity spot prices and self-learning 7-day regional hourly forecasts across 40 bidding zones (JSON, CSV, Home Assistant, Google Sheets, SVG Badge).">
+    <link rel="canonical" href="https://spotpuls.app/api-docs/" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg?v=37">
+    <link rel="icon" type="image/x-icon" href="/favicon.ico">
+    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+    <link rel="manifest" href="/site.webmanifest">
+    <link rel="stylesheet" href="/styles.css?v=37">
+    <script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "WebAPI",
+  "name": "Spotpuls Open Electricity Spot & 7-Day Forecast REST API",
+  "url": "https://spotpuls.app/api/v1/prices",
+  "documentation": "https://spotpuls.app/api-docs/",
+  "description": "Free CORS-enabled REST API serving official day-ahead electricity spot prices and self-learning 7-day regional hourly forecasts for all 40 European bidding zones.",
+  "provider": {
+    "@type": "Organization",
+    "name": "Spotpuls",
+    "url": "https://spotpuls.app"
+  }
+}
+    </script>
+</head>
+<body>
+    <header class="site-header">
+        <div class="header-inner">
+            <a href="/en/" class="brand-link">
+                <span class="brand-title"><img src="/favicon.svg?v=37" alt="" width="24" height="24" style="vertical-align:-5px; margin-right:8px;">Spotpuls</span>
+                <span class="brand-subtitle">Open Electricity Spot &amp; 7-Day Forecast API — 40 European Bidding Zones</span>
+            </a>
+            <div class="header-right">
+                <nav class="main-nav" aria-label="API Navigation">
+                    <a href="/">FI</a>
+                    <a href="/en/">Dashboard (EN)</a>
+                    <a href="#endpoints">Endpoints</a>
+                    <a href="#zones">40 Zones</a>
+                    <a href="/openapi.json">OpenAPI 3.1</a>
+                </nav>
+                <div class="header-market-controls">
+                    <select id="lang-select" class="header-select" aria-label="Language" onchange="if(this.value)window.location.href=this.value;">
+                        <option value="/">Suomi (FI)</option><option value="/en/" selected>English (Europe)</option><option value="/se/">Svenska (SE)</option><option value="/no/">Norsk (NO)</option><option value="/dk/">Dansk (DK)</option><option value="/ee/">Eesti (EE)</option><option value="/lv/">Latviešu (LV)</option><option value="/lt/">Lietuvių (LT)</option><option value="/de/">Deutsch (DE)</option><option value="/at/">Deutsch (AT)</option><option value="/ch/">Deutsch (CH)</option><option value="/nl/">Nederlands (NL)</option><option value="/be/">België (NL/FR)</option><option value="/fr/">Français (FR)</option><option value="/gb/">English (UK)</option><option value="/ie/">English (IE)</option><option value="/es/">Español (ES)</option><option value="/pt/">Português (PT)</option><option value="/it/">Italiano (IT)</option><option value="/pl/">Polski (PL)</option><option value="/cz/">Čeština (CZ)</option><option value="/sk/">Slovenčina (SK)</option><option value="/hu/">Magyar (HU)</option><option value="/ro/">Română (RO)</option><option value="/bg/">Български (BG)</option><option value="/si/">Slovenščina (SI)</option><option value="/hr/">Hrvatski (HR)</option><option value="/gr/">Ελληνικά (GR)</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <main class="container" style="padding-top:24px;">
+        <section class="panel-box" id="endpoints">
+            <div class="panel-head">
+                <h1>SPOTPULS OPEN REST API (V1) — FREE, NO API KEY, CORS *</h1>
+                <a href="/openapi.json" style="color:var(--signal-yellow); font-family:var(--mono); font-size:12px; font-weight:700;">openapi.json &rarr;</a>
+            </div>
+            <div class="panel-body">
+                <p style="font-size:14.5px; max-width:920px; margin-bottom:14px;">
+                    <strong>Spotpuls (<code>https://spotpuls.app</code>)</strong> provides a free, open, CORS-enabled REST API delivering official day-ahead electricity spot prices together with a dedicated regional self-learning 7-day (168 h) hourly forecast and probability range for every European spot-electricity bidding zone (Nord Pool, EPEX SPOT, OMIE, GME, TGE, OTE, OKTE, HUPX, OPCOM, IBEX, BSP, CROPEX, HEnEx, SEMOpx).
+                </p>
+
+                <div class="api-panel-grid">
+                    <div class="api-card">
+                        <span class="field-label">1. HOURLY SPOT + 7-DAY FORECAST ENDPOINT</span>
+                        <pre class="api-pre-block">GET https://spotpuls.app/api/v1/prices?zone=FI&amp;vat=1&amp;currency=local&amp;format=json</pre>
+                        <ul style="margin:10px 0 0 18px; font-family:var(--mono); font-size:12px; line-height:1.65;">
+                            <li><code>zone</code> — Bidding zone code (e.g. <code>FI</code>, <code>SE3</code>, <code>NO1</code>, <code>DK1</code>, <code>DE-LU</code>, <code>FR</code>, <code>NL</code>, <code>ES</code>, <code>IT-North</code>, <code>PL</code>, <code>GB</code>). Default: <code>FI</code>.</li>
+                            <li><code>vat</code> — <code>1</code> (incl. national electricity VAT, default) or <code>0</code> (VAT 0 %).</li>
+                            <li><code>currency</code> — <code>local</code> (native subunit/kWh, e.g. snt, öre, øre, ct, p, gr, Ft, Kč), <code>eur_cents</code> (EUR c/kWh), or <code>eur_mwh</code> (EUR/MWh).</li>
+                            <li><code>format</code> — <code>json</code> (default), <code>csv</code> (Google Sheets / Excel), or <code>badge</code> (live embeddable SVG widget).</li>
+                        </ul>
+                    </div>
+
+                    <div class="api-card">
+                        <span class="field-label">2. DISCOVER ALL 40 BIDDING ZONES</span>
+                        <pre class="api-pre-block">GET https://spotpuls.app/api/v1/zones
+GET https://spotpuls.app/api/v1/prices?list=zones</pre>
+                        <span class="field-label" style="margin-top:12px;">3. EMBEDDABLE LIVE SVG BADGE (BACKLINK WIDGET)</span>
+                        <div class="api-badge-preview">
+                            <img src="/api/v1/prices?zone=FI&vat=1&format=badge" alt="Spotpuls FI live badge" width="250" height="32" style="border:1px solid #111210;">
+                            <img src="/api/v1/prices?zone=DE-LU&vat=1&format=badge" alt="Spotpuls DE-LU live badge" width="250" height="32" style="border:1px solid #111210;">
+                        </div>
+                        <pre class="api-pre-block">&lt;a href="https://spotpuls.app/?zone=FI" target="_blank" rel="noopener"&gt;
+  &lt;img src="https://spotpuls.app/api/v1/prices?zone=FI&amp;vat=1&amp;format=badge" alt="Spotpuls FI spot electricity price" width="250" height="32"&gt;
+&lt;/a&gt;</pre>
+                    </div>
+                </div>
+
+                <div class="api-panel-grid" style="margin-top:16px;">
+                    <div class="api-card">
+                        <span class="field-label">JAVASCRIPT / TYPESCRIPT FETCH EXAMPLE</span>
+                        <pre class="api-pre-block">const res = await fetch("https://spotpuls.app/api/v1/prices?zone=SE3&amp;vat=1");
+const data = await res.json();
+console.log(data.current.spotPrice, data.meta.unit);
+console.log("Next 168h series:", data.series.length);</pre>
+                    </div>
+                    <div class="api-card">
+                        <span class="field-label">PYTHON / DATA SCIENCE EXAMPLE</span>
+                        <pre class="api-pre-block">import requests
+r = requests.get("https://spotpuls.app/api/v1/prices", params={"zone": "DE-LU", "vat": 1})
+payload = r.json()
+for slot in payload["series"][:24]:
+    print(slot["timestamp"], slot["spotPrice"], slot["isForecast"])</pre>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="panel-box" id="zones">
+            <div class="panel-head">
+                <h2>ALL 40 SUPPORTED EUROPEAN BIDDING ZONES &amp; REGIONAL FORECAST MODELS</h2>
+            </div>
+            <div class="panel-body">
+                <div class="table-wrap">
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>Zone Code</th>
+                                <th>Region / Bidding Zone</th>
+                                <th>Power Exchange</th>
+                                <th>IANA Timezone</th>
+                                <th>Wind / Solar Cap.</th>
+                                <th>Live API Feeds</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><strong><code>FI</code></strong></td>
+                                <td>Suomi / Finland (FI)</td>
+                                <td>Nord Pool</td>
+                                <td><code>Europe/Helsinki</code></td>
+                                <td>8450 MW / 1250 MW</td>
+                                <td style="white-space:nowrap;">
+                                    <a href="/api/v1/prices?zone=FI&vat=1">JSON</a> &middot;
+                                    <a href="/api/v1/prices?zone=FI&vat=1&format=csv">CSV</a> &middot;
+                                    <a href="/api/v1/prices?zone=FI&vat=1&format=badge">SVG Badge</a>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td><strong><code>SE1</code></strong></td>
+                                <td>SE1 — Luleå / Norra Norrland</td>
+                                <td>Nord Pool</td>
+                                <td><code>Europe/Stockholm</code></td>
+                                <td>3400 MW / 120 MW</td>
+                                <td style="white-space:nowrap;">
+                                    <a href="/api/v1/prices?zone=SE1&vat=1">JSON</a> &middot;
+                                    <a href="/api/v1/prices?zone=SE1&vat=1&format=csv">CSV</a> &middot;
+                                    <a href="/api/v1/prices?zone=SE1&vat=1&format=badge">SVG Badge</a>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td><strong><code>SE2</code></strong></td>
+                                <td>SE2 — Sundsvall / Södra Norrland</td>
+                                <td>Nord Pool</td>
+                                <td><code>Europe/Stockholm</code></td>
+                                <td>6100 MW / 260 MW</td>
+                                <td style="white-space:nowrap;">
+                                    <a href="/api/v1/prices?zone=SE2&vat=1">JSON</a> &middot;
+                                    <a href="/api/v1/prices?zone=SE2&vat=1&format=csv">CSV</a> &middot;
+                                    <a href="/api/v1/prices?zone=SE2&vat=1&format=badge">SVG Badge</a>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td><strong><code>SE3</code></strong></td>
+                                <td>SE3 — Stockholm / Mellansverige</td>
+                                <td>Nord Pool</td>
+                                <td><code>Europe/Stockholm</code></td>
+                                <td>4800 MW / 2400 MW</td>
+                                <td style="white-space:nowrap;">
+                                    <a href="/api/v1/prices?zone=SE3&vat=1">JSON</a> &middot;
+                                    <a href="/api/v1/prices?zone=SE3&vat=1&format=csv">CSV</a> &middot;
+                                    <a href="/api/v1/prices?zone=SE3&vat=1&format=badge">SVG Badge</a>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td><strong><code>SE4</code></strong></td>
+                                <td>SE4 — Malmö / Södra Sverige</td>
+                                <td>Nord Pool</td>
+                                <td><code>Europe/Stockholm</code></td>
+                                <td>3300 MW / 1450 MW</td>
+                                <td style="white-space:nowrap;">
+                                    <a href="/api/v1/prices?zone=SE4&vat=1">JSON</a> &middot;
+                                    <a href="/api/v1/prices?zone=SE4&vat=1&format=csv">CSV</a> &middot;
+                                    <a href="/api/v1/prices?zone=SE4&vat=1&format=badge">SVG Badge</a>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td><strong><code>NO1</code></strong></td>
+                                <td>NO1 — Oslo / Øst-Norge</td>
+                                <td>Nord Pool</td>
+                                <td><code>Europe/Oslo</code></td>
+                                <td>950 MW / 350 MW</td>
+                                <td style="white-space:nowrap;">
+                                    <a href="/api/v1/prices?zone=NO1&vat=1">JSON</a> &middot;
+                                    <a href="/api/v1/prices?zone=NO1&vat=1&format=csv">CSV</a> &middot;
+                                    <a href="/api/v1/prices?zone=NO1&vat=1&format=badge">SVG Badge</a>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td><strong><code>NO2</code></strong></td>
+                                <td>NO2 — Kristiansand / Sør-Norge</td>
+                                <td>Nord Pool</td>
+                                <td><code>Europe/Oslo</code></td>
+                                <td>1750 MW / 250 MW</td>
+                                <td style="white-space:nowrap;">
+                                    <a href="/api/v1/prices?zone=NO2&vat=1">JSON</a> &middot;
+                                    <a href="/api/v1/prices?zone=NO2&vat=1&format=csv">CSV</a> &middot;
+                                    <a href="/api/v1/prices?zone=NO2&vat=1&format=badge">SVG Badge</a>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td><strong><code>NO3</code></strong></td>
+                                <td>NO3 — Trondheim / Midt-Norge</td>
+                                <td>Nord Pool</td>
+                                <td><code>Europe/Oslo</code></td>
+                                <td>2050 MW / 80 MW</td>
+                                <td style="white-space:nowrap;">
+                                    <a href="/api/v1/prices?zone=NO3&vat=1">JSON</a> &middot;
+                                    <a href="/api/v1/prices?zone=NO3&vat=1&format=csv">CSV</a> &middot;
+                                    <a href="/api/v1/prices?zone=NO3&vat=1&format=badge">SVG Badge</a>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td><strong><code>NO4</code></strong></td>
+                                <td>NO4 — Tromsø / Nord-Norge (0 % MVA)</td>
+                                <td>Nord Pool</td>
+                                <td><code>Europe/Oslo</code></td>
+                                <td>980 MW / 20 MW</td>
+                                <td style="white-space:nowrap;">
+                                    <a href="/api/v1/prices?zone=NO4&vat=1">JSON</a> &middot;
+                                    <a href="/api/v1/prices?zone=NO4&vat=1&format=csv">CSV</a> &middot;
+                                    <a href="/api/v1/prices?zone=NO4&vat=1&format=badge">SVG Badge</a>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td><strong><code>NO5</code></strong></td>
+                                <td>NO5 — Bergen / Vest-Norge</td>
+                                <td>Nord Pool</td>
+                                <td><code>Europe/Oslo</code></td>
+                                <td>520 MW / 90 MW</td>
+                                <td style="white-space:nowrap;">
+                                    <a href="/api/v1/prices?zone=NO5&vat=1">JSON</a> &middot;
+                                    <a href="/api/v1/prices?zone=NO5&vat=1&format=csv">CSV</a> &middot;
+                                    <a href="/api/v1/prices?zone=NO5&vat=1&format=badge">SVG Badge</a>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td><strong><code>DK1</code></strong></td>
+                                <td>DK1 — Vestdanmark (Jylland &amp; Fyn)</td>
+                                <td>Nord Pool</td>
+                                <td><code>Europe/Copenhagen</code></td>
+                                <td>5400 MW / 2900 MW</td>
+                                <td style="white-space:nowrap;">
+                                    <a href="/api/v1/prices?zone=DK1&vat=1">JSON</a> &middot;
+                                    <a href="/api/v1/prices?zone=DK1&vat=1&format=csv">CSV</a> &middot;
+                                    <a href="/api/v1/prices?zone=DK1&vat=1&format=badge">SVG Badge</a>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td><strong><code>DK2</code></strong></td>
+                                <td>DK2 — Østdanmark (Sjælland &amp; Bornholm)</td>
+                                <td>Nord Pool</td>
+                                <td><code>Europe/Copenhagen</code></td>
+                                <td>2300 MW / 1250 MW</td>
+                                <td style="white-space:nowrap;">
+                                    <a href="/api/v1/prices?zone=DK2&vat=1">JSON</a> &middot;
+                                    <a href="/api/v1/prices?zone=DK2&vat=1&format=csv">CSV</a> &middot;
+                                    <a href="/api/v1/prices?zone=DK2&vat=1&format=badge">SVG Badge</a>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td><strong><code>EE</code></strong></td>
+                                <td>Eesti / Estonia (EE)</td>
+                                <td>Nord Pool</td>
+                                <td><code>Europe/Tallinn</code></td>
+                                <td>780 MW / 960 MW</td>
+                                <td style="white-space:nowrap;">
+                                    <a href="/api/v1/prices?zone=EE&vat=1">JSON</a> &middot;
+                                    <a href="/api/v1/prices?zone=EE&vat=1&format=csv">CSV</a> &middot;
+                                    <a href="/api/v1/prices?zone=EE&vat=1&format=badge">SVG Badge</a>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td><strong><code>LV</code></strong></td>
+                                <td>Latvija / Latvia (LV)</td>
+                                <td>Nord Pool</td>
+                                <td><code>Europe/Riga</code></td>
+                                <td>180 MW / 620 MW</td>
+                                <td style="white-space:nowrap;">
+                                    <a href="/api/v1/prices?zone=LV&vat=1">JSON</a> &middot;
+                                    <a href="/api/v1/prices?zone=LV&vat=1&format=csv">CSV</a> &middot;
+                                    <a href="/api/v1/prices?zone=LV&vat=1&format=badge">SVG Badge</a>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td><strong><code>LT</code></strong></td>
+                                <td>Lietuva / Lithuania (LT)</td>
+                                <td>Nord Pool</td>
+                                <td><code>Europe/Vilnius</code></td>
+                                <td>1520 MW / 1650 MW</td>
+                                <td style="white-space:nowrap;">
+                                    <a href="/api/v1/prices?zone=LT&vat=1">JSON</a> &middot;
+                                    <a href="/api/v1/prices?zone=LT&vat=1&format=csv">CSV</a> &middot;
+                                    <a href="/api/v1/prices?zone=LT&vat=1&format=badge">SVG Badge</a>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td><strong><code>DE-LU</code></strong></td>
+                                <td>Deutschland &amp; Luxemburg (DE-LU)</td>
+                                <td>EPEX Spot</td>
+                                <td><code>Europe/Berlin</code></td>
+                                <td>72500 MW / 96000 MW</td>
+                                <td style="white-space:nowrap;">
+                                    <a href="/api/v1/prices?zone=DE-LU&vat=1">JSON</a> &middot;
+                                    <a href="/api/v1/prices?zone=DE-LU&vat=1&format=csv">CSV</a> &middot;
+                                    <a href="/api/v1/prices?zone=DE-LU&vat=1&format=badge">SVG Badge</a>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td><strong><code>AT</code></strong></td>
+                                <td>Österreich / Austria (AT)</td>
+                                <td>EPEX Spot / EXAA</td>
+                                <td><code>Europe/Vienna</code></td>
+                                <td>4050 MW / 7800 MW</td>
+                                <td style="white-space:nowrap;">
+                                    <a href="/api/v1/prices?zone=AT&vat=1">JSON</a> &middot;
+                                    <a href="/api/v1/prices?zone=AT&vat=1&format=csv">CSV</a> &middot;
+                                    <a href="/api/v1/prices?zone=AT&vat=1&format=badge">SVG Badge</a>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td><strong><code>NL</code></strong></td>
+                                <td>Nederland / Netherlands (NL)</td>
+                                <td>EPEX Spot</td>
+                                <td><code>Europe/Amsterdam</code></td>
+                                <td>11500 MW / 24500 MW</td>
+                                <td style="white-space:nowrap;">
+                                    <a href="/api/v1/prices?zone=NL&vat=1">JSON</a> &middot;
+                                    <a href="/api/v1/prices?zone=NL&vat=1&format=csv">CSV</a> &middot;
+                                    <a href="/api/v1/prices?zone=NL&vat=1&format=badge">SVG Badge</a>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td><strong><code>BE</code></strong></td>
+                                <td>België / Belgique (BE)</td>
+                                <td>EPEX Spot</td>
+                                <td><code>Europe/Brussels</code></td>
+                                <td>5600 MW / 10200 MW</td>
+                                <td style="white-space:nowrap;">
+                                    <a href="/api/v1/prices?zone=BE&vat=1">JSON</a> &middot;
+                                    <a href="/api/v1/prices?zone=BE&vat=1&format=csv">CSV</a> &middot;
+                                    <a href="/api/v1/prices?zone=BE&vat=1&format=badge">SVG Badge</a>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td><strong><code>FR</code></strong></td>
+                                <td>France (FR)</td>
+                                <td>EPEX Spot</td>
+                                <td><code>Europe/Paris</code></td>
+                                <td>23500 MW / 22500 MW</td>
+                                <td style="white-space:nowrap;">
+                                    <a href="/api/v1/prices?zone=FR&vat=1">JSON</a> &middot;
+                                    <a href="/api/v1/prices?zone=FR&vat=1&format=csv">CSV</a> &middot;
+                                    <a href="/api/v1/prices?zone=FR&vat=1&format=badge">SVG Badge</a>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td><strong><code>CH</code></strong></td>
+                                <td>Schweiz / Suisse / Svizzera (CH)</td>
+                                <td>EPEX Spot CH</td>
+                                <td><code>Europe/Zurich</code></td>
+                                <td>100 MW / 6800 MW</td>
+                                <td style="white-space:nowrap;">
+                                    <a href="/api/v1/prices?zone=CH&vat=1">JSON</a> &middot;
+                                    <a href="/api/v1/prices?zone=CH&vat=1&format=csv">CSV</a> &middot;
+                                    <a href="/api/v1/prices?zone=CH&vat=1&format=badge">SVG Badge</a>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td><strong><code>ES</code></strong></td>
+                                <td>España / Spain (ES — OMIE)</td>
+                                <td>OMIE (PVPC)</td>
+                                <td><code>Europe/Madrid</code></td>
+                                <td>31200 MW / 32500 MW</td>
+                                <td style="white-space:nowrap;">
+                                    <a href="/api/v1/prices?zone=ES&vat=1">JSON</a> &middot;
+                                    <a href="/api/v1/prices?zone=ES&vat=1&format=csv">CSV</a> &middot;
+                                    <a href="/api/v1/prices?zone=ES&vat=1&format=badge">SVG Badge</a>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td><strong><code>PT</code></strong></td>
+                                <td>Portugal (PT — OMIE)</td>
+                                <td>OMIE</td>
+                                <td><code>Europe/Lisbon</code></td>
+                                <td>5900 MW / 4600 MW</td>
+                                <td style="white-space:nowrap;">
+                                    <a href="/api/v1/prices?zone=PT&vat=1">JSON</a> &middot;
+                                    <a href="/api/v1/prices?zone=PT&vat=1&format=csv">CSV</a> &middot;
+                                    <a href="/api/v1/prices?zone=PT&vat=1&format=badge">SVG Badge</a>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td><strong><code>GB</code></strong></td>
+                                <td>Great Britain (GB)</td>
+                                <td>EPEX / Nord Pool UK</td>
+                                <td><code>Europe/London</code></td>
+                                <td>30200 MW / 17200 MW</td>
+                                <td style="white-space:nowrap;">
+                                    <a href="/api/v1/prices?zone=GB&vat=1">JSON</a> &middot;
+                                    <a href="/api/v1/prices?zone=GB&vat=1&format=csv">CSV</a> &middot;
+                                    <a href="/api/v1/prices?zone=GB&vat=1&format=badge">SVG Badge</a>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td><strong><code>IE-SEM</code></strong></td>
+                                <td>Ireland Single Electricity Market (IE-SEM)</td>
+                                <td>SEMOpx</td>
+                                <td><code>Europe/Dublin</code></td>
+                                <td>6100 MW / 1200 MW</td>
+                                <td style="white-space:nowrap;">
+                                    <a href="/api/v1/prices?zone=IE-SEM&vat=1">JSON</a> &middot;
+                                    <a href="/api/v1/prices?zone=IE-SEM&vat=1&format=csv">CSV</a> &middot;
+                                    <a href="/api/v1/prices?zone=IE-SEM&vat=1&format=badge">SVG Badge</a>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td><strong><code>IT-North</code></strong></td>
+                                <td>Italia Nord (Milano / Torino / Venezia)</td>
+                                <td>GME</td>
+                                <td><code>Europe/Rome</code></td>
+                                <td>600 MW / 14500 MW</td>
+                                <td style="white-space:nowrap;">
+                                    <a href="/api/v1/prices?zone=IT-North&vat=1">JSON</a> &middot;
+                                    <a href="/api/v1/prices?zone=IT-North&vat=1&format=csv">CSV</a> &middot;
+                                    <a href="/api/v1/prices?zone=IT-North&vat=1&format=badge">SVG Badge</a>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td><strong><code>IT-Centre-North</code></strong></td>
+                                <td>Italia Centro-Nord (Firenze / Toscana / Marche)</td>
+                                <td>GME</td>
+                                <td><code>Europe/Rome</code></td>
+                                <td>450 MW / 4200 MW</td>
+                                <td style="white-space:nowrap;">
+                                    <a href="/api/v1/prices?zone=IT-Centre-North&vat=1">JSON</a> &middot;
+                                    <a href="/api/v1/prices?zone=IT-Centre-North&vat=1&format=csv">CSV</a> &middot;
+                                    <a href="/api/v1/prices?zone=IT-Centre-North&vat=1&format=badge">SVG Badge</a>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td><strong><code>IT-Centre-South</code></strong></td>
+                                <td>Italia Centro-Sud (Roma / Napoli / Lazio)</td>
+                                <td>GME</td>
+                                <td><code>Europe/Rome</code></td>
+                                <td>2400 MW / 5800 MW</td>
+                                <td style="white-space:nowrap;">
+                                    <a href="/api/v1/prices?zone=IT-Centre-South&vat=1">JSON</a> &middot;
+                                    <a href="/api/v1/prices?zone=IT-Centre-South&vat=1&format=csv">CSV</a> &middot;
+                                    <a href="/api/v1/prices?zone=IT-Centre-South&vat=1&format=badge">SVG Badge</a>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td><strong><code>IT-South</code></strong></td>
+                                <td>Italia Sud (Puglia / Calabria / Basilicata)</td>
+                                <td>GME</td>
+                                <td><code>Europe/Rome</code></td>
+                                <td>5600 MW / 6200 MW</td>
+                                <td style="white-space:nowrap;">
+                                    <a href="/api/v1/prices?zone=IT-South&vat=1">JSON</a> &middot;
+                                    <a href="/api/v1/prices?zone=IT-South&vat=1&format=csv">CSV</a> &middot;
+                                    <a href="/api/v1/prices?zone=IT-South&vat=1&format=badge">SVG Badge</a>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td><strong><code>IT-Sicily</code></strong></td>
+                                <td>Italia Sicilia (Palermo / Catania)</td>
+                                <td>GME</td>
+                                <td><code>Europe/Rome</code></td>
+                                <td>2300 MW / 2900 MW</td>
+                                <td style="white-space:nowrap;">
+                                    <a href="/api/v1/prices?zone=IT-Sicily&vat=1">JSON</a> &middot;
+                                    <a href="/api/v1/prices?zone=IT-Sicily&vat=1&format=csv">CSV</a> &middot;
+                                    <a href="/api/v1/prices?zone=IT-Sicily&vat=1&format=badge">SVG Badge</a>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td><strong><code>IT-Sardinia</code></strong></td>
+                                <td>Italia Sardegna (Cagliari / Sassari)</td>
+                                <td>GME</td>
+                                <td><code>Europe/Rome</code></td>
+                                <td>1250 MW / 1650 MW</td>
+                                <td style="white-space:nowrap;">
+                                    <a href="/api/v1/prices?zone=IT-Sardinia&vat=1">JSON</a> &middot;
+                                    <a href="/api/v1/prices?zone=IT-Sardinia&vat=1&format=csv">CSV</a> &middot;
+                                    <a href="/api/v1/prices?zone=IT-Sardinia&vat=1&format=badge">SVG Badge</a>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td><strong><code>PL</code></strong></td>
+                                <td>Polska / Poland (PL — TGE)</td>
+                                <td>TGE (RDN)</td>
+                                <td><code>Europe/Warsaw</code></td>
+                                <td>10200 MW / 19500 MW</td>
+                                <td style="white-space:nowrap;">
+                                    <a href="/api/v1/prices?zone=PL&vat=1">JSON</a> &middot;
+                                    <a href="/api/v1/prices?zone=PL&vat=1&format=csv">CSV</a> &middot;
+                                    <a href="/api/v1/prices?zone=PL&vat=1&format=badge">SVG Badge</a>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td><strong><code>CZ</code></strong></td>
+                                <td>Česko / Czechia (CZ — OTE)</td>
+                                <td>OTE</td>
+                                <td><code>Europe/Prague</code></td>
+                                <td>360 MW / 4100 MW</td>
+                                <td style="white-space:nowrap;">
+                                    <a href="/api/v1/prices?zone=CZ&vat=1">JSON</a> &middot;
+                                    <a href="/api/v1/prices?zone=CZ&vat=1&format=csv">CSV</a> &middot;
+                                    <a href="/api/v1/prices?zone=CZ&vat=1&format=badge">SVG Badge</a>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td><strong><code>SK</code></strong></td>
+                                <td>Slovensko / Slovakia (SK — OKTE)</td>
+                                <td>OKTE</td>
+                                <td><code>Europe/Bratislava</code></td>
+                                <td>50 MW / 1150 MW</td>
+                                <td style="white-space:nowrap;">
+                                    <a href="/api/v1/prices?zone=SK&vat=1">JSON</a> &middot;
+                                    <a href="/api/v1/prices?zone=SK&vat=1&format=csv">CSV</a> &middot;
+                                    <a href="/api/v1/prices?zone=SK&vat=1&format=badge">SVG Badge</a>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td><strong><code>HU</code></strong></td>
+                                <td>Magyarország / Hungary (HU — HUPX)</td>
+                                <td>HUPX</td>
+                                <td><code>Europe/Budapest</code></td>
+                                <td>330 MW / 7100 MW</td>
+                                <td style="white-space:nowrap;">
+                                    <a href="/api/v1/prices?zone=HU&vat=1">JSON</a> &middot;
+                                    <a href="/api/v1/prices?zone=HU&vat=1&format=csv">CSV</a> &middot;
+                                    <a href="/api/v1/prices?zone=HU&vat=1&format=badge">SVG Badge</a>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td><strong><code>RO</code></strong></td>
+                                <td>România / Romania (RO — OPCOM)</td>
+                                <td>OPCOM</td>
+                                <td><code>Europe/Bucharest</code></td>
+                                <td>3150 MW / 4200 MW</td>
+                                <td style="white-space:nowrap;">
+                                    <a href="/api/v1/prices?zone=RO&vat=1">JSON</a> &middot;
+                                    <a href="/api/v1/prices?zone=RO&vat=1&format=csv">CSV</a> &middot;
+                                    <a href="/api/v1/prices?zone=RO&vat=1&format=badge">SVG Badge</a>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td><strong><code>BG</code></strong></td>
+                                <td>България / Bulgaria (BG — IBEX)</td>
+                                <td>IBEX</td>
+                                <td><code>Europe/Sofia</code></td>
+                                <td>720 MW / 4100 MW</td>
+                                <td style="white-space:nowrap;">
+                                    <a href="/api/v1/prices?zone=BG&vat=1">JSON</a> &middot;
+                                    <a href="/api/v1/prices?zone=BG&vat=1&format=csv">CSV</a> &middot;
+                                    <a href="/api/v1/prices?zone=BG&vat=1&format=badge">SVG Badge</a>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td><strong><code>SI</code></strong></td>
+                                <td>Slovenija / Slovenia (SI — BSP)</td>
+                                <td>BSP SouthPool</td>
+                                <td><code>Europe/Ljubljana</code></td>
+                                <td>20 MW / 1350 MW</td>
+                                <td style="white-space:nowrap;">
+                                    <a href="/api/v1/prices?zone=SI&vat=1">JSON</a> &middot;
+                                    <a href="/api/v1/prices?zone=SI&vat=1&format=csv">CSV</a> &middot;
+                                    <a href="/api/v1/prices?zone=SI&vat=1&format=badge">SVG Badge</a>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td><strong><code>HR</code></strong></td>
+                                <td>Hrvatska / Croatia (HR — CROPEX)</td>
+                                <td>CROPEX</td>
+                                <td><code>Europe/Zagreb</code></td>
+                                <td>1280 MW / 850 MW</td>
+                                <td style="white-space:nowrap;">
+                                    <a href="/api/v1/prices?zone=HR&vat=1">JSON</a> &middot;
+                                    <a href="/api/v1/prices?zone=HR&vat=1&format=csv">CSV</a> &middot;
+                                    <a href="/api/v1/prices?zone=HR&vat=1&format=badge">SVG Badge</a>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td><strong><code>GR</code></strong></td>
+                                <td>Ελλάδα / Greece (GR — HEnEx)</td>
+                                <td>HEnEx</td>
+                                <td><code>Europe/Athens</code></td>
+                                <td>5350 MW / 8200 MW</td>
+                                <td style="white-space:nowrap;">
+                                    <a href="/api/v1/prices?zone=GR&vat=1">JSON</a> &middot;
+                                    <a href="/api/v1/prices?zone=GR&vat=1&format=csv">CSV</a> &middot;
+                                    <a href="/api/v1/prices?zone=GR&vat=1&format=badge">SVG Badge</a>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer class="site-footer">
+        <div class="footer-inner">
+            <div>
+                <strong style="color:#ffffff;">Spotpuls (spotpuls.app)</strong>
+                <p style="margin-top:6px; max-width:680px;">Open European Day-Ahead Electricity Spot Price &amp; Self-Learning 7-Day Regional Forecast Platform.</p>
+            </div>
+            <div class="footer-links">
+                <a href="/">Suomi (FI)</a>
+                <a href="/en/">English (EU)</a>
+                <a href="/openapi.json">OpenAPI 3.1</a>
+                <a href="/.well-known/ai-plugin.json">AI Plugin</a>
+                <a href="/llms.txt">llms.txt</a>
+            </div>
+            <div style="width:100%; padding-top:12px; border-top:1px solid #2b2e28; font-size:11px; line-height:1.8;">
+                <span style="color:#ffffff; margin-right:8px;">SPOT MARKETS (28 LANGUAGES / 40 ZONES):</span>
+                <a href="/" style="margin-right:10px;">Suomi (FI)</a> <a href="/en/" style="margin-right:10px;">English (Europe)</a> <a href="/se/" style="margin-right:10px;">Svenska (SE)</a> <a href="/no/" style="margin-right:10px;">Norsk (NO)</a> <a href="/dk/" style="margin-right:10px;">Dansk (DK)</a> <a href="/ee/" style="margin-right:10px;">Eesti (EE)</a> <a href="/lv/" style="margin-right:10px;">Latviešu (LV)</a> <a href="/lt/" style="margin-right:10px;">Lietuvių (LT)</a> <a href="/de/" style="margin-right:10px;">Deutsch (DE)</a> <a href="/at/" style="margin-right:10px;">Deutsch (AT)</a> <a href="/ch/" style="margin-right:10px;">Deutsch (CH)</a> <a href="/nl/" style="margin-right:10px;">Nederlands (NL)</a> <a href="/be/" style="margin-right:10px;">België (NL/FR)</a> <a href="/fr/" style="margin-right:10px;">Français (FR)</a> <a href="/gb/" style="margin-right:10px;">English (UK)</a> <a href="/ie/" style="margin-right:10px;">English (IE)</a> <a href="/es/" style="margin-right:10px;">Español (ES)</a> <a href="/pt/" style="margin-right:10px;">Português (PT)</a> <a href="/it/" style="margin-right:10px;">Italiano (IT)</a> <a href="/pl/" style="margin-right:10px;">Polski (PL)</a> <a href="/cz/" style="margin-right:10px;">Čeština (CZ)</a> <a href="/sk/" style="margin-right:10px;">Slovenčina (SK)</a> <a href="/hu/" style="margin-right:10px;">Magyar (HU)</a> <a href="/ro/" style="margin-right:10px;">Română (RO)</a> <a href="/bg/" style="margin-right:10px;">Български (BG)</a> <a href="/si/" style="margin-right:10px;">Slovenščina (SI)</a> <a href="/hr/" style="margin-right:10px;">Hrvatski (HR)</a> <a href="/gr/" style="margin-right:10px;">Ελληνικά (GR)</a>
+            </div>
+        </div>
+    </footer>
+</body>
+</html>

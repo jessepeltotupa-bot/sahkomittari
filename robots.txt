@@ -1,3 +1,4 @@
 User-agent: *
 Allow: /
-Sitemap: https://xn--shkmittari-q5a2t.fi/sitemap.xml
+Allow: /api/v1/
+Sitemap: https://spotpuls.app/sitemap.xml

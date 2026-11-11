@@ -1,22 +1,35 @@
 # -*- coding: utf-8 -*-
 """
-Ohjelmallinen SEO- ja sivustogeneraattori: Sähkömittari — Nord Pool FI, oppiva 7 vrk ennustemalli ja postinumeropohjainen siirtohintalaskuri.
+Ohjelmallinen SEO- ja sivustogeneraattori: Spotpuls (https://spotpuls.app) — 40 Euroopan sähköpörssialuetta, oppiva 7 vrk ennustemalli, postinumeropohjainen siirtohintalaskuri ja avoin REST API.
 """
 
 import html
 import json
 import os
 import re
+import sys
 from datetime import datetime, timezone
+
+if hasattr(sys.stdout, "reconfigure"):
+    sys.stdout.reconfigure(encoding="utf-8", errors="replace")
+
 from dso_data import (
     DSO_COMPANIES,
     MUNICIPALITIES,
     ELECTRICITY_TAX_INCL_VAT,
     export_dso_js,
 )
+from global_markets_config import (
+    SITE_URL,
+    MARKET_LOCALES,
+    render_hreflang_tags,
+    render_language_options_html,
+    render_zone_options_html,
+    render_open_api_section_html,
+    build_market_schema_graph,
+)
 
-SITE_URL = "https://xn--shkmittari-q5a2t.fi"
-SITE_NAME = "Sähkömittari — Pörssisähkö & Siirtohintalaskuri"
+SITE_NAME = "Spotpuls — Pörssisähkö, 7 vrk Ennuste & Siirtohintalaskuri"
 
 
 def slugify(text: str) -> str:
@@ -31,6 +44,8 @@ def fmt_c(val: float) -> str:
 
 
 def render_header(prefix: str = "") -> str:
+    zone_opts = render_zone_options_html("fi")
+    lang_opts = render_language_options_html("fi")
     return f"""    <div class="telemetry-bar">
         <div class="telemetry-inner">
             <div class="telemetry-items">
@@ -45,37 +60,56 @@ def render_header(prefix: str = "") -> str:
     <header class="site-header">
         <div class="header-inner">
             <a href="{prefix}index.html" class="brand-link">
-                <span class="brand-title"><img src="{prefix}favicon.svg?v=36" alt="" width="24" height="24" style="vertical-align:-5px; margin-right:8px;">Sähkömittari.fi</span>
-                <span class="brand-subtitle">Pörssisähkön spot-hinta, tarkentuva 7 vrk hintaennuste ja todellinen siirtohinta postinumerolla</span>
+                <span class="brand-title"><img src="{prefix}favicon.svg?v=37" alt="" width="24" height="24" style="vertical-align:-5px; margin-right:8px;">Spotpuls</span>
+                <span class="brand-subtitle">Pörssisähkön spot-hinta, itseoppiva 7 vrk ennuste ja siirtohinta postinumerolla</span>
             </a>
-            <nav class="main-nav" aria-label="Päävalikko">
-                <a href="{prefix}index.html">Spot-kaavio</a>
-                <a href="{prefix}index.html#tuntitaulukko">Tuntitaulukko</a>
-                <a href="{prefix}index.html#siirtohintalaskuri">Siirtohintalaskuri</a>
-                <a href="{prefix}index.html#optimoija">Kuorman ajoitus</a>
-                <a href="{prefix}verkkoyhtiot/index.html">Jakeluverkkoyhtiöt</a>
-                <a href="{prefix}paikkakunnat/index.html">Postinumerot &amp; Kunnat</a>
-            </nav>
+            <div class="header-right">
+                <nav class="main-nav" aria-label="Päävalikko">
+                    <a href="{prefix}index.html">Spot-kaavio</a>
+                    <a href="{prefix}index.html#tuntitaulukko">Tuntitaulukko</a>
+                    <a href="{prefix}index.html#siirtohintalaskuri">Siirtohintalaskuri</a>
+                    <a href="{prefix}index.html#optimoija">Kuorman ajoitus</a>
+                    <a href="{prefix}index.html#avoin-api">Avoin API</a>
+                    <a href="{prefix}verkkoyhtiot/index.html">Verkkoyhtiöt</a>
+                </nav>
+                <div class="header-market-controls">
+                    <select id="zone-select" class="header-select" aria-label="Hinta-alue">
+                        {zone_opts}
+                    </select>
+                    <select id="lang-select" class="header-select" aria-label="Maa / Kieli">
+                        {lang_opts}
+                    </select>
+                </div>
+            </div>
         </div>
     </header>"""
 
 
 def render_footer(prefix: str = "") -> str:
+    market_links = " ".join(
+        f'<a href="{loc["path"]}" style="margin-right:10px;">{html.escape(loc["languageLabel"])}</a>'
+        for loc in MARKET_LOCALES.values()
+    )
     return f"""    <footer class="site-footer">
         <div class="footer-inner">
             <div>
-                <strong style="color:#ffffff;">{SITE_NAME}</strong>
+                <strong style="color:#ffffff;">Spotpuls (spotpuls.app)</strong>
                 <p style="margin-top:6px; max-width:580px;">
-                    Tekninen pörssisähkön ja sähkönsiirron laskentatyökalu. Yhdistää Nord Pool FI -spot-tuntihinnat, Suomen tuulipuistojen (8 450 MW) ja lämpötilan historialliseen regressiomalliin sekä 33 paikallisen jakeluverkkoyhtiön siirtotariffit ja sähköveron.
+                    Reaaliaikainen pörssisähkön spot-hinta, itseoppiva aluekohtainen 7 vrk tuntiennuste (40 Euroopan tarjousaluetta), 33 suomalaisen jakeluverkkoyhtiön siirtohintalaskuri sekä avoin REST API.
                 </p>
             </div>
             <div class="footer-links">
                 <a href="{prefix}index.html">Etusivu</a>
+                <a href="{prefix}api-docs/index.html">Avoin REST API</a>
                 <a href="{prefix}verkkoyhtiot/index.html">Sähköverkkoyhtiöt</a>
                 <a href="{prefix}paikkakunnat/index.html">Kunnat &amp; Postinumerot</a>
                 <a href="{prefix}oppaat/porssisahko-ennuste-7-vrk-tuulivoima-ja-lampotila.html">Ennustemalli</a>
                 <a href="{prefix}oppaat/sahkon-siirtohinta-postinumerolla-kaikki-verkkoyhtiot.html">Siirtohinnat</a>
                 <a href="{prefix}oppaat/yleissiirto-yosiirto-vai-kausisiirto-vertailu.html">Siirtotuotteiden vertailu</a>
+            </div>
+            <div style="width:100%; padding-top:12px; border-top:1px solid #2b2e28; font-size:11px; line-height:1.8;">
+                <span style="color:#ffffff; margin-right:8px;">SPOT-MARKKINAT (28 KIELTÄ / 40 ALUETTA):</span>
+                {market_links}
             </div>
         </div>
     </footer>"""
@@ -106,11 +140,12 @@ def render_interactive_dashboard_block(
                 </div>
 
                 <div class="scroll-down-bar" style="margin-top:0; border:none; border-bottom:var(--border-heavy);">
-                    <span>Vieritä alas: tuntikohtainen hintataulukko, postinumeron siirtohintalaskuri ja kuorman ajoitus</span>
+                    <span>Vieritä alas: tuntikohtainen hintataulukko, postinumeron siirtohintalaskuri, kuorman ajoitus ja avoin REST API</span>
                     <div class="scroll-down-links">
                         <a href="#tuntitaulukko">Tuntitaulukko</a>
                         <a href="#siirtohintalaskuri">Siirtohintalaskuri</a>
                         <a href="#optimoija">Kuorman ajoitus (36 h)</a>
+                        <a href="#avoin-api">Avoin API</a>
                     </div>
                 </div>
 
@@ -277,6 +312,8 @@ def render_interactive_dashboard_block(
                     </p>
                 </div>
             </section>
+
+{render_open_api_section_html("fi", prefix=prefix)}
         </div>"""
 
 
@@ -295,24 +332,23 @@ def build_index_page() -> str:
                         </tr>"""
         )
 
-    muni_pills = []
-    for m in sorted(MUNICIPALITIES, key=lambda x: x["name"]):
-        mslug = slugify(m["name"])
-        dso_short = DSO_COMPANIES[m["primary"]]["short_name"]
-        muni_pills.append(
-            f'<a href="paikkakunnat/{mslug}.html" class="dir-pill"><span>{html.escape(m["name"])} ({m["postal"]})</span><span class="dir-pill-sub">{html.escape(dso_short)}</span></a>'
-        )
-
-    faq_schema = {
-        "@context": "https://schema.org",
+    faq_entity = {
         "@type": "FAQPage",
         "mainEntity": [
             {
                 "@type": "Question",
-                "name": "Miten pörssisähkön 7 vuorokauden hintaennuste lasketaan?",
+                "name": "Miten Spotpulsin 7 vuorokauden pörssisähköennuste lasketaan?",
                 "acceptedAnswer": {
                     "@type": "Answer",
-                    "text": "Ennustemalli on opetettu Suomen toteutuneiden Nord Pool FI -spot-hintojen, tuulivoima-alueiden 100 metrin tuulennopeuksien ja lämpötilojen historiallisella aikasarjalla. Se päivittää painokertoimiaan jatkuvasti uusien havaintojen perusteella.",
+                    "text": "Spotpuls (spotpuls.app) laskee jokaiselle 40 Euroopan sähköpörssialueelle oman aluekohtaisen 7 vrk tuntiennusteen käyttäen 100 m tuulennopeuksia, aurinkosäteilyä, lämpötilaa ja itseoppivaa NLMS-jäännösvirhekorjausta.",
+                },
+            },
+            {
+                "@type": "Question",
+                "name": "Voiko pörssisähkön spot-hinnat ja 7 vrk ennusteen hakea API-kutsulla?",
+                "acceptedAnswer": {
+                    "@type": "Answer",
+                    "text": "Kyllä. Spotpuls tarjoaa avoimen, ilmaisen ja CORS-tuetun REST API -rajapinnan osoitteessa https://spotpuls.app/api/v1/prices?zone=FI (kaikki 40 Euroopan tarjousaluetta, JSON, CSV sekä upotettava SVG-hintamerkki).",
                 },
             },
             {
@@ -325,6 +361,8 @@ def build_index_page() -> str:
             },
         ],
     }
+    full_schema = build_market_schema_graph("fi", extra_entities=[faq_entity])
+    hreflang_html = render_hreflang_tags()
 
     dashboard_html = render_interactive_dashboard_block(
         prefix="",
@@ -338,18 +376,19 @@ def build_index_page() -> str:
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sähkömittari — Pörssisähkö nyt, 7 vrk Ennuste &amp; Siirtohintalaskuri Postinumerolla</title>
-    <meta name="description" content="Tarkista pörssisähkön spot-hinta tänään, huomenna ja 7 vrk hintaennuste. Syötä postinumero, niin laskuri hakee automaattisesti sähköverkkoyhtiösi siirtohinnan (Caruna, Elenia, Helen, Vantaa, Tampere, Oulu ym.) ja laskee todellisen kokonaishinnan.">
+    <title>Spotpuls — Pörssisähkö nyt, 7 vrk Ennuste, Siirtohintalaskuri &amp; Avoin API | spotpuls.app</title>
+    <meta name="description" content="Spotpuls (spotpuls.app): Tarkista pörssisähkön spot-hinta tänään, huomenna ja itseoppiva 7 vrk hintaennuste 40 Euroopan hinta-alueella, paikallinen siirtohinta postinumerolla sekä ilmainen avoin REST API.">
     <meta name="geo.region" content="FI">
     <meta name="content-language" content="fi-FI">
     <link rel="canonical" href="{SITE_URL}/" />
-    <link rel="icon" type="image/svg+xml" href="favicon.svg?v=36">
+{hreflang_html}
+    <link rel="icon" type="image/svg+xml" href="favicon.svg?v=37">
     <link rel="icon" type="image/x-icon" href="favicon.ico">
     <link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon.png">
     <link rel="manifest" href="site.webmanifest">
-    <link rel="stylesheet" href="styles.css?v=36">
+    <link rel="stylesheet" href="styles.css?v=37">
     <script type="application/ld+json">
-{json.dumps(faq_schema, ensure_ascii=False, indent=2)}
+{json.dumps(full_schema, ensure_ascii=False, indent=2)}
     </script>
 </head>
 <body>
@@ -409,7 +448,7 @@ def build_index_page() -> str:
     <script src="dso_data.js"></script>
     <script src="ml_weights.js"></script>
     <script src="nordpool_models.js"></script>
-    <script src="app.js?v=36"></script>
+    <script src="app.js?v=37"></script>
 </body>
 </html>
 """
@@ -447,11 +486,11 @@ def build_dso_page(comp: dict) -> str:
     <link rel="canonical" href="{SITE_URL}/verkkoyhtiot/{slug}.html" />
     <meta name="geo.region" content="FI">
     <meta name="content-language" content="fi-FI">
-    <link rel="icon" type="image/svg+xml" href="../favicon.svg?v=36">
+    <link rel="icon" type="image/svg+xml" href="../favicon.svg?v=37">
     <link rel="icon" type="image/x-icon" href="../favicon.ico">
     <link rel="apple-touch-icon" sizes="180x180" href="../apple-touch-icon.png">
     <link rel="manifest" href="../site.webmanifest">
-    <link rel="stylesheet" href="../styles.css?v=36">
+    <link rel="stylesheet" href="../styles.css?v=37">
 </head>
 <body data-preset-dso="{comp['id']}" data-preset-postal="{sample_postal}" data-preset-city="{html.escape(sample_city)}">
 {render_header("../")}
@@ -533,7 +572,7 @@ def build_dso_page(comp: dict) -> str:
     <script src="../dso_data.js"></script>
     <script src="../ml_weights.js"></script>
     <script src="../nordpool_models.js"></script>
-    <script src="../app.js?v=36"></script>
+    <script src="../app.js?v=37"></script>
 </body>
 </html>
 """
@@ -567,11 +606,11 @@ def build_municipality_page(m: dict) -> str:
     <link rel="canonical" href="{SITE_URL}/paikkakunnat/{mslug}.html" />
     <meta name="geo.region" content="FI">
     <meta name="content-language" content="fi-FI">
-    <link rel="icon" type="image/svg+xml" href="../favicon.svg?v=36">
+    <link rel="icon" type="image/svg+xml" href="../favicon.svg?v=37">
     <link rel="icon" type="image/x-icon" href="../favicon.ico">
     <link rel="apple-touch-icon" sizes="180x180" href="../apple-touch-icon.png">
     <link rel="manifest" href="../site.webmanifest">
-    <link rel="stylesheet" href="../styles.css?v=36">
+    <link rel="stylesheet" href="../styles.css?v=37">
 </head>
 <body data-preset-dso="{comp['id']}" data-preset-postal="{m['postal']}" data-preset-city="{html.escape(m['name'])}">
 {render_header("../")}
@@ -584,7 +623,7 @@ def build_municipality_page(m: dict) -> str:
     <script src="../dso_data.js"></script>
     <script src="../ml_weights.js"></script>
     <script src="../nordpool_models.js"></script>
-    <script src="../app.js?v=36"></script>
+    <script src="../app.js?v=37"></script>
 </body>
 </html>
 """
@@ -601,11 +640,11 @@ def build_directory_page(title: str, lead: str, cards_html: str, canonical_path:
     <link rel="canonical" href="{SITE_URL}/{canonical_path}" />
     <meta name="geo.region" content="FI">
     <meta name="content-language" content="fi-FI">
-    <link rel="icon" type="image/svg+xml" href="../favicon.svg?v=36">
+    <link rel="icon" type="image/svg+xml" href="../favicon.svg?v=37">
     <link rel="icon" type="image/x-icon" href="../favicon.ico">
     <link rel="apple-touch-icon" sizes="180x180" href="../apple-touch-icon.png">
     <link rel="manifest" href="../site.webmanifest">
-    <link rel="stylesheet" href="../styles.css?v=36">
+    <link rel="stylesheet" href="../styles.css?v=37">
 </head>
 <body>
 {render_header("../")}
@@ -639,11 +678,11 @@ def build_guide_page(slug: str, title: str, meta_desc: str, body_html: str) -> s
     <link rel="canonical" href="{SITE_URL}/oppaat/{slug}.html" />
     <meta name="geo.region" content="FI">
     <meta name="content-language" content="fi-FI">
-    <link rel="icon" type="image/svg+xml" href="../favicon.svg?v=36">
+    <link rel="icon" type="image/svg+xml" href="../favicon.svg?v=37">
     <link rel="icon" type="image/x-icon" href="../favicon.ico">
     <link rel="apple-touch-icon" sizes="180x180" href="../apple-touch-icon.png">
     <link rel="manifest" href="../site.webmanifest">
-    <link rel="stylesheet" href="../styles.css?v=36">
+    <link rel="stylesheet" href="../styles.css?v=37">
 </head>
 <body>
 {render_header("../")}
@@ -765,8 +804,10 @@ def main():
             f.write(build_guide_page(gslug, gtitle, gdesc, gbody))
         urls.append(f"{SITE_URL}/oppaat/{gslug}.html")
 
-    for cid in ["se", "no", "dk", "ee", "lv", "lt"]:
-        urls.append(f"{SITE_URL}/{cid}/")
+    for cid, loc in MARKET_LOCALES.items():
+        if cid != "fi":
+            urls.append(f"{SITE_URL}{loc['path']}")
+    urls.append(f"{SITE_URL}/api-docs/")
 
     today_str = datetime.now(timezone.utc).strftime("%Y-%m-%d")
     sitemap_items = "\n".join(

@@ -47,6 +47,34 @@
   "@context": "https://schema.org",
   "@graph": [
     {
+      "@type": "Organization",
+      "@id": "https://spotpuls.app/#organization",
+      "name": "Spotpuls",
+      "alternateName": "spotpuls.app",
+      "url": "https://spotpuls.app",
+      "logo": {
+        "@type": "ImageObject",
+        "url": "https://spotpuls.app/apple-touch-icon.png",
+        "width": 180,
+        "height": 180
+      },
+      "sameAs": [
+        "https://spotpuls.app/api-docs/",
+        "https://spotpuls.app/openapi.json",
+        "https://spotpuls.app/llms.txt"
+      ]
+    },
+    {
+      "@type": "WebSite",
+      "@id": "https://spotpuls.app/#website",
+      "url": "https://spotpuls.app/",
+      "name": "Spotpuls",
+      "alternateName": "spotpuls.app",
+      "publisher": {
+        "@id": "https://spotpuls.app/#organization"
+      }
+    },
+    {
       "@type": "WebApplication",
       "@id": "https://spotpuls.app/be/#app",
       "name": "Spotpuls",
@@ -120,6 +148,27 @@
     <script>
     window.ACTIVE_COUNTRY_LOCALE = {"countryId": "be", "lang": "nl-BE", "hreflang": "nl-BE", "path": "/be/", "languageLabel": "België (NL/FR)", "geoRegion": "BE", "countryName": "België / Belgique", "defaultZone": "BE", "zones": ["BE"], "unit": "ct/kWh", "currencyMajor": "€", "subunitsPerMajor": 100, "fxFromEurCents": 1.0, "vatRate": 1.06, "vatPctText": "6 %", "defaultMargin": 1.2, "taxInclVat": 5.35, "defaultPostal": "1000", "defaultCity": "Brussel / Bruxelles", "brandSubtitle": "Dynamische elektriciteitsprijs per uur (EPEX BE), 7-daagse voorspelling & nettarieven (Fluvius, Sibelga, ORES)", "navChart": "Spotgrafiek", "navTable": "Uurtabel", "navTransfer": "Nettarieven", "navOptimizer": "Slim laden", "navApi": "Open API", "zoneSelectLabel": "Prijszone", "langSelectLabel": "Land / Taal", "chartTitle": "Dynamische uurprijs elektriciteit België (BE) & 7-daagse prognose (ct/kWh)", "hoverHint": "Beweeg over een balk om de uurprijs en verwachte prijsvork te zien.", "tierBasisIntro": "Prijsniveau (t.o.v. 30-daags gemiddelde", "tierCheap": "Laag", "tierNorm": "Normaal", "tierHigh": "Hoog", "legendRange": "Verwachte prijsvork (min–max)", "scrollDownText": "Scroll naar beneden voor uurtabel, Fluvius/ORES/Sibelga nettarieven, laadplanner & API", "approxPrefix": "ca. ", "rangePrefix": "Prijsvork", "fixedText": "Bevestigde Belpex/EPEX-prijs", "probLabel": "Waarschijnlijkheid", "predWasLabel": "Prognose was", "predShortLabel": "Prognose was", "pubShortTpl": "Publ. {date} {time}", "pubFullTpl": "Prijs publicatie: {date} om {time}", "weekdaysShort": ["Zo", "Ma", "Di", "Wo", "Do", "Vr", "Za"], "todayWord": "Vandaag", "tomorrowWord": "Morgen", "atClockWord": "om", "sumNowTitle": "UURPRIJS OP DIT MOMENT", "sumMinTitle": "LAAGSTE PRIJS VANDAAG", "sumMaxTitle": "HOOGSTE PRIJS VANDAAG", "tableHeading": "Uurprijs elektriciteit België & 7-daagse prognose", "colTime": "Uur", "colSpot": "Spotprijs (prognose / EPEX)", "colRange": "Waarschijnlijke prijsvork", "colTotal": "Totaalprijs incl. net & accijns", "colWeather": "Noordzeewind & temp.", "transferHeading": "Nettarieven (Fluvius, Sibelga, ORES) & totaalprijs op postcode in België", "transferLead": "Geef uw 4-cijferige postcode in (bv. 2000 Antwerpen, 9000 Gent, 1000 Brussel, 4000 Liège) om uw distributienetbeheerder te bepalen.", "postalLabel": "Postcode of gemeente", "postalPlaceholder": "2000, 9000, 1000, 4000...", "setBtn": "Kies", "tariffLabel": "Nettarief", "tariffGeneral": "Enkelvoudig", "tariffTime": "Dag / Nacht", "marginLabel": "Leveranciersmarge (ct/kWh)", "vatLabel": "Btw-tarief", "vatIncl": "Incl. 6 % btw", "vatZero": "Excl. btw (0 %)", "dsoNetworkKicker": "NETBEHEERDER", "receiptNowTitle": "TOTAALPRIJS NU", "receiptSpotRow": "EPEX Spot BE", "receiptMarginRow": "Leveranciersmarge", "receiptTaxRow": "Bijzondere accijns & heffingen", "receiptTotalRow": "TOTAAL INCL. BTW", "receiptCheapestToday": "Goedkoopste uur vandaag", "receiptAvgToday": "Gemiddelde vandaag", "receiptAvgTomorrow": "Gemiddelde morgen", "expectWord": "verwacht", "optBestWindowTpl": "GOEDKOOPSTE VENSTER VAN {h} UUR (KOMENDE 36 UUR)", "optDurationLabel": "Duur", "optKwLabel": "Vermogen (kW)", "optProbTotalLabel": "Verwachte totaalprijs", "optAvgTotalLabel": "Gemiddelde totaalprijs", "optTransferTaxLabel": "Net & accijns", "optConsumptionLabel": "Verbruik", "optSavedLabel": "Besparing t.o.v. duurste periode", "apiHeading": "Open Belgische Stroomprijs- & Prognose-API (Spotpuls API)", "apiLead": "EPEX BE uurprijzen en 7-daagse voorspelling gratis beschikbaar in JSON en CSV voor Home Assistant en slimme sturing.", "apiCopyBtn": "Kopieer URL", "apiCopiedBtn": "Gekopieerd!", "apiDocsBtn": "API-documentatie", "apiEmbedLabel": "Insluitbare live prijsbadge", "dsos": [{"id": "fluvius", "name": "Fluvius (Vlaanderen — BE)", "gen": 5.8, "day": 6.4, "night": 4.6, "zone": "BE", "postals": ["2", "3", "8", "9"]}, {"id": "sibelga", "name": "Sibelga (Brussel / Bruxelles — BE)", "gen": 6.9, "day": 7.6, "night": 5.4, "zone": "BE", "postals": ["1"]}, {"id": "ores_resa", "name": "ORES / RESA (Wallonie — BE)", "gen": 8.4, "day": 9.5, "night": 6.2, "zone": "BE", "postals": ["4", "5", "6", "7"]}]};
     </script>
+    <!-- SPOTPULS_SEO_AI_START -->
+    <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1">
+    <meta property="og:type" content="website">
+    <meta property="og:site_name" content="Spotpuls">
+    <meta property="og:title" content="Spotpuls — Dynamische elektriciteitsprijs per uur (EPEX BE), 7-daagse voorspelling &amp; nettarieven (Fluvius, Sibelga, ORES) | spotpuls.app">
+    <meta property="og:description" content="Geef uw 4-cijferige postcode in (bv. 2000 Antwerpen, 9000 Gent, 1000 Brussel, 4000 Liège) om uw distributienetbeheerder te bepalen.">
+    <meta property="og:url" content="https://spotpuls.app/be/">
+    <meta property="og:image" content="https://spotpuls.app/og-image.png">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+    <meta property="og:image:alt" content="Spotpuls — Dynamische elektriciteitsprijs per uur (EPEX BE), 7-daagse voorspelling &amp; nettarieven (Fluvius, Sibelga, ORES) | spotpuls.app">
+    <meta property="og:locale" content="nl_BE">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Spotpuls — Dynamische elektriciteitsprijs per uur (EPEX BE), 7-daagse voorspelling &amp; nettarieven (Fluvius, Sibelga, ORES) | spotpuls.app">
+    <meta name="twitter:description" content="Geef uw 4-cijferige postcode in (bv. 2000 Antwerpen, 9000 Gent, 1000 Brussel, 4000 Liège) om uw distributienetbeheerder te bepalen.">
+    <meta name="twitter:image" content="https://spotpuls.app/og-image.png">
+    <link rel="alternate" type="text/markdown" href="https://spotpuls.app/llms.txt" title="Spotpuls LLM &amp; AI Agent Reference">
+    <link rel="alternate" type="text/plain" href="https://spotpuls.app/llms-full.txt" title="Spotpuls Full Machine-Readable Knowledge Base">
+    <link rel="alternate" type="application/json" href="https://spotpuls.app/api/v1/prices?zone=BE&amp;vat=1" title="Spotpuls BE Live Spot &amp; 7-Day Forecast JSON API">
+    <link rel="service-desc" type="application/vnd.oai.openapi+json" href="https://spotpuls.app/openapi.json">
+    <!-- SPOTPULS_SEO_AI_END -->
 </head>
 <body>
     <header class="site-header">

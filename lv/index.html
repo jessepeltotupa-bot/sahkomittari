@@ -47,6 +47,34 @@
   "@context": "https://schema.org",
   "@graph": [
     {
+      "@type": "Organization",
+      "@id": "https://spotpuls.app/#organization",
+      "name": "Spotpuls",
+      "alternateName": "spotpuls.app",
+      "url": "https://spotpuls.app",
+      "logo": {
+        "@type": "ImageObject",
+        "url": "https://spotpuls.app/apple-touch-icon.png",
+        "width": 180,
+        "height": 180
+      },
+      "sameAs": [
+        "https://spotpuls.app/api-docs/",
+        "https://spotpuls.app/openapi.json",
+        "https://spotpuls.app/llms.txt"
+      ]
+    },
+    {
+      "@type": "WebSite",
+      "@id": "https://spotpuls.app/#website",
+      "url": "https://spotpuls.app/",
+      "name": "Spotpuls",
+      "alternateName": "spotpuls.app",
+      "publisher": {
+        "@id": "https://spotpuls.app/#organization"
+      }
+    },
+    {
       "@type": "WebApplication",
       "@id": "https://spotpuls.app/lv/#app",
       "name": "Spotpuls",
@@ -120,6 +148,27 @@
     <script>
     window.ACTIVE_COUNTRY_LOCALE = {"countryId": "lv", "lang": "lv-LV", "hreflang": "lv", "path": "/lv/", "languageLabel": "Latviešu (LV)", "geoRegion": "LV", "countryName": "Latvija", "defaultZone": "LV", "zones": ["LV"], "unit": "centi/kWh", "currencyMajor": "€", "subunitsPerMajor": 100, "fxFromEurCents": 1.0, "vatRate": 1.21, "vatPctText": "21 %", "defaultMargin": 0.45, "taxInclVat": 0.55, "defaultPostal": "1010", "defaultCity": "Rīga (LV)", "brandSubtitle": "Elektrības biržas cena pa stundām, 7 dienu prognoze un Sadales tīkla tarifu kalkulators", "navChart": "Biržas grafiks", "navTable": "Stundu tabula", "navTransfer": "Sadales tīkls", "navOptimizer": "Plānotājs", "navApi": "Atvērtais API", "zoneSelectLabel": "Cenu zona", "langSelectLabel": "Valsts / Valoda", "chartTitle": "Elektrības biržas cena un 7 dienu prognoze (centi/kWh)", "hoverHint": "Novietojiet kursoru virs stabiņa, lai redzētu cenu un ticamo cenu intervālu.", "tierBasisIntro": "Cenu līmenis (pēc 30 d. vidējās cenas", "tierCheap": "Zema cena", "tierNorm": "Vidēja", "tierHigh": "Augsta cena", "legendRange": "Prognozes cenu intervāls (min–max)", "scrollDownText": "Ritiniet uz leju: stundu tabula, Sadales tīkla kalkulators, slodzes plānošana un API", "approxPrefix": "aptuveni ", "rangePrefix": "Cenu intervāls", "fixedText": "Publicēta fiksēta cena", "probLabel": "Varbūtība", "predWasLabel": "Programmas prognoze bija", "predShortLabel": "Prognoze bija", "pubShortTpl": "Publ. {date} {time}", "pubFullTpl": "Cena tiek publicēta: {date} plkst. {time}", "weekdaysShort": ["Sv", "P", "O", "T", "C", "Pk", "S"], "todayWord": "Šodien", "tomorrowWord": "Rīt", "atClockWord": "plkst.", "sumNowTitle": "PAŠREIZĒJĀS STUNDAS CENA", "sumMinTitle": "DIENAS ZEMĀKĀ CENA", "sumMaxTitle": "DIENAS AUGSTĀKĀ CENA", "tableHeading": "Stundu cenas prognoze un ticamais cenu intervāls", "colTime": "Laiks", "colSpot": "Biržas cena (prognoze / cena)", "colRange": "Ticamais cenu intervāls", "colTotal": "Kopējā cena ar pārvadi", "colWeather": "Vējš un temperatūra", "transferHeading": "AS Sadales tīkls tarifu un kopējās elektrības cenas kalkulators", "transferLead": "Ievadiet savu pasta indeksu (piem., 1010 Rīga, 3401 Liepāja, 5401 Daugavpils), lai aprēķinātu pilnu elektrības cenu.", "postalLabel": "Pasta indekss vai pilsēta", "postalPlaceholder": "1010, 3401, 5401...", "setBtn": "Izvēlēties", "tariffLabel": "Sadales tīkla tarifs", "tariffGeneral": "Pamata tarifs", "tariffTime": "Diena / Nakts", "marginLabel": "Tirgotāja uzcenojums (centi/kWh)", "vatLabel": "PVN likme", "vatIncl": "Ar PVN 21 %", "vatZero": "Bez PVN (0 %)", "dsoNetworkKicker": "SADALES TĪKLS", "receiptNowTitle": "KOPĒJĀ CENA TAGAD", "receiptSpotRow": "Biržas cena (Nord Pool LV)", "receiptMarginRow": "Tirgotāja uzcenojums", "receiptTaxRow": "Akcīzes nodoklis", "receiptTotalRow": "KOPĀ AR PVN", "receiptCheapestToday": "Lētākā stunda šodien", "receiptAvgToday": "Šodienas vidējā cena", "receiptAvgTomorrow": "Rītdienas vidējā cena", "expectWord": "gaidāmā", "optBestWindowTpl": "IZDEVĪGĀKAIS {h} STUNDU LOGS (NĀKAMĀS 36 H)", "optDurationLabel": "Ilgums", "optKwLabel": "Jauda (kW)", "optProbTotalLabel": "Ticamā kopējā cena", "optAvgTotalLabel": "Vidējā kopējā cena", "optTransferTaxLabel": "Pārvade un nodoklis", "optConsumptionLabel": "Patēriņš", "optSavedLabel": "Ietaupījums pret dārgāko laiku", "apiHeading": "Atvērtais Elektrības Cenu un Prognozes API (Spotpuls API)", "apiLead": "Saņemiet Nord Pool LV stundu cenas un 7 dienu prognozi JSON vai CSV formātā viedajai mājai un lietotnēm.", "apiCopyBtn": "Kopēt URL", "apiCopiedBtn": "Nokopēts!", "apiDocsBtn": "API dokumentācija", "apiEmbedLabel": "Iegultā tiešsaistes cenas zīme tīmekļa vietnei", "dsos": [{"id": "sadales_tikls", "name": "AS Sadales tīkls (Latvija)", "gen": 5.08, "day": 6.05, "night": 3.55, "zone": "LV", "postals": ["1", "2", "3", "4", "5", "6", "7", "8", "9", "0"]}]};
     </script>
+    <!-- SPOTPULS_SEO_AI_START -->
+    <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1">
+    <meta property="og:type" content="website">
+    <meta property="og:site_name" content="Spotpuls">
+    <meta property="og:title" content="Spotpuls — Elektrības biržas cena pa stundām, 7 dienu prognoze un Sadales tīkla tarifu kalkulators | spotpuls.app">
+    <meta property="og:description" content="Ievadiet savu pasta indeksu (piem., 1010 Rīga, 3401 Liepāja, 5401 Daugavpils), lai aprēķinātu pilnu elektrības cenu.">
+    <meta property="og:url" content="https://spotpuls.app/lv/">
+    <meta property="og:image" content="https://spotpuls.app/og-image.png">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+    <meta property="og:image:alt" content="Spotpuls — Elektrības biržas cena pa stundām, 7 dienu prognoze un Sadales tīkla tarifu kalkulators | spotpuls.app">
+    <meta property="og:locale" content="lv_LV">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Spotpuls — Elektrības biržas cena pa stundām, 7 dienu prognoze un Sadales tīkla tarifu kalkulators | spotpuls.app">
+    <meta name="twitter:description" content="Ievadiet savu pasta indeksu (piem., 1010 Rīga, 3401 Liepāja, 5401 Daugavpils), lai aprēķinātu pilnu elektrības cenu.">
+    <meta name="twitter:image" content="https://spotpuls.app/og-image.png">
+    <link rel="alternate" type="text/markdown" href="https://spotpuls.app/llms.txt" title="Spotpuls LLM &amp; AI Agent Reference">
+    <link rel="alternate" type="text/plain" href="https://spotpuls.app/llms-full.txt" title="Spotpuls Full Machine-Readable Knowledge Base">
+    <link rel="alternate" type="application/json" href="https://spotpuls.app/api/v1/prices?zone=LV&amp;vat=1" title="Spotpuls LV Live Spot &amp; 7-Day Forecast JSON API">
+    <link rel="service-desc" type="application/vnd.oai.openapi+json" href="https://spotpuls.app/openapi.json">
+    <!-- SPOTPULS_SEO_AI_END -->
 </head>
 <body>
     <header class="site-header">

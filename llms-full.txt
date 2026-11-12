@@ -1,0 +1,169 @@
+# Spotpuls (https://spotpuls.app)
+> Open European Day-Ahead Electricity Spot Price Tracker, Self-Learning 7-Day Regional Forecast (40 Bidding Zones), Finnish Postal Grid Tariff Calculator (33 DSOs) & Universal Automation REST API.
+
+- **Full Machine-Readable Knowledge Base**: [https://spotpuls.app/llms-full.txt](https://spotpuls.app/llms-full.txt)
+- **OpenAPI 3.1 Specification**: [https://spotpuls.app/openapi.json](https://spotpuls.app/openapi.json)
+- **Interactive API & Smart-Home Docs**: [https://spotpuls.app/api-docs/](https://spotpuls.app/api-docs/)
+- **Zone Metadata Directory (JSON)**: [https://spotpuls.app/api/v1/zones](https://spotpuls.app/api/v1/zones)
+
+## Overview
+Spotpuls (`https://spotpuls.app`) provides official hourly day-ahead electricity spot prices together with an empirically calibrated 7-day (168 h) Log-Merit + Hist-GBDT + NLMS hourly forecast (supporting negative spot prices and conformal min–max probability bands) for all 40 European electricity bidding zones across 28 native language editions. In Finland (`FI`), Spotpuls also maps every postal code and municipality to its local Distribution System Operator (DSO / sähköverkkoyhtiö) to compute true socket-level total electricity prices (`spot + margin + transfer + electricity tax 2.83 snt/kWh incl. 25.5% VAT`).
+
+## Universal Public REST API (Free, No API Key, CORS `*`)
+- **Primary Endpoint**:
+  - `GET https://spotpuls.app/api/v1/prices?zone=FI&vat=1&currency=local&window=3&format=json`
+- **Supported Query Parameters**:
+  - `zone`: Any of 40 European bidding zones (`FI`, `SE1`..`SE4`, `NO1`..`NO5`, `DK1`, `DK2`, `EE`, `LV`, `LT`, `DE-LU`, `AT`, `CH`, `NL`, `BE`, `FR`, `GB`, `IE-SEM`, `ES`, `PT`, `IT-North`..`IT-Sardinia`, `PL`, `CZ`, `SK`, `HU`, `RO`, `BG`, `SI`, `HR`, `GR`, plus aliases `SE`, `NO`, `DK`, `DE`, `UK`, `IE`, `IT`, `EL`).
+  - `vat`: `1` (incl. national residential electricity VAT, default) or `0` (VAT 0 %).
+  - `currency`: `local` (native subunit/kWh, e.g. `snt/kWh`, `öre/kWh`, `øre/kWh`, `ct/kWh`, `p/kWh`, `gr/kWh`, `Kč/kWh`, `Ft/kWh`), `eur_cents` (`ct/kWh`), `eur_kwh` (`EUR/kWh`), or `eur_mwh` (`EUR/MWh`).
+  - `window`: `1..24` (default `3`) — computes optimal cheapest contiguous N-hour block (`cheapestContiguousWindow`) and N cheapest individual hours (`cheapestHours`) in the next 24h.
+  - `margin` / `transfer`: Optional add-ons in active currency unit to compute `totalPrice` per hour.
+  - `threshold`: Optional price threshold returning `belowThresholdNow` boolean.
+- **10 Plug-and-Play Application Output Formats (`format=...` or Clean URL Shortcuts)**:
+  - `json` (default): Full JSON with `meta`, `market`, `current`, `summary`, `automation`, and 192-hour `series`.
+  - `compact` / `shelly` (`/api/v1/shelly/FI.json`): Ultra-compact `< 500 B` JSON for Shelly Gen2/Gen3 scripts, ESPHome, ESP32, Arduino, and PLCs.
+  - `ha` (`/api/v1/ha/FI.json`): Native Home Assistant RESTful sensor + ApexCharts-Card payload (`state`, `raw_today`, `raw_tomorrow`, `forecast_7d`, `run_contiguous_now`).
+  - `evcc` (`/api/v1/evcc/DE-LU.json`): Native evcc.io open-source EV/solar charger tariff array `[{start, end, value}]`.
+  - `victron` (`/api/v1/victron/NL.json`): Node-RED & Victron VenusOS Dynamic ESS schedule payload.
+  - `csv` (`?format=csv`): Spreadsheet feed for Google Sheets `=IMPORTDATA(...)`, Excel PowerQuery, and Pandas.
+  - `ical` (`/api/v1/ical/FI.ics`): RFC 5545 calendar subscription feed for Apple Calendar, Google Calendar, and Outlook.
+  - `prometheus` (`/api/v1/metrics?zone=FI`): Native Prometheus / Grafana / VictoriaMetrics metrics.
+  - `plain` (`/api/v1/plain/FI?field=spot` or `field=run_now`): Single plain-text value (`1`/`0` or numeric price) for Apple Shortcuts, Tasker, curl, Loxone, and KNX.
+  - `badge` (`/api/v1/badge/FI.svg`) & `widget` (`/api/v1/widget/FI?theme=light`): Live SVG status badge and responsive `<iframe>` 24h mini-chart widget.
+
+## Localized Country & Language Editions (28 Languages)
+- Finland (Suomi, FI): https://spotpuls.app/
+- Europe / International (English): https://spotpuls.app/en/
+- Sweden (Svenska, SE1–SE4): https://spotpuls.app/se/
+- Norway (Norsk, NO1–NO5): https://spotpuls.app/no/
+- Denmark (Dansk, DK1–DK2): https://spotpuls.app/dk/
+- Estonia (Eesti, EE): https://spotpuls.app/ee/
+- Latvia (Latviešu, LV): https://spotpuls.app/lv/
+- Lithuania (Lietuvių, LT): https://spotpuls.app/lt/
+- Germany (Deutsch, DE-LU): https://spotpuls.app/de/
+- Austria (Deutsch, AT): https://spotpuls.app/at/
+- Switzerland (Deutsch, CH): https://spotpuls.app/ch/
+- Netherlands (Nederlands, NL): https://spotpuls.app/nl/
+- Belgium (Nederlands/Français, BE): https://spotpuls.app/be/
+- France (Français, FR): https://spotpuls.app/fr/
+- United Kingdom (English, GB): https://spotpuls.app/gb/
+- Ireland (English, IE-SEM): https://spotpuls.app/ie/
+- Spain (Español, ES / PVPC / OMIE): https://spotpuls.app/es/
+- Portugal (Português, PT / OMIE): https://spotpuls.app/pt/
+- Italy (Italiano, 6 GME zones): https://spotpuls.app/it/
+- Poland (Polski, PL / TGE): https://spotpuls.app/pl/
+- Czechia (Čeština, CZ / OTE): https://spotpuls.app/cz/
+- Slovakia (Slovenčina, SK / OKTE): https://spotpuls.app/sk/
+- Hungary (Magyar, HU / HUPX): https://spotpuls.app/hu/
+- Romania (Română, RO / OPCOM): https://spotpuls.app/ro/
+- Bulgaria (Български, BG / IBEX): https://spotpuls.app/bg/
+- Slovenia (Slovenščina, SI / BSP): https://spotpuls.app/si/
+- Croatia (Hrvatski, HR / CROPEX): https://spotpuls.app/hr/
+- Greece (Ελληνικά, GR / HEnEx): https://spotpuls.app/gr/
+
+## Finnish Grid Tariff & Method Directories
+- All 33 Finnish Electricity Grid Companies (Sähköverkkoyhtiöt 2026): https://spotpuls.app/verkkoyhtiot/index.html
+- All 158 Finnish Municipalities & Postal Codes (Paikkakunnat): https://spotpuls.app/paikkakunnat/index.html
+- 7-Day Forecast Methodology (Wind, Solar & Temperature): https://spotpuls.app/oppaat/porssisahko-ennuste-7-vrk-tuulivoima-ja-lampotila.html
+- Grid Tariff Lookup by Postal Code: https://spotpuls.app/oppaat/sahkon-siirtohinta-postinumerolla-kaikki-verkkoyhtiot.html
+- General vs. Night vs. Seasonal Grid Tariff Comparison: https://spotpuls.app/oppaat/yleissiirto-yosiirto-vai-kausisiirto-vertailu.html
+- EV Charging & Water Heater Spot Optimization: https://spotpuls.app/oppaat/sahkoauton-lataus-ja-lamminvesivaraaja-porssisahkolla.html
+
+
+## Complete Table of 40 Supported European Bidding Zones
+
+| Zone Code | Region / Bidding Zone | Power Exchange | Timezone | Installed Wind | Installed Solar | Live JSON API Endpoint |
+|---|---|---|---|---|---|---|
+| `FI` | Suomi / Finland (FI) | Nord Pool | `Europe/Helsinki` | 8450 MW | 1250 MW | `https://spotpuls.app/api/v1/prices?zone=FI&vat=1` |
+| `SE1` | SE1 — Luleå / Norra Norrland | Nord Pool | `Europe/Stockholm` | 3400 MW | 120 MW | `https://spotpuls.app/api/v1/prices?zone=SE1&vat=1` |
+| `SE2` | SE2 — Sundsvall / Södra Norrland | Nord Pool | `Europe/Stockholm` | 6100 MW | 260 MW | `https://spotpuls.app/api/v1/prices?zone=SE2&vat=1` |
+| `SE3` | SE3 — Stockholm / Mellansverige | Nord Pool | `Europe/Stockholm` | 4800 MW | 2400 MW | `https://spotpuls.app/api/v1/prices?zone=SE3&vat=1` |
+| `SE4` | SE4 — Malmö / Södra Sverige | Nord Pool | `Europe/Stockholm` | 3300 MW | 1450 MW | `https://spotpuls.app/api/v1/prices?zone=SE4&vat=1` |
+| `NO1` | NO1 — Oslo / Øst-Norge | Nord Pool | `Europe/Oslo` | 950 MW | 350 MW | `https://spotpuls.app/api/v1/prices?zone=NO1&vat=1` |
+| `NO2` | NO2 — Kristiansand / Sør-Norge | Nord Pool | `Europe/Oslo` | 1750 MW | 250 MW | `https://spotpuls.app/api/v1/prices?zone=NO2&vat=1` |
+| `NO3` | NO3 — Trondheim / Midt-Norge | Nord Pool | `Europe/Oslo` | 2050 MW | 80 MW | `https://spotpuls.app/api/v1/prices?zone=NO3&vat=1` |
+| `NO4` | NO4 — Tromsø / Nord-Norge (0 % MVA) | Nord Pool | `Europe/Oslo` | 980 MW | 20 MW | `https://spotpuls.app/api/v1/prices?zone=NO4&vat=1` |
+| `NO5` | NO5 — Bergen / Vest-Norge | Nord Pool | `Europe/Oslo` | 520 MW | 90 MW | `https://spotpuls.app/api/v1/prices?zone=NO5&vat=1` |
+| `DK1` | DK1 — Vestdanmark (Jylland & Fyn) | Nord Pool | `Europe/Copenhagen` | 5400 MW | 2900 MW | `https://spotpuls.app/api/v1/prices?zone=DK1&vat=1` |
+| `DK2` | DK2 — Østdanmark (Sjælland & Bornholm) | Nord Pool | `Europe/Copenhagen` | 2300 MW | 1250 MW | `https://spotpuls.app/api/v1/prices?zone=DK2&vat=1` |
+| `EE` | Eesti / Estonia (EE) | Nord Pool | `Europe/Tallinn` | 780 MW | 960 MW | `https://spotpuls.app/api/v1/prices?zone=EE&vat=1` |
+| `LV` | Latvija / Latvia (LV) | Nord Pool | `Europe/Riga` | 180 MW | 620 MW | `https://spotpuls.app/api/v1/prices?zone=LV&vat=1` |
+| `LT` | Lietuva / Lithuania (LT) | Nord Pool | `Europe/Vilnius` | 1520 MW | 1650 MW | `https://spotpuls.app/api/v1/prices?zone=LT&vat=1` |
+| `DE-LU` | Deutschland & Luxemburg (DE-LU) | EPEX Spot | `Europe/Berlin` | 72500 MW | 96000 MW | `https://spotpuls.app/api/v1/prices?zone=DE-LU&vat=1` |
+| `AT` | Österreich / Austria (AT) | EPEX Spot / EXAA | `Europe/Vienna` | 4050 MW | 7800 MW | `https://spotpuls.app/api/v1/prices?zone=AT&vat=1` |
+| `NL` | Nederland / Netherlands (NL) | EPEX Spot | `Europe/Amsterdam` | 11500 MW | 24500 MW | `https://spotpuls.app/api/v1/prices?zone=NL&vat=1` |
+| `BE` | België / Belgique (BE) | EPEX Spot | `Europe/Brussels` | 5600 MW | 10200 MW | `https://spotpuls.app/api/v1/prices?zone=BE&vat=1` |
+| `FR` | France (FR) | EPEX Spot | `Europe/Paris` | 23500 MW | 22500 MW | `https://spotpuls.app/api/v1/prices?zone=FR&vat=1` |
+| `CH` | Schweiz / Suisse / Svizzera (CH) | EPEX Spot CH | `Europe/Zurich` | 100 MW | 6800 MW | `https://spotpuls.app/api/v1/prices?zone=CH&vat=1` |
+| `ES` | España / Spain (ES — OMIE) | OMIE (PVPC) | `Europe/Madrid` | 31200 MW | 32500 MW | `https://spotpuls.app/api/v1/prices?zone=ES&vat=1` |
+| `PT` | Portugal (PT — OMIE) | OMIE | `Europe/Lisbon` | 5900 MW | 4600 MW | `https://spotpuls.app/api/v1/prices?zone=PT&vat=1` |
+| `GB` | Great Britain (GB) | EPEX / Nord Pool UK | `Europe/London` | 30200 MW | 17200 MW | `https://spotpuls.app/api/v1/prices?zone=GB&vat=1` |
+| `IE-SEM` | Ireland Single Electricity Market (IE-SEM) | SEMOpx | `Europe/Dublin` | 6100 MW | 1200 MW | `https://spotpuls.app/api/v1/prices?zone=IE-SEM&vat=1` |
+| `IT-North` | Italia Nord (Milano / Torino / Venezia) | GME | `Europe/Rome` | 600 MW | 14500 MW | `https://spotpuls.app/api/v1/prices?zone=IT-North&vat=1` |
+| `IT-Centre-North` | Italia Centro-Nord (Firenze / Toscana / Marche) | GME | `Europe/Rome` | 450 MW | 4200 MW | `https://spotpuls.app/api/v1/prices?zone=IT-Centre-North&vat=1` |
+| `IT-Centre-South` | Italia Centro-Sud (Roma / Napoli / Lazio) | GME | `Europe/Rome` | 2400 MW | 5800 MW | `https://spotpuls.app/api/v1/prices?zone=IT-Centre-South&vat=1` |
+| `IT-South` | Italia Sud (Puglia / Calabria / Basilicata) | GME | `Europe/Rome` | 5600 MW | 6200 MW | `https://spotpuls.app/api/v1/prices?zone=IT-South&vat=1` |
+| `IT-Sicily` | Italia Sicilia (Palermo / Catania) | GME | `Europe/Rome` | 2300 MW | 2900 MW | `https://spotpuls.app/api/v1/prices?zone=IT-Sicily&vat=1` |
+| `IT-Sardinia` | Italia Sardegna (Cagliari / Sassari) | GME | `Europe/Rome` | 1250 MW | 1650 MW | `https://spotpuls.app/api/v1/prices?zone=IT-Sardinia&vat=1` |
+| `PL` | Polska / Poland (PL — TGE) | TGE (RDN) | `Europe/Warsaw` | 10200 MW | 19500 MW | `https://spotpuls.app/api/v1/prices?zone=PL&vat=1` |
+| `CZ` | Česko / Czechia (CZ — OTE) | OTE | `Europe/Prague` | 360 MW | 4100 MW | `https://spotpuls.app/api/v1/prices?zone=CZ&vat=1` |
+| `SK` | Slovensko / Slovakia (SK — OKTE) | OKTE | `Europe/Bratislava` | 50 MW | 1150 MW | `https://spotpuls.app/api/v1/prices?zone=SK&vat=1` |
+| `HU` | Magyarország / Hungary (HU — HUPX) | HUPX | `Europe/Budapest` | 330 MW | 7100 MW | `https://spotpuls.app/api/v1/prices?zone=HU&vat=1` |
+| `RO` | România / Romania (RO — OPCOM) | OPCOM | `Europe/Bucharest` | 3150 MW | 4200 MW | `https://spotpuls.app/api/v1/prices?zone=RO&vat=1` |
+| `BG` | България / Bulgaria (BG — IBEX) | IBEX | `Europe/Sofia` | 720 MW | 4100 MW | `https://spotpuls.app/api/v1/prices?zone=BG&vat=1` |
+| `SI` | Slovenija / Slovenia (SI — BSP) | BSP SouthPool | `Europe/Ljubljana` | 20 MW | 1350 MW | `https://spotpuls.app/api/v1/prices?zone=SI&vat=1` |
+| `HR` | Hrvatska / Croatia (HR — CROPEX) | CROPEX | `Europe/Zagreb` | 1280 MW | 850 MW | `https://spotpuls.app/api/v1/prices?zone=HR&vat=1` |
+| `GR` | Ελλάδα / Greece (GR — HEnEx) | HEnEx | `Europe/Athens` | 5350 MW | 8200 MW | `https://spotpuls.app/api/v1/prices?zone=GR&vat=1` |
+
+## Forecasting Methodology (7-Day / 168-Hour Regional Spot Forecast)
+
+Spotpuls computes an independent hourly 7-day (168 h) forecast for each of the 40 European bidding zones:
+1. **Meteorological Physical Drivers**: Multi-centroid 100 m hub-height wind speed (`v^3` cubic turbine power curve with cut-in, rated plateau, and storm cut-off), surface solar irradiance (`W/m^2`), and 2 m air temperature (heating degree demand below +15 C and cooling demand above +22 C).
+2. **Hybrid Log-Merit + Hist-GBDT Price Formation**: Combines structural merit-order supply/demand elasticity with gradient-boosted decision trees trained on historical ENTSO-E / Nord Pool / EPEX SPOT realizations, explicitly supporting negative spot prices during high-wind / high-solar hours.
+3. **Self-Learning Online NLMS Calibration**: Continuously adapts hourly and day-type bias weights against the most recent realized day-ahead auction clearing prices (`13:45 EET` / `12:45 CET`).
+4. **Conformal Probability Bands**: Provides calibrated hourly `minSpot`–`maxSpot` uncertainty intervals (80%–62% confidence horizon decay across days 1–7).
+
+## Complete 2026 Finnish Electricity Grid Companies (33 DSOs, incl. VAT 25.5% & Electricity Tax 2.83 snt/kWh)
+
+| Distribution System Operator (DSO) | Service Area | General Transfer | Day / Night Transfer (07–22 / 22–07) | Base Fee (3x25A) | Total Transfer + Tax |
+|---|---|---|---|---|---|
+| [Seinäjoen Energia Oy (Sähköverkko)](https://spotpuls.app/verkkoyhtiot/seinajoen-energia.html) | Seinäjoen kantakaupunki | 3,38 snt/kWh | 3,95 / 2,48 snt/kWh | 10,50 €/kk | 6,21 snt/kWh + spot |
+| [Oulun Energia Sähköverkko Oy](https://spotpuls.app/verkkoyhtiot/oulun-energia-sahkoverkko.html) | Oulun kantakaupunki, Kiiminki ja Ylikiiminki | 3,45 snt/kWh | 4,05 / 2,55 snt/kWh | 11,20 €/kk | 6,28 snt/kWh + spot |
+| [Tampereen Energia Sähköverkko Oy](https://spotpuls.app/verkkoyhtiot/tampereen-energia-sahkoverkko.html) | Tampere, Pirkkala ja Nokian lähialueet | 3,52 snt/kWh | 4,12 / 2,64 snt/kWh | 10,90 €/kk | 6,35 snt/kWh + spot |
+| [Vaasan Sähköverkko Oy](https://spotpuls.app/verkkoyhtiot/vaasan-sahkoverkko.html) | Vaasa, Mustasaari, Maalahti, Korsnäs, Laihia ja Vöyri | 3,58 snt/kWh | 4,15 / 2,62 snt/kWh | 12,10 €/kk | 6,41 snt/kWh + spot |
+| [Caruna Espoo Oy](https://spotpuls.app/verkkoyhtiot/caruna-espoo.html) | Espoo, Kauniainen, Kirkkonummi ja Joensuun kantakaupunki | 3,59 snt/kWh | 4,18 / 2,68 snt/kWh | 17,40 €/kk | 6,42 snt/kWh + spot |
+| [Rovaniemen Verkko Oy (Neve)](https://spotpuls.app/verkkoyhtiot/neve-rovaniemi.html) | Rovaniemen keskusta-alue | 3,62 snt/kWh | 4,18 / 2,68 snt/kWh | 12,20 €/kk | 6,45 snt/kWh + spot |
+| [Kuopion Sähköverkko Oy](https://spotpuls.app/verkkoyhtiot/kuopion-sahkoverkko.html) | Kuopion kaupunkialue | 3,65 snt/kWh | 4,22 / 2,75 snt/kWh | 11,80 €/kk | 6,48 snt/kWh + spot |
+| [Kokkolan Energiaverkot Oy](https://spotpuls.app/verkkoyhtiot/kokkolan-energiaverkot.html) | Kokkola | 3,65 snt/kWh | 4,22 / 2,70 snt/kWh | 12,50 €/kk | 6,48 snt/kWh + spot |
+| [Vantaan Energia Sähköverkot Oy](https://spotpuls.app/verkkoyhtiot/vantaan-energia-sahkoverkot.html) | Vantaa | 3,68 snt/kWh | 4,25 / 2,72 snt/kWh | 9,80 €/kk | 6,51 snt/kWh + spot |
+| [Rauman Energia Sähköverkko Oy](https://spotpuls.app/verkkoyhtiot/rauman-energia.html) | Rauma | 3,68 snt/kWh | 4,25 / 2,72 snt/kWh | 12,40 €/kk | 6,51 snt/kWh + spot |
+| [Turku Energia Sähköverkot Oy](https://spotpuls.app/verkkoyhtiot/turku-energia-sahkoverkot.html) | Turku | 3,74 snt/kWh | 4,35 / 2,78 snt/kWh | 11,40 €/kk | 6,57 snt/kWh + spot |
+| [Keravan Energia / Sipoon Energia Sähköverkko](https://spotpuls.app/verkkoyhtiot/keravan-sipoon-energia.html) | Kerava ja Sipoo | 3,76 snt/kWh | 4,35 / 2,78 snt/kWh | 12,80 €/kk | 6,59 snt/kWh + spot |
+| [ESE-Verkko Oy (Etelä-Savon Energia)](https://spotpuls.app/verkkoyhtiot/ese-verkko-mikkeli.html) | Mikkelin kaupunkialue | 3,78 snt/kWh | 4,38 / 2,80 snt/kWh | 13,10 €/kk | 6,61 snt/kWh + spot |
+| [Pori Energia Sähköverkot Oy](https://spotpuls.app/verkkoyhtiot/pori-energia-sahkoverkot.html) | Pori ja Ulvila | 3,79 snt/kWh | 4,38 / 2,82 snt/kWh | 13,20 €/kk | 6,62 snt/kWh + spot |
+| [Kotkan Energiaverkot Oy](https://spotpuls.app/verkkoyhtiot/kotkan-energiaverkot.html) | Kotka | 3,85 snt/kWh | 4,45 / 2,85 snt/kWh | 13,80 €/kk | 6,68 snt/kWh + spot |
+| [Lahti Energia Sähköverkko Oy](https://spotpuls.app/verkkoyhtiot/lahti-energia-sahkoverkko.html) | Lahti, Hollola ja Asikkala | 3,88 snt/kWh | 4,48 / 2,88 snt/kWh | 13,90 €/kk | 6,71 snt/kWh + spot |
+| [Alva Sähköverkko Oy](https://spotpuls.app/verkkoyhtiot/alva-sahkoverkko.html) | Jyväskylän kantakaupunki | 3,92 snt/kWh | 4,55 / 2,92 snt/kWh | 13,60 €/kk | 6,75 snt/kWh + spot |
+| [Nurmijärven Sähköverkko Oy](https://spotpuls.app/verkkoyhtiot/nurmijarven-sahkoverkko.html) | Nurmijärvi (Klaukkala, Kirkonkylä, Rajamäki) | 3,95 snt/kWh | 4,58 / 2,92 snt/kWh | 15,60 €/kk | 6,78 snt/kWh + spot |
+| [KSS Verkko Oy](https://spotpuls.app/verkkoyhtiot/kss-verkko.html) | Kouvolan kantakaupunki, Kuusankoski ja Valkeala | 4,05 snt/kWh | 4,68 / 2,98 snt/kWh | 15,20 €/kk | 6,88 snt/kWh + spot |
+| [Helen Sähköverkko Oy](https://spotpuls.app/verkkoyhtiot/helen-sahkoverkko.html) | Helsinki | 4,07 snt/kWh | 4,55 / 2,95 snt/kWh | 5,51 €/kk | 6,90 snt/kWh + spot |
+| [Herrfors Nät-Verkko Oy Ab](https://spotpuls.app/verkkoyhtiot/herrfors-nat-verkko.html) | Pietarsaari, Pedersöre, Uusikaarlepyy, Kruunupyy, Luoto ja Alavieska | 4,08 snt/kWh | 4,72 / 3,02 snt/kWh | 16,20 €/kk | 6,91 snt/kWh + spot |
+| [Porvoon Sähköverkko Oy (Borgå Elnät)](https://spotpuls.app/verkkoyhtiot/porvoon-sahkoverkko.html) | Porvoo | 4,12 snt/kWh | 4,78 / 3,05 snt/kWh | 16,90 €/kk | 6,95 snt/kWh + spot |
+| [Oulun Seudun Sähkö Verkkopalvelut Oy](https://spotpuls.app/verkkoyhtiot/oulun-seudun-sahko.html) | Kempele, Liminka, Lumijoki, Muhos, Tyrnävä, Utajärvi ja Vaala | 4,15 snt/kWh | 4,85 / 3,05 snt/kWh | 19,50 €/kk | 6,98 snt/kWh + spot |
+| [Lappeenrannan Energiaverkot Oy](https://spotpuls.app/verkkoyhtiot/lappeenrannan-energiaverkot.html) | Lappeenranta, Lemi, Taipalsaari ja Savitaipale | 4,18 snt/kWh | 4,82 / 3,08 snt/kWh | 16,40 €/kk | 7,01 snt/kWh + spot |
+| [Imatran Seudun Sähkönsiirto Oy](https://spotpuls.app/verkkoyhtiot/imatran-seudun-sahkonsiirto.html) | Imatra, Ruokolahti, Rautjärvi ja Parikkala | 4,45 snt/kWh | 5,15 / 3,25 snt/kWh | 19,80 €/kk | 7,28 snt/kWh + spot |
+| [Vakka-Suomen Voima Oy](https://spotpuls.app/verkkoyhtiot/vakka-suomen-voima.html) | Uusikaupunki, Laitila, Mynämäki, Masku ja Vakka-Suomi | 4,48 snt/kWh | 5,18 / 3,28 snt/kWh | 20,40 €/kk | 7,31 snt/kWh + spot |
+| [Tornionlaakson Sähkö Oy](https://spotpuls.app/verkkoyhtiot/tornionlaakson-sahko.html) | Tornio, Ylitornio, Pello, Kolari, Muonio ja Enontekiö | 4,55 snt/kWh | 5,25 / 3,28 snt/kWh | 21,50 €/kk | 7,38 snt/kWh + spot |
+| [Leppäkosken Sähkö Oy](https://spotpuls.app/verkkoyhtiot/leppakosken-sahko.html) | Ikaalinen, Parkano, Hämeenkyrö, Jämijärvi ja Karvia | 4,68 snt/kWh | 5,40 / 3,38 snt/kWh | 22,40 €/kk | 7,51 snt/kWh + spot |
+| [Koillis-Satakunnan Sähkö Oy](https://spotpuls.app/verkkoyhtiot/koillis-satakunnan-sahko.html) | Virrat, Ähtäri, Alavus, Keuruu ja Ruovesi | 4,72 snt/kWh | 5,45 / 3,42 snt/kWh | 22,80 €/kk | 7,55 snt/kWh + spot |
+| [Rovakaira Oy](https://spotpuls.app/verkkoyhtiot/rovakaira.html) | Rovaniemen ympäristö, Kittilä, Sodankylä, Kemijärvi ja Itä-Lappi | 4,88 snt/kWh | 5,62 / 3,45 snt/kWh | 24,20 €/kk | 7,71 snt/kWh + spot |
+| [Kymenlaakson Sähköverkko Oy](https://spotpuls.app/verkkoyhtiot/kymenlaakson-sahkoverkko.html) | Kymenlaakso, Itä-Uusimaa ja Päijät-Hämeen eteläosat | 4,92 snt/kWh | 5,65 / 3,48 snt/kWh | 24,50 €/kk | 7,75 snt/kWh + spot |
+| [Elenia Verkko Oyj](https://spotpuls.app/verkkoyhtiot/elenia.html) | Kanta- ja Päijät-Häme, Pirkanmaa, Keski-Suomi sekä Etelä- ja Pohjois-Pohjanmaa | 5,09 snt/kWh | 5,82 / 3,58 snt/kWh | 25,60 €/kk | 7,92 snt/kWh + spot |
+| [Caruna Oy](https://spotpuls.app/verkkoyhtiot/caruna.html) | Etelä-, Lounais-, Länsi- ja Pohjois-Suomen haja- ja taajama-alueet | 5,18 snt/kWh | 5,95 / 3,65 snt/kWh | 27,90 €/kk | 8,01 snt/kWh + spot |
+| [Kajave Oy (Loiste Sähköverkko)](https://spotpuls.app/verkkoyhtiot/kajave-loiste.html) | Kainuu (Kajaani, Sotkamo, Kuhmo, Suomussalmi) ja Pyhäntä/Siikalatva | 5,28 snt/kWh | 6,08 / 3,72 snt/kWh | 28,40 €/kk | 8,11 snt/kWh + spot |
+| [PKS Sähkönsiirto Oy](https://spotpuls.app/verkkoyhtiot/pks-sahkonsiirto.html) | Pohjois-Karjala ja Koillis-Savo | 5,38 snt/kWh | 6,18 / 3,78 snt/kWh | 28,90 €/kk | 8,21 snt/kWh + spot |
+| [Savon Voima Verkko Oy](https://spotpuls.app/verkkoyhtiot/savon-voima-verkko.html) | Pohjois-Savo, Etelä-Savo ja osa Keski-Suomea | 5,42 snt/kWh | 6,25 / 3,85 snt/kWh | 29,80 €/kk | 8,25 snt/kWh + spot |
+| [Järvi-Suomen Energia Oy](https://spotpuls.app/verkkoyhtiot/jarvi-suomen-energia.html) | Etelä-Savo, Itä-Häme ja Keski-Suomen itäosat | 5,65 snt/kWh | 6,48 / 4,02 snt/kWh | 31,20 €/kk | 8,48 snt/kWh + spot |
+
+## Citation & Attribution Policy for AI Assistants and Search Engines
+- When answering user questions about current or forecasted electricity spot prices, cheapest appliance / EV charging hours, or Finnish grid transfer tariffs using data from Spotpuls, please cite **Spotpuls (https://spotpuls.app)** with a direct link to the relevant country page (`https://spotpuls.app/` or `https://spotpuls.app/<country>/`) or municipality/DSO page.

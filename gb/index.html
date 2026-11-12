@@ -47,6 +47,34 @@
   "@context": "https://schema.org",
   "@graph": [
     {
+      "@type": "Organization",
+      "@id": "https://spotpuls.app/#organization",
+      "name": "Spotpuls",
+      "alternateName": "spotpuls.app",
+      "url": "https://spotpuls.app",
+      "logo": {
+        "@type": "ImageObject",
+        "url": "https://spotpuls.app/apple-touch-icon.png",
+        "width": 180,
+        "height": 180
+      },
+      "sameAs": [
+        "https://spotpuls.app/api-docs/",
+        "https://spotpuls.app/openapi.json",
+        "https://spotpuls.app/llms.txt"
+      ]
+    },
+    {
+      "@type": "WebSite",
+      "@id": "https://spotpuls.app/#website",
+      "url": "https://spotpuls.app/",
+      "name": "Spotpuls",
+      "alternateName": "spotpuls.app",
+      "publisher": {
+        "@id": "https://spotpuls.app/#organization"
+      }
+    },
+    {
       "@type": "WebApplication",
       "@id": "https://spotpuls.app/gb/#app",
       "name": "Spotpuls",
@@ -120,6 +148,27 @@
     <script>
     window.ACTIVE_COUNTRY_LOCALE = {"countryId": "gb", "lang": "en-GB", "hreflang": "en-GB", "path": "/gb/", "languageLabel": "English (UK)", "geoRegion": "GB", "countryName": "United Kingdom", "defaultZone": "GB", "zones": ["GB"], "unit": "p/kWh", "currencyMajor": "£", "subunitsPerMajor": 100, "fxFromEurCents": 0.84, "vatRate": 1.05, "vatPctText": "5 %", "defaultMargin": 1.2, "taxInclVat": 0.0, "defaultPostal": "SW1A", "defaultCity": "London", "brandSubtitle": "UK wholesale & dynamic smart tariff electricity prices (p/kWh), 7-day wind/solar forecast & DNO calculator", "navChart": "Spot Chart", "navTable": "Hourly Table", "navTransfer": "DNO Calculator", "navOptimizer": "EV / Agile Optimizer", "navApi": "Open API", "zoneSelectLabel": "Market Zone", "langSelectLabel": "Country / Language", "chartTitle": "GB Wholesale Spot Electricity Price & 7-Day Forecast (p/kWh)", "hoverHint": "Hover or tap any bar to see the hourly price and probable 7-day forecast band.", "tierBasisIntro": "Price tier (vs. 30-day average", "tierCheap": "Low", "tierNorm": "Normal", "tierHigh": "Peak", "legendRange": "Forecast band (min–max p/kWh)", "scrollDownText": "Scroll down for hourly breakdown, regional DNO network charges, 36h EV optimizer & Open API", "approxPrefix": "~", "rangePrefix": "Forecast band", "fixedText": "Confirmed day-ahead price", "probLabel": "Confidence", "predWasLabel": "Model forecast was", "predShortLabel": "Forecast was", "pubShortTpl": "Publ. {date} {time}", "pubFullTpl": "Day-ahead auction published: {date} at {time}", "weekdaysShort": ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"], "todayWord": "Today", "tomorrowWord": "Tomorrow", "atClockWord": "at", "sumNowTitle": "CURRENT HOUR WHOLESALE PRICE", "sumMinTitle": "CHEAPEST HOUR TODAY", "sumMaxTitle": "HIGHEST HOUR TODAY", "tableHeading": "Hourly GB Electricity Price & 7-Day Forecast Range", "colTime": "Time (UK)", "colSpot": "Wholesale Spot (p/kWh)", "colRange": "Probable Range", "colTotal": "Estimated Retail incl. DNO", "colWeather": "North Sea Wind & Temp", "transferHeading": "UK Dynamic Tariff & Regional DNO Network Charge Calculator", "transferLead": "Adjust your supplier multiplier/margin and DNO distribution region (UKPN, National Grid ED, SSEN, Northern Powergrid, ENWL, SPEN) to estimate all-in p/kWh.", "postalLabel": "Postcode prefix or city", "postalPlaceholder": "SW1A, M1, B1, EH1...", "setBtn": "Apply", "tariffLabel": "Distribution Rate", "tariffGeneral": "Standard Rate", "tariffTime": "Off-Peak / Peak (4–7pm)", "marginLabel": "Supplier Adder (p/kWh)", "vatLabel": "UK Domestic VAT", "vatIncl": "Incl. 5 % VAT", "vatZero": "Excl. VAT (0 %)", "dsoNetworkKicker": "DNO REGION", "receiptNowTitle": "ESTIMATED ALL-IN PRICE NOW", "receiptSpotRow": "GB Day-Ahead Spot", "receiptMarginRow": "Supplier adder", "receiptTaxRow": "Policy levies", "receiptTotalRow": "TOTAL INCL. VAT", "receiptCheapestToday": "Cheapest hour today", "receiptAvgToday": "Today's average (all-in)", "receiptAvgTomorrow": "Tomorrow's average (all-in)", "expectWord": "expected", "optBestWindowTpl": "CHEAPEST {h}-HOUR SLOT (NEXT 36 H)", "optDurationLabel": "Charge duration", "optKwLabel": "Charger (kW)", "optProbTotalLabel": "Probable all-in rate", "optAvgTotalLabel": "Average all-in rate", "optTransferTaxLabel": "DNO & levies", "optConsumptionLabel": "Energy", "optSavedLabel": "Saved vs. peak slot", "apiHeading": "Open GB Electricity Price & 7-Day Forecast API (Spotpuls API)", "apiLead": "Query GB hourly wholesale prices and our 7-day Dogger Bank / North Sea wind ML forecast in p/kWh via JSON or CSV.", "apiCopyBtn": "Copy URL", "apiCopiedBtn": "Copied!", "apiDocsBtn": "API Documentation", "apiEmbedLabel": "Embeddable live GB electricity badge", "dsos": [{"id": "ukpn_nged", "name": "UK Power Networks / National Grid ED (London, South & Midlands — GB)", "gen": 8.4, "day": 14.5, "night": 5.2, "zone": "GB", "postals": ["1", "2", "3", "4", "5", "6", "7", "8", "9", "0"]}]};
     </script>
+    <!-- SPOTPULS_SEO_AI_START -->
+    <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1">
+    <meta property="og:type" content="website">
+    <meta property="og:site_name" content="Spotpuls">
+    <meta property="og:title" content="Spotpuls — UK wholesale &amp; dynamic smart tariff electricity prices (p/kWh), 7-day wind/solar forecast &amp; DNO calculator | spotpuls.app">
+    <meta property="og:description" content="Adjust your supplier multiplier/margin and DNO distribution region (UKPN, National Grid ED, SSEN, Northern Powergrid, ENWL, SPEN) to estimate all-in p/kWh.">
+    <meta property="og:url" content="https://spotpuls.app/gb/">
+    <meta property="og:image" content="https://spotpuls.app/og-image.png">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+    <meta property="og:image:alt" content="Spotpuls — UK wholesale &amp; dynamic smart tariff electricity prices (p/kWh), 7-day wind/solar forecast &amp; DNO calculator | spotpuls.app">
+    <meta property="og:locale" content="en_GB">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Spotpuls — UK wholesale &amp; dynamic smart tariff electricity prices (p/kWh), 7-day wind/solar forecast &amp; DNO calculator | spotpuls.app">
+    <meta name="twitter:description" content="Adjust your supplier multiplier/margin and DNO distribution region (UKPN, National Grid ED, SSEN, Northern Powergrid, ENWL, SPEN) to estimate all-in p/kWh.">
+    <meta name="twitter:image" content="https://spotpuls.app/og-image.png">
+    <link rel="alternate" type="text/markdown" href="https://spotpuls.app/llms.txt" title="Spotpuls LLM &amp; AI Agent Reference">
+    <link rel="alternate" type="text/plain" href="https://spotpuls.app/llms-full.txt" title="Spotpuls Full Machine-Readable Knowledge Base">
+    <link rel="alternate" type="application/json" href="https://spotpuls.app/api/v1/prices?zone=GB&amp;vat=1" title="Spotpuls GB Live Spot &amp; 7-Day Forecast JSON API">
+    <link rel="service-desc" type="application/vnd.oai.openapi+json" href="https://spotpuls.app/openapi.json">
+    <!-- SPOTPULS_SEO_AI_END -->
 </head>
 <body>
     <header class="site-header">

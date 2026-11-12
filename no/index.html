@@ -47,6 +47,34 @@
   "@context": "https://schema.org",
   "@graph": [
     {
+      "@type": "Organization",
+      "@id": "https://spotpuls.app/#organization",
+      "name": "Spotpuls",
+      "alternateName": "spotpuls.app",
+      "url": "https://spotpuls.app",
+      "logo": {
+        "@type": "ImageObject",
+        "url": "https://spotpuls.app/apple-touch-icon.png",
+        "width": 180,
+        "height": 180
+      },
+      "sameAs": [
+        "https://spotpuls.app/api-docs/",
+        "https://spotpuls.app/openapi.json",
+        "https://spotpuls.app/llms.txt"
+      ]
+    },
+    {
+      "@type": "WebSite",
+      "@id": "https://spotpuls.app/#website",
+      "url": "https://spotpuls.app/",
+      "name": "Spotpuls",
+      "alternateName": "spotpuls.app",
+      "publisher": {
+        "@id": "https://spotpuls.app/#organization"
+      }
+    },
+    {
       "@type": "WebApplication",
       "@id": "https://spotpuls.app/no/#app",
       "name": "Spotpuls",
@@ -120,6 +148,27 @@
     <script>
     window.ACTIVE_COUNTRY_LOCALE = {"countryId": "no", "lang": "nb-NO", "hreflang": "no", "path": "/no/", "languageLabel": "Norsk (NO)", "geoRegion": "NO", "countryName": "Norge", "defaultZone": "NO1", "zones": ["NO1", "NO2", "NO3", "NO4", "NO5"], "unit": "øre/kWh", "currencyMajor": "kr", "subunitsPerMajor": 100, "fxFromEurCents": 11.75, "vatRate": 1.25, "vatPctText": "25 % (0 % i NO4)", "defaultMargin": 4.5, "taxInclVat": 21.8, "defaultPostal": "0150", "defaultCity": "Oslo (NO1)", "brandSubtitle": "Strømpris time for time i NO1–NO5, 7-dagers prognose og nettleiekalkulator med postnummer", "navChart": "Strømgraf", "navTable": "Timetabell", "navTransfer": "Nettleiekalkulator", "navOptimizer": "Smartlading", "navApi": "Åpent API", "zoneSelectLabel": "Prisområde", "langSelectLabel": "Land / Språk", "chartTitle": "Spotpris på strøm og 7-dagers prognose (øre/kWh)", "hoverHint": "Hold musepekeren over eller trykk på en stolpe for å se pris og sannsynlig prisintervall.", "tierBasisIntro": "Prisnivå (basert på 30 d. snittpris", "tierCheap": "Lav pris", "tierNorm": "Normal", "tierHigh": "Høy pris", "legendRange": "Prognosens prisintervall (min–maks)", "scrollDownText": "Rull ned for timetabell, nettleiekalkulator med postnummer, smartlading og åpent API", "approxPrefix": "ca. ", "rangePrefix": "Prisintervall", "fixedText": "Publisert fast pris", "probLabel": "Sannsynlighet", "predWasLabel": "Programmets prognose var", "predShortLabel": "Prognose var", "pubShortTpl": "Publ. {date} kl. {time}", "pubFullTpl": "Pris publiseres: {date} kl. {time}", "weekdaysShort": ["Søn", "Man", "Tir", "Ons", "Tor", "Fre", "Lør"], "todayWord": "I dag", "tomorrowWord": "I morgen", "atClockWord": "kl.", "sumNowTitle": "STRØMPRIS NÅ (DENNE TIMEN)", "sumMinTitle": "DAGENS LAVESTE PRIS", "sumMaxTitle": "DAGENS HØYESTE PRIS", "tableHeading": "Timevis prisanslag og sannsynlig prisintervall (NO1–NO5)", "colTime": "Klokkeslett", "colSpot": "Spotpris (anslag / fast)", "colRange": "Sannsynlig prisintervall", "colTotal": "Totalpris inkl. nettleie & avgift", "colWeather": "Vindkraft og temperatur", "transferHeading": "Nettleiekalkulator og total strømpris via postnummer i Norge", "transferLead": "Skriv inn ditt 4-sifrede postnummer (f.eks. 0150 Oslo, 5003 Bergen, 7010 Trondheim, 4611 Kristiansand, 9008 Tromsø) for å velge prisområde (NO1–NO5) og nettselskap automatisk.", "postalLabel": "Postnummer eller sted", "postalPlaceholder": "0150, 5003, 7010, 9008...", "setBtn": "Velg", "tariffLabel": "Nettleiemodell", "tariffGeneral": "Standard energiledd", "tariffTime": "Dag / Natt & Helg", "marginLabel": "Strømleverandørens påslag (øre/kWh)", "vatLabel": "Merverdiavgift (mva)", "vatIncl": "Inkl. mva 25 % (0 % i NO4)", "vatZero": "Eks. mva (0 %)", "dsoNetworkKicker": "NETTSELSKAP", "receiptNowTitle": "TOTAL STRØMPRIS NÅ", "receiptSpotRow": "Spotpris (Nord Pool)", "receiptMarginRow": "Påslag", "receiptTaxRow": "Forbruksavgift", "receiptTotalRow": "TOTALPRIS TIL SAMMEN", "receiptCheapestToday": "Billigste time i dag", "receiptAvgToday": "Dagens snittpris (totalt)", "receiptAvgTomorrow": "Morgendagens snittpris (totalt)", "expectWord": "forventet", "optBestWindowTpl": "BILLIGSTE {h}-TIMERS VINDU (NESTE 36 T)", "optDurationLabel": "Varighet", "optKwLabel": "Effekt (kW)", "optProbTotalLabel": "Sannsynlig totalpris", "optAvgTotalLabel": "Gjennomsnittlig totalpris", "optTransferTaxLabel": "Nettleie & avgift", "optConsumptionLabel": "Forbruk", "optSavedLabel": "Spart mot dyreste periode", "apiHeading": "Åpent Strømpris- og Prognose-API (Spotpuls API)", "apiLead": "Hent spotpriser og 7-dagers prognoser for NO1–NO5 direkte til Home Assistant, Tibber-integrasjoner eller regneark via vårt åpne REST-API.", "apiCopyBtn": "Kopier URL", "apiCopiedBtn": "Kopiert!", "apiDocsBtn": "API-dokumentasjon", "apiEmbedLabel": "Innebygd strømprismerke for nettsider", "dsos": [{"id": "elvia", "name": "Elvia AS (Oslo, Innlandet, Akershus & Østfold — NO1)", "gen": 38.5, "day": 44.2, "night": 31.0, "zone": "NO1", "postals": ["0", "1", "2"]}, {"id": "lede_glitre", "name": "Glitre Nett / Lede / Lyse Elnett (Sør-Norge — NO2)", "gen": 41.0, "day": 47.5, "night": 33.5, "zone": "NO2", "postals": ["3", "4"]}, {"id": "bkk", "name": "BKK AS (Bergen & Vestland — NO5)", "gen": 39.2, "day": 45.8, "night": 30.5, "zone": "NO5", "postals": ["5"]}, {"id": "tensio", "name": "Tensio / Linja (Midt-Norge & Trøndelag — NO3)", "gen": 36.4, "day": 42.0, "night": 28.5, "zone": "NO3", "postals": ["6", "7"]}, {"id": "arva", "name": "Arva AS / Nordlandsnett (Nord-Norge — NO4, fritatt mva)", "gen": 29.0, "day": 33.0, "night": 23.0, "zone": "NO4", "postals": ["8", "9"]}]};
     </script>
+    <!-- SPOTPULS_SEO_AI_START -->
+    <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1">
+    <meta property="og:type" content="website">
+    <meta property="og:site_name" content="Spotpuls">
+    <meta property="og:title" content="Spotpuls — Strømpris time for time i NO1–NO5, 7-dagers prognose og nettleiekalkulator med postnummer | spotpuls.app">
+    <meta property="og:description" content="Skriv inn ditt 4-sifrede postnummer (f.eks. 0150 Oslo, 5003 Bergen, 7010 Trondheim, 4611 Kristiansand, 9008 Tromsø) for å velge prisområde (NO1–NO5) og nettselskap automatisk.">
+    <meta property="og:url" content="https://spotpuls.app/no/">
+    <meta property="og:image" content="https://spotpuls.app/og-image.png">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+    <meta property="og:image:alt" content="Spotpuls — Strømpris time for time i NO1–NO5, 7-dagers prognose og nettleiekalkulator med postnummer | spotpuls.app">
+    <meta property="og:locale" content="nb_NO">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Spotpuls — Strømpris time for time i NO1–NO5, 7-dagers prognose og nettleiekalkulator med postnummer | spotpuls.app">
+    <meta name="twitter:description" content="Skriv inn ditt 4-sifrede postnummer (f.eks. 0150 Oslo, 5003 Bergen, 7010 Trondheim, 4611 Kristiansand, 9008 Tromsø) for å velge prisområde (NO1–NO5) og nettselskap automatisk.">
+    <meta name="twitter:image" content="https://spotpuls.app/og-image.png">
+    <link rel="alternate" type="text/markdown" href="https://spotpuls.app/llms.txt" title="Spotpuls LLM &amp; AI Agent Reference">
+    <link rel="alternate" type="text/plain" href="https://spotpuls.app/llms-full.txt" title="Spotpuls Full Machine-Readable Knowledge Base">
+    <link rel="alternate" type="application/json" href="https://spotpuls.app/api/v1/prices?zone=NO1&amp;vat=1" title="Spotpuls NO1 Live Spot &amp; 7-Day Forecast JSON API">
+    <link rel="service-desc" type="application/vnd.oai.openapi+json" href="https://spotpuls.app/openapi.json">
+    <!-- SPOTPULS_SEO_AI_END -->
 </head>
 <body>
     <header class="site-header">

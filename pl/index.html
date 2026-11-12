@@ -47,6 +47,34 @@
   "@context": "https://schema.org",
   "@graph": [
     {
+      "@type": "Organization",
+      "@id": "https://spotpuls.app/#organization",
+      "name": "Spotpuls",
+      "alternateName": "spotpuls.app",
+      "url": "https://spotpuls.app",
+      "logo": {
+        "@type": "ImageObject",
+        "url": "https://spotpuls.app/apple-touch-icon.png",
+        "width": 180,
+        "height": 180
+      },
+      "sameAs": [
+        "https://spotpuls.app/api-docs/",
+        "https://spotpuls.app/openapi.json",
+        "https://spotpuls.app/llms.txt"
+      ]
+    },
+    {
+      "@type": "WebSite",
+      "@id": "https://spotpuls.app/#website",
+      "url": "https://spotpuls.app/",
+      "name": "Spotpuls",
+      "alternateName": "spotpuls.app",
+      "publisher": {
+        "@id": "https://spotpuls.app/#organization"
+      }
+    },
+    {
       "@type": "WebApplication",
       "@id": "https://spotpuls.app/pl/#app",
       "name": "Spotpuls",
@@ -120,6 +148,27 @@
     <script>
     window.ACTIVE_COUNTRY_LOCALE = {"countryId": "pl", "lang": "pl-PL", "hreflang": "pl", "path": "/pl/", "languageLabel": "Polski (PL)", "geoRegion": "PL", "countryName": "Polska", "defaultZone": "PL", "zones": ["PL"], "unit": "gr/kWh", "currencyMajor": "zł", "subunitsPerMajor": 100, "fxFromEurCents": 4.32, "vatRate": 1.23, "vatPctText": "23 %", "defaultMargin": 8.0, "taxInclVat": 0.62, "defaultPostal": "00-001", "defaultCity": "Warszawa", "brandSubtitle": "Dynamiczne ceny prądu godzinowe (TGE RDN), prognoza na 7 dni oraz kalkulator dystrybucji (PGE, Tauron, Energa, Enea, Stoen)", "navChart": "Wykres TGE", "navTable": "Tabela godzinowa", "navTransfer": "Kalkulator OSD", "navOptimizer": "Optymalizator 36 h", "navApi": "Otwarte API", "zoneSelectLabel": "Strefa cenowa", "langSelectLabel": "Kraj / Język", "chartTitle": "Godzinowa cena prądu (TGE RDN) i prognoza 7-dniowa (gr/kWh)", "hoverHint": "Najedź kursorem lub dotknij słupka, aby sprawdzić cenę i prawdopodobny przedział prognozy.", "tierBasisIntro": "Poziom cen (względem średniej 30 dni", "tierCheap": "Tanio", "tierNorm": "Normalnie", "tierHigh": "Drogo", "legendRange": "Przedział prognozy (min–maks)", "scrollDownText": "Przewiń w dół: tabela godzinowa, kalkulator taryf OSD (G11/G12), ładowanie EV i API", "approxPrefix": "ok. ", "rangePrefix": "Przedział", "fixedText": "Potwierdzona cena TGE", "probLabel": "Prawdopodobieństwo", "predWasLabel": "Prognoza wynosiła", "predShortLabel": "Prognoza", "pubShortTpl": "Publ. {date} {time}", "pubFullTpl": "Publikacja cen TGE: {date} o {time}", "weekdaysShort": ["Niedz.", "Pon.", "Wt.", "Śr.", "Czw.", "Pt.", "Sob."], "todayWord": "Dziś", "tomorrowWord": "Jutro", "atClockWord": "", "sumNowTitle": "CENA PRĄDU W TEJ GODZINIE", "sumMinTitle": "NAJTAŃSZA GODZINA DZIŚ", "sumMaxTitle": "NAJDROŻSZA GODZINA DZIŚ", "tableHeading": "Godzinowe ceny energii elektrycznej i 7-dniowa prognoza", "colTime": "Godzina", "colSpot": "Cena giełdowa TGE (gr/kWh)", "colRange": "Prawdopodobny przedział", "colTotal": "Cena całkowita z dystrybucją", "colWeather": "Wiatr i temperatura", "transferHeading": "Kalkulator taryfy dynamicznej i opłat dystrybucyjnych OSD według kodu pocztowego", "transferLead": "Wpisz kod pocztowy (np. 00-001 Warszawa, 30-001 Kraków, 80-001 Gdańsk, 60-001 Poznań), aby dobrać operatora OSD.", "postalLabel": "Kod pocztowy lub miasto", "postalPlaceholder": "00-001, 30-001, 80-001...", "setBtn": "Ustaw", "tariffLabel": "Taryfa dystrybucji", "tariffGeneral": "G11 (Całodobowa)", "tariffTime": "G12 (Dzień / Noc)", "marginLabel": "Marża sprzedawcy (gr/kWh)", "vatLabel": "Stawka VAT", "vatIncl": "Z VAT 23 %", "vatZero": "Netto (0 % VAT)", "dsoNetworkKicker": "OPERATOR OSD", "receiptNowTitle": "CENA CAŁKOWITA TERAZ", "receiptSpotRow": "Cena spot TGE PL", "receiptMarginRow": "Marża sprzedawcy", "receiptTaxRow": "Akcyza i opłaty ustawowe", "receiptTotalRow": "RAZEM BRUTTO", "receiptCheapestToday": "Najtańsza godzina dzisiaj", "receiptAvgToday": "Średnia dzisiaj (całk.)", "receiptAvgTomorrow": "Średnia jutro (całk.)", "expectWord": "oczekiwana", "optBestWindowTpl": "NAJTAŃSZE OKNO {h}-GODZINNE (KOLEJNE 36 H)", "optDurationLabel": "Czas pracy", "optKwLabel": "Moc (kW)", "optProbTotalLabel": "Prawdopodobna cena całkowita", "optAvgTotalLabel": "Średnia cena całkowita", "optTransferTaxLabel": "Dystrybucja i opłaty", "optConsumptionLabel": "Zużycie", "optSavedLabel": "Oszczędność względem szczytu", "apiHeading": "Otwarte API Cen Dynamicznych TGE i Prognozy 7-Dniowej (Spotpuls API)", "apiLead": "Pobieraj ceny godzinowe TGE PL oraz samouczącą prognozę 7-dniową w formacie JSON lub CSV do Home Assistant i automatyki.", "apiCopyBtn": "Kopiuj URL", "apiCopiedBtn": "Skopiowano!", "apiDocsBtn": "Dokumentacja API", "apiEmbedLabel": "Plakietka ceny na żywo na Twoją stronę", "dsos": [{"id": "stoen_pge", "name": "Stoen Operator / PGE Dystrybucja (Warszawa & Wschód — PL)", "gen": 43.0, "day": 51.0, "night": 23.5, "zone": "PL", "postals": ["0", "1", "2", "9"]}, {"id": "tauron", "name": "TAURON Dystrybucja (Południe: Kraków, Katowice, Wrocław — PL)", "gen": 41.5, "day": 49.0, "night": 22.0, "zone": "PL", "postals": ["3", "4", "5"]}, {"id": "enea_energa", "name": "Enea Operator / Energa-Operator (Zachód & Północ — PL)", "gen": 44.5, "day": 53.0, "night": 24.5, "zone": "PL", "postals": ["6", "7", "8"]}]};
     </script>
+    <!-- SPOTPULS_SEO_AI_START -->
+    <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1">
+    <meta property="og:type" content="website">
+    <meta property="og:site_name" content="Spotpuls">
+    <meta property="og:title" content="Spotpuls — Dynamiczne ceny prądu godzinowe (TGE RDN), prognoza na 7 dni oraz kalkulator dystrybucji (PGE, Tauron, Energa, Enea, Stoen) | spotpuls.app">
+    <meta property="og:description" content="Wpisz kod pocztowy (np. 00-001 Warszawa, 30-001 Kraków, 80-001 Gdańsk, 60-001 Poznań), aby dobrać operatora OSD.">
+    <meta property="og:url" content="https://spotpuls.app/pl/">
+    <meta property="og:image" content="https://spotpuls.app/og-image.png">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+    <meta property="og:image:alt" content="Spotpuls — Dynamiczne ceny prądu godzinowe (TGE RDN), prognoza na 7 dni oraz kalkulator dystrybucji (PGE, Tauron, Energa, Enea, Stoen) | spotpuls.app">
+    <meta property="og:locale" content="pl_PL">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Spotpuls — Dynamiczne ceny prądu godzinowe (TGE RDN), prognoza na 7 dni oraz kalkulator dystrybucji (PGE, Tauron, Energa, Enea, Stoen) | spotpuls.app">
+    <meta name="twitter:description" content="Wpisz kod pocztowy (np. 00-001 Warszawa, 30-001 Kraków, 80-001 Gdańsk, 60-001 Poznań), aby dobrać operatora OSD.">
+    <meta name="twitter:image" content="https://spotpuls.app/og-image.png">
+    <link rel="alternate" type="text/markdown" href="https://spotpuls.app/llms.txt" title="Spotpuls LLM &amp; AI Agent Reference">
+    <link rel="alternate" type="text/plain" href="https://spotpuls.app/llms-full.txt" title="Spotpuls Full Machine-Readable Knowledge Base">
+    <link rel="alternate" type="application/json" href="https://spotpuls.app/api/v1/prices?zone=PL&amp;vat=1" title="Spotpuls PL Live Spot &amp; 7-Day Forecast JSON API">
+    <link rel="service-desc" type="application/vnd.oai.openapi+json" href="https://spotpuls.app/openapi.json">
+    <!-- SPOTPULS_SEO_AI_END -->
 </head>
 <body>
     <header class="site-header">

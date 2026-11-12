@@ -1,0 +1,18 @@
+{
+  "schema_version": "1.0",
+  "name": "spotpuls",
+  "title": "Spotpuls — European Electricity Spot Prices, 7-Day Forecast & Grid Tariff API",
+  "description": "Free, zero-auth REST API and knowledge base for hourly European day-ahead electricity spot prices (40 bidding zones), self-learning 7-day Log-Merit + Hist-GBDT regional forecasts, smart-home load shifting (Home Assistant, Shelly, EVCC, Victron), and Finnish postal grid tariffs (33 DSOs).",
+  "homepage": "https://spotpuls.app",
+  "documentation": "https://spotpuls.app/api-docs/",
+  "llms_txt": "https://spotpuls.app/llms.txt",
+  "llms_full_txt": "https://spotpuls.app/llms-full.txt",
+  "openapi_url": "https://spotpuls.app/openapi.json",
+  "authentication": {
+    "type": "none"
+  },
+  "endpoints": {
+    "prices_and_forecast": "https://spotpuls.app/api/v1/prices?zone=FI&vat=1",
+    "zones_directory": "https://spotpuls.app/api/v1/zones"
+  }
+}

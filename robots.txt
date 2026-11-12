@@ -1,4 +1,67 @@
+# Spotpuls (https://spotpuls.app) — Open European Electricity Spot & 7-Day Forecast Platform
+# AI / LLM / Agent Discovery:
+#   LLMs Concise Index: https://spotpuls.app/llms.txt
+#   LLMs Full Knowledge Base: https://spotpuls.app/llms-full.txt
+#   OpenAPI 3.1 Specification: https://spotpuls.app/openapi.json
+#   AI Plugin Manifest: https://spotpuls.app/.well-known/ai-plugin.json
+#   Public JSON API (40 zones, CORS *): https://spotpuls.app/api/v1/prices?zone=FI&vat=1
+
 User-agent: *
 Allow: /
 Allow: /api/v1/
+Allow: /openapi.json
+Allow: /llms.txt
+Allow: /llms-full.txt
+
+User-agent: Googlebot
+Allow: /
+
+User-agent: Google-Extended
+Allow: /
+
+User-agent: GoogleOther
+Allow: /
+
+User-agent: Bingbot
+Allow: /
+
+User-agent: OAI-SearchBot
+Allow: /
+
+User-agent: ChatGPT-User
+Allow: /
+
+User-agent: GPTBot
+Allow: /
+
+User-agent: ClaudeBot
+Allow: /
+
+User-agent: Claude-Web
+Allow: /
+
+User-agent: anthropic-ai
+Allow: /
+
+User-agent: PerplexityBot
+Allow: /
+
+User-agent: Perplexity-User
+Allow: /
+
+User-agent: Applebot
+Allow: /
+
+User-agent: Applebot-Extended
+Allow: /
+
+User-agent: DuckAssistBot
+Allow: /
+
+User-agent: Meta-ExternalAgent
+Allow: /
+
+User-agent: cohere-ai
+Allow: /
+
 Sitemap: https://spotpuls.app/sitemap.xml

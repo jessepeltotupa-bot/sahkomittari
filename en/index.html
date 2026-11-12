@@ -47,6 +47,34 @@
   "@context": "https://schema.org",
   "@graph": [
     {
+      "@type": "Organization",
+      "@id": "https://spotpuls.app/#organization",
+      "name": "Spotpuls",
+      "alternateName": "spotpuls.app",
+      "url": "https://spotpuls.app",
+      "logo": {
+        "@type": "ImageObject",
+        "url": "https://spotpuls.app/apple-touch-icon.png",
+        "width": 180,
+        "height": 180
+      },
+      "sameAs": [
+        "https://spotpuls.app/api-docs/",
+        "https://spotpuls.app/openapi.json",
+        "https://spotpuls.app/llms.txt"
+      ]
+    },
+    {
+      "@type": "WebSite",
+      "@id": "https://spotpuls.app/#website",
+      "url": "https://spotpuls.app/",
+      "name": "Spotpuls",
+      "alternateName": "spotpuls.app",
+      "publisher": {
+        "@id": "https://spotpuls.app/#organization"
+      }
+    },
+    {
       "@type": "WebApplication",
       "@id": "https://spotpuls.app/en/#app",
       "name": "Spotpuls",
@@ -120,6 +148,27 @@
     <script>
     window.ACTIVE_COUNTRY_LOCALE = {"countryId": "en", "lang": "en", "hreflang": "en", "path": "/en/", "languageLabel": "English (Europe)", "geoRegion": "EU", "countryName": "Europe", "defaultZone": "DE-LU", "zones": ["FI", "SE1", "SE2", "SE3", "SE4", "NO1", "NO2", "NO3", "NO4", "NO5", "DK1", "DK2", "EE", "LV", "LT", "DE-LU", "AT", "NL", "BE", "FR", "ES", "PT", "PL", "IT-North", "IT-Centre-North", "IT-Centre-South", "IT-South", "IT-Sicily", "IT-Sardinia", "CH", "GB", "IE-SEM", "CZ", "SK", "HU", "RO", "BG", "SI", "HR", "GR"], "unit": "ct/kWh", "currencyMajor": "€", "subunitsPerMajor": 100, "fxFromEurCents": 1.0, "vatRate": 1.2, "vatPctText": "20 %", "defaultMargin": 0.45, "taxInclVat": 2.5, "defaultPostal": "10115", "defaultCity": "Berlin (DE-LU)", "brandSubtitle": "Live day-ahead spot electricity prices & regional 7-day ML forecast across 40 European bidding zones", "navChart": "Spot Chart", "navTable": "Hourly Table", "navTransfer": "Grid Calculator", "navOptimizer": "Load Optimizer", "navApi": "Open API", "zoneSelectLabel": "Bidding Zone", "langSelectLabel": "Country / Language", "chartTitle": "Hourly Spot Electricity Price & 7-Day Regional Forecast", "hoverHint": "Hover or tap any hourly bar to inspect the spot price and probable forecast range.", "tierBasisIntro": "Price level (vs. 30-day rolling average", "tierCheap": "Low", "tierNorm": "Normal", "tierHigh": "High", "legendRange": "Forecast confidence range (min–max)", "scrollDownText": "Scroll down for hourly table, grid fee calculator, 36h EV/load optimizer & Open REST API", "approxPrefix": "~", "rangePrefix": "Forecast range", "fixedText": "Confirmed day-ahead price", "probLabel": "Confidence", "predWasLabel": "Model forecast was", "predShortLabel": "Forecast was", "pubShortTpl": "Publ. {date} {time}", "pubFullTpl": "Official price published: {date} at {time}", "weekdaysShort": ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"], "todayWord": "Today", "tomorrowWord": "Tomorrow", "atClockWord": "", "sumNowTitle": "CURRENT HOUR SPOT PRICE", "sumMinTitle": "LOWEST PRICE OF DAY", "sumMaxTitle": "HIGHEST PRICE OF DAY", "tableHeading": "Hourly Spot Price & 7-Day Probable Range", "colTime": "Hour", "colSpot": "Spot Price (forecast / confirmed)", "colRange": "Probable Range", "colTotal": "All-in Price incl. Grid & Tax", "colWeather": "Regional Wind & Temp", "transferHeading": "All-in Electricity Price & Regional Grid Tariff Calculator", "transferLead": "Select any European bidding zone above or enter a postal code to compute total electricity cost including supplier margin, grid fee, and electricity tax.", "postalLabel": "Postal code or city", "postalPlaceholder": "10115, 11122, 00100...", "setBtn": "Apply", "tariffLabel": "Grid Tariff", "tariffGeneral": "Single Rate", "tariffTime": "Day / Night Rate", "marginLabel": "Supplier Margin (ct/kWh)", "vatLabel": "VAT Mode", "vatIncl": "Incl. VAT (20 %)", "vatZero": "Excl. VAT (0 %)", "dsoNetworkKicker": "GRID OPERATOR", "receiptNowTitle": "ALL-IN SOCKET PRICE NOW", "receiptSpotRow": "Day-ahead spot price", "receiptMarginRow": "Supplier margin", "receiptTaxRow": "Electricity tax", "receiptTotalRow": "TOTAL ALL-IN PRICE", "receiptCheapestToday": "Cheapest hour today", "receiptAvgToday": "Today's average (all-in)", "receiptAvgTomorrow": "Tomorrow's average (all-in)", "expectWord": "expected", "optBestWindowTpl": "CHEAPEST {h}-HOUR WINDOW (NEXT 36 H)", "optDurationLabel": "Run duration", "optKwLabel": "Power (kW)", "optProbTotalLabel": "Probable all-in price", "optAvgTotalLabel": "Average all-in price", "optTransferTaxLabel": "Grid & tax", "optConsumptionLabel": "Energy", "optSavedLabel": "Saved vs. most expensive window", "apiHeading": "Free Spot Electricity & 7-Day Forecast API (Spotpuls API)", "apiLead": "Fetch live day-ahead prices and self-learning 7-day regional forecasts for all 40 European bidding zones via JSON, CSV, or live SVG badge.", "apiCopyBtn": "Copy URL", "apiCopiedBtn": "Copied!", "apiDocsBtn": "Full API Docs & OpenAPI", "apiEmbedLabel": "Embeddable live price badge for websites & GitHub (with attribution link)", "dsos": [{"id": "eu_std", "name": "European Standard Grid Tariff (DE-LU)", "gen": 8.5, "day": 9.8, "night": 6.2, "zone": "DE-LU", "postals": ["1", "2", "3", "4", "5", "6", "7", "8", "9", "0"]}]};
     </script>
+    <!-- SPOTPULS_SEO_AI_START -->
+    <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1">
+    <meta property="og:type" content="website">
+    <meta property="og:site_name" content="Spotpuls">
+    <meta property="og:title" content="Spotpuls — Live day-ahead spot electricity prices &amp; regional 7-day ML forecast across 40 European bidding zones | spotpuls.app">
+    <meta property="og:description" content="Select any European bidding zone above or enter a postal code to compute total electricity cost including supplier margin, grid fee, and electricity tax.">
+    <meta property="og:url" content="https://spotpuls.app/en/">
+    <meta property="og:image" content="https://spotpuls.app/og-image.png">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+    <meta property="og:image:alt" content="Spotpuls — Live day-ahead spot electricity prices &amp; regional 7-day ML forecast across 40 European bidding zones | spotpuls.app">
+    <meta property="og:locale" content="en">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Spotpuls — Live day-ahead spot electricity prices &amp; regional 7-day ML forecast across 40 European bidding zones | spotpuls.app">
+    <meta name="twitter:description" content="Select any European bidding zone above or enter a postal code to compute total electricity cost including supplier margin, grid fee, and electricity tax.">
+    <meta name="twitter:image" content="https://spotpuls.app/og-image.png">
+    <link rel="alternate" type="text/markdown" href="https://spotpuls.app/llms.txt" title="Spotpuls LLM &amp; AI Agent Reference">
+    <link rel="alternate" type="text/plain" href="https://spotpuls.app/llms-full.txt" title="Spotpuls Full Machine-Readable Knowledge Base">
+    <link rel="alternate" type="application/json" href="https://spotpuls.app/api/v1/prices?zone=DE-LU&amp;vat=1" title="Spotpuls DE-LU Live Spot &amp; 7-Day Forecast JSON API">
+    <link rel="service-desc" type="application/vnd.oai.openapi+json" href="https://spotpuls.app/openapi.json">
+    <!-- SPOTPULS_SEO_AI_END -->
 </head>
 <body>
     <header class="site-header">

@@ -47,6 +47,34 @@
   "@context": "https://schema.org",
   "@graph": [
     {
+      "@type": "Organization",
+      "@id": "https://spotpuls.app/#organization",
+      "name": "Spotpuls",
+      "alternateName": "spotpuls.app",
+      "url": "https://spotpuls.app",
+      "logo": {
+        "@type": "ImageObject",
+        "url": "https://spotpuls.app/apple-touch-icon.png",
+        "width": 180,
+        "height": 180
+      },
+      "sameAs": [
+        "https://spotpuls.app/api-docs/",
+        "https://spotpuls.app/openapi.json",
+        "https://spotpuls.app/llms.txt"
+      ]
+    },
+    {
+      "@type": "WebSite",
+      "@id": "https://spotpuls.app/#website",
+      "url": "https://spotpuls.app/",
+      "name": "Spotpuls",
+      "alternateName": "spotpuls.app",
+      "publisher": {
+        "@id": "https://spotpuls.app/#organization"
+      }
+    },
+    {
       "@type": "WebApplication",
       "@id": "https://spotpuls.app/fr/#app",
       "name": "Spotpuls",
@@ -120,6 +148,27 @@
     <script>
     window.ACTIVE_COUNTRY_LOCALE = {"countryId": "fr", "lang": "fr-FR", "hreflang": "fr", "path": "/fr/", "languageLabel": "Français (FR)", "geoRegion": "FR", "countryName": "France", "defaultZone": "FR", "zones": ["FR"], "unit": "ct/kWh", "currencyMajor": "€", "subunitsPerMajor": 100, "fxFromEurCents": 1.0, "vatRate": 1.2, "vatPctText": "20 %", "defaultMargin": 1.2, "taxInclVat": 2.52, "defaultPostal": "75001", "defaultCity": "Paris", "brandSubtitle": "Prix spot de l'électricité heure par heure (EPEX FR), prévision à 7 jours & calculateur TURPE Enedis", "navChart": "Graphique Spot", "navTable": "Tableau horaire", "navTransfer": "Calculateur TURPE", "navOptimizer": "Pilotage recharge", "navApi": "API Ouverte", "zoneSelectLabel": "Zone de prix", "langSelectLabel": "Pays / Langue", "chartTitle": "Prix spot de l'électricité en France (EPEX FR) et prévision 7 jours (ct/kWh)", "hoverHint": "Survolez ou touchez une barre pour afficher le prix horaire et la fourchette probable.", "tierBasisIntro": "Niveau de prix (vs moyenne 30 j.", "tierCheap": "Bas", "tierNorm": "Normal", "tierHigh": "Élevé", "legendRange": "Fourchette de prévision (min–max)", "scrollDownText": "Faites défiler : tableau horaire, calculateur réseau Enedis (TURPE), recharge VE & API REST", "approxPrefix": "env. ", "rangePrefix": "Fourchette", "fixedText": "Prix EPEX confirmé", "probLabel": "Probabilité", "predWasLabel": "La prévision était", "predShortLabel": "Prévision", "pubShortTpl": "Publ. {date} {time}", "pubFullTpl": "Publication officielle : {date} à {time}", "weekdaysShort": ["Dim", "Lun", "Mar", "Mer", "Jeu", "Ven", "Sam"], "todayWord": "Aujourd'hui", "tomorrowWord": "Demain", "atClockWord": "à", "sumNowTitle": "PRIX SPOT HEURE ACTUELLE", "sumMinTitle": "HEURE LA MOINS CHÈRE", "sumMaxTitle": "HEURE LA PLUS CHÈRE", "tableHeading": "Estimation horaire et fourchette de prix probable sur 7 jours", "colTime": "Horaire", "colSpot": "Prix Spot (prévision / EPEX)", "colRange": "Fourchette probable", "colTotal": "Prix TTC avec acheminement", "colWeather": "Éolien & température", "transferHeading": "Calculateur du prix complet de l'électricité (Spot + TURPE Enedis + accise)", "transferLead": "Saisissez votre code postal (ex. 75001 Paris, 69001 Lyon, 13001 Marseille, 67000 Strasbourg) pour calculer votre prix TTC réel.", "postalLabel": "Code postal ou ville", "postalPlaceholder": "75001, 69001, 13001...", "setBtn": "Valider", "tariffLabel": "Option réseau (TURPE)", "tariffGeneral": "Option Base", "tariffTime": "Heures Pleines / Creuses", "marginLabel": "Marge fournisseur (ct/kWh)", "vatLabel": "TVA", "vatIncl": "TTC (TVA 20 %)", "vatZero": "HT (TVA 0 %)", "dsoNetworkKicker": "GESTIONNAIRE DE RÉSEAU", "receiptNowTitle": "PRIX COMPLET ACTUEL", "receiptSpotRow": "Prix EPEX Spot FR", "receiptMarginRow": "Marge fournisseur", "receiptTaxRow": "Accise sur l'électricité", "receiptTotalRow": "TOTAL TTC", "receiptCheapestToday": "Heure la moins chère aujourd'hui", "receiptAvgToday": "Moyenne aujourd'hui (TTC)", "receiptAvgTomorrow": "Moyenne demain (TTC)", "expectWord": "attendu", "optBestWindowTpl": "CRÉNEAU DE {h} H LE MOINS CHER (PROCHAINES 36 H)", "optDurationLabel": "Durée", "optKwLabel": "Puissance (kW)", "optProbTotalLabel": "Prix TTC probable", "optAvgTotalLabel": "Prix TTC moyen", "optTransferTaxLabel": "TURPE & taxes", "optConsumptionLabel": "Consommation", "optSavedLabel": "Économie vs créneau le plus cher", "apiHeading": "API Ouverte Prix Spot & Prévision 7 Jours (Spotpuls API)", "apiLead": "Intégrez les prix EPEX Spot France et la prévision régionale à 7 jours dans Home Assistant, Jeedom ou vos feuilles de calcul via JSON/CSV.", "apiCopyBtn": "Copier l'URL", "apiCopiedBtn": "Copié !", "apiDocsBtn": "Documentation API", "apiEmbedLabel": "Badge prix en direct à intégrer sur votre site", "dsos": [{"id": "enedis", "name": "Enedis (Réseau national de distribution — TURPE 6)", "gen": 4.92, "day": 5.68, "night": 3.74, "zone": "FR", "postals": ["0", "1", "2", "3", "4", "5", "6", "7", "8", "9"]}]};
     </script>
+    <!-- SPOTPULS_SEO_AI_START -->
+    <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1">
+    <meta property="og:type" content="website">
+    <meta property="og:site_name" content="Spotpuls">
+    <meta property="og:title" content="Spotpuls — Prix spot de l&#x27;électricité heure par heure (EPEX FR), prévision à 7 jours &amp; calculateur TURPE Enedis | spotpuls.app">
+    <meta property="og:description" content="Saisissez votre code postal (ex. 75001 Paris, 69001 Lyon, 13001 Marseille, 67000 Strasbourg) pour calculer votre prix TTC réel.">
+    <meta property="og:url" content="https://spotpuls.app/fr/">
+    <meta property="og:image" content="https://spotpuls.app/og-image.png">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+    <meta property="og:image:alt" content="Spotpuls — Prix spot de l&#x27;électricité heure par heure (EPEX FR), prévision à 7 jours &amp; calculateur TURPE Enedis | spotpuls.app">
+    <meta property="og:locale" content="fr_FR">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Spotpuls — Prix spot de l&#x27;électricité heure par heure (EPEX FR), prévision à 7 jours &amp; calculateur TURPE Enedis | spotpuls.app">
+    <meta name="twitter:description" content="Saisissez votre code postal (ex. 75001 Paris, 69001 Lyon, 13001 Marseille, 67000 Strasbourg) pour calculer votre prix TTC réel.">
+    <meta name="twitter:image" content="https://spotpuls.app/og-image.png">
+    <link rel="alternate" type="text/markdown" href="https://spotpuls.app/llms.txt" title="Spotpuls LLM &amp; AI Agent Reference">
+    <link rel="alternate" type="text/plain" href="https://spotpuls.app/llms-full.txt" title="Spotpuls Full Machine-Readable Knowledge Base">
+    <link rel="alternate" type="application/json" href="https://spotpuls.app/api/v1/prices?zone=FR&amp;vat=1" title="Spotpuls FR Live Spot &amp; 7-Day Forecast JSON API">
+    <link rel="service-desc" type="application/vnd.oai.openapi+json" href="https://spotpuls.app/openapi.json">
+    <!-- SPOTPULS_SEO_AI_END -->
 </head>
 <body>
     <header class="site-header">

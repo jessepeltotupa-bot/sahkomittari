@@ -47,6 +47,34 @@
   "@context": "https://schema.org",
   "@graph": [
     {
+      "@type": "Organization",
+      "@id": "https://spotpuls.app/#organization",
+      "name": "Spotpuls",
+      "alternateName": "spotpuls.app",
+      "url": "https://spotpuls.app",
+      "logo": {
+        "@type": "ImageObject",
+        "url": "https://spotpuls.app/apple-touch-icon.png",
+        "width": 180,
+        "height": 180
+      },
+      "sameAs": [
+        "https://spotpuls.app/api-docs/",
+        "https://spotpuls.app/openapi.json",
+        "https://spotpuls.app/llms.txt"
+      ]
+    },
+    {
+      "@type": "WebSite",
+      "@id": "https://spotpuls.app/#website",
+      "url": "https://spotpuls.app/",
+      "name": "Spotpuls",
+      "alternateName": "spotpuls.app",
+      "publisher": {
+        "@id": "https://spotpuls.app/#organization"
+      }
+    },
+    {
       "@type": "WebApplication",
       "@id": "https://spotpuls.app/cz/#app",
       "name": "Spotpuls",
@@ -120,6 +148,27 @@
     <script>
     window.ACTIVE_COUNTRY_LOCALE = {"countryId": "cz", "lang": "cs-CZ", "hreflang": "cs", "path": "/cz/", "languageLabel": "Čeština (CZ)", "geoRegion": "CZ", "countryName": "Česko", "defaultZone": "CZ", "zones": ["CZ"], "unit": "Kč/kWh", "currencyMajor": "Kč", "subunitsPerMajor": 1, "fxFromEurCents": 0.253, "vatRate": 1.21, "vatPctText": "21 %", "defaultMargin": 0.35, "taxInclVat": 0.04, "defaultPostal": "11000", "defaultCity": "Praha", "brandSubtitle": "Spotové ceny elektřiny po hodinách (OTE CZ), 7denní předpověď a kalkulačka distribuce (ČEZ, EG.D, PREdistribuce)", "navChart": "Spotový graf", "navTable": "Hodinová tabulka", "navTransfer": "Kalkulačka distribuce", "navOptimizer": "Spínání zátěže", "navApi": "Otevřené API", "zoneSelectLabel": "Tržní zóna", "langSelectLabel": "Země / Jazyk", "chartTitle": "Spotová cena elektřiny (OTE) a 7denní předpověď (Kč/kWh)", "hoverHint": "Najeďte myší nebo klepněte na sloupec pro zobrazení ceny a intervalu předpovědi.", "tierBasisIntro": "Cenová hladina (vůči 30dennímu průměru", "tierCheap": "Nízká", "tierNorm": "Běžná", "tierHigh": "Vysoká", "legendRange": "Interval předpovědi (min–max)", "scrollDownText": "Posuňte dolů: hodinová tabulka, distribuční sazby ČEZ/EG.D/PRE, nabíjení EV a API", "approxPrefix": "cca ", "rangePrefix": "Rozpětí", "fixedText": "Potvrzená cena OTE", "probLabel": "Pravděpodobnost", "predWasLabel": "Předpověď byla", "predShortLabel": "Předpověď", "pubShortTpl": "Zveř. {date} {time}", "pubFullTpl": "Cena OTE zveřejněna: {date} v {time}", "weekdaysShort": ["Ne", "Po", "Út", "St", "Čt", "Pá", "So"], "todayWord": "Dnes", "tomorrowWord": "Zítra", "atClockWord": "v", "sumNowTitle": "SPOTOVÁ CENA NYNÍ", "sumMinTitle": "NEJLEVNĚJŠÍ HODINA DNES", "sumMaxTitle": "NEJDRAŽŠÍ HODINA DNES", "tableHeading": "Hodinové spotové ceny OTE a 7denní předpověď", "colTime": "Hodina", "colSpot": "Spotová cena (Kč/kWh)", "colRange": "Pravděpodobné rozpětí", "colTotal": "Celková cena vč. distribuce", "colWeather": "Vítr a teplota", "transferHeading": "Kalkulačka celkové ceny elektřiny a distribuce podle PSČ v ČR", "transferLead": "Zadejte PSČ (např. 11000 Praha, 60200 Brno, 70200 Ostrava) pro výběr distributora (PREdistribuce, ČEZ Distribuce, EG.D).", "postalLabel": "PSČ nebo město", "postalPlaceholder": "11000, 60200, 70200...", "setBtn": "Nastavit", "tariffLabel": "Distribuční sazba", "tariffGeneral": "Jednotarifní (D02d)", "tariffTime": "Dvoutarifní VT / NT (D25d/D57d)", "marginLabel": "Marže obchodníka (Kč/kWh)", "vatLabel": "DPH", "vatIncl": "Vč. DPH 21 %", "vatZero": "Bez DPH (0 %)", "dsoNetworkKicker": "DISTRIBUTOR", "receiptNowTitle": "CELKOVÁ CENA NYNÍ", "receiptSpotRow": "Spot OTE CZ", "receiptMarginRow": "Obchodní marže", "receiptTaxRow": "Daň z elektřiny a POZE", "receiptTotalRow": "CELKEM VČ. DPH", "receiptCheapestToday": "Nejlevnější hodina dnes", "receiptAvgToday": "Dnešní průměr (celkem)", "receiptAvgTomorrow": "Zítřejší průměr (celkem)", "expectWord": "očekáváno", "optBestWindowTpl": "NEJLEVNĚJŠÍ {h}H OKNO (PŘÍŠTÍCH 36 H)", "optDurationLabel": "Doba běhu", "optKwLabel": "Příkon (kW)", "optProbTotalLabel": "Pravděpodobná celková cena", "optAvgTotalLabel": "Průměrná celková cena", "optTransferTaxLabel": "Distribuce a poplatky", "optConsumptionLabel": "Spotřeba", "optSavedLabel": "Úspora oproti špičce", "apiHeading": "Otevřené API Spotových Cen OTE a 7denní Předpovědi (Spotpuls API)", "apiLead": "Získejte hodinové spotové ceny OTE CZ a 7denní předpověď ve formátu JSON nebo CSV pro Home Assistant a Loxone.", "apiCopyBtn": "Kopírovat URL", "apiCopiedBtn": "Zkopírováno!", "apiDocsBtn": "Dokumentace API", "apiEmbedLabel": "Štítek s aktuální cenou na váš web", "dsos": [{"id": "predist", "name": "PREdistribuce, a.s. (Praha — CZ)", "gen": 2.15, "day": 2.55, "night": 0.95, "zone": "CZ", "postals": ["1"]}, {"id": "cez_dist", "name": "ČEZ Distribuce, a.s. (Střední, Severní, Západní, Východní Čechy & Morava — CZ)", "gen": 2.45, "day": 2.88, "night": 1.05, "zone": "CZ", "postals": ["2", "4", "5", "7"]}, {"id": "egd_dist", "name": "EG.D, a.s. (Jižní Čechy & Jižní Morava — CZ)", "gen": 2.38, "day": 2.79, "night": 1.02, "zone": "CZ", "postals": ["3", "6"]}]};
     </script>
+    <!-- SPOTPULS_SEO_AI_START -->
+    <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1">
+    <meta property="og:type" content="website">
+    <meta property="og:site_name" content="Spotpuls">
+    <meta property="og:title" content="Spotpuls — Spotové ceny elektřiny po hodinách (OTE CZ), 7denní předpověď a kalkulačka distribuce (ČEZ, EG.D, PREdistribuce) | spotpuls.app">
+    <meta property="og:description" content="Zadejte PSČ (např. 11000 Praha, 60200 Brno, 70200 Ostrava) pro výběr distributora (PREdistribuce, ČEZ Distribuce, EG.D).">
+    <meta property="og:url" content="https://spotpuls.app/cz/">
+    <meta property="og:image" content="https://spotpuls.app/og-image.png">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+    <meta property="og:image:alt" content="Spotpuls — Spotové ceny elektřiny po hodinách (OTE CZ), 7denní předpověď a kalkulačka distribuce (ČEZ, EG.D, PREdistribuce) | spotpuls.app">
+    <meta property="og:locale" content="cs_CZ">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Spotpuls — Spotové ceny elektřiny po hodinách (OTE CZ), 7denní předpověď a kalkulačka distribuce (ČEZ, EG.D, PREdistribuce) | spotpuls.app">
+    <meta name="twitter:description" content="Zadejte PSČ (např. 11000 Praha, 60200 Brno, 70200 Ostrava) pro výběr distributora (PREdistribuce, ČEZ Distribuce, EG.D).">
+    <meta name="twitter:image" content="https://spotpuls.app/og-image.png">
+    <link rel="alternate" type="text/markdown" href="https://spotpuls.app/llms.txt" title="Spotpuls LLM &amp; AI Agent Reference">
+    <link rel="alternate" type="text/plain" href="https://spotpuls.app/llms-full.txt" title="Spotpuls Full Machine-Readable Knowledge Base">
+    <link rel="alternate" type="application/json" href="https://spotpuls.app/api/v1/prices?zone=CZ&amp;vat=1" title="Spotpuls CZ Live Spot &amp; 7-Day Forecast JSON API">
+    <link rel="service-desc" type="application/vnd.oai.openapi+json" href="https://spotpuls.app/openapi.json">
+    <!-- SPOTPULS_SEO_AI_END -->
 </head>
 <body>
     <header class="site-header">

@@ -47,6 +47,34 @@
   "@context": "https://schema.org",
   "@graph": [
     {
+      "@type": "Organization",
+      "@id": "https://spotpuls.app/#organization",
+      "name": "Spotpuls",
+      "alternateName": "spotpuls.app",
+      "url": "https://spotpuls.app",
+      "logo": {
+        "@type": "ImageObject",
+        "url": "https://spotpuls.app/apple-touch-icon.png",
+        "width": 180,
+        "height": 180
+      },
+      "sameAs": [
+        "https://spotpuls.app/api-docs/",
+        "https://spotpuls.app/openapi.json",
+        "https://spotpuls.app/llms.txt"
+      ]
+    },
+    {
+      "@type": "WebSite",
+      "@id": "https://spotpuls.app/#website",
+      "url": "https://spotpuls.app/",
+      "name": "Spotpuls",
+      "alternateName": "spotpuls.app",
+      "publisher": {
+        "@id": "https://spotpuls.app/#organization"
+      }
+    },
+    {
       "@type": "WebApplication",
       "@id": "https://spotpuls.app/nl/#app",
       "name": "Spotpuls",
@@ -120,6 +148,27 @@
     <script>
     window.ACTIVE_COUNTRY_LOCALE = {"countryId": "nl", "lang": "nl-NL", "hreflang": "nl", "path": "/nl/", "languageLabel": "Nederlands (NL)", "geoRegion": "NL", "countryName": "Nederland", "defaultZone": "NL", "zones": ["NL"], "unit": "ct/kWh", "currencyMajor": "€", "subunitsPerMajor": 100, "fxFromEurCents": 1.0, "vatRate": 1.21, "vatPctText": "21 %", "defaultMargin": 1.8, "taxInclVat": 12.28, "defaultPostal": "1012", "defaultCity": "Amsterdam", "brandSubtitle": "Dynamische stroomprijs per uur (EPEX NL), 7-daagse voorspelling & all-in tariefcalculator", "navChart": "Uurprijzen", "navTable": "Uurtabel", "navTransfer": "All-in calculator", "navOptimizer": "Slim laden", "navApi": "Open API", "zoneSelectLabel": "Prijszone", "langSelectLabel": "Land / Taal", "chartTitle": "Dynamische stroomprijs (EPEX NL) en 7-daagse verwachting (ct/kWh)", "hoverHint": "Beweeg over of tik op een balk om de uurprijs en verwachte bandbreedte te bekijken.", "tierBasisIntro": "Prijsniveau (t.o.v. 30-daags gemiddelde", "tierCheap": "Laag", "tierNorm": "Normaal", "tierHigh": "Hoog", "legendRange": "Verwachte bandbreedte (min–max)", "scrollDownText": "Scroll omlaag voor uurtabel, energiebelasting/netbeheerder, slim laden & Open API", "approxPrefix": "ca. ", "rangePrefix": "Bandbreedte", "fixedText": "Gepubliceerde EPEX-prijs", "probLabel": "Kans", "predWasLabel": "Modelverwachting was", "predShortLabel": "Verwachting was", "pubShortTpl": "Gepubl. {date} {time}", "pubFullTpl": "Prijs wordt gepubliceerd: {date} om {time}", "weekdaysShort": ["Zo", "Ma", "Di", "Wo", "Do", "Vr", "Za"], "todayWord": "Vandaag", "tomorrowWord": "Morgen", "atClockWord": "om", "sumNowTitle": "STROOMPRIJS DIT UUR", "sumMinTitle": "LAAGSTE PRIJS VANDAAG", "sumMaxTitle": "HOOGSTE PRIJS VANDAAG", "tableHeading": "Uurprijzen stroom en 7-daagse prijsverwachting", "colTime": "Tijdvak", "colSpot": "Beursprijs (verwachting / EPEX)", "colRange": "Waarschijnlijke bandbreedte", "colTotal": "All-in prijs incl. energiebelasting", "colWeather": "Wind op zee & temp.", "transferHeading": "All-in dynamische stroomprijs & netbeheerder op postcode in Nederland", "transferLead": "Vul uw 4-cijferige postcode in (bijv. 1012 Amsterdam, 3011 Rotterdam, 5611 Eindhoven) voor netbeheerder (Liander, Stedin, Enexis) en energiebelasting.", "postalLabel": "Postcode of plaats", "postalPlaceholder": "1012, 3011, 5611...", "setBtn": "Kies", "tariffLabel": "Tariefstructuur", "tariffGeneral": "Enkeltarief", "tariffTime": "Normaal / Daltarief", "marginLabel": "Inkoopvergoeding (ct/kWh)", "vatLabel": "Btw-tarief", "vatIncl": "Incl. 21 % btw", "vatZero": "Excl. btw (0 %)", "dsoNetworkKicker": "NETBEHEERDER", "receiptNowTitle": "ALL-IN PRIJS NU", "receiptSpotRow": "EPEX Spot NL", "receiptMarginRow": "Inkoopvergoeding", "receiptTaxRow": "Energiebelasting", "receiptTotalRow": "TOTAAL ALL-IN PRIJS", "receiptCheapestToday": "Goedkoopste uur vandaag", "receiptAvgToday": "Gemiddelde vandaag (all-in)", "receiptAvgTomorrow": "Gemiddelde morgen (all-in)", "expectWord": "verwacht", "optBestWindowTpl": "GOEDKOOPSTE BLOK VAN {h} UUR (KOMENDE 36 UUR)", "optDurationLabel": "Duur", "optKwLabel": "Vermogen (kW)", "optProbTotalLabel": "Verwachte all-in prijs", "optAvgTotalLabel": "Gemiddelde all-in prijs", "optTransferTaxLabel": "Belasting & net", "optConsumptionLabel": "Verbruik", "optSavedLabel": "Besparing t.o.v. duurste blok", "apiHeading": "Gratis Dynamische Stroomprijzen & Verwachting API (Spotpuls API)", "apiLead": "Haal EPEX NL uurprijzen en de zelflerende 7-daagse verwachting op via JSON of CSV voor Home Assistant, Homey of Domoticz.", "apiCopyBtn": "Kopieer URL", "apiCopiedBtn": "Gekopieerd!", "apiDocsBtn": "API-documentatie", "apiEmbedLabel": "Insluitbare live stroomprijs-badge", "dsos": [{"id": "liander", "name": "Liander (Noord-Holland, Gelderland, Flevoland, Friesland — NL)", "gen": 0.0, "day": 0.0, "night": 0.0, "zone": "NL", "postals": ["1", "6", "7", "8", "9"]}, {"id": "stedin", "name": "Stedin (Zuid-Holland, Utrecht, Zeeland — NL)", "gen": 0.0, "day": 0.0, "night": 0.0, "zone": "NL", "postals": ["2", "3", "4"]}, {"id": "enexis", "name": "Enexis Netbeheer (Noord-Brabant, Limburg, Overijssel — NL)", "gen": 0.0, "day": 0.0, "night": 0.0, "zone": "NL", "postals": ["5"]}]};
     </script>
+    <!-- SPOTPULS_SEO_AI_START -->
+    <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1">
+    <meta property="og:type" content="website">
+    <meta property="og:site_name" content="Spotpuls">
+    <meta property="og:title" content="Spotpuls — Dynamische stroomprijs per uur (EPEX NL), 7-daagse voorspelling &amp; all-in tariefcalculator | spotpuls.app">
+    <meta property="og:description" content="Vul uw 4-cijferige postcode in (bijv. 1012 Amsterdam, 3011 Rotterdam, 5611 Eindhoven) voor netbeheerder (Liander, Stedin, Enexis) en energiebelasting.">
+    <meta property="og:url" content="https://spotpuls.app/nl/">
+    <meta property="og:image" content="https://spotpuls.app/og-image.png">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+    <meta property="og:image:alt" content="Spotpuls — Dynamische stroomprijs per uur (EPEX NL), 7-daagse voorspelling &amp; all-in tariefcalculator | spotpuls.app">
+    <meta property="og:locale" content="nl_NL">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Spotpuls — Dynamische stroomprijs per uur (EPEX NL), 7-daagse voorspelling &amp; all-in tariefcalculator | spotpuls.app">
+    <meta name="twitter:description" content="Vul uw 4-cijferige postcode in (bijv. 1012 Amsterdam, 3011 Rotterdam, 5611 Eindhoven) voor netbeheerder (Liander, Stedin, Enexis) en energiebelasting.">
+    <meta name="twitter:image" content="https://spotpuls.app/og-image.png">
+    <link rel="alternate" type="text/markdown" href="https://spotpuls.app/llms.txt" title="Spotpuls LLM &amp; AI Agent Reference">
+    <link rel="alternate" type="text/plain" href="https://spotpuls.app/llms-full.txt" title="Spotpuls Full Machine-Readable Knowledge Base">
+    <link rel="alternate" type="application/json" href="https://spotpuls.app/api/v1/prices?zone=NL&amp;vat=1" title="Spotpuls NL Live Spot &amp; 7-Day Forecast JSON API">
+    <link rel="service-desc" type="application/vnd.oai.openapi+json" href="https://spotpuls.app/openapi.json">
+    <!-- SPOTPULS_SEO_AI_END -->
 </head>
 <body>
     <header class="site-header">

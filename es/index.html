@@ -47,6 +47,34 @@
   "@context": "https://schema.org",
   "@graph": [
     {
+      "@type": "Organization",
+      "@id": "https://spotpuls.app/#organization",
+      "name": "Spotpuls",
+      "alternateName": "spotpuls.app",
+      "url": "https://spotpuls.app",
+      "logo": {
+        "@type": "ImageObject",
+        "url": "https://spotpuls.app/apple-touch-icon.png",
+        "width": 180,
+        "height": 180
+      },
+      "sameAs": [
+        "https://spotpuls.app/api-docs/",
+        "https://spotpuls.app/openapi.json",
+        "https://spotpuls.app/llms.txt"
+      ]
+    },
+    {
+      "@type": "WebSite",
+      "@id": "https://spotpuls.app/#website",
+      "url": "https://spotpuls.app/",
+      "name": "Spotpuls",
+      "alternateName": "spotpuls.app",
+      "publisher": {
+        "@id": "https://spotpuls.app/#organization"
+      }
+    },
+    {
       "@type": "WebApplication",
       "@id": "https://spotpuls.app/es/#app",
       "name": "Spotpuls",
@@ -120,6 +148,27 @@
     <script>
     window.ACTIVE_COUNTRY_LOCALE = {"countryId": "es", "lang": "es-ES", "hreflang": "es", "path": "/es/", "languageLabel": "Español (ES)", "geoRegion": "ES", "countryName": "España", "defaultZone": "ES", "zones": ["ES"], "unit": "cént./kWh", "currencyMajor": "€", "subunitsPerMajor": 100, "fxFromEurCents": 1.0, "vatRate": 1.21, "vatPctText": "21 %", "defaultMargin": 1.1, "taxInclVat": 0.65, "defaultPostal": "28001", "defaultCity": "Madrid", "brandSubtitle": "Precio de la luz por horas (OMIE / PVPC), previsión solar y eólica a 7 días y calculadora de peajes", "navChart": "Gráfico por horas", "navTable": "Tabla horaria", "navTransfer": "Peajes 2.0TD", "navOptimizer": "Optimizador 36 h", "navApi": "API Abierta", "zoneSelectLabel": "Zona de mercado", "langSelectLabel": "País / Idioma", "chartTitle": "Precio spot de la luz en España (OMIE) y previsión a 7 días (cént./kWh)", "hoverHint": "Pasa el cursor o pulsa sobre una barra para ver el precio horario y el rango probable.", "tierBasisIntro": "Nivel de precio (según media 30 días", "tierCheap": "Valle / Barato", "tierNorm": "Normal", "tierHigh": "Punta / Caro", "legendRange": "Rango de previsión (mín–máx)", "scrollDownText": "Desliza hacia abajo: tabla por horas, calculadora peajes 2.0TD, carga coche eléctrico y API", "approxPrefix": "aprox. ", "rangePrefix": "Rango probable", "fixedText": "Precio OMIE confirmado", "probLabel": "Probabilidad", "predWasLabel": "La previsión fue", "predShortLabel": "Previsión", "pubShortTpl": "Publ. {date} {time}", "pubFullTpl": "Precio oficial publicado: {date} a las {time}", "weekdaysShort": ["Dom", "Lun", "Mar", "Mié", "Jue", "Vie", "Sáb"], "todayWord": "Hoy", "tomorrowWord": "Mañana", "atClockWord": "", "sumNowTitle": "PRECIO DE LA LUZ AHORA", "sumMinTitle": "HORA MÁS BARATA HOY", "sumMaxTitle": "HORA MÁS CARA HOY", "tableHeading": "Precio de la luz hora a hora y previsión a 7 días", "colTime": "Tramo horario", "colSpot": "Precio OMIE (previsión / oficial)", "colRange": "Rango probable", "colTotal": "Precio total con peajes e IVA", "colWeather": "Eólica y temperatura", "transferHeading": "Calculadora de peajes y cargos (Tarifa 2.0TD) por código postal en España", "transferLead": "Introduce tu código postal (ej. 28001 Madrid, 08001 Barcelona, 41001 Sevilla, 46001 Valencia) para calcular el precio total con peajes de distribución.", "postalLabel": "Código postal o ciudad", "postalPlaceholder": "28001, 08001, 41001...", "setBtn": "Aplicar", "tariffLabel": "Peaje 2.0TD", "tariffGeneral": "Media ponderada", "tariffTime": "Punta / Llano / Valle", "marginLabel": "Margen comercializadora (cént./kWh)", "vatLabel": "IVA", "vatIncl": "Con IVA 21 %", "vatZero": "Sin IVA (0 %)", "dsoNetworkKicker": "DISTRIBUIDORA", "receiptNowTitle": "PRECIO TOTAL AHORA", "receiptSpotRow": "Mercado diario OMIE ES", "receiptMarginRow": "Margen comercializadora", "receiptTaxRow": "Impuesto eléctrico", "receiptTotalRow": "PRECIO TOTAL CON IVA", "receiptCheapestToday": "Hora más barata hoy", "receiptAvgToday": "Media de hoy (total)", "receiptAvgTomorrow": "Media de mañana (total)", "expectWord": "esperado", "optBestWindowTpl": "TRAMO DE {h} H MÁS BARATO (PRÓXIMAS 36 H)", "optDurationLabel": "Duración", "optKwLabel": "Potencia (kW)", "optProbTotalLabel": "Precio total probable", "optAvgTotalLabel": "Precio medio total", "optTransferTaxLabel": "Peajes e impuestos", "optConsumptionLabel": "Consumo", "optSavedLabel": "Ahorro frente al tramo más caro", "apiHeading": "API Abierta Precio de la Luz y Previsión 7 Días (Spotpuls API)", "apiLead": "Consulta los precios horarios OMIE España y la previsión solar/eólica a 7 días en JSON o CSV para Home Assistant y domótica.", "apiCopyBtn": "Copiar URL", "apiCopiedBtn": "¡Copiado!", "apiDocsBtn": "Documentación API", "apiEmbedLabel": "Insignia de precio en vivo para tu web o blog", "dsos": [{"id": "ide_edist", "name": "i-DE Iberdrola / UFD Naturgy (Centro, Norte & Levante — 2.0TD)", "gen": 4.2, "day": 7.8, "night": 0.9, "zone": "ES", "postals": ["0", "1", "2", "3", "4"]}, {"id": "endesa_viesgo", "name": "e-distribución Endesa / Viesgo (Cataluña, Sur, Aragón & Islas — 2.0TD)", "gen": 4.2, "day": 7.8, "night": 0.9, "zone": "ES", "postals": ["5", "6", "7", "8", "9"]}]};
     </script>
+    <!-- SPOTPULS_SEO_AI_START -->
+    <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1">
+    <meta property="og:type" content="website">
+    <meta property="og:site_name" content="Spotpuls">
+    <meta property="og:title" content="Spotpuls — Precio de la luz por horas (OMIE / PVPC), previsión solar y eólica a 7 días y calculadora de peajes | spotpuls.app">
+    <meta property="og:description" content="Introduce tu código postal (ej. 28001 Madrid, 08001 Barcelona, 41001 Sevilla, 46001 Valencia) para calcular el precio total con peajes de distribución.">
+    <meta property="og:url" content="https://spotpuls.app/es/">
+    <meta property="og:image" content="https://spotpuls.app/og-image.png">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+    <meta property="og:image:alt" content="Spotpuls — Precio de la luz por horas (OMIE / PVPC), previsión solar y eólica a 7 días y calculadora de peajes | spotpuls.app">
+    <meta property="og:locale" content="es_ES">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Spotpuls — Precio de la luz por horas (OMIE / PVPC), previsión solar y eólica a 7 días y calculadora de peajes | spotpuls.app">
+    <meta name="twitter:description" content="Introduce tu código postal (ej. 28001 Madrid, 08001 Barcelona, 41001 Sevilla, 46001 Valencia) para calcular el precio total con peajes de distribución.">
+    <meta name="twitter:image" content="https://spotpuls.app/og-image.png">
+    <link rel="alternate" type="text/markdown" href="https://spotpuls.app/llms.txt" title="Spotpuls LLM &amp; AI Agent Reference">
+    <link rel="alternate" type="text/plain" href="https://spotpuls.app/llms-full.txt" title="Spotpuls Full Machine-Readable Knowledge Base">
+    <link rel="alternate" type="application/json" href="https://spotpuls.app/api/v1/prices?zone=ES&amp;vat=1" title="Spotpuls ES Live Spot &amp; 7-Day Forecast JSON API">
+    <link rel="service-desc" type="application/vnd.oai.openapi+json" href="https://spotpuls.app/openapi.json">
+    <!-- SPOTPULS_SEO_AI_END -->
 </head>
 <body>
     <header class="site-header">

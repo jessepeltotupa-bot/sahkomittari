@@ -47,6 +47,34 @@
   "@context": "https://schema.org",
   "@graph": [
     {
+      "@type": "Organization",
+      "@id": "https://spotpuls.app/#organization",
+      "name": "Spotpuls",
+      "alternateName": "spotpuls.app",
+      "url": "https://spotpuls.app",
+      "logo": {
+        "@type": "ImageObject",
+        "url": "https://spotpuls.app/apple-touch-icon.png",
+        "width": 180,
+        "height": 180
+      },
+      "sameAs": [
+        "https://spotpuls.app/api-docs/",
+        "https://spotpuls.app/openapi.json",
+        "https://spotpuls.app/llms.txt"
+      ]
+    },
+    {
+      "@type": "WebSite",
+      "@id": "https://spotpuls.app/#website",
+      "url": "https://spotpuls.app/",
+      "name": "Spotpuls",
+      "alternateName": "spotpuls.app",
+      "publisher": {
+        "@id": "https://spotpuls.app/#organization"
+      }
+    },
+    {
       "@type": "WebApplication",
       "@id": "https://spotpuls.app/si/#app",
       "name": "Spotpuls",
@@ -120,6 +148,27 @@
     <script>
     window.ACTIVE_COUNTRY_LOCALE = {"countryId": "si", "lang": "sl-SI", "hreflang": "sl", "path": "/si/", "languageLabel": "Slovenščina (SI)", "geoRegion": "SI", "countryName": "Slovenija", "defaultZone": "SI", "zones": ["SI"], "unit": "c/kWh", "currencyMajor": "€", "subunitsPerMajor": 100, "fxFromEurCents": 1.0, "vatRate": 1.22, "vatPctText": "22 %", "defaultMargin": 1.1, "taxInclVat": 1.45, "defaultPostal": "1000", "defaultCity": "Ljubljana", "brandSubtitle": "Dinamične urne cene elektrike (BSP SouthPool), 7-dnevna napoved in izračun omrežnine SODO", "navChart": "Urni graf", "navTable": "Urna tabela", "navTransfer": "Omrežnina", "navOptimizer": "Optimizator 36 h", "navApi": "Odprti API", "zoneSelectLabel": "Cenovno območje", "langSelectLabel": "Država / Jezik", "chartTitle": "Urna borzna cena elektrike (BSP SI) in 7-dnevna napoved (c/kWh)", "hoverHint": "Premaknite miško nad stolpec za urno ceno in verjetni razpon napovedi.", "tierBasisIntro": " Cenovni razred (glede na 30-dnevno povprečje", "tierCheap": "Ugodno", "tierNorm": "Običajno", "tierHigh": "Visoko", "legendRange": "Razpon napovedi (min–max)", "scrollDownText": "Pomaknite navzdol: urna tabela, izračun omrežnine SODO, pametno polnjenje EV in API", "approxPrefix": "pribl. ", "rangePrefix": "Razpon", "fixedText": "Potrjena cena BSP", "probLabel": "Verjetnost", "predWasLabel": "Napoved je bila", "predShortLabel": "Napoved", "pubShortTpl": "Obj. {date} {time}", "pubFullTpl": "Cena objavljena: {date} ob {time}", "weekdaysShort": ["Ned", "Pon", "Tor", "Sre", "Čet", "Pet", "Sob"], "todayWord": "Danes", "tomorrowWord": "Jutri", "atClockWord": "ob", "sumNowTitle": "TRENUTNA URNA CENA", "sumMinTitle": "NAJCENEJŠA URA DANES", "sumMaxTitle": "NAJDRAŽJA URA DANES", "tableHeading": "Urna borzna cena elektrike BSP in 7-dnevna napoved", "colTime": "Ura", "colSpot": "Borzna cena (c/kWh)", "colRange": "Verjetni razpon", "colTotal": "Skupna cena z omrežnino", "colWeather": "Veter in temperatura", "transferHeading": "Izračun končne dinamične cene elektrike in omrežnine v Sloveniji", "transferLead": "Vnesite poštno številko (npr. 1000 Ljubljana, 2000 Maribor, 3000 Celje, 6000 Koper).", "postalLabel": "Poštna številka ali kraj", "postalPlaceholder": "1000, 2000, 3000, 6000...", "setBtn": "Izberi", "tariffLabel": "Obračun omrežnine", "tariffGeneral": "Enotna tarifa (ET)", "tariffTime": "Časovni bloki (VT / MT)", "marginLabel": "Pribitek dobavitelja (c/kWh)", "vatLabel": "DDV", "vatIncl": "Z 22 % DDV", "vatZero": "Brez DDV (0 %)", "dsoNetworkKicker": "DISTRIBUTER", "receiptNowTitle": "KONČNA CENA ZDAJ", "receiptSpotRow": "BSP SouthPool Spot SI", "receiptMarginRow": "Pribitek dobavitelja", "receiptTaxRow": "Prispevki OVE/SPTE in trošarina", "receiptTotalRow": "SKUPAJ Z DDV", "receiptCheapestToday": "Najugodnejša ura danes", "receiptAvgToday": "Današnje povprečje (skupaj)", "receiptAvgTomorrow": "Jutrišnje povprečje (skupaj)", "expectWord": "pričakovano", "optBestWindowTpl": "NAJUGODNEJŠE {h}-URNO OKNO (NASLEDNJIH 36 H)", "optDurationLabel": "Trajanje", "optKwLabel": "Moč (kW)", "optProbTotalLabel": "Verjetna končna cena", "optAvgTotalLabel": "Povprečna končna cena", "optTransferTaxLabel": "Omrežnina in dajatve", "optConsumptionLabel": "Poraba", "optSavedLabel": "Prihranek glede na konico", "apiHeading": "Odprti API Borznih Cen BSP in 7-Dnevne Napovedi (Spotpuls API)", "apiLead": "Pridobite urne cene BSP SouthPool SI in 7-dnevno napoved v obliki JSON ali CSV za pametni dom.", "apiCopyBtn": "Kopiraj URL", "apiCopiedBtn": "Kopirano!", "apiDocsBtn": "Dokumentacija API", "apiEmbedLabel": "Vgradna značka s ceno v živo", "dsos": [{"id": "sodo_si", "name": "ELES / SODO (Elektro Ljubljana, Maribor, Celje, Primorska, Gorenjska — SI)", "gen": 4.3, "day": 5.2, "night": 2.9, "zone": "SI", "postals": ["1", "2", "3", "4", "5", "6", "8", "9"]}]};
     </script>
+    <!-- SPOTPULS_SEO_AI_START -->
+    <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1">
+    <meta property="og:type" content="website">
+    <meta property="og:site_name" content="Spotpuls">
+    <meta property="og:title" content="Spotpuls — Dinamične urne cene elektrike (BSP SouthPool), 7-dnevna napoved in izračun omrežnine SODO | spotpuls.app">
+    <meta property="og:description" content="Vnesite poštno številko (npr. 1000 Ljubljana, 2000 Maribor, 3000 Celje, 6000 Koper).">
+    <meta property="og:url" content="https://spotpuls.app/si/">
+    <meta property="og:image" content="https://spotpuls.app/og-image.png">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+    <meta property="og:image:alt" content="Spotpuls — Dinamične urne cene elektrike (BSP SouthPool), 7-dnevna napoved in izračun omrežnine SODO | spotpuls.app">
+    <meta property="og:locale" content="sl_SI">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Spotpuls — Dinamične urne cene elektrike (BSP SouthPool), 7-dnevna napoved in izračun omrežnine SODO | spotpuls.app">
+    <meta name="twitter:description" content="Vnesite poštno številko (npr. 1000 Ljubljana, 2000 Maribor, 3000 Celje, 6000 Koper).">
+    <meta name="twitter:image" content="https://spotpuls.app/og-image.png">
+    <link rel="alternate" type="text/markdown" href="https://spotpuls.app/llms.txt" title="Spotpuls LLM &amp; AI Agent Reference">
+    <link rel="alternate" type="text/plain" href="https://spotpuls.app/llms-full.txt" title="Spotpuls Full Machine-Readable Knowledge Base">
+    <link rel="alternate" type="application/json" href="https://spotpuls.app/api/v1/prices?zone=SI&amp;vat=1" title="Spotpuls SI Live Spot &amp; 7-Day Forecast JSON API">
+    <link rel="service-desc" type="application/vnd.oai.openapi+json" href="https://spotpuls.app/openapi.json">
+    <!-- SPOTPULS_SEO_AI_END -->
 </head>
 <body>
     <header class="site-header">

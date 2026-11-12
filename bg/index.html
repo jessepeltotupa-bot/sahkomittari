@@ -47,6 +47,34 @@
   "@context": "https://schema.org",
   "@graph": [
     {
+      "@type": "Organization",
+      "@id": "https://spotpuls.app/#organization",
+      "name": "Spotpuls",
+      "alternateName": "spotpuls.app",
+      "url": "https://spotpuls.app",
+      "logo": {
+        "@type": "ImageObject",
+        "url": "https://spotpuls.app/apple-touch-icon.png",
+        "width": 180,
+        "height": 180
+      },
+      "sameAs": [
+        "https://spotpuls.app/api-docs/",
+        "https://spotpuls.app/openapi.json",
+        "https://spotpuls.app/llms.txt"
+      ]
+    },
+    {
+      "@type": "WebSite",
+      "@id": "https://spotpuls.app/#website",
+      "url": "https://spotpuls.app/",
+      "name": "Spotpuls",
+      "alternateName": "spotpuls.app",
+      "publisher": {
+        "@id": "https://spotpuls.app/#organization"
+      }
+    },
+    {
       "@type": "WebApplication",
       "@id": "https://spotpuls.app/bg/#app",
       "name": "Spotpuls",
@@ -120,6 +148,27 @@
     <script>
     window.ACTIVE_COUNTRY_LOCALE = {"countryId": "bg", "lang": "bg-BG", "hreflang": "bg", "path": "/bg/", "languageLabel": "Български (BG)", "geoRegion": "BG", "countryName": "България", "defaultZone": "BG", "zones": ["BG"], "unit": "ст./kWh", "currencyMajor": "лв.", "subunitsPerMajor": 100, "fxFromEurCents": 1.9558, "vatRate": 1.2, "vatPctText": "20 %", "defaultMargin": 1.8, "taxInclVat": 0.4, "defaultPostal": "1000", "defaultCity": "София", "brandSubtitle": "Борсови цени на тока по часове (IBEX Ден напред), 7-дневна прогноза и калкулатор за мрежови такси", "navChart": "Графика IBEX", "navTable": "Часова таблица", "navTransfer": "Мрежови такси", "navOptimizer": "Оптимизатор 36 ч", "navApi": "Отворено API", "zoneSelectLabel": "Ценова зона", "langSelectLabel": "Държава / Език", "chartTitle": "Почасова борсова цена на тока (IBEX BG) и 7-дневна прогноза (ст./kWh)", "hoverHint": "Задръжте курсора или докоснете стълб за почасова цена и вероятен диапазон.", "tierBasisIntro": "Ценово ниво (спрямо 30-дневна средна", "tierCheap": "Ниска", "tierNorm": "Нормална", "tierHigh": "Висока", "legendRange": "Прогнозен диапазон (мин–макс)", "scrollDownText": "Превъртете надолу: почасова таблица, мрежови тарифи (ЕРМ Запад, EVN, ЕРП Север), EV и API", "approxPrefix": "около ", "rangePrefix": "Диапазон", "fixedText": "Потвърдена цена IBEX", "probLabel": "Вероятност", "predWasLabel": "Прогнозата беше", "predShortLabel": "Прогноза", "pubShortTpl": "Публ. {date} {time}", "pubFullTpl": "Цената се публикува: {date} в {time} ч.", "weekdaysShort": ["Нед", "Пон", "Вт", "Ср", "Чет", "Пет", "Съб"], "todayWord": "Днес", "tomorrowWord": "Утре", "atClockWord": "в", "sumNowTitle": "ЦЕНА НА ТОКА В МОМЕНТА", "sumMinTitle": "НАЙ-ЕВТИН ЧАС ДНЕС", "sumMaxTitle": "НАЙ-СКЪП ЧАС ДНЕС", "tableHeading": "Почасови борсови цени IBEX и 7-дневна прогноза", "colTime": "Час", "colSpot": "Борсова цена (ст./kWh)", "colRange": "Вероятен диапазон", "colTotal": "Крайна цена с пренос и ДДС", "colWeather": "Вятър и температура", "transferHeading": "Калкулатор за крайна цена на електроенергията и мрежови такси в България", "transferLead": "Въведете пощенски код (напр. 1000 София, 4000 Пловдив, 9000 Варна), за да изчислите крайната цена.", "postalLabel": "Пощенски код или град", "postalPlaceholder": "1000, 4000, 9000...", "setBtn": "Избери", "tariffLabel": "Мрежова тарифа", "tariffGeneral": "Еднотарифна", "tariffTime": "Дневна / Нощна", "marginLabel": "Надценка доставчик (ст./kWh)", "vatLabel": "ДДС", "vatIncl": "С ДДС 20 %", "vatZero": "Без ДДС (0 %)", "dsoNetworkKicker": "ЕРП ДРУЖЕСТВО", "receiptNowTitle": "КРАЙНА ЦЕНА СЕГА", "receiptSpotRow": "Борсова цена IBEX BG", "receiptMarginRow": "Търговска надценка", "receiptTaxRow": "Акциз и задължения към обществото", "receiptTotalRow": "ОБЩО С ДДС", "receiptCheapestToday": "Най-евтин час днес", "receiptAvgToday": "Средна цена днес", "receiptAvgTomorrow": "Средна цена утре", "expectWord": "очаквана", "optBestWindowTpl": "НАЙ-ИЗГОДЕН {h}-ЧАСОВ ПРОЗОРЕЦ (СЛЕДВАЩИ 36 Ч)", "optDurationLabel": "Продължителност", "optKwLabel": "Мощност (kW)", "optProbTotalLabel": "Вероятна крайна цена", "optAvgTotalLabel": "Средна крайна цена", "optTransferTaxLabel": "Мрежа и такси", "optConsumptionLabel": "Консумация", "optSavedLabel": "Спестяване спрямо пика", "apiHeading": "Отворено API за Цени на IBEX и 7-Дневна Прогноза (Spotpuls API)", "apiLead": "Вземете почасовите цени от БНЕБ (IBEX) и 7-дневната прогноза в JSON или CSV формат за умен дом.", "apiCopyBtn": "Копирай URL", "apiCopiedBtn": "Копирано!", "apiDocsBtn": "API документация", "apiEmbedLabel": "Жива значка с цената за вашия сайт", "dsos": [{"id": "erm_evn_erp", "name": "ЕРМ Запад / Електроразпределение Юг (EVN) / ЕРП Север (BG)", "gen": 6.8, "day": 7.6, "night": 3.9, "zone": "BG", "postals": ["1", "2", "3", "4", "5", "6", "7", "8", "9"]}]};
     </script>
+    <!-- SPOTPULS_SEO_AI_START -->
+    <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1">
+    <meta property="og:type" content="website">
+    <meta property="og:site_name" content="Spotpuls">
+    <meta property="og:title" content="Spotpuls — Борсови цени на тока по часове (IBEX Ден напред), 7-дневна прогноза и калкулатор за мрежови такси | spotpuls.app">
+    <meta property="og:description" content="Въведете пощенски код (напр. 1000 София, 4000 Пловдив, 9000 Варна), за да изчислите крайната цена.">
+    <meta property="og:url" content="https://spotpuls.app/bg/">
+    <meta property="og:image" content="https://spotpuls.app/og-image.png">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+    <meta property="og:image:alt" content="Spotpuls — Борсови цени на тока по часове (IBEX Ден напред), 7-дневна прогноза и калкулатор за мрежови такси | spotpuls.app">
+    <meta property="og:locale" content="bg_BG">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Spotpuls — Борсови цени на тока по часове (IBEX Ден напред), 7-дневна прогноза и калкулатор за мрежови такси | spotpuls.app">
+    <meta name="twitter:description" content="Въведете пощенски код (напр. 1000 София, 4000 Пловдив, 9000 Варна), за да изчислите крайната цена.">
+    <meta name="twitter:image" content="https://spotpuls.app/og-image.png">
+    <link rel="alternate" type="text/markdown" href="https://spotpuls.app/llms.txt" title="Spotpuls LLM &amp; AI Agent Reference">
+    <link rel="alternate" type="text/plain" href="https://spotpuls.app/llms-full.txt" title="Spotpuls Full Machine-Readable Knowledge Base">
+    <link rel="alternate" type="application/json" href="https://spotpuls.app/api/v1/prices?zone=BG&amp;vat=1" title="Spotpuls BG Live Spot &amp; 7-Day Forecast JSON API">
+    <link rel="service-desc" type="application/vnd.oai.openapi+json" href="https://spotpuls.app/openapi.json">
+    <!-- SPOTPULS_SEO_AI_END -->
 </head>
 <body>
     <header class="site-header">

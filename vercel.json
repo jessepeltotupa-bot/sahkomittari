@@ -46,6 +46,10 @@
     {
       "source": "/api/v1/metrics",
       "destination": "/api/v1/prices?format=prometheus"
+    },
+    {
+      "source": "/.well-known/llms.txt",
+      "destination": "/llms.txt"
     }
   ],
   "headers": [
@@ -67,11 +71,15 @@
         {
           "key": "X-Powered-By-Data",
           "value": "Spotpuls (https://spotpuls.app)"
+        },
+        {
+          "key": "Link",
+          "value": "<https://spotpuls.app/openapi.json>; rel=\"service-desc\", <https://spotpuls.app/llms.txt>; rel=\"describedby\""
         }
       ]
     },
     {
-      "source": "/(openapi\\.json|llms\\.txt|\\.well-known/ai-plugin\\.json)",
+      "source": "/(openapi\\.json|llms\\.txt|llms-full\\.txt|\\.well-known/.*)",
       "headers": [
         {
           "key": "Access-Control-Allow-Origin",

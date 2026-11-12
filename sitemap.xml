@@ -1,907 +1,1719 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:xhtml="http://www.w3.org/1999/xhtml">
   <url>
     <loc>https://spotpuls.app/</loc>
-    <lastmod>2026-11-11</lastmod>
-  </url>
-  <url>
-    <loc>https://spotpuls.app/verkkoyhtiot/alva-sahkoverkko.html</loc>
-    <lastmod>2026-11-11</lastmod>
-  </url>
-  <url>
-    <loc>https://spotpuls.app/verkkoyhtiot/caruna-espoo.html</loc>
-    <lastmod>2026-11-11</lastmod>
-  </url>
-  <url>
-    <loc>https://spotpuls.app/verkkoyhtiot/caruna.html</loc>
-    <lastmod>2026-11-11</lastmod>
-  </url>
-  <url>
-    <loc>https://spotpuls.app/verkkoyhtiot/ese-verkko-mikkeli.html</loc>
-    <lastmod>2026-11-11</lastmod>
-  </url>
-  <url>
-    <loc>https://spotpuls.app/verkkoyhtiot/elenia.html</loc>
-    <lastmod>2026-11-11</lastmod>
-  </url>
-  <url>
-    <loc>https://spotpuls.app/verkkoyhtiot/helen-sahkoverkko.html</loc>
-    <lastmod>2026-11-11</lastmod>
-  </url>
-  <url>
-    <loc>https://spotpuls.app/verkkoyhtiot/herrfors-nat-verkko.html</loc>
-    <lastmod>2026-11-11</lastmod>
-  </url>
-  <url>
-    <loc>https://spotpuls.app/verkkoyhtiot/imatran-seudun-sahkonsiirto.html</loc>
-    <lastmod>2026-11-11</lastmod>
-  </url>
-  <url>
-    <loc>https://spotpuls.app/verkkoyhtiot/jarvi-suomen-energia.html</loc>
-    <lastmod>2026-11-11</lastmod>
-  </url>
-  <url>
-    <loc>https://spotpuls.app/verkkoyhtiot/kss-verkko.html</loc>
-    <lastmod>2026-11-11</lastmod>
-  </url>
-  <url>
-    <loc>https://spotpuls.app/verkkoyhtiot/kajave-loiste.html</loc>
-    <lastmod>2026-11-11</lastmod>
-  </url>
-  <url>
-    <loc>https://spotpuls.app/verkkoyhtiot/keravan-sipoon-energia.html</loc>
-    <lastmod>2026-11-11</lastmod>
-  </url>
-  <url>
-    <loc>https://spotpuls.app/verkkoyhtiot/koillis-satakunnan-sahko.html</loc>
-    <lastmod>2026-11-11</lastmod>
-  </url>
-  <url>
-    <loc>https://spotpuls.app/verkkoyhtiot/kokkolan-energiaverkot.html</loc>
-    <lastmod>2026-11-11</lastmod>
-  </url>
-  <url>
-    <loc>https://spotpuls.app/verkkoyhtiot/kotkan-energiaverkot.html</loc>
-    <lastmod>2026-11-11</lastmod>
-  </url>
-  <url>
-    <loc>https://spotpuls.app/verkkoyhtiot/kuopion-sahkoverkko.html</loc>
-    <lastmod>2026-11-11</lastmod>
-  </url>
-  <url>
-    <loc>https://spotpuls.app/verkkoyhtiot/kymenlaakson-sahkoverkko.html</loc>
-    <lastmod>2026-11-11</lastmod>
-  </url>
-  <url>
-    <loc>https://spotpuls.app/verkkoyhtiot/lahti-energia-sahkoverkko.html</loc>
-    <lastmod>2026-11-11</lastmod>
-  </url>
-  <url>
-    <loc>https://spotpuls.app/verkkoyhtiot/lappeenrannan-energiaverkot.html</loc>
-    <lastmod>2026-11-11</lastmod>
-  </url>
-  <url>
-    <loc>https://spotpuls.app/verkkoyhtiot/leppakosken-sahko.html</loc>
-    <lastmod>2026-11-11</lastmod>
-  </url>
-  <url>
-    <loc>https://spotpuls.app/verkkoyhtiot/nurmijarven-sahkoverkko.html</loc>
-    <lastmod>2026-11-11</lastmod>
-  </url>
-  <url>
-    <loc>https://spotpuls.app/verkkoyhtiot/oulun-energia-sahkoverkko.html</loc>
-    <lastmod>2026-11-11</lastmod>
-  </url>
-  <url>
-    <loc>https://spotpuls.app/verkkoyhtiot/oulun-seudun-sahko.html</loc>
-    <lastmod>2026-11-11</lastmod>
-  </url>
-  <url>
-    <loc>https://spotpuls.app/verkkoyhtiot/pks-sahkonsiirto.html</loc>
-    <lastmod>2026-11-11</lastmod>
-  </url>
-  <url>
-    <loc>https://spotpuls.app/verkkoyhtiot/pori-energia-sahkoverkot.html</loc>
-    <lastmod>2026-11-11</lastmod>
-  </url>
-  <url>
-    <loc>https://spotpuls.app/verkkoyhtiot/porvoon-sahkoverkko.html</loc>
-    <lastmod>2026-11-11</lastmod>
-  </url>
-  <url>
-    <loc>https://spotpuls.app/verkkoyhtiot/rauman-energia.html</loc>
-    <lastmod>2026-11-11</lastmod>
-  </url>
-  <url>
-    <loc>https://spotpuls.app/verkkoyhtiot/rovakaira.html</loc>
-    <lastmod>2026-11-11</lastmod>
-  </url>
-  <url>
-    <loc>https://spotpuls.app/verkkoyhtiot/neve-rovaniemi.html</loc>
-    <lastmod>2026-11-11</lastmod>
-  </url>
-  <url>
-    <loc>https://spotpuls.app/verkkoyhtiot/savon-voima-verkko.html</loc>
-    <lastmod>2026-11-11</lastmod>
-  </url>
-  <url>
-    <loc>https://spotpuls.app/verkkoyhtiot/seinajoen-energia.html</loc>
-    <lastmod>2026-11-11</lastmod>
-  </url>
-  <url>
-    <loc>https://spotpuls.app/verkkoyhtiot/tampereen-energia-sahkoverkko.html</loc>
-    <lastmod>2026-11-11</lastmod>
-  </url>
-  <url>
-    <loc>https://spotpuls.app/verkkoyhtiot/tornionlaakson-sahko.html</loc>
-    <lastmod>2026-11-11</lastmod>
-  </url>
-  <url>
-    <loc>https://spotpuls.app/verkkoyhtiot/turku-energia-sahkoverkot.html</loc>
-    <lastmod>2026-11-11</lastmod>
-  </url>
-  <url>
-    <loc>https://spotpuls.app/verkkoyhtiot/vaasan-sahkoverkko.html</loc>
-    <lastmod>2026-11-11</lastmod>
-  </url>
-  <url>
-    <loc>https://spotpuls.app/verkkoyhtiot/vakka-suomen-voima.html</loc>
-    <lastmod>2026-11-11</lastmod>
-  </url>
-  <url>
-    <loc>https://spotpuls.app/verkkoyhtiot/vantaan-energia-sahkoverkot.html</loc>
-    <lastmod>2026-11-11</lastmod>
-  </url>
-  <url>
-    <loc>https://spotpuls.app/verkkoyhtiot/index.html</loc>
-    <lastmod>2026-11-11</lastmod>
-  </url>
-  <url>
-    <loc>https://spotpuls.app/paikkakunnat/akaa.html</loc>
-    <lastmod>2026-11-11</lastmod>
-  </url>
-  <url>
-    <loc>https://spotpuls.app/paikkakunnat/alavus.html</loc>
-    <lastmod>2026-11-11</lastmod>
-  </url>
-  <url>
-    <loc>https://spotpuls.app/paikkakunnat/asikkala.html</loc>
-    <lastmod>2026-11-11</lastmod>
-  </url>
-  <url>
-    <loc>https://spotpuls.app/paikkakunnat/askola.html</loc>
-    <lastmod>2026-11-11</lastmod>
-  </url>
-  <url>
-    <loc>https://spotpuls.app/paikkakunnat/enontekio.html</loc>
-    <lastmod>2026-11-11</lastmod>
-  </url>
-  <url>
-    <loc>https://spotpuls.app/paikkakunnat/espoo.html</loc>
-    <lastmod>2026-11-11</lastmod>
-  </url>
-  <url>
-    <loc>https://spotpuls.app/paikkakunnat/eura.html</loc>
-    <lastmod>2026-11-11</lastmod>
-  </url>
-  <url>
-    <loc>https://spotpuls.app/paikkakunnat/eurajoki.html</loc>
-    <lastmod>2026-11-11</lastmod>
-  </url>
-  <url>
-    <loc>https://spotpuls.app/paikkakunnat/forssa.html</loc>
-    <lastmod>2026-11-11</lastmod>
-  </url>
-  <url>
-    <loc>https://spotpuls.app/paikkakunnat/haapajarvi.html</loc>
-    <lastmod>2026-11-11</lastmod>
-  </url>
-  <url>
-    <loc>https://spotpuls.app/paikkakunnat/hamina.html</loc>
-    <lastmod>2026-11-11</lastmod>
-  </url>
-  <url>
-    <loc>https://spotpuls.app/paikkakunnat/hanko.html</loc>
-    <lastmod>2026-11-11</lastmod>
-  </url>
-  <url>
-    <loc>https://spotpuls.app/paikkakunnat/harjavalta.html</loc>
-    <lastmod>2026-11-11</lastmod>
-  </url>
-  <url>
-    <loc>https://spotpuls.app/paikkakunnat/hattula.html</loc>
-    <lastmod>2026-11-11</lastmod>
-  </url>
-  <url>
-    <loc>https://spotpuls.app/paikkakunnat/hausjarvi.html</loc>
-    <lastmod>2026-11-11</lastmod>
-  </url>
-  <url>
-    <loc>https://spotpuls.app/paikkakunnat/heinola.html</loc>
-    <lastmod>2026-11-11</lastmod>
-  </url>
-  <url>
-    <loc>https://spotpuls.app/paikkakunnat/helsinki.html</loc>
-    <lastmod>2026-11-11</lastmod>
-  </url>
-  <url>
-    <loc>https://spotpuls.app/paikkakunnat/hollola.html</loc>
-    <lastmod>2026-11-11</lastmod>
-  </url>
-  <url>
-    <loc>https://spotpuls.app/paikkakunnat/huittinen.html</loc>
-    <lastmod>2026-11-11</lastmod>
-  </url>
-  <url>
-    <loc>https://spotpuls.app/paikkakunnat/hyvinkaa.html</loc>
-    <lastmod>2026-11-11</lastmod>
-  </url>
-  <url>
-    <loc>https://spotpuls.app/paikkakunnat/hameenkyro.html</loc>
-    <lastmod>2026-11-11</lastmod>
-  </url>
-  <url>
-    <loc>https://spotpuls.app/paikkakunnat/hameenlinna.html</loc>
-    <lastmod>2026-11-11</lastmod>
-  </url>
-  <url>
-    <loc>https://spotpuls.app/paikkakunnat/ii.html</loc>
-    <lastmod>2026-11-11</lastmod>
-  </url>
-  <url>
-    <loc>https://spotpuls.app/paikkakunnat/iisalmi.html</loc>
-    <lastmod>2026-11-11</lastmod>
-  </url>
-  <url>
-    <loc>https://spotpuls.app/paikkakunnat/ikaalinen.html</loc>
-    <lastmod>2026-11-11</lastmod>
-  </url>
-  <url>
-    <loc>https://spotpuls.app/paikkakunnat/ilmajoki.html</loc>
-    <lastmod>2026-11-11</lastmod>
-  </url>
-  <url>
-    <loc>https://spotpuls.app/paikkakunnat/ilomantsi.html</loc>
-    <lastmod>2026-11-11</lastmod>
-  </url>
-  <url>
-    <loc>https://spotpuls.app/paikkakunnat/imatra.html</loc>
-    <lastmod>2026-11-11</lastmod>
-  </url>
-  <url>
-    <loc>https://spotpuls.app/paikkakunnat/inari.html</loc>
-    <lastmod>2026-11-11</lastmod>
-  </url>
-  <url>
-    <loc>https://spotpuls.app/paikkakunnat/inkoo.html</loc>
-    <lastmod>2026-11-11</lastmod>
-  </url>
-  <url>
-    <loc>https://spotpuls.app/paikkakunnat/janakkala.html</loc>
-    <lastmod>2026-11-11</lastmod>
-  </url>
-  <url>
-    <loc>https://spotpuls.app/paikkakunnat/joensuu.html</loc>
-    <lastmod>2026-11-11</lastmod>
-  </url>
-  <url>
-    <loc>https://spotpuls.app/paikkakunnat/juva.html</loc>
-    <lastmod>2026-11-11</lastmod>
-  </url>
-  <url>
-    <loc>https://spotpuls.app/paikkakunnat/jyvaskyla.html</loc>
-    <lastmod>2026-11-11</lastmod>
-  </url>
-  <url>
-    <loc>https://spotpuls.app/paikkakunnat/jamsa.html</loc>
-    <lastmod>2026-11-11</lastmod>
-  </url>
-  <url>
-    <loc>https://spotpuls.app/paikkakunnat/jarvenpaa.html</loc>
-    <lastmod>2026-11-11</lastmod>
-  </url>
-  <url>
-    <loc>https://spotpuls.app/paikkakunnat/kaarina.html</loc>
-    <lastmod>2026-11-11</lastmod>
-  </url>
-  <url>
-    <loc>https://spotpuls.app/paikkakunnat/kajaani.html</loc>
-    <lastmod>2026-11-11</lastmod>
-  </url>
-  <url>
-    <loc>https://spotpuls.app/paikkakunnat/kalajoki.html</loc>
-    <lastmod>2026-11-11</lastmod>
-  </url>
-  <url>
-    <loc>https://spotpuls.app/paikkakunnat/kangasala.html</loc>
-    <lastmod>2026-11-11</lastmod>
-  </url>
-  <url>
-    <loc>https://spotpuls.app/paikkakunnat/kangasniemi.html</loc>
-    <lastmod>2026-11-11</lastmod>
-  </url>
-  <url>
-    <loc>https://spotpuls.app/paikkakunnat/kankaanpaa.html</loc>
-    <lastmod>2026-11-11</lastmod>
-  </url>
-  <url>
-    <loc>https://spotpuls.app/paikkakunnat/karkkila.html</loc>
-    <lastmod>2026-11-11</lastmod>
-  </url>
-  <url>
-    <loc>https://spotpuls.app/paikkakunnat/kauhajoki.html</loc>
-    <lastmod>2026-11-11</lastmod>
-  </url>
-  <url>
-    <loc>https://spotpuls.app/paikkakunnat/kauhava.html</loc>
-    <lastmod>2026-11-11</lastmod>
-  </url>
-  <url>
-    <loc>https://spotpuls.app/paikkakunnat/kauniainen.html</loc>
-    <lastmod>2026-11-11</lastmod>
-  </url>
-  <url>
-    <loc>https://spotpuls.app/paikkakunnat/kemi.html</loc>
-    <lastmod>2026-11-11</lastmod>
-  </url>
-  <url>
-    <loc>https://spotpuls.app/paikkakunnat/kemijarvi.html</loc>
-    <lastmod>2026-11-11</lastmod>
-  </url>
-  <url>
-    <loc>https://spotpuls.app/paikkakunnat/kempele.html</loc>
-    <lastmod>2026-11-11</lastmod>
-  </url>
-  <url>
-    <loc>https://spotpuls.app/paikkakunnat/kerava.html</loc>
-    <lastmod>2026-11-11</lastmod>
-  </url>
-  <url>
-    <loc>https://spotpuls.app/paikkakunnat/keuruu.html</loc>
-    <lastmod>2026-11-11</lastmod>
-  </url>
-  <url>
-    <loc>https://spotpuls.app/paikkakunnat/kirkkonummi.html</loc>
-    <lastmod>2026-11-11</lastmod>
-  </url>
-  <url>
-    <loc>https://spotpuls.app/paikkakunnat/kitee.html</loc>
-    <lastmod>2026-11-11</lastmod>
-  </url>
-  <url>
-    <loc>https://spotpuls.app/paikkakunnat/kittila.html</loc>
-    <lastmod>2026-11-11</lastmod>
-  </url>
-  <url>
-    <loc>https://spotpuls.app/paikkakunnat/kiuruvesi.html</loc>
-    <lastmod>2026-11-11</lastmod>
-  </url>
-  <url>
-    <loc>https://spotpuls.app/paikkakunnat/kokemaki.html</loc>
-    <lastmod>2026-11-11</lastmod>
-  </url>
-  <url>
-    <loc>https://spotpuls.app/paikkakunnat/kokkola.html</loc>
-    <lastmod>2026-11-11</lastmod>
-  </url>
-  <url>
-    <loc>https://spotpuls.app/paikkakunnat/kolari.html</loc>
-    <lastmod>2026-11-11</lastmod>
-  </url>
-  <url>
-    <loc>https://spotpuls.app/paikkakunnat/kontiolahti.html</loc>
-    <lastmod>2026-11-11</lastmod>
-  </url>
-  <url>
-    <loc>https://spotpuls.app/paikkakunnat/kotka.html</loc>
-    <lastmod>2026-11-11</lastmod>
-  </url>
-  <url>
-    <loc>https://spotpuls.app/paikkakunnat/kouvola.html</loc>
-    <lastmod>2026-11-11</lastmod>
-  </url>
-  <url>
-    <loc>https://spotpuls.app/paikkakunnat/kristiinankaupunki.html</loc>
-    <lastmod>2026-11-11</lastmod>
-  </url>
-  <url>
-    <loc>https://spotpuls.app/paikkakunnat/kuhmo.html</loc>
-    <lastmod>2026-11-11</lastmod>
-  </url>
-  <url>
-    <loc>https://spotpuls.app/paikkakunnat/kuopio.html</loc>
-    <lastmod>2026-11-11</lastmod>
-  </url>
-  <url>
-    <loc>https://spotpuls.app/paikkakunnat/kurikka.html</loc>
-    <lastmod>2026-11-11</lastmod>
-  </url>
-  <url>
-    <loc>https://spotpuls.app/paikkakunnat/kuusamo.html</loc>
-    <lastmod>2026-11-11</lastmod>
-  </url>
-  <url>
-    <loc>https://spotpuls.app/paikkakunnat/lahti.html</loc>
-    <lastmod>2026-11-11</lastmod>
-  </url>
-  <url>
-    <loc>https://spotpuls.app/paikkakunnat/laitila.html</loc>
-    <lastmod>2026-11-11</lastmod>
-  </url>
-  <url>
-    <loc>https://spotpuls.app/paikkakunnat/lapinlahti.html</loc>
-    <lastmod>2026-11-11</lastmod>
-  </url>
-  <url>
-    <loc>https://spotpuls.app/paikkakunnat/lappeenranta.html</loc>
-    <lastmod>2026-11-11</lastmod>
-  </url>
-  <url>
-    <loc>https://spotpuls.app/paikkakunnat/lapua.html</loc>
-    <lastmod>2026-11-11</lastmod>
-  </url>
-  <url>
-    <loc>https://spotpuls.app/paikkakunnat/laukaa.html</loc>
-    <lastmod>2026-11-11</lastmod>
-  </url>
-  <url>
-    <loc>https://spotpuls.app/paikkakunnat/lempaala.html</loc>
-    <lastmod>2026-11-11</lastmod>
-  </url>
-  <url>
-    <loc>https://spotpuls.app/paikkakunnat/leppavirta.html</loc>
-    <lastmod>2026-11-11</lastmod>
-  </url>
-  <url>
-    <loc>https://spotpuls.app/paikkakunnat/lieksa.html</loc>
-    <lastmod>2026-11-11</lastmod>
-  </url>
-  <url>
-    <loc>https://spotpuls.app/paikkakunnat/lieto.html</loc>
-    <lastmod>2026-11-11</lastmod>
-  </url>
-  <url>
-    <loc>https://spotpuls.app/paikkakunnat/liminka.html</loc>
-    <lastmod>2026-11-11</lastmod>
-  </url>
-  <url>
-    <loc>https://spotpuls.app/paikkakunnat/liperi.html</loc>
-    <lastmod>2026-11-11</lastmod>
-  </url>
-  <url>
-    <loc>https://spotpuls.app/paikkakunnat/lohja.html</loc>
-    <lastmod>2026-11-11</lastmod>
-  </url>
-  <url>
-    <loc>https://spotpuls.app/paikkakunnat/loimaa.html</loc>
-    <lastmod>2026-11-11</lastmod>
-  </url>
-  <url>
-    <loc>https://spotpuls.app/paikkakunnat/loppi.html</loc>
-    <lastmod>2026-11-11</lastmod>
-  </url>
-  <url>
-    <loc>https://spotpuls.app/paikkakunnat/loviisa.html</loc>
-    <lastmod>2026-11-11</lastmod>
-  </url>
-  <url>
-    <loc>https://spotpuls.app/paikkakunnat/masku.html</loc>
-    <lastmod>2026-11-11</lastmod>
-  </url>
-  <url>
-    <loc>https://spotpuls.app/paikkakunnat/mikkeli.html</loc>
-    <lastmod>2026-11-11</lastmod>
-  </url>
-  <url>
-    <loc>https://spotpuls.app/paikkakunnat/muhos.html</loc>
-    <lastmod>2026-11-11</lastmod>
-  </url>
-  <url>
-    <loc>https://spotpuls.app/paikkakunnat/muonio.html</loc>
-    <lastmod>2026-11-11</lastmod>
-  </url>
-  <url>
-    <loc>https://spotpuls.app/paikkakunnat/mustasaari.html</loc>
-    <lastmod>2026-11-11</lastmod>
-  </url>
-  <url>
-    <loc>https://spotpuls.app/paikkakunnat/muurame.html</loc>
-    <lastmod>2026-11-11</lastmod>
-  </url>
-  <url>
-    <loc>https://spotpuls.app/paikkakunnat/mynamaki.html</loc>
-    <lastmod>2026-11-11</lastmod>
-  </url>
-  <url>
-    <loc>https://spotpuls.app/paikkakunnat/mantsala.html</loc>
-    <lastmod>2026-11-11</lastmod>
-  </url>
-  <url>
-    <loc>https://spotpuls.app/paikkakunnat/mantta-vilppula.html</loc>
-    <lastmod>2026-11-11</lastmod>
-  </url>
-  <url>
-    <loc>https://spotpuls.app/paikkakunnat/mantyharju.html</loc>
-    <lastmod>2026-11-11</lastmod>
-  </url>
-  <url>
-    <loc>https://spotpuls.app/paikkakunnat/naantali.html</loc>
-    <lastmod>2026-11-11</lastmod>
-  </url>
-  <url>
-    <loc>https://spotpuls.app/paikkakunnat/nivala.html</loc>
-    <lastmod>2026-11-11</lastmod>
-  </url>
-  <url>
-    <loc>https://spotpuls.app/paikkakunnat/nokia.html</loc>
-    <lastmod>2026-11-11</lastmod>
-  </url>
-  <url>
-    <loc>https://spotpuls.app/paikkakunnat/nurmes.html</loc>
-    <lastmod>2026-11-11</lastmod>
-  </url>
-  <url>
-    <loc>https://spotpuls.app/paikkakunnat/nurmijarvi.html</loc>
-    <lastmod>2026-11-11</lastmod>
-  </url>
-  <url>
-    <loc>https://spotpuls.app/paikkakunnat/narpio.html</loc>
-    <lastmod>2026-11-11</lastmod>
-  </url>
-  <url>
-    <loc>https://spotpuls.app/paikkakunnat/orimattila.html</loc>
-    <lastmod>2026-11-11</lastmod>
-  </url>
-  <url>
-    <loc>https://spotpuls.app/paikkakunnat/orivesi.html</loc>
-    <lastmod>2026-11-11</lastmod>
-  </url>
-  <url>
-    <loc>https://spotpuls.app/paikkakunnat/oulainen.html</loc>
-    <lastmod>2026-11-11</lastmod>
-  </url>
-  <url>
-    <loc>https://spotpuls.app/paikkakunnat/oulu.html</loc>
-    <lastmod>2026-11-11</lastmod>
-  </url>
-  <url>
-    <loc>https://spotpuls.app/paikkakunnat/outokumpu.html</loc>
-    <lastmod>2026-11-11</lastmod>
-  </url>
-  <url>
-    <loc>https://spotpuls.app/paikkakunnat/paimio.html</loc>
-    <lastmod>2026-11-11</lastmod>
-  </url>
-  <url>
-    <loc>https://spotpuls.app/paikkakunnat/parainen.html</loc>
-    <lastmod>2026-11-11</lastmod>
-  </url>
-  <url>
-    <loc>https://spotpuls.app/paikkakunnat/parikkala.html</loc>
-    <lastmod>2026-11-11</lastmod>
-  </url>
-  <url>
-    <loc>https://spotpuls.app/paikkakunnat/parkano.html</loc>
-    <lastmod>2026-11-11</lastmod>
-  </url>
-  <url>
-    <loc>https://spotpuls.app/paikkakunnat/pedersore.html</loc>
-    <lastmod>2026-11-11</lastmod>
-  </url>
-  <url>
-    <loc>https://spotpuls.app/paikkakunnat/pieksamaki.html</loc>
-    <lastmod>2026-11-11</lastmod>
-  </url>
-  <url>
-    <loc>https://spotpuls.app/paikkakunnat/pietarsaari.html</loc>
-    <lastmod>2026-11-11</lastmod>
-  </url>
-  <url>
-    <loc>https://spotpuls.app/paikkakunnat/pirkkala.html</loc>
-    <lastmod>2026-11-11</lastmod>
-  </url>
-  <url>
-    <loc>https://spotpuls.app/paikkakunnat/pori.html</loc>
-    <lastmod>2026-11-11</lastmod>
-  </url>
-  <url>
-    <loc>https://spotpuls.app/paikkakunnat/pornainen.html</loc>
-    <lastmod>2026-11-11</lastmod>
-  </url>
-  <url>
-    <loc>https://spotpuls.app/paikkakunnat/porvoo.html</loc>
-    <lastmod>2026-11-11</lastmod>
-  </url>
-  <url>
-    <loc>https://spotpuls.app/paikkakunnat/pudasjarvi.html</loc>
-    <lastmod>2026-11-11</lastmod>
-  </url>
-  <url>
-    <loc>https://spotpuls.app/paikkakunnat/pyhtaa.html</loc>
-    <lastmod>2026-11-11</lastmod>
-  </url>
-  <url>
-    <loc>https://spotpuls.app/paikkakunnat/raahe.html</loc>
-    <lastmod>2026-11-11</lastmod>
-  </url>
-  <url>
-    <loc>https://spotpuls.app/paikkakunnat/raasepori.html</loc>
-    <lastmod>2026-11-11</lastmod>
-  </url>
-  <url>
-    <loc>https://spotpuls.app/paikkakunnat/raisio.html</loc>
-    <lastmod>2026-11-11</lastmod>
-  </url>
-  <url>
-    <loc>https://spotpuls.app/paikkakunnat/rauma.html</loc>
-    <lastmod>2026-11-11</lastmod>
-  </url>
-  <url>
-    <loc>https://spotpuls.app/paikkakunnat/riihimaki.html</loc>
-    <lastmod>2026-11-11</lastmod>
-  </url>
-  <url>
-    <loc>https://spotpuls.app/paikkakunnat/rovaniemi.html</loc>
-    <lastmod>2026-11-11</lastmod>
-  </url>
-  <url>
-    <loc>https://spotpuls.app/paikkakunnat/ruokolahti.html</loc>
-    <lastmod>2026-11-11</lastmod>
-  </url>
-  <url>
-    <loc>https://spotpuls.app/paikkakunnat/saarijarvi.html</loc>
-    <lastmod>2026-11-11</lastmod>
-  </url>
-  <url>
-    <loc>https://spotpuls.app/paikkakunnat/salo.html</loc>
-    <lastmod>2026-11-11</lastmod>
-  </url>
-  <url>
-    <loc>https://spotpuls.app/paikkakunnat/sastamala.html</loc>
-    <lastmod>2026-11-11</lastmod>
-  </url>
-  <url>
-    <loc>https://spotpuls.app/paikkakunnat/savonlinna.html</loc>
-    <lastmod>2026-11-11</lastmod>
-  </url>
-  <url>
-    <loc>https://spotpuls.app/paikkakunnat/seinajoki.html</loc>
-    <lastmod>2026-11-11</lastmod>
-  </url>
-  <url>
-    <loc>https://spotpuls.app/paikkakunnat/siilinjarvi.html</loc>
-    <lastmod>2026-11-11</lastmod>
-  </url>
-  <url>
-    <loc>https://spotpuls.app/paikkakunnat/sipoo.html</loc>
-    <lastmod>2026-11-11</lastmod>
-  </url>
-  <url>
-    <loc>https://spotpuls.app/paikkakunnat/siuntio.html</loc>
-    <lastmod>2026-11-11</lastmod>
-  </url>
-  <url>
-    <loc>https://spotpuls.app/paikkakunnat/sodankyla.html</loc>
-    <lastmod>2026-11-11</lastmod>
-  </url>
-  <url>
-    <loc>https://spotpuls.app/paikkakunnat/somero.html</loc>
-    <lastmod>2026-11-11</lastmod>
-  </url>
-  <url>
-    <loc>https://spotpuls.app/paikkakunnat/sotkamo.html</loc>
-    <lastmod>2026-11-11</lastmod>
-  </url>
-  <url>
-    <loc>https://spotpuls.app/paikkakunnat/suomussalmi.html</loc>
-    <lastmod>2026-11-11</lastmod>
-  </url>
-  <url>
-    <loc>https://spotpuls.app/paikkakunnat/suonenjoki.html</loc>
-    <lastmod>2026-11-11</lastmod>
-  </url>
-  <url>
-    <loc>https://spotpuls.app/paikkakunnat/tampere.html</loc>
-    <lastmod>2026-11-11</lastmod>
-  </url>
-  <url>
-    <loc>https://spotpuls.app/paikkakunnat/tornio.html</loc>
-    <lastmod>2026-11-11</lastmod>
-  </url>
-  <url>
-    <loc>https://spotpuls.app/paikkakunnat/turku.html</loc>
-    <lastmod>2026-11-11</lastmod>
-  </url>
-  <url>
-    <loc>https://spotpuls.app/paikkakunnat/tuusula.html</loc>
-    <lastmod>2026-11-11</lastmod>
-  </url>
-  <url>
-    <loc>https://spotpuls.app/paikkakunnat/ulvila.html</loc>
-    <lastmod>2026-11-11</lastmod>
-  </url>
-  <url>
-    <loc>https://spotpuls.app/paikkakunnat/uusikaarlepyy.html</loc>
-    <lastmod>2026-11-11</lastmod>
-  </url>
-  <url>
-    <loc>https://spotpuls.app/paikkakunnat/uusikaupunki.html</loc>
-    <lastmod>2026-11-11</lastmod>
-  </url>
-  <url>
-    <loc>https://spotpuls.app/paikkakunnat/vaasa.html</loc>
-    <lastmod>2026-11-11</lastmod>
-  </url>
-  <url>
-    <loc>https://spotpuls.app/paikkakunnat/valkeakoski.html</loc>
-    <lastmod>2026-11-11</lastmod>
-  </url>
-  <url>
-    <loc>https://spotpuls.app/paikkakunnat/vantaa.html</loc>
-    <lastmod>2026-11-11</lastmod>
-  </url>
-  <url>
-    <loc>https://spotpuls.app/paikkakunnat/varkaus.html</loc>
-    <lastmod>2026-11-11</lastmod>
-  </url>
-  <url>
-    <loc>https://spotpuls.app/paikkakunnat/vihti.html</loc>
-    <lastmod>2026-11-11</lastmod>
-  </url>
-  <url>
-    <loc>https://spotpuls.app/paikkakunnat/viitasaari.html</loc>
-    <lastmod>2026-11-11</lastmod>
-  </url>
-  <url>
-    <loc>https://spotpuls.app/paikkakunnat/virrat.html</loc>
-    <lastmod>2026-11-11</lastmod>
-  </url>
-  <url>
-    <loc>https://spotpuls.app/paikkakunnat/ylivieska.html</loc>
-    <lastmod>2026-11-11</lastmod>
-  </url>
-  <url>
-    <loc>https://spotpuls.app/paikkakunnat/ylojarvi.html</loc>
-    <lastmod>2026-11-11</lastmod>
-  </url>
-  <url>
-    <loc>https://spotpuls.app/paikkakunnat/ahtari.html</loc>
-    <lastmod>2026-11-11</lastmod>
-  </url>
-  <url>
-    <loc>https://spotpuls.app/paikkakunnat/aanekoski.html</loc>
-    <lastmod>2026-11-11</lastmod>
-  </url>
-  <url>
-    <loc>https://spotpuls.app/paikkakunnat/index.html</loc>
-    <lastmod>2026-11-11</lastmod>
-  </url>
-  <url>
-    <loc>https://spotpuls.app/oppaat/porssisahko-ennuste-7-vrk-tuulivoima-ja-lampotila.html</loc>
-    <lastmod>2026-11-11</lastmod>
-  </url>
-  <url>
-    <loc>https://spotpuls.app/oppaat/sahkon-siirtohinta-postinumerolla-kaikki-verkkoyhtiot.html</loc>
-    <lastmod>2026-11-11</lastmod>
-  </url>
-  <url>
-    <loc>https://spotpuls.app/oppaat/yleissiirto-yosiirto-vai-kausisiirto-vertailu.html</loc>
-    <lastmod>2026-11-11</lastmod>
-  </url>
-  <url>
-    <loc>https://spotpuls.app/oppaat/sahkoauton-lataus-ja-lamminvesivaraaja-porssisahkolla.html</loc>
-    <lastmod>2026-11-11</lastmod>
-  </url>
-  <url>
-    <loc>https://spotpuls.app/en/</loc>
-    <lastmod>2026-11-11</lastmod>
-  </url>
-  <url>
-    <loc>https://spotpuls.app/se/</loc>
-    <lastmod>2026-11-11</lastmod>
-  </url>
-  <url>
-    <loc>https://spotpuls.app/no/</loc>
-    <lastmod>2026-11-11</lastmod>
-  </url>
-  <url>
-    <loc>https://spotpuls.app/dk/</loc>
-    <lastmod>2026-11-11</lastmod>
-  </url>
-  <url>
-    <loc>https://spotpuls.app/ee/</loc>
-    <lastmod>2026-11-11</lastmod>
-  </url>
-  <url>
-    <loc>https://spotpuls.app/lv/</loc>
-    <lastmod>2026-11-11</lastmod>
-  </url>
-  <url>
-    <loc>https://spotpuls.app/lt/</loc>
-    <lastmod>2026-11-11</lastmod>
-  </url>
-  <url>
-    <loc>https://spotpuls.app/de/</loc>
-    <lastmod>2026-11-11</lastmod>
+    <lastmod>2026-11-12</lastmod>
+    <xhtml:link rel="alternate" hreflang="fi" href="https://spotpuls.app/" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://spotpuls.app/en/" />
+    <xhtml:link rel="alternate" hreflang="sv" href="https://spotpuls.app/se/" />
+    <xhtml:link rel="alternate" hreflang="no" href="https://spotpuls.app/no/" />
+    <xhtml:link rel="alternate" hreflang="da" href="https://spotpuls.app/dk/" />
+    <xhtml:link rel="alternate" hreflang="et" href="https://spotpuls.app/ee/" />
+    <xhtml:link rel="alternate" hreflang="lv" href="https://spotpuls.app/lv/" />
+    <xhtml:link rel="alternate" hreflang="lt" href="https://spotpuls.app/lt/" />
+    <xhtml:link rel="alternate" hreflang="de" href="https://spotpuls.app/de/" />
+    <xhtml:link rel="alternate" hreflang="de-AT" href="https://spotpuls.app/at/" />
+    <xhtml:link rel="alternate" hreflang="de-CH" href="https://spotpuls.app/ch/" />
+    <xhtml:link rel="alternate" hreflang="nl" href="https://spotpuls.app/nl/" />
+    <xhtml:link rel="alternate" hreflang="nl-BE" href="https://spotpuls.app/be/" />
+    <xhtml:link rel="alternate" hreflang="fr" href="https://spotpuls.app/fr/" />
+    <xhtml:link rel="alternate" hreflang="en-GB" href="https://spotpuls.app/gb/" />
+    <xhtml:link rel="alternate" hreflang="en-IE" href="https://spotpuls.app/ie/" />
+    <xhtml:link rel="alternate" hreflang="es" href="https://spotpuls.app/es/" />
+    <xhtml:link rel="alternate" hreflang="pt" href="https://spotpuls.app/pt/" />
+    <xhtml:link rel="alternate" hreflang="it" href="https://spotpuls.app/it/" />
+    <xhtml:link rel="alternate" hreflang="pl" href="https://spotpuls.app/pl/" />
+    <xhtml:link rel="alternate" hreflang="cs" href="https://spotpuls.app/cz/" />
+    <xhtml:link rel="alternate" hreflang="sk" href="https://spotpuls.app/sk/" />
+    <xhtml:link rel="alternate" hreflang="hu" href="https://spotpuls.app/hu/" />
+    <xhtml:link rel="alternate" hreflang="ro" href="https://spotpuls.app/ro/" />
+    <xhtml:link rel="alternate" hreflang="bg" href="https://spotpuls.app/bg/" />
+    <xhtml:link rel="alternate" hreflang="sl" href="https://spotpuls.app/si/" />
+    <xhtml:link rel="alternate" hreflang="hr" href="https://spotpuls.app/hr/" />
+    <xhtml:link rel="alternate" hreflang="el" href="https://spotpuls.app/gr/" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://spotpuls.app/en/" />
   </url>
   <url>
     <loc>https://spotpuls.app/at/</loc>
-    <lastmod>2026-11-11</lastmod>
-  </url>
-  <url>
-    <loc>https://spotpuls.app/ch/</loc>
-    <lastmod>2026-11-11</lastmod>
-  </url>
-  <url>
-    <loc>https://spotpuls.app/nl/</loc>
-    <lastmod>2026-11-11</lastmod>
+    <lastmod>2026-11-12</lastmod>
+    <xhtml:link rel="alternate" hreflang="fi" href="https://spotpuls.app/" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://spotpuls.app/en/" />
+    <xhtml:link rel="alternate" hreflang="sv" href="https://spotpuls.app/se/" />
+    <xhtml:link rel="alternate" hreflang="no" href="https://spotpuls.app/no/" />
+    <xhtml:link rel="alternate" hreflang="da" href="https://spotpuls.app/dk/" />
+    <xhtml:link rel="alternate" hreflang="et" href="https://spotpuls.app/ee/" />
+    <xhtml:link rel="alternate" hreflang="lv" href="https://spotpuls.app/lv/" />
+    <xhtml:link rel="alternate" hreflang="lt" href="https://spotpuls.app/lt/" />
+    <xhtml:link rel="alternate" hreflang="de" href="https://spotpuls.app/de/" />
+    <xhtml:link rel="alternate" hreflang="de-AT" href="https://spotpuls.app/at/" />
+    <xhtml:link rel="alternate" hreflang="de-CH" href="https://spotpuls.app/ch/" />
+    <xhtml:link rel="alternate" hreflang="nl" href="https://spotpuls.app/nl/" />
+    <xhtml:link rel="alternate" hreflang="nl-BE" href="https://spotpuls.app/be/" />
+    <xhtml:link rel="alternate" hreflang="fr" href="https://spotpuls.app/fr/" />
+    <xhtml:link rel="alternate" hreflang="en-GB" href="https://spotpuls.app/gb/" />
+    <xhtml:link rel="alternate" hreflang="en-IE" href="https://spotpuls.app/ie/" />
+    <xhtml:link rel="alternate" hreflang="es" href="https://spotpuls.app/es/" />
+    <xhtml:link rel="alternate" hreflang="pt" href="https://spotpuls.app/pt/" />
+    <xhtml:link rel="alternate" hreflang="it" href="https://spotpuls.app/it/" />
+    <xhtml:link rel="alternate" hreflang="pl" href="https://spotpuls.app/pl/" />
+    <xhtml:link rel="alternate" hreflang="cs" href="https://spotpuls.app/cz/" />
+    <xhtml:link rel="alternate" hreflang="sk" href="https://spotpuls.app/sk/" />
+    <xhtml:link rel="alternate" hreflang="hu" href="https://spotpuls.app/hu/" />
+    <xhtml:link rel="alternate" hreflang="ro" href="https://spotpuls.app/ro/" />
+    <xhtml:link rel="alternate" hreflang="bg" href="https://spotpuls.app/bg/" />
+    <xhtml:link rel="alternate" hreflang="sl" href="https://spotpuls.app/si/" />
+    <xhtml:link rel="alternate" hreflang="hr" href="https://spotpuls.app/hr/" />
+    <xhtml:link rel="alternate" hreflang="el" href="https://spotpuls.app/gr/" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://spotpuls.app/en/" />
   </url>
   <url>
     <loc>https://spotpuls.app/be/</loc>
-    <lastmod>2026-11-11</lastmod>
-  </url>
-  <url>
-    <loc>https://spotpuls.app/fr/</loc>
-    <lastmod>2026-11-11</lastmod>
-  </url>
-  <url>
-    <loc>https://spotpuls.app/gb/</loc>
-    <lastmod>2026-11-11</lastmod>
-  </url>
-  <url>
-    <loc>https://spotpuls.app/ie/</loc>
-    <lastmod>2026-11-11</lastmod>
-  </url>
-  <url>
-    <loc>https://spotpuls.app/es/</loc>
-    <lastmod>2026-11-11</lastmod>
-  </url>
-  <url>
-    <loc>https://spotpuls.app/pt/</loc>
-    <lastmod>2026-11-11</lastmod>
-  </url>
-  <url>
-    <loc>https://spotpuls.app/it/</loc>
-    <lastmod>2026-11-11</lastmod>
-  </url>
-  <url>
-    <loc>https://spotpuls.app/pl/</loc>
-    <lastmod>2026-11-11</lastmod>
-  </url>
-  <url>
-    <loc>https://spotpuls.app/cz/</loc>
-    <lastmod>2026-11-11</lastmod>
-  </url>
-  <url>
-    <loc>https://spotpuls.app/sk/</loc>
-    <lastmod>2026-11-11</lastmod>
-  </url>
-  <url>
-    <loc>https://spotpuls.app/hu/</loc>
-    <lastmod>2026-11-11</lastmod>
-  </url>
-  <url>
-    <loc>https://spotpuls.app/ro/</loc>
-    <lastmod>2026-11-11</lastmod>
+    <lastmod>2026-11-12</lastmod>
+    <xhtml:link rel="alternate" hreflang="fi" href="https://spotpuls.app/" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://spotpuls.app/en/" />
+    <xhtml:link rel="alternate" hreflang="sv" href="https://spotpuls.app/se/" />
+    <xhtml:link rel="alternate" hreflang="no" href="https://spotpuls.app/no/" />
+    <xhtml:link rel="alternate" hreflang="da" href="https://spotpuls.app/dk/" />
+    <xhtml:link rel="alternate" hreflang="et" href="https://spotpuls.app/ee/" />
+    <xhtml:link rel="alternate" hreflang="lv" href="https://spotpuls.app/lv/" />
+    <xhtml:link rel="alternate" hreflang="lt" href="https://spotpuls.app/lt/" />
+    <xhtml:link rel="alternate" hreflang="de" href="https://spotpuls.app/de/" />
+    <xhtml:link rel="alternate" hreflang="de-AT" href="https://spotpuls.app/at/" />
+    <xhtml:link rel="alternate" hreflang="de-CH" href="https://spotpuls.app/ch/" />
+    <xhtml:link rel="alternate" hreflang="nl" href="https://spotpuls.app/nl/" />
+    <xhtml:link rel="alternate" hreflang="nl-BE" href="https://spotpuls.app/be/" />
+    <xhtml:link rel="alternate" hreflang="fr" href="https://spotpuls.app/fr/" />
+    <xhtml:link rel="alternate" hreflang="en-GB" href="https://spotpuls.app/gb/" />
+    <xhtml:link rel="alternate" hreflang="en-IE" href="https://spotpuls.app/ie/" />
+    <xhtml:link rel="alternate" hreflang="es" href="https://spotpuls.app/es/" />
+    <xhtml:link rel="alternate" hreflang="pt" href="https://spotpuls.app/pt/" />
+    <xhtml:link rel="alternate" hreflang="it" href="https://spotpuls.app/it/" />
+    <xhtml:link rel="alternate" hreflang="pl" href="https://spotpuls.app/pl/" />
+    <xhtml:link rel="alternate" hreflang="cs" href="https://spotpuls.app/cz/" />
+    <xhtml:link rel="alternate" hreflang="sk" href="https://spotpuls.app/sk/" />
+    <xhtml:link rel="alternate" hreflang="hu" href="https://spotpuls.app/hu/" />
+    <xhtml:link rel="alternate" hreflang="ro" href="https://spotpuls.app/ro/" />
+    <xhtml:link rel="alternate" hreflang="bg" href="https://spotpuls.app/bg/" />
+    <xhtml:link rel="alternate" hreflang="sl" href="https://spotpuls.app/si/" />
+    <xhtml:link rel="alternate" hreflang="hr" href="https://spotpuls.app/hr/" />
+    <xhtml:link rel="alternate" hreflang="el" href="https://spotpuls.app/gr/" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://spotpuls.app/en/" />
   </url>
   <url>
     <loc>https://spotpuls.app/bg/</loc>
-    <lastmod>2026-11-11</lastmod>
+    <lastmod>2026-11-12</lastmod>
+    <xhtml:link rel="alternate" hreflang="fi" href="https://spotpuls.app/" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://spotpuls.app/en/" />
+    <xhtml:link rel="alternate" hreflang="sv" href="https://spotpuls.app/se/" />
+    <xhtml:link rel="alternate" hreflang="no" href="https://spotpuls.app/no/" />
+    <xhtml:link rel="alternate" hreflang="da" href="https://spotpuls.app/dk/" />
+    <xhtml:link rel="alternate" hreflang="et" href="https://spotpuls.app/ee/" />
+    <xhtml:link rel="alternate" hreflang="lv" href="https://spotpuls.app/lv/" />
+    <xhtml:link rel="alternate" hreflang="lt" href="https://spotpuls.app/lt/" />
+    <xhtml:link rel="alternate" hreflang="de" href="https://spotpuls.app/de/" />
+    <xhtml:link rel="alternate" hreflang="de-AT" href="https://spotpuls.app/at/" />
+    <xhtml:link rel="alternate" hreflang="de-CH" href="https://spotpuls.app/ch/" />
+    <xhtml:link rel="alternate" hreflang="nl" href="https://spotpuls.app/nl/" />
+    <xhtml:link rel="alternate" hreflang="nl-BE" href="https://spotpuls.app/be/" />
+    <xhtml:link rel="alternate" hreflang="fr" href="https://spotpuls.app/fr/" />
+    <xhtml:link rel="alternate" hreflang="en-GB" href="https://spotpuls.app/gb/" />
+    <xhtml:link rel="alternate" hreflang="en-IE" href="https://spotpuls.app/ie/" />
+    <xhtml:link rel="alternate" hreflang="es" href="https://spotpuls.app/es/" />
+    <xhtml:link rel="alternate" hreflang="pt" href="https://spotpuls.app/pt/" />
+    <xhtml:link rel="alternate" hreflang="it" href="https://spotpuls.app/it/" />
+    <xhtml:link rel="alternate" hreflang="pl" href="https://spotpuls.app/pl/" />
+    <xhtml:link rel="alternate" hreflang="cs" href="https://spotpuls.app/cz/" />
+    <xhtml:link rel="alternate" hreflang="sk" href="https://spotpuls.app/sk/" />
+    <xhtml:link rel="alternate" hreflang="hu" href="https://spotpuls.app/hu/" />
+    <xhtml:link rel="alternate" hreflang="ro" href="https://spotpuls.app/ro/" />
+    <xhtml:link rel="alternate" hreflang="bg" href="https://spotpuls.app/bg/" />
+    <xhtml:link rel="alternate" hreflang="sl" href="https://spotpuls.app/si/" />
+    <xhtml:link rel="alternate" hreflang="hr" href="https://spotpuls.app/hr/" />
+    <xhtml:link rel="alternate" hreflang="el" href="https://spotpuls.app/gr/" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://spotpuls.app/en/" />
   </url>
   <url>
-    <loc>https://spotpuls.app/si/</loc>
-    <lastmod>2026-11-11</lastmod>
+    <loc>https://spotpuls.app/ch/</loc>
+    <lastmod>2026-11-12</lastmod>
+    <xhtml:link rel="alternate" hreflang="fi" href="https://spotpuls.app/" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://spotpuls.app/en/" />
+    <xhtml:link rel="alternate" hreflang="sv" href="https://spotpuls.app/se/" />
+    <xhtml:link rel="alternate" hreflang="no" href="https://spotpuls.app/no/" />
+    <xhtml:link rel="alternate" hreflang="da" href="https://spotpuls.app/dk/" />
+    <xhtml:link rel="alternate" hreflang="et" href="https://spotpuls.app/ee/" />
+    <xhtml:link rel="alternate" hreflang="lv" href="https://spotpuls.app/lv/" />
+    <xhtml:link rel="alternate" hreflang="lt" href="https://spotpuls.app/lt/" />
+    <xhtml:link rel="alternate" hreflang="de" href="https://spotpuls.app/de/" />
+    <xhtml:link rel="alternate" hreflang="de-AT" href="https://spotpuls.app/at/" />
+    <xhtml:link rel="alternate" hreflang="de-CH" href="https://spotpuls.app/ch/" />
+    <xhtml:link rel="alternate" hreflang="nl" href="https://spotpuls.app/nl/" />
+    <xhtml:link rel="alternate" hreflang="nl-BE" href="https://spotpuls.app/be/" />
+    <xhtml:link rel="alternate" hreflang="fr" href="https://spotpuls.app/fr/" />
+    <xhtml:link rel="alternate" hreflang="en-GB" href="https://spotpuls.app/gb/" />
+    <xhtml:link rel="alternate" hreflang="en-IE" href="https://spotpuls.app/ie/" />
+    <xhtml:link rel="alternate" hreflang="es" href="https://spotpuls.app/es/" />
+    <xhtml:link rel="alternate" hreflang="pt" href="https://spotpuls.app/pt/" />
+    <xhtml:link rel="alternate" hreflang="it" href="https://spotpuls.app/it/" />
+    <xhtml:link rel="alternate" hreflang="pl" href="https://spotpuls.app/pl/" />
+    <xhtml:link rel="alternate" hreflang="cs" href="https://spotpuls.app/cz/" />
+    <xhtml:link rel="alternate" hreflang="sk" href="https://spotpuls.app/sk/" />
+    <xhtml:link rel="alternate" hreflang="hu" href="https://spotpuls.app/hu/" />
+    <xhtml:link rel="alternate" hreflang="ro" href="https://spotpuls.app/ro/" />
+    <xhtml:link rel="alternate" hreflang="bg" href="https://spotpuls.app/bg/" />
+    <xhtml:link rel="alternate" hreflang="sl" href="https://spotpuls.app/si/" />
+    <xhtml:link rel="alternate" hreflang="hr" href="https://spotpuls.app/hr/" />
+    <xhtml:link rel="alternate" hreflang="el" href="https://spotpuls.app/gr/" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://spotpuls.app/en/" />
   </url>
   <url>
-    <loc>https://spotpuls.app/hr/</loc>
-    <lastmod>2026-11-11</lastmod>
+    <loc>https://spotpuls.app/cz/</loc>
+    <lastmod>2026-11-12</lastmod>
+    <xhtml:link rel="alternate" hreflang="fi" href="https://spotpuls.app/" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://spotpuls.app/en/" />
+    <xhtml:link rel="alternate" hreflang="sv" href="https://spotpuls.app/se/" />
+    <xhtml:link rel="alternate" hreflang="no" href="https://spotpuls.app/no/" />
+    <xhtml:link rel="alternate" hreflang="da" href="https://spotpuls.app/dk/" />
+    <xhtml:link rel="alternate" hreflang="et" href="https://spotpuls.app/ee/" />
+    <xhtml:link rel="alternate" hreflang="lv" href="https://spotpuls.app/lv/" />
+    <xhtml:link rel="alternate" hreflang="lt" href="https://spotpuls.app/lt/" />
+    <xhtml:link rel="alternate" hreflang="de" href="https://spotpuls.app/de/" />
+    <xhtml:link rel="alternate" hreflang="de-AT" href="https://spotpuls.app/at/" />
+    <xhtml:link rel="alternate" hreflang="de-CH" href="https://spotpuls.app/ch/" />
+    <xhtml:link rel="alternate" hreflang="nl" href="https://spotpuls.app/nl/" />
+    <xhtml:link rel="alternate" hreflang="nl-BE" href="https://spotpuls.app/be/" />
+    <xhtml:link rel="alternate" hreflang="fr" href="https://spotpuls.app/fr/" />
+    <xhtml:link rel="alternate" hreflang="en-GB" href="https://spotpuls.app/gb/" />
+    <xhtml:link rel="alternate" hreflang="en-IE" href="https://spotpuls.app/ie/" />
+    <xhtml:link rel="alternate" hreflang="es" href="https://spotpuls.app/es/" />
+    <xhtml:link rel="alternate" hreflang="pt" href="https://spotpuls.app/pt/" />
+    <xhtml:link rel="alternate" hreflang="it" href="https://spotpuls.app/it/" />
+    <xhtml:link rel="alternate" hreflang="pl" href="https://spotpuls.app/pl/" />
+    <xhtml:link rel="alternate" hreflang="cs" href="https://spotpuls.app/cz/" />
+    <xhtml:link rel="alternate" hreflang="sk" href="https://spotpuls.app/sk/" />
+    <xhtml:link rel="alternate" hreflang="hu" href="https://spotpuls.app/hu/" />
+    <xhtml:link rel="alternate" hreflang="ro" href="https://spotpuls.app/ro/" />
+    <xhtml:link rel="alternate" hreflang="bg" href="https://spotpuls.app/bg/" />
+    <xhtml:link rel="alternate" hreflang="sl" href="https://spotpuls.app/si/" />
+    <xhtml:link rel="alternate" hreflang="hr" href="https://spotpuls.app/hr/" />
+    <xhtml:link rel="alternate" hreflang="el" href="https://spotpuls.app/gr/" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://spotpuls.app/en/" />
+  </url>
+  <url>
+    <loc>https://spotpuls.app/de/</loc>
+    <lastmod>2026-11-12</lastmod>
+    <xhtml:link rel="alternate" hreflang="fi" href="https://spotpuls.app/" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://spotpuls.app/en/" />
+    <xhtml:link rel="alternate" hreflang="sv" href="https://spotpuls.app/se/" />
+    <xhtml:link rel="alternate" hreflang="no" href="https://spotpuls.app/no/" />
+    <xhtml:link rel="alternate" hreflang="da" href="https://spotpuls.app/dk/" />
+    <xhtml:link rel="alternate" hreflang="et" href="https://spotpuls.app/ee/" />
+    <xhtml:link rel="alternate" hreflang="lv" href="https://spotpuls.app/lv/" />
+    <xhtml:link rel="alternate" hreflang="lt" href="https://spotpuls.app/lt/" />
+    <xhtml:link rel="alternate" hreflang="de" href="https://spotpuls.app/de/" />
+    <xhtml:link rel="alternate" hreflang="de-AT" href="https://spotpuls.app/at/" />
+    <xhtml:link rel="alternate" hreflang="de-CH" href="https://spotpuls.app/ch/" />
+    <xhtml:link rel="alternate" hreflang="nl" href="https://spotpuls.app/nl/" />
+    <xhtml:link rel="alternate" hreflang="nl-BE" href="https://spotpuls.app/be/" />
+    <xhtml:link rel="alternate" hreflang="fr" href="https://spotpuls.app/fr/" />
+    <xhtml:link rel="alternate" hreflang="en-GB" href="https://spotpuls.app/gb/" />
+    <xhtml:link rel="alternate" hreflang="en-IE" href="https://spotpuls.app/ie/" />
+    <xhtml:link rel="alternate" hreflang="es" href="https://spotpuls.app/es/" />
+    <xhtml:link rel="alternate" hreflang="pt" href="https://spotpuls.app/pt/" />
+    <xhtml:link rel="alternate" hreflang="it" href="https://spotpuls.app/it/" />
+    <xhtml:link rel="alternate" hreflang="pl" href="https://spotpuls.app/pl/" />
+    <xhtml:link rel="alternate" hreflang="cs" href="https://spotpuls.app/cz/" />
+    <xhtml:link rel="alternate" hreflang="sk" href="https://spotpuls.app/sk/" />
+    <xhtml:link rel="alternate" hreflang="hu" href="https://spotpuls.app/hu/" />
+    <xhtml:link rel="alternate" hreflang="ro" href="https://spotpuls.app/ro/" />
+    <xhtml:link rel="alternate" hreflang="bg" href="https://spotpuls.app/bg/" />
+    <xhtml:link rel="alternate" hreflang="sl" href="https://spotpuls.app/si/" />
+    <xhtml:link rel="alternate" hreflang="hr" href="https://spotpuls.app/hr/" />
+    <xhtml:link rel="alternate" hreflang="el" href="https://spotpuls.app/gr/" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://spotpuls.app/en/" />
+  </url>
+  <url>
+    <loc>https://spotpuls.app/dk/</loc>
+    <lastmod>2026-11-12</lastmod>
+    <xhtml:link rel="alternate" hreflang="fi" href="https://spotpuls.app/" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://spotpuls.app/en/" />
+    <xhtml:link rel="alternate" hreflang="sv" href="https://spotpuls.app/se/" />
+    <xhtml:link rel="alternate" hreflang="no" href="https://spotpuls.app/no/" />
+    <xhtml:link rel="alternate" hreflang="da" href="https://spotpuls.app/dk/" />
+    <xhtml:link rel="alternate" hreflang="et" href="https://spotpuls.app/ee/" />
+    <xhtml:link rel="alternate" hreflang="lv" href="https://spotpuls.app/lv/" />
+    <xhtml:link rel="alternate" hreflang="lt" href="https://spotpuls.app/lt/" />
+    <xhtml:link rel="alternate" hreflang="de" href="https://spotpuls.app/de/" />
+    <xhtml:link rel="alternate" hreflang="de-AT" href="https://spotpuls.app/at/" />
+    <xhtml:link rel="alternate" hreflang="de-CH" href="https://spotpuls.app/ch/" />
+    <xhtml:link rel="alternate" hreflang="nl" href="https://spotpuls.app/nl/" />
+    <xhtml:link rel="alternate" hreflang="nl-BE" href="https://spotpuls.app/be/" />
+    <xhtml:link rel="alternate" hreflang="fr" href="https://spotpuls.app/fr/" />
+    <xhtml:link rel="alternate" hreflang="en-GB" href="https://spotpuls.app/gb/" />
+    <xhtml:link rel="alternate" hreflang="en-IE" href="https://spotpuls.app/ie/" />
+    <xhtml:link rel="alternate" hreflang="es" href="https://spotpuls.app/es/" />
+    <xhtml:link rel="alternate" hreflang="pt" href="https://spotpuls.app/pt/" />
+    <xhtml:link rel="alternate" hreflang="it" href="https://spotpuls.app/it/" />
+    <xhtml:link rel="alternate" hreflang="pl" href="https://spotpuls.app/pl/" />
+    <xhtml:link rel="alternate" hreflang="cs" href="https://spotpuls.app/cz/" />
+    <xhtml:link rel="alternate" hreflang="sk" href="https://spotpuls.app/sk/" />
+    <xhtml:link rel="alternate" hreflang="hu" href="https://spotpuls.app/hu/" />
+    <xhtml:link rel="alternate" hreflang="ro" href="https://spotpuls.app/ro/" />
+    <xhtml:link rel="alternate" hreflang="bg" href="https://spotpuls.app/bg/" />
+    <xhtml:link rel="alternate" hreflang="sl" href="https://spotpuls.app/si/" />
+    <xhtml:link rel="alternate" hreflang="hr" href="https://spotpuls.app/hr/" />
+    <xhtml:link rel="alternate" hreflang="el" href="https://spotpuls.app/gr/" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://spotpuls.app/en/" />
+  </url>
+  <url>
+    <loc>https://spotpuls.app/ee/</loc>
+    <lastmod>2026-11-12</lastmod>
+    <xhtml:link rel="alternate" hreflang="fi" href="https://spotpuls.app/" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://spotpuls.app/en/" />
+    <xhtml:link rel="alternate" hreflang="sv" href="https://spotpuls.app/se/" />
+    <xhtml:link rel="alternate" hreflang="no" href="https://spotpuls.app/no/" />
+    <xhtml:link rel="alternate" hreflang="da" href="https://spotpuls.app/dk/" />
+    <xhtml:link rel="alternate" hreflang="et" href="https://spotpuls.app/ee/" />
+    <xhtml:link rel="alternate" hreflang="lv" href="https://spotpuls.app/lv/" />
+    <xhtml:link rel="alternate" hreflang="lt" href="https://spotpuls.app/lt/" />
+    <xhtml:link rel="alternate" hreflang="de" href="https://spotpuls.app/de/" />
+    <xhtml:link rel="alternate" hreflang="de-AT" href="https://spotpuls.app/at/" />
+    <xhtml:link rel="alternate" hreflang="de-CH" href="https://spotpuls.app/ch/" />
+    <xhtml:link rel="alternate" hreflang="nl" href="https://spotpuls.app/nl/" />
+    <xhtml:link rel="alternate" hreflang="nl-BE" href="https://spotpuls.app/be/" />
+    <xhtml:link rel="alternate" hreflang="fr" href="https://spotpuls.app/fr/" />
+    <xhtml:link rel="alternate" hreflang="en-GB" href="https://spotpuls.app/gb/" />
+    <xhtml:link rel="alternate" hreflang="en-IE" href="https://spotpuls.app/ie/" />
+    <xhtml:link rel="alternate" hreflang="es" href="https://spotpuls.app/es/" />
+    <xhtml:link rel="alternate" hreflang="pt" href="https://spotpuls.app/pt/" />
+    <xhtml:link rel="alternate" hreflang="it" href="https://spotpuls.app/it/" />
+    <xhtml:link rel="alternate" hreflang="pl" href="https://spotpuls.app/pl/" />
+    <xhtml:link rel="alternate" hreflang="cs" href="https://spotpuls.app/cz/" />
+    <xhtml:link rel="alternate" hreflang="sk" href="https://spotpuls.app/sk/" />
+    <xhtml:link rel="alternate" hreflang="hu" href="https://spotpuls.app/hu/" />
+    <xhtml:link rel="alternate" hreflang="ro" href="https://spotpuls.app/ro/" />
+    <xhtml:link rel="alternate" hreflang="bg" href="https://spotpuls.app/bg/" />
+    <xhtml:link rel="alternate" hreflang="sl" href="https://spotpuls.app/si/" />
+    <xhtml:link rel="alternate" hreflang="hr" href="https://spotpuls.app/hr/" />
+    <xhtml:link rel="alternate" hreflang="el" href="https://spotpuls.app/gr/" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://spotpuls.app/en/" />
+  </url>
+  <url>
+    <loc>https://spotpuls.app/en/</loc>
+    <lastmod>2026-11-12</lastmod>
+    <xhtml:link rel="alternate" hreflang="fi" href="https://spotpuls.app/" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://spotpuls.app/en/" />
+    <xhtml:link rel="alternate" hreflang="sv" href="https://spotpuls.app/se/" />
+    <xhtml:link rel="alternate" hreflang="no" href="https://spotpuls.app/no/" />
+    <xhtml:link rel="alternate" hreflang="da" href="https://spotpuls.app/dk/" />
+    <xhtml:link rel="alternate" hreflang="et" href="https://spotpuls.app/ee/" />
+    <xhtml:link rel="alternate" hreflang="lv" href="https://spotpuls.app/lv/" />
+    <xhtml:link rel="alternate" hreflang="lt" href="https://spotpuls.app/lt/" />
+    <xhtml:link rel="alternate" hreflang="de" href="https://spotpuls.app/de/" />
+    <xhtml:link rel="alternate" hreflang="de-AT" href="https://spotpuls.app/at/" />
+    <xhtml:link rel="alternate" hreflang="de-CH" href="https://spotpuls.app/ch/" />
+    <xhtml:link rel="alternate" hreflang="nl" href="https://spotpuls.app/nl/" />
+    <xhtml:link rel="alternate" hreflang="nl-BE" href="https://spotpuls.app/be/" />
+    <xhtml:link rel="alternate" hreflang="fr" href="https://spotpuls.app/fr/" />
+    <xhtml:link rel="alternate" hreflang="en-GB" href="https://spotpuls.app/gb/" />
+    <xhtml:link rel="alternate" hreflang="en-IE" href="https://spotpuls.app/ie/" />
+    <xhtml:link rel="alternate" hreflang="es" href="https://spotpuls.app/es/" />
+    <xhtml:link rel="alternate" hreflang="pt" href="https://spotpuls.app/pt/" />
+    <xhtml:link rel="alternate" hreflang="it" href="https://spotpuls.app/it/" />
+    <xhtml:link rel="alternate" hreflang="pl" href="https://spotpuls.app/pl/" />
+    <xhtml:link rel="alternate" hreflang="cs" href="https://spotpuls.app/cz/" />
+    <xhtml:link rel="alternate" hreflang="sk" href="https://spotpuls.app/sk/" />
+    <xhtml:link rel="alternate" hreflang="hu" href="https://spotpuls.app/hu/" />
+    <xhtml:link rel="alternate" hreflang="ro" href="https://spotpuls.app/ro/" />
+    <xhtml:link rel="alternate" hreflang="bg" href="https://spotpuls.app/bg/" />
+    <xhtml:link rel="alternate" hreflang="sl" href="https://spotpuls.app/si/" />
+    <xhtml:link rel="alternate" hreflang="hr" href="https://spotpuls.app/hr/" />
+    <xhtml:link rel="alternate" hreflang="el" href="https://spotpuls.app/gr/" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://spotpuls.app/en/" />
+  </url>
+  <url>
+    <loc>https://spotpuls.app/es/</loc>
+    <lastmod>2026-11-12</lastmod>
+    <xhtml:link rel="alternate" hreflang="fi" href="https://spotpuls.app/" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://spotpuls.app/en/" />
+    <xhtml:link rel="alternate" hreflang="sv" href="https://spotpuls.app/se/" />
+    <xhtml:link rel="alternate" hreflang="no" href="https://spotpuls.app/no/" />
+    <xhtml:link rel="alternate" hreflang="da" href="https://spotpuls.app/dk/" />
+    <xhtml:link rel="alternate" hreflang="et" href="https://spotpuls.app/ee/" />
+    <xhtml:link rel="alternate" hreflang="lv" href="https://spotpuls.app/lv/" />
+    <xhtml:link rel="alternate" hreflang="lt" href="https://spotpuls.app/lt/" />
+    <xhtml:link rel="alternate" hreflang="de" href="https://spotpuls.app/de/" />
+    <xhtml:link rel="alternate" hreflang="de-AT" href="https://spotpuls.app/at/" />
+    <xhtml:link rel="alternate" hreflang="de-CH" href="https://spotpuls.app/ch/" />
+    <xhtml:link rel="alternate" hreflang="nl" href="https://spotpuls.app/nl/" />
+    <xhtml:link rel="alternate" hreflang="nl-BE" href="https://spotpuls.app/be/" />
+    <xhtml:link rel="alternate" hreflang="fr" href="https://spotpuls.app/fr/" />
+    <xhtml:link rel="alternate" hreflang="en-GB" href="https://spotpuls.app/gb/" />
+    <xhtml:link rel="alternate" hreflang="en-IE" href="https://spotpuls.app/ie/" />
+    <xhtml:link rel="alternate" hreflang="es" href="https://spotpuls.app/es/" />
+    <xhtml:link rel="alternate" hreflang="pt" href="https://spotpuls.app/pt/" />
+    <xhtml:link rel="alternate" hreflang="it" href="https://spotpuls.app/it/" />
+    <xhtml:link rel="alternate" hreflang="pl" href="https://spotpuls.app/pl/" />
+    <xhtml:link rel="alternate" hreflang="cs" href="https://spotpuls.app/cz/" />
+    <xhtml:link rel="alternate" hreflang="sk" href="https://spotpuls.app/sk/" />
+    <xhtml:link rel="alternate" hreflang="hu" href="https://spotpuls.app/hu/" />
+    <xhtml:link rel="alternate" hreflang="ro" href="https://spotpuls.app/ro/" />
+    <xhtml:link rel="alternate" hreflang="bg" href="https://spotpuls.app/bg/" />
+    <xhtml:link rel="alternate" hreflang="sl" href="https://spotpuls.app/si/" />
+    <xhtml:link rel="alternate" hreflang="hr" href="https://spotpuls.app/hr/" />
+    <xhtml:link rel="alternate" hreflang="el" href="https://spotpuls.app/gr/" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://spotpuls.app/en/" />
+  </url>
+  <url>
+    <loc>https://spotpuls.app/fr/</loc>
+    <lastmod>2026-11-12</lastmod>
+    <xhtml:link rel="alternate" hreflang="fi" href="https://spotpuls.app/" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://spotpuls.app/en/" />
+    <xhtml:link rel="alternate" hreflang="sv" href="https://spotpuls.app/se/" />
+    <xhtml:link rel="alternate" hreflang="no" href="https://spotpuls.app/no/" />
+    <xhtml:link rel="alternate" hreflang="da" href="https://spotpuls.app/dk/" />
+    <xhtml:link rel="alternate" hreflang="et" href="https://spotpuls.app/ee/" />
+    <xhtml:link rel="alternate" hreflang="lv" href="https://spotpuls.app/lv/" />
+    <xhtml:link rel="alternate" hreflang="lt" href="https://spotpuls.app/lt/" />
+    <xhtml:link rel="alternate" hreflang="de" href="https://spotpuls.app/de/" />
+    <xhtml:link rel="alternate" hreflang="de-AT" href="https://spotpuls.app/at/" />
+    <xhtml:link rel="alternate" hreflang="de-CH" href="https://spotpuls.app/ch/" />
+    <xhtml:link rel="alternate" hreflang="nl" href="https://spotpuls.app/nl/" />
+    <xhtml:link rel="alternate" hreflang="nl-BE" href="https://spotpuls.app/be/" />
+    <xhtml:link rel="alternate" hreflang="fr" href="https://spotpuls.app/fr/" />
+    <xhtml:link rel="alternate" hreflang="en-GB" href="https://spotpuls.app/gb/" />
+    <xhtml:link rel="alternate" hreflang="en-IE" href="https://spotpuls.app/ie/" />
+    <xhtml:link rel="alternate" hreflang="es" href="https://spotpuls.app/es/" />
+    <xhtml:link rel="alternate" hreflang="pt" href="https://spotpuls.app/pt/" />
+    <xhtml:link rel="alternate" hreflang="it" href="https://spotpuls.app/it/" />
+    <xhtml:link rel="alternate" hreflang="pl" href="https://spotpuls.app/pl/" />
+    <xhtml:link rel="alternate" hreflang="cs" href="https://spotpuls.app/cz/" />
+    <xhtml:link rel="alternate" hreflang="sk" href="https://spotpuls.app/sk/" />
+    <xhtml:link rel="alternate" hreflang="hu" href="https://spotpuls.app/hu/" />
+    <xhtml:link rel="alternate" hreflang="ro" href="https://spotpuls.app/ro/" />
+    <xhtml:link rel="alternate" hreflang="bg" href="https://spotpuls.app/bg/" />
+    <xhtml:link rel="alternate" hreflang="sl" href="https://spotpuls.app/si/" />
+    <xhtml:link rel="alternate" hreflang="hr" href="https://spotpuls.app/hr/" />
+    <xhtml:link rel="alternate" hreflang="el" href="https://spotpuls.app/gr/" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://spotpuls.app/en/" />
+  </url>
+  <url>
+    <loc>https://spotpuls.app/gb/</loc>
+    <lastmod>2026-11-12</lastmod>
+    <xhtml:link rel="alternate" hreflang="fi" href="https://spotpuls.app/" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://spotpuls.app/en/" />
+    <xhtml:link rel="alternate" hreflang="sv" href="https://spotpuls.app/se/" />
+    <xhtml:link rel="alternate" hreflang="no" href="https://spotpuls.app/no/" />
+    <xhtml:link rel="alternate" hreflang="da" href="https://spotpuls.app/dk/" />
+    <xhtml:link rel="alternate" hreflang="et" href="https://spotpuls.app/ee/" />
+    <xhtml:link rel="alternate" hreflang="lv" href="https://spotpuls.app/lv/" />
+    <xhtml:link rel="alternate" hreflang="lt" href="https://spotpuls.app/lt/" />
+    <xhtml:link rel="alternate" hreflang="de" href="https://spotpuls.app/de/" />
+    <xhtml:link rel="alternate" hreflang="de-AT" href="https://spotpuls.app/at/" />
+    <xhtml:link rel="alternate" hreflang="de-CH" href="https://spotpuls.app/ch/" />
+    <xhtml:link rel="alternate" hreflang="nl" href="https://spotpuls.app/nl/" />
+    <xhtml:link rel="alternate" hreflang="nl-BE" href="https://spotpuls.app/be/" />
+    <xhtml:link rel="alternate" hreflang="fr" href="https://spotpuls.app/fr/" />
+    <xhtml:link rel="alternate" hreflang="en-GB" href="https://spotpuls.app/gb/" />
+    <xhtml:link rel="alternate" hreflang="en-IE" href="https://spotpuls.app/ie/" />
+    <xhtml:link rel="alternate" hreflang="es" href="https://spotpuls.app/es/" />
+    <xhtml:link rel="alternate" hreflang="pt" href="https://spotpuls.app/pt/" />
+    <xhtml:link rel="alternate" hreflang="it" href="https://spotpuls.app/it/" />
+    <xhtml:link rel="alternate" hreflang="pl" href="https://spotpuls.app/pl/" />
+    <xhtml:link rel="alternate" hreflang="cs" href="https://spotpuls.app/cz/" />
+    <xhtml:link rel="alternate" hreflang="sk" href="https://spotpuls.app/sk/" />
+    <xhtml:link rel="alternate" hreflang="hu" href="https://spotpuls.app/hu/" />
+    <xhtml:link rel="alternate" hreflang="ro" href="https://spotpuls.app/ro/" />
+    <xhtml:link rel="alternate" hreflang="bg" href="https://spotpuls.app/bg/" />
+    <xhtml:link rel="alternate" hreflang="sl" href="https://spotpuls.app/si/" />
+    <xhtml:link rel="alternate" hreflang="hr" href="https://spotpuls.app/hr/" />
+    <xhtml:link rel="alternate" hreflang="el" href="https://spotpuls.app/gr/" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://spotpuls.app/en/" />
   </url>
   <url>
     <loc>https://spotpuls.app/gr/</loc>
-    <lastmod>2026-11-11</lastmod>
+    <lastmod>2026-11-12</lastmod>
+    <xhtml:link rel="alternate" hreflang="fi" href="https://spotpuls.app/" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://spotpuls.app/en/" />
+    <xhtml:link rel="alternate" hreflang="sv" href="https://spotpuls.app/se/" />
+    <xhtml:link rel="alternate" hreflang="no" href="https://spotpuls.app/no/" />
+    <xhtml:link rel="alternate" hreflang="da" href="https://spotpuls.app/dk/" />
+    <xhtml:link rel="alternate" hreflang="et" href="https://spotpuls.app/ee/" />
+    <xhtml:link rel="alternate" hreflang="lv" href="https://spotpuls.app/lv/" />
+    <xhtml:link rel="alternate" hreflang="lt" href="https://spotpuls.app/lt/" />
+    <xhtml:link rel="alternate" hreflang="de" href="https://spotpuls.app/de/" />
+    <xhtml:link rel="alternate" hreflang="de-AT" href="https://spotpuls.app/at/" />
+    <xhtml:link rel="alternate" hreflang="de-CH" href="https://spotpuls.app/ch/" />
+    <xhtml:link rel="alternate" hreflang="nl" href="https://spotpuls.app/nl/" />
+    <xhtml:link rel="alternate" hreflang="nl-BE" href="https://spotpuls.app/be/" />
+    <xhtml:link rel="alternate" hreflang="fr" href="https://spotpuls.app/fr/" />
+    <xhtml:link rel="alternate" hreflang="en-GB" href="https://spotpuls.app/gb/" />
+    <xhtml:link rel="alternate" hreflang="en-IE" href="https://spotpuls.app/ie/" />
+    <xhtml:link rel="alternate" hreflang="es" href="https://spotpuls.app/es/" />
+    <xhtml:link rel="alternate" hreflang="pt" href="https://spotpuls.app/pt/" />
+    <xhtml:link rel="alternate" hreflang="it" href="https://spotpuls.app/it/" />
+    <xhtml:link rel="alternate" hreflang="pl" href="https://spotpuls.app/pl/" />
+    <xhtml:link rel="alternate" hreflang="cs" href="https://spotpuls.app/cz/" />
+    <xhtml:link rel="alternate" hreflang="sk" href="https://spotpuls.app/sk/" />
+    <xhtml:link rel="alternate" hreflang="hu" href="https://spotpuls.app/hu/" />
+    <xhtml:link rel="alternate" hreflang="ro" href="https://spotpuls.app/ro/" />
+    <xhtml:link rel="alternate" hreflang="bg" href="https://spotpuls.app/bg/" />
+    <xhtml:link rel="alternate" hreflang="sl" href="https://spotpuls.app/si/" />
+    <xhtml:link rel="alternate" hreflang="hr" href="https://spotpuls.app/hr/" />
+    <xhtml:link rel="alternate" hreflang="el" href="https://spotpuls.app/gr/" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://spotpuls.app/en/" />
+  </url>
+  <url>
+    <loc>https://spotpuls.app/hr/</loc>
+    <lastmod>2026-11-12</lastmod>
+    <xhtml:link rel="alternate" hreflang="fi" href="https://spotpuls.app/" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://spotpuls.app/en/" />
+    <xhtml:link rel="alternate" hreflang="sv" href="https://spotpuls.app/se/" />
+    <xhtml:link rel="alternate" hreflang="no" href="https://spotpuls.app/no/" />
+    <xhtml:link rel="alternate" hreflang="da" href="https://spotpuls.app/dk/" />
+    <xhtml:link rel="alternate" hreflang="et" href="https://spotpuls.app/ee/" />
+    <xhtml:link rel="alternate" hreflang="lv" href="https://spotpuls.app/lv/" />
+    <xhtml:link rel="alternate" hreflang="lt" href="https://spotpuls.app/lt/" />
+    <xhtml:link rel="alternate" hreflang="de" href="https://spotpuls.app/de/" />
+    <xhtml:link rel="alternate" hreflang="de-AT" href="https://spotpuls.app/at/" />
+    <xhtml:link rel="alternate" hreflang="de-CH" href="https://spotpuls.app/ch/" />
+    <xhtml:link rel="alternate" hreflang="nl" href="https://spotpuls.app/nl/" />
+    <xhtml:link rel="alternate" hreflang="nl-BE" href="https://spotpuls.app/be/" />
+    <xhtml:link rel="alternate" hreflang="fr" href="https://spotpuls.app/fr/" />
+    <xhtml:link rel="alternate" hreflang="en-GB" href="https://spotpuls.app/gb/" />
+    <xhtml:link rel="alternate" hreflang="en-IE" href="https://spotpuls.app/ie/" />
+    <xhtml:link rel="alternate" hreflang="es" href="https://spotpuls.app/es/" />
+    <xhtml:link rel="alternate" hreflang="pt" href="https://spotpuls.app/pt/" />
+    <xhtml:link rel="alternate" hreflang="it" href="https://spotpuls.app/it/" />
+    <xhtml:link rel="alternate" hreflang="pl" href="https://spotpuls.app/pl/" />
+    <xhtml:link rel="alternate" hreflang="cs" href="https://spotpuls.app/cz/" />
+    <xhtml:link rel="alternate" hreflang="sk" href="https://spotpuls.app/sk/" />
+    <xhtml:link rel="alternate" hreflang="hu" href="https://spotpuls.app/hu/" />
+    <xhtml:link rel="alternate" hreflang="ro" href="https://spotpuls.app/ro/" />
+    <xhtml:link rel="alternate" hreflang="bg" href="https://spotpuls.app/bg/" />
+    <xhtml:link rel="alternate" hreflang="sl" href="https://spotpuls.app/si/" />
+    <xhtml:link rel="alternate" hreflang="hr" href="https://spotpuls.app/hr/" />
+    <xhtml:link rel="alternate" hreflang="el" href="https://spotpuls.app/gr/" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://spotpuls.app/en/" />
+  </url>
+  <url>
+    <loc>https://spotpuls.app/hu/</loc>
+    <lastmod>2026-11-12</lastmod>
+    <xhtml:link rel="alternate" hreflang="fi" href="https://spotpuls.app/" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://spotpuls.app/en/" />
+    <xhtml:link rel="alternate" hreflang="sv" href="https://spotpuls.app/se/" />
+    <xhtml:link rel="alternate" hreflang="no" href="https://spotpuls.app/no/" />
+    <xhtml:link rel="alternate" hreflang="da" href="https://spotpuls.app/dk/" />
+    <xhtml:link rel="alternate" hreflang="et" href="https://spotpuls.app/ee/" />
+    <xhtml:link rel="alternate" hreflang="lv" href="https://spotpuls.app/lv/" />
+    <xhtml:link rel="alternate" hreflang="lt" href="https://spotpuls.app/lt/" />
+    <xhtml:link rel="alternate" hreflang="de" href="https://spotpuls.app/de/" />
+    <xhtml:link rel="alternate" hreflang="de-AT" href="https://spotpuls.app/at/" />
+    <xhtml:link rel="alternate" hreflang="de-CH" href="https://spotpuls.app/ch/" />
+    <xhtml:link rel="alternate" hreflang="nl" href="https://spotpuls.app/nl/" />
+    <xhtml:link rel="alternate" hreflang="nl-BE" href="https://spotpuls.app/be/" />
+    <xhtml:link rel="alternate" hreflang="fr" href="https://spotpuls.app/fr/" />
+    <xhtml:link rel="alternate" hreflang="en-GB" href="https://spotpuls.app/gb/" />
+    <xhtml:link rel="alternate" hreflang="en-IE" href="https://spotpuls.app/ie/" />
+    <xhtml:link rel="alternate" hreflang="es" href="https://spotpuls.app/es/" />
+    <xhtml:link rel="alternate" hreflang="pt" href="https://spotpuls.app/pt/" />
+    <xhtml:link rel="alternate" hreflang="it" href="https://spotpuls.app/it/" />
+    <xhtml:link rel="alternate" hreflang="pl" href="https://spotpuls.app/pl/" />
+    <xhtml:link rel="alternate" hreflang="cs" href="https://spotpuls.app/cz/" />
+    <xhtml:link rel="alternate" hreflang="sk" href="https://spotpuls.app/sk/" />
+    <xhtml:link rel="alternate" hreflang="hu" href="https://spotpuls.app/hu/" />
+    <xhtml:link rel="alternate" hreflang="ro" href="https://spotpuls.app/ro/" />
+    <xhtml:link rel="alternate" hreflang="bg" href="https://spotpuls.app/bg/" />
+    <xhtml:link rel="alternate" hreflang="sl" href="https://spotpuls.app/si/" />
+    <xhtml:link rel="alternate" hreflang="hr" href="https://spotpuls.app/hr/" />
+    <xhtml:link rel="alternate" hreflang="el" href="https://spotpuls.app/gr/" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://spotpuls.app/en/" />
+  </url>
+  <url>
+    <loc>https://spotpuls.app/ie/</loc>
+    <lastmod>2026-11-12</lastmod>
+    <xhtml:link rel="alternate" hreflang="fi" href="https://spotpuls.app/" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://spotpuls.app/en/" />
+    <xhtml:link rel="alternate" hreflang="sv" href="https://spotpuls.app/se/" />
+    <xhtml:link rel="alternate" hreflang="no" href="https://spotpuls.app/no/" />
+    <xhtml:link rel="alternate" hreflang="da" href="https://spotpuls.app/dk/" />
+    <xhtml:link rel="alternate" hreflang="et" href="https://spotpuls.app/ee/" />
+    <xhtml:link rel="alternate" hreflang="lv" href="https://spotpuls.app/lv/" />
+    <xhtml:link rel="alternate" hreflang="lt" href="https://spotpuls.app/lt/" />
+    <xhtml:link rel="alternate" hreflang="de" href="https://spotpuls.app/de/" />
+    <xhtml:link rel="alternate" hreflang="de-AT" href="https://spotpuls.app/at/" />
+    <xhtml:link rel="alternate" hreflang="de-CH" href="https://spotpuls.app/ch/" />
+    <xhtml:link rel="alternate" hreflang="nl" href="https://spotpuls.app/nl/" />
+    <xhtml:link rel="alternate" hreflang="nl-BE" href="https://spotpuls.app/be/" />
+    <xhtml:link rel="alternate" hreflang="fr" href="https://spotpuls.app/fr/" />
+    <xhtml:link rel="alternate" hreflang="en-GB" href="https://spotpuls.app/gb/" />
+    <xhtml:link rel="alternate" hreflang="en-IE" href="https://spotpuls.app/ie/" />
+    <xhtml:link rel="alternate" hreflang="es" href="https://spotpuls.app/es/" />
+    <xhtml:link rel="alternate" hreflang="pt" href="https://spotpuls.app/pt/" />
+    <xhtml:link rel="alternate" hreflang="it" href="https://spotpuls.app/it/" />
+    <xhtml:link rel="alternate" hreflang="pl" href="https://spotpuls.app/pl/" />
+    <xhtml:link rel="alternate" hreflang="cs" href="https://spotpuls.app/cz/" />
+    <xhtml:link rel="alternate" hreflang="sk" href="https://spotpuls.app/sk/" />
+    <xhtml:link rel="alternate" hreflang="hu" href="https://spotpuls.app/hu/" />
+    <xhtml:link rel="alternate" hreflang="ro" href="https://spotpuls.app/ro/" />
+    <xhtml:link rel="alternate" hreflang="bg" href="https://spotpuls.app/bg/" />
+    <xhtml:link rel="alternate" hreflang="sl" href="https://spotpuls.app/si/" />
+    <xhtml:link rel="alternate" hreflang="hr" href="https://spotpuls.app/hr/" />
+    <xhtml:link rel="alternate" hreflang="el" href="https://spotpuls.app/gr/" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://spotpuls.app/en/" />
+  </url>
+  <url>
+    <loc>https://spotpuls.app/it/</loc>
+    <lastmod>2026-11-12</lastmod>
+    <xhtml:link rel="alternate" hreflang="fi" href="https://spotpuls.app/" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://spotpuls.app/en/" />
+    <xhtml:link rel="alternate" hreflang="sv" href="https://spotpuls.app/se/" />
+    <xhtml:link rel="alternate" hreflang="no" href="https://spotpuls.app/no/" />
+    <xhtml:link rel="alternate" hreflang="da" href="https://spotpuls.app/dk/" />
+    <xhtml:link rel="alternate" hreflang="et" href="https://spotpuls.app/ee/" />
+    <xhtml:link rel="alternate" hreflang="lv" href="https://spotpuls.app/lv/" />
+    <xhtml:link rel="alternate" hreflang="lt" href="https://spotpuls.app/lt/" />
+    <xhtml:link rel="alternate" hreflang="de" href="https://spotpuls.app/de/" />
+    <xhtml:link rel="alternate" hreflang="de-AT" href="https://spotpuls.app/at/" />
+    <xhtml:link rel="alternate" hreflang="de-CH" href="https://spotpuls.app/ch/" />
+    <xhtml:link rel="alternate" hreflang="nl" href="https://spotpuls.app/nl/" />
+    <xhtml:link rel="alternate" hreflang="nl-BE" href="https://spotpuls.app/be/" />
+    <xhtml:link rel="alternate" hreflang="fr" href="https://spotpuls.app/fr/" />
+    <xhtml:link rel="alternate" hreflang="en-GB" href="https://spotpuls.app/gb/" />
+    <xhtml:link rel="alternate" hreflang="en-IE" href="https://spotpuls.app/ie/" />
+    <xhtml:link rel="alternate" hreflang="es" href="https://spotpuls.app/es/" />
+    <xhtml:link rel="alternate" hreflang="pt" href="https://spotpuls.app/pt/" />
+    <xhtml:link rel="alternate" hreflang="it" href="https://spotpuls.app/it/" />
+    <xhtml:link rel="alternate" hreflang="pl" href="https://spotpuls.app/pl/" />
+    <xhtml:link rel="alternate" hreflang="cs" href="https://spotpuls.app/cz/" />
+    <xhtml:link rel="alternate" hreflang="sk" href="https://spotpuls.app/sk/" />
+    <xhtml:link rel="alternate" hreflang="hu" href="https://spotpuls.app/hu/" />
+    <xhtml:link rel="alternate" hreflang="ro" href="https://spotpuls.app/ro/" />
+    <xhtml:link rel="alternate" hreflang="bg" href="https://spotpuls.app/bg/" />
+    <xhtml:link rel="alternate" hreflang="sl" href="https://spotpuls.app/si/" />
+    <xhtml:link rel="alternate" hreflang="hr" href="https://spotpuls.app/hr/" />
+    <xhtml:link rel="alternate" hreflang="el" href="https://spotpuls.app/gr/" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://spotpuls.app/en/" />
+  </url>
+  <url>
+    <loc>https://spotpuls.app/lt/</loc>
+    <lastmod>2026-11-12</lastmod>
+    <xhtml:link rel="alternate" hreflang="fi" href="https://spotpuls.app/" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://spotpuls.app/en/" />
+    <xhtml:link rel="alternate" hreflang="sv" href="https://spotpuls.app/se/" />
+    <xhtml:link rel="alternate" hreflang="no" href="https://spotpuls.app/no/" />
+    <xhtml:link rel="alternate" hreflang="da" href="https://spotpuls.app/dk/" />
+    <xhtml:link rel="alternate" hreflang="et" href="https://spotpuls.app/ee/" />
+    <xhtml:link rel="alternate" hreflang="lv" href="https://spotpuls.app/lv/" />
+    <xhtml:link rel="alternate" hreflang="lt" href="https://spotpuls.app/lt/" />
+    <xhtml:link rel="alternate" hreflang="de" href="https://spotpuls.app/de/" />
+    <xhtml:link rel="alternate" hreflang="de-AT" href="https://spotpuls.app/at/" />
+    <xhtml:link rel="alternate" hreflang="de-CH" href="https://spotpuls.app/ch/" />
+    <xhtml:link rel="alternate" hreflang="nl" href="https://spotpuls.app/nl/" />
+    <xhtml:link rel="alternate" hreflang="nl-BE" href="https://spotpuls.app/be/" />
+    <xhtml:link rel="alternate" hreflang="fr" href="https://spotpuls.app/fr/" />
+    <xhtml:link rel="alternate" hreflang="en-GB" href="https://spotpuls.app/gb/" />
+    <xhtml:link rel="alternate" hreflang="en-IE" href="https://spotpuls.app/ie/" />
+    <xhtml:link rel="alternate" hreflang="es" href="https://spotpuls.app/es/" />
+    <xhtml:link rel="alternate" hreflang="pt" href="https://spotpuls.app/pt/" />
+    <xhtml:link rel="alternate" hreflang="it" href="https://spotpuls.app/it/" />
+    <xhtml:link rel="alternate" hreflang="pl" href="https://spotpuls.app/pl/" />
+    <xhtml:link rel="alternate" hreflang="cs" href="https://spotpuls.app/cz/" />
+    <xhtml:link rel="alternate" hreflang="sk" href="https://spotpuls.app/sk/" />
+    <xhtml:link rel="alternate" hreflang="hu" href="https://spotpuls.app/hu/" />
+    <xhtml:link rel="alternate" hreflang="ro" href="https://spotpuls.app/ro/" />
+    <xhtml:link rel="alternate" hreflang="bg" href="https://spotpuls.app/bg/" />
+    <xhtml:link rel="alternate" hreflang="sl" href="https://spotpuls.app/si/" />
+    <xhtml:link rel="alternate" hreflang="hr" href="https://spotpuls.app/hr/" />
+    <xhtml:link rel="alternate" hreflang="el" href="https://spotpuls.app/gr/" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://spotpuls.app/en/" />
+  </url>
+  <url>
+    <loc>https://spotpuls.app/lv/</loc>
+    <lastmod>2026-11-12</lastmod>
+    <xhtml:link rel="alternate" hreflang="fi" href="https://spotpuls.app/" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://spotpuls.app/en/" />
+    <xhtml:link rel="alternate" hreflang="sv" href="https://spotpuls.app/se/" />
+    <xhtml:link rel="alternate" hreflang="no" href="https://spotpuls.app/no/" />
+    <xhtml:link rel="alternate" hreflang="da" href="https://spotpuls.app/dk/" />
+    <xhtml:link rel="alternate" hreflang="et" href="https://spotpuls.app/ee/" />
+    <xhtml:link rel="alternate" hreflang="lv" href="https://spotpuls.app/lv/" />
+    <xhtml:link rel="alternate" hreflang="lt" href="https://spotpuls.app/lt/" />
+    <xhtml:link rel="alternate" hreflang="de" href="https://spotpuls.app/de/" />
+    <xhtml:link rel="alternate" hreflang="de-AT" href="https://spotpuls.app/at/" />
+    <xhtml:link rel="alternate" hreflang="de-CH" href="https://spotpuls.app/ch/" />
+    <xhtml:link rel="alternate" hreflang="nl" href="https://spotpuls.app/nl/" />
+    <xhtml:link rel="alternate" hreflang="nl-BE" href="https://spotpuls.app/be/" />
+    <xhtml:link rel="alternate" hreflang="fr" href="https://spotpuls.app/fr/" />
+    <xhtml:link rel="alternate" hreflang="en-GB" href="https://spotpuls.app/gb/" />
+    <xhtml:link rel="alternate" hreflang="en-IE" href="https://spotpuls.app/ie/" />
+    <xhtml:link rel="alternate" hreflang="es" href="https://spotpuls.app/es/" />
+    <xhtml:link rel="alternate" hreflang="pt" href="https://spotpuls.app/pt/" />
+    <xhtml:link rel="alternate" hreflang="it" href="https://spotpuls.app/it/" />
+    <xhtml:link rel="alternate" hreflang="pl" href="https://spotpuls.app/pl/" />
+    <xhtml:link rel="alternate" hreflang="cs" href="https://spotpuls.app/cz/" />
+    <xhtml:link rel="alternate" hreflang="sk" href="https://spotpuls.app/sk/" />
+    <xhtml:link rel="alternate" hreflang="hu" href="https://spotpuls.app/hu/" />
+    <xhtml:link rel="alternate" hreflang="ro" href="https://spotpuls.app/ro/" />
+    <xhtml:link rel="alternate" hreflang="bg" href="https://spotpuls.app/bg/" />
+    <xhtml:link rel="alternate" hreflang="sl" href="https://spotpuls.app/si/" />
+    <xhtml:link rel="alternate" hreflang="hr" href="https://spotpuls.app/hr/" />
+    <xhtml:link rel="alternate" hreflang="el" href="https://spotpuls.app/gr/" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://spotpuls.app/en/" />
+  </url>
+  <url>
+    <loc>https://spotpuls.app/nl/</loc>
+    <lastmod>2026-11-12</lastmod>
+    <xhtml:link rel="alternate" hreflang="fi" href="https://spotpuls.app/" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://spotpuls.app/en/" />
+    <xhtml:link rel="alternate" hreflang="sv" href="https://spotpuls.app/se/" />
+    <xhtml:link rel="alternate" hreflang="no" href="https://spotpuls.app/no/" />
+    <xhtml:link rel="alternate" hreflang="da" href="https://spotpuls.app/dk/" />
+    <xhtml:link rel="alternate" hreflang="et" href="https://spotpuls.app/ee/" />
+    <xhtml:link rel="alternate" hreflang="lv" href="https://spotpuls.app/lv/" />
+    <xhtml:link rel="alternate" hreflang="lt" href="https://spotpuls.app/lt/" />
+    <xhtml:link rel="alternate" hreflang="de" href="https://spotpuls.app/de/" />
+    <xhtml:link rel="alternate" hreflang="de-AT" href="https://spotpuls.app/at/" />
+    <xhtml:link rel="alternate" hreflang="de-CH" href="https://spotpuls.app/ch/" />
+    <xhtml:link rel="alternate" hreflang="nl" href="https://spotpuls.app/nl/" />
+    <xhtml:link rel="alternate" hreflang="nl-BE" href="https://spotpuls.app/be/" />
+    <xhtml:link rel="alternate" hreflang="fr" href="https://spotpuls.app/fr/" />
+    <xhtml:link rel="alternate" hreflang="en-GB" href="https://spotpuls.app/gb/" />
+    <xhtml:link rel="alternate" hreflang="en-IE" href="https://spotpuls.app/ie/" />
+    <xhtml:link rel="alternate" hreflang="es" href="https://spotpuls.app/es/" />
+    <xhtml:link rel="alternate" hreflang="pt" href="https://spotpuls.app/pt/" />
+    <xhtml:link rel="alternate" hreflang="it" href="https://spotpuls.app/it/" />
+    <xhtml:link rel="alternate" hreflang="pl" href="https://spotpuls.app/pl/" />
+    <xhtml:link rel="alternate" hreflang="cs" href="https://spotpuls.app/cz/" />
+    <xhtml:link rel="alternate" hreflang="sk" href="https://spotpuls.app/sk/" />
+    <xhtml:link rel="alternate" hreflang="hu" href="https://spotpuls.app/hu/" />
+    <xhtml:link rel="alternate" hreflang="ro" href="https://spotpuls.app/ro/" />
+    <xhtml:link rel="alternate" hreflang="bg" href="https://spotpuls.app/bg/" />
+    <xhtml:link rel="alternate" hreflang="sl" href="https://spotpuls.app/si/" />
+    <xhtml:link rel="alternate" hreflang="hr" href="https://spotpuls.app/hr/" />
+    <xhtml:link rel="alternate" hreflang="el" href="https://spotpuls.app/gr/" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://spotpuls.app/en/" />
+  </url>
+  <url>
+    <loc>https://spotpuls.app/no/</loc>
+    <lastmod>2026-11-12</lastmod>
+    <xhtml:link rel="alternate" hreflang="fi" href="https://spotpuls.app/" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://spotpuls.app/en/" />
+    <xhtml:link rel="alternate" hreflang="sv" href="https://spotpuls.app/se/" />
+    <xhtml:link rel="alternate" hreflang="no" href="https://spotpuls.app/no/" />
+    <xhtml:link rel="alternate" hreflang="da" href="https://spotpuls.app/dk/" />
+    <xhtml:link rel="alternate" hreflang="et" href="https://spotpuls.app/ee/" />
+    <xhtml:link rel="alternate" hreflang="lv" href="https://spotpuls.app/lv/" />
+    <xhtml:link rel="alternate" hreflang="lt" href="https://spotpuls.app/lt/" />
+    <xhtml:link rel="alternate" hreflang="de" href="https://spotpuls.app/de/" />
+    <xhtml:link rel="alternate" hreflang="de-AT" href="https://spotpuls.app/at/" />
+    <xhtml:link rel="alternate" hreflang="de-CH" href="https://spotpuls.app/ch/" />
+    <xhtml:link rel="alternate" hreflang="nl" href="https://spotpuls.app/nl/" />
+    <xhtml:link rel="alternate" hreflang="nl-BE" href="https://spotpuls.app/be/" />
+    <xhtml:link rel="alternate" hreflang="fr" href="https://spotpuls.app/fr/" />
+    <xhtml:link rel="alternate" hreflang="en-GB" href="https://spotpuls.app/gb/" />
+    <xhtml:link rel="alternate" hreflang="en-IE" href="https://spotpuls.app/ie/" />
+    <xhtml:link rel="alternate" hreflang="es" href="https://spotpuls.app/es/" />
+    <xhtml:link rel="alternate" hreflang="pt" href="https://spotpuls.app/pt/" />
+    <xhtml:link rel="alternate" hreflang="it" href="https://spotpuls.app/it/" />
+    <xhtml:link rel="alternate" hreflang="pl" href="https://spotpuls.app/pl/" />
+    <xhtml:link rel="alternate" hreflang="cs" href="https://spotpuls.app/cz/" />
+    <xhtml:link rel="alternate" hreflang="sk" href="https://spotpuls.app/sk/" />
+    <xhtml:link rel="alternate" hreflang="hu" href="https://spotpuls.app/hu/" />
+    <xhtml:link rel="alternate" hreflang="ro" href="https://spotpuls.app/ro/" />
+    <xhtml:link rel="alternate" hreflang="bg" href="https://spotpuls.app/bg/" />
+    <xhtml:link rel="alternate" hreflang="sl" href="https://spotpuls.app/si/" />
+    <xhtml:link rel="alternate" hreflang="hr" href="https://spotpuls.app/hr/" />
+    <xhtml:link rel="alternate" hreflang="el" href="https://spotpuls.app/gr/" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://spotpuls.app/en/" />
+  </url>
+  <url>
+    <loc>https://spotpuls.app/pl/</loc>
+    <lastmod>2026-11-12</lastmod>
+    <xhtml:link rel="alternate" hreflang="fi" href="https://spotpuls.app/" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://spotpuls.app/en/" />
+    <xhtml:link rel="alternate" hreflang="sv" href="https://spotpuls.app/se/" />
+    <xhtml:link rel="alternate" hreflang="no" href="https://spotpuls.app/no/" />
+    <xhtml:link rel="alternate" hreflang="da" href="https://spotpuls.app/dk/" />
+    <xhtml:link rel="alternate" hreflang="et" href="https://spotpuls.app/ee/" />
+    <xhtml:link rel="alternate" hreflang="lv" href="https://spotpuls.app/lv/" />
+    <xhtml:link rel="alternate" hreflang="lt" href="https://spotpuls.app/lt/" />
+    <xhtml:link rel="alternate" hreflang="de" href="https://spotpuls.app/de/" />
+    <xhtml:link rel="alternate" hreflang="de-AT" href="https://spotpuls.app/at/" />
+    <xhtml:link rel="alternate" hreflang="de-CH" href="https://spotpuls.app/ch/" />
+    <xhtml:link rel="alternate" hreflang="nl" href="https://spotpuls.app/nl/" />
+    <xhtml:link rel="alternate" hreflang="nl-BE" href="https://spotpuls.app/be/" />
+    <xhtml:link rel="alternate" hreflang="fr" href="https://spotpuls.app/fr/" />
+    <xhtml:link rel="alternate" hreflang="en-GB" href="https://spotpuls.app/gb/" />
+    <xhtml:link rel="alternate" hreflang="en-IE" href="https://spotpuls.app/ie/" />
+    <xhtml:link rel="alternate" hreflang="es" href="https://spotpuls.app/es/" />
+    <xhtml:link rel="alternate" hreflang="pt" href="https://spotpuls.app/pt/" />
+    <xhtml:link rel="alternate" hreflang="it" href="https://spotpuls.app/it/" />
+    <xhtml:link rel="alternate" hreflang="pl" href="https://spotpuls.app/pl/" />
+    <xhtml:link rel="alternate" hreflang="cs" href="https://spotpuls.app/cz/" />
+    <xhtml:link rel="alternate" hreflang="sk" href="https://spotpuls.app/sk/" />
+    <xhtml:link rel="alternate" hreflang="hu" href="https://spotpuls.app/hu/" />
+    <xhtml:link rel="alternate" hreflang="ro" href="https://spotpuls.app/ro/" />
+    <xhtml:link rel="alternate" hreflang="bg" href="https://spotpuls.app/bg/" />
+    <xhtml:link rel="alternate" hreflang="sl" href="https://spotpuls.app/si/" />
+    <xhtml:link rel="alternate" hreflang="hr" href="https://spotpuls.app/hr/" />
+    <xhtml:link rel="alternate" hreflang="el" href="https://spotpuls.app/gr/" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://spotpuls.app/en/" />
+  </url>
+  <url>
+    <loc>https://spotpuls.app/pt/</loc>
+    <lastmod>2026-11-12</lastmod>
+    <xhtml:link rel="alternate" hreflang="fi" href="https://spotpuls.app/" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://spotpuls.app/en/" />
+    <xhtml:link rel="alternate" hreflang="sv" href="https://spotpuls.app/se/" />
+    <xhtml:link rel="alternate" hreflang="no" href="https://spotpuls.app/no/" />
+    <xhtml:link rel="alternate" hreflang="da" href="https://spotpuls.app/dk/" />
+    <xhtml:link rel="alternate" hreflang="et" href="https://spotpuls.app/ee/" />
+    <xhtml:link rel="alternate" hreflang="lv" href="https://spotpuls.app/lv/" />
+    <xhtml:link rel="alternate" hreflang="lt" href="https://spotpuls.app/lt/" />
+    <xhtml:link rel="alternate" hreflang="de" href="https://spotpuls.app/de/" />
+    <xhtml:link rel="alternate" hreflang="de-AT" href="https://spotpuls.app/at/" />
+    <xhtml:link rel="alternate" hreflang="de-CH" href="https://spotpuls.app/ch/" />
+    <xhtml:link rel="alternate" hreflang="nl" href="https://spotpuls.app/nl/" />
+    <xhtml:link rel="alternate" hreflang="nl-BE" href="https://spotpuls.app/be/" />
+    <xhtml:link rel="alternate" hreflang="fr" href="https://spotpuls.app/fr/" />
+    <xhtml:link rel="alternate" hreflang="en-GB" href="https://spotpuls.app/gb/" />
+    <xhtml:link rel="alternate" hreflang="en-IE" href="https://spotpuls.app/ie/" />
+    <xhtml:link rel="alternate" hreflang="es" href="https://spotpuls.app/es/" />
+    <xhtml:link rel="alternate" hreflang="pt" href="https://spotpuls.app/pt/" />
+    <xhtml:link rel="alternate" hreflang="it" href="https://spotpuls.app/it/" />
+    <xhtml:link rel="alternate" hreflang="pl" href="https://spotpuls.app/pl/" />
+    <xhtml:link rel="alternate" hreflang="cs" href="https://spotpuls.app/cz/" />
+    <xhtml:link rel="alternate" hreflang="sk" href="https://spotpuls.app/sk/" />
+    <xhtml:link rel="alternate" hreflang="hu" href="https://spotpuls.app/hu/" />
+    <xhtml:link rel="alternate" hreflang="ro" href="https://spotpuls.app/ro/" />
+    <xhtml:link rel="alternate" hreflang="bg" href="https://spotpuls.app/bg/" />
+    <xhtml:link rel="alternate" hreflang="sl" href="https://spotpuls.app/si/" />
+    <xhtml:link rel="alternate" hreflang="hr" href="https://spotpuls.app/hr/" />
+    <xhtml:link rel="alternate" hreflang="el" href="https://spotpuls.app/gr/" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://spotpuls.app/en/" />
+  </url>
+  <url>
+    <loc>https://spotpuls.app/ro/</loc>
+    <lastmod>2026-11-12</lastmod>
+    <xhtml:link rel="alternate" hreflang="fi" href="https://spotpuls.app/" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://spotpuls.app/en/" />
+    <xhtml:link rel="alternate" hreflang="sv" href="https://spotpuls.app/se/" />
+    <xhtml:link rel="alternate" hreflang="no" href="https://spotpuls.app/no/" />
+    <xhtml:link rel="alternate" hreflang="da" href="https://spotpuls.app/dk/" />
+    <xhtml:link rel="alternate" hreflang="et" href="https://spotpuls.app/ee/" />
+    <xhtml:link rel="alternate" hreflang="lv" href="https://spotpuls.app/lv/" />
+    <xhtml:link rel="alternate" hreflang="lt" href="https://spotpuls.app/lt/" />
+    <xhtml:link rel="alternate" hreflang="de" href="https://spotpuls.app/de/" />
+    <xhtml:link rel="alternate" hreflang="de-AT" href="https://spotpuls.app/at/" />
+    <xhtml:link rel="alternate" hreflang="de-CH" href="https://spotpuls.app/ch/" />
+    <xhtml:link rel="alternate" hreflang="nl" href="https://spotpuls.app/nl/" />
+    <xhtml:link rel="alternate" hreflang="nl-BE" href="https://spotpuls.app/be/" />
+    <xhtml:link rel="alternate" hreflang="fr" href="https://spotpuls.app/fr/" />
+    <xhtml:link rel="alternate" hreflang="en-GB" href="https://spotpuls.app/gb/" />
+    <xhtml:link rel="alternate" hreflang="en-IE" href="https://spotpuls.app/ie/" />
+    <xhtml:link rel="alternate" hreflang="es" href="https://spotpuls.app/es/" />
+    <xhtml:link rel="alternate" hreflang="pt" href="https://spotpuls.app/pt/" />
+    <xhtml:link rel="alternate" hreflang="it" href="https://spotpuls.app/it/" />
+    <xhtml:link rel="alternate" hreflang="pl" href="https://spotpuls.app/pl/" />
+    <xhtml:link rel="alternate" hreflang="cs" href="https://spotpuls.app/cz/" />
+    <xhtml:link rel="alternate" hreflang="sk" href="https://spotpuls.app/sk/" />
+    <xhtml:link rel="alternate" hreflang="hu" href="https://spotpuls.app/hu/" />
+    <xhtml:link rel="alternate" hreflang="ro" href="https://spotpuls.app/ro/" />
+    <xhtml:link rel="alternate" hreflang="bg" href="https://spotpuls.app/bg/" />
+    <xhtml:link rel="alternate" hreflang="sl" href="https://spotpuls.app/si/" />
+    <xhtml:link rel="alternate" hreflang="hr" href="https://spotpuls.app/hr/" />
+    <xhtml:link rel="alternate" hreflang="el" href="https://spotpuls.app/gr/" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://spotpuls.app/en/" />
+  </url>
+  <url>
+    <loc>https://spotpuls.app/se/</loc>
+    <lastmod>2026-11-12</lastmod>
+    <xhtml:link rel="alternate" hreflang="fi" href="https://spotpuls.app/" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://spotpuls.app/en/" />
+    <xhtml:link rel="alternate" hreflang="sv" href="https://spotpuls.app/se/" />
+    <xhtml:link rel="alternate" hreflang="no" href="https://spotpuls.app/no/" />
+    <xhtml:link rel="alternate" hreflang="da" href="https://spotpuls.app/dk/" />
+    <xhtml:link rel="alternate" hreflang="et" href="https://spotpuls.app/ee/" />
+    <xhtml:link rel="alternate" hreflang="lv" href="https://spotpuls.app/lv/" />
+    <xhtml:link rel="alternate" hreflang="lt" href="https://spotpuls.app/lt/" />
+    <xhtml:link rel="alternate" hreflang="de" href="https://spotpuls.app/de/" />
+    <xhtml:link rel="alternate" hreflang="de-AT" href="https://spotpuls.app/at/" />
+    <xhtml:link rel="alternate" hreflang="de-CH" href="https://spotpuls.app/ch/" />
+    <xhtml:link rel="alternate" hreflang="nl" href="https://spotpuls.app/nl/" />
+    <xhtml:link rel="alternate" hreflang="nl-BE" href="https://spotpuls.app/be/" />
+    <xhtml:link rel="alternate" hreflang="fr" href="https://spotpuls.app/fr/" />
+    <xhtml:link rel="alternate" hreflang="en-GB" href="https://spotpuls.app/gb/" />
+    <xhtml:link rel="alternate" hreflang="en-IE" href="https://spotpuls.app/ie/" />
+    <xhtml:link rel="alternate" hreflang="es" href="https://spotpuls.app/es/" />
+    <xhtml:link rel="alternate" hreflang="pt" href="https://spotpuls.app/pt/" />
+    <xhtml:link rel="alternate" hreflang="it" href="https://spotpuls.app/it/" />
+    <xhtml:link rel="alternate" hreflang="pl" href="https://spotpuls.app/pl/" />
+    <xhtml:link rel="alternate" hreflang="cs" href="https://spotpuls.app/cz/" />
+    <xhtml:link rel="alternate" hreflang="sk" href="https://spotpuls.app/sk/" />
+    <xhtml:link rel="alternate" hreflang="hu" href="https://spotpuls.app/hu/" />
+    <xhtml:link rel="alternate" hreflang="ro" href="https://spotpuls.app/ro/" />
+    <xhtml:link rel="alternate" hreflang="bg" href="https://spotpuls.app/bg/" />
+    <xhtml:link rel="alternate" hreflang="sl" href="https://spotpuls.app/si/" />
+    <xhtml:link rel="alternate" hreflang="hr" href="https://spotpuls.app/hr/" />
+    <xhtml:link rel="alternate" hreflang="el" href="https://spotpuls.app/gr/" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://spotpuls.app/en/" />
+  </url>
+  <url>
+    <loc>https://spotpuls.app/si/</loc>
+    <lastmod>2026-11-12</lastmod>
+    <xhtml:link rel="alternate" hreflang="fi" href="https://spotpuls.app/" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://spotpuls.app/en/" />
+    <xhtml:link rel="alternate" hreflang="sv" href="https://spotpuls.app/se/" />
+    <xhtml:link rel="alternate" hreflang="no" href="https://spotpuls.app/no/" />
+    <xhtml:link rel="alternate" hreflang="da" href="https://spotpuls.app/dk/" />
+    <xhtml:link rel="alternate" hreflang="et" href="https://spotpuls.app/ee/" />
+    <xhtml:link rel="alternate" hreflang="lv" href="https://spotpuls.app/lv/" />
+    <xhtml:link rel="alternate" hreflang="lt" href="https://spotpuls.app/lt/" />
+    <xhtml:link rel="alternate" hreflang="de" href="https://spotpuls.app/de/" />
+    <xhtml:link rel="alternate" hreflang="de-AT" href="https://spotpuls.app/at/" />
+    <xhtml:link rel="alternate" hreflang="de-CH" href="https://spotpuls.app/ch/" />
+    <xhtml:link rel="alternate" hreflang="nl" href="https://spotpuls.app/nl/" />
+    <xhtml:link rel="alternate" hreflang="nl-BE" href="https://spotpuls.app/be/" />
+    <xhtml:link rel="alternate" hreflang="fr" href="https://spotpuls.app/fr/" />
+    <xhtml:link rel="alternate" hreflang="en-GB" href="https://spotpuls.app/gb/" />
+    <xhtml:link rel="alternate" hreflang="en-IE" href="https://spotpuls.app/ie/" />
+    <xhtml:link rel="alternate" hreflang="es" href="https://spotpuls.app/es/" />
+    <xhtml:link rel="alternate" hreflang="pt" href="https://spotpuls.app/pt/" />
+    <xhtml:link rel="alternate" hreflang="it" href="https://spotpuls.app/it/" />
+    <xhtml:link rel="alternate" hreflang="pl" href="https://spotpuls.app/pl/" />
+    <xhtml:link rel="alternate" hreflang="cs" href="https://spotpuls.app/cz/" />
+    <xhtml:link rel="alternate" hreflang="sk" href="https://spotpuls.app/sk/" />
+    <xhtml:link rel="alternate" hreflang="hu" href="https://spotpuls.app/hu/" />
+    <xhtml:link rel="alternate" hreflang="ro" href="https://spotpuls.app/ro/" />
+    <xhtml:link rel="alternate" hreflang="bg" href="https://spotpuls.app/bg/" />
+    <xhtml:link rel="alternate" hreflang="sl" href="https://spotpuls.app/si/" />
+    <xhtml:link rel="alternate" hreflang="hr" href="https://spotpuls.app/hr/" />
+    <xhtml:link rel="alternate" hreflang="el" href="https://spotpuls.app/gr/" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://spotpuls.app/en/" />
+  </url>
+  <url>
+    <loc>https://spotpuls.app/sk/</loc>
+    <lastmod>2026-11-12</lastmod>
+    <xhtml:link rel="alternate" hreflang="fi" href="https://spotpuls.app/" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://spotpuls.app/en/" />
+    <xhtml:link rel="alternate" hreflang="sv" href="https://spotpuls.app/se/" />
+    <xhtml:link rel="alternate" hreflang="no" href="https://spotpuls.app/no/" />
+    <xhtml:link rel="alternate" hreflang="da" href="https://spotpuls.app/dk/" />
+    <xhtml:link rel="alternate" hreflang="et" href="https://spotpuls.app/ee/" />
+    <xhtml:link rel="alternate" hreflang="lv" href="https://spotpuls.app/lv/" />
+    <xhtml:link rel="alternate" hreflang="lt" href="https://spotpuls.app/lt/" />
+    <xhtml:link rel="alternate" hreflang="de" href="https://spotpuls.app/de/" />
+    <xhtml:link rel="alternate" hreflang="de-AT" href="https://spotpuls.app/at/" />
+    <xhtml:link rel="alternate" hreflang="de-CH" href="https://spotpuls.app/ch/" />
+    <xhtml:link rel="alternate" hreflang="nl" href="https://spotpuls.app/nl/" />
+    <xhtml:link rel="alternate" hreflang="nl-BE" href="https://spotpuls.app/be/" />
+    <xhtml:link rel="alternate" hreflang="fr" href="https://spotpuls.app/fr/" />
+    <xhtml:link rel="alternate" hreflang="en-GB" href="https://spotpuls.app/gb/" />
+    <xhtml:link rel="alternate" hreflang="en-IE" href="https://spotpuls.app/ie/" />
+    <xhtml:link rel="alternate" hreflang="es" href="https://spotpuls.app/es/" />
+    <xhtml:link rel="alternate" hreflang="pt" href="https://spotpuls.app/pt/" />
+    <xhtml:link rel="alternate" hreflang="it" href="https://spotpuls.app/it/" />
+    <xhtml:link rel="alternate" hreflang="pl" href="https://spotpuls.app/pl/" />
+    <xhtml:link rel="alternate" hreflang="cs" href="https://spotpuls.app/cz/" />
+    <xhtml:link rel="alternate" hreflang="sk" href="https://spotpuls.app/sk/" />
+    <xhtml:link rel="alternate" hreflang="hu" href="https://spotpuls.app/hu/" />
+    <xhtml:link rel="alternate" hreflang="ro" href="https://spotpuls.app/ro/" />
+    <xhtml:link rel="alternate" hreflang="bg" href="https://spotpuls.app/bg/" />
+    <xhtml:link rel="alternate" hreflang="sl" href="https://spotpuls.app/si/" />
+    <xhtml:link rel="alternate" hreflang="hr" href="https://spotpuls.app/hr/" />
+    <xhtml:link rel="alternate" hreflang="el" href="https://spotpuls.app/gr/" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://spotpuls.app/en/" />
   </url>
   <url>
     <loc>https://spotpuls.app/api-docs/</loc>
-    <lastmod>2026-11-11</lastmod>
+    <lastmod>2026-11-12</lastmod>
+  </url>
+  <url>
+    <loc>https://spotpuls.app/oppaat/porssisahko-ennuste-7-vrk-tuulivoima-ja-lampotila.html</loc>
+    <lastmod>2026-11-12</lastmod>
+  </url>
+  <url>
+    <loc>https://spotpuls.app/oppaat/sahkoauton-lataus-ja-lamminvesivaraaja-porssisahkolla.html</loc>
+    <lastmod>2026-11-12</lastmod>
+  </url>
+  <url>
+    <loc>https://spotpuls.app/oppaat/sahkon-siirtohinta-postinumerolla-kaikki-verkkoyhtiot.html</loc>
+    <lastmod>2026-11-12</lastmod>
+  </url>
+  <url>
+    <loc>https://spotpuls.app/oppaat/yleissiirto-yosiirto-vai-kausisiirto-vertailu.html</loc>
+    <lastmod>2026-11-12</lastmod>
+  </url>
+  <url>
+    <loc>https://spotpuls.app/verkkoyhtiot/alva-sahkoverkko.html</loc>
+    <lastmod>2026-11-12</lastmod>
+  </url>
+  <url>
+    <loc>https://spotpuls.app/verkkoyhtiot/caruna-espoo.html</loc>
+    <lastmod>2026-11-12</lastmod>
+  </url>
+  <url>
+    <loc>https://spotpuls.app/verkkoyhtiot/caruna.html</loc>
+    <lastmod>2026-11-12</lastmod>
+  </url>
+  <url>
+    <loc>https://spotpuls.app/verkkoyhtiot/elenia.html</loc>
+    <lastmod>2026-11-12</lastmod>
+  </url>
+  <url>
+    <loc>https://spotpuls.app/verkkoyhtiot/ese-verkko-mikkeli.html</loc>
+    <lastmod>2026-11-12</lastmod>
+  </url>
+  <url>
+    <loc>https://spotpuls.app/verkkoyhtiot/helen-sahkoverkko.html</loc>
+    <lastmod>2026-11-12</lastmod>
+  </url>
+  <url>
+    <loc>https://spotpuls.app/verkkoyhtiot/herrfors-nat-verkko.html</loc>
+    <lastmod>2026-11-12</lastmod>
+  </url>
+  <url>
+    <loc>https://spotpuls.app/verkkoyhtiot/imatran-seudun-sahkonsiirto.html</loc>
+    <lastmod>2026-11-12</lastmod>
+  </url>
+  <url>
+    <loc>https://spotpuls.app/verkkoyhtiot/index.html</loc>
+    <lastmod>2026-11-12</lastmod>
+  </url>
+  <url>
+    <loc>https://spotpuls.app/verkkoyhtiot/jarvi-suomen-energia.html</loc>
+    <lastmod>2026-11-12</lastmod>
+  </url>
+  <url>
+    <loc>https://spotpuls.app/verkkoyhtiot/kajave-loiste.html</loc>
+    <lastmod>2026-11-12</lastmod>
+  </url>
+  <url>
+    <loc>https://spotpuls.app/verkkoyhtiot/keravan-sipoon-energia.html</loc>
+    <lastmod>2026-11-12</lastmod>
+  </url>
+  <url>
+    <loc>https://spotpuls.app/verkkoyhtiot/koillis-satakunnan-sahko.html</loc>
+    <lastmod>2026-11-12</lastmod>
+  </url>
+  <url>
+    <loc>https://spotpuls.app/verkkoyhtiot/kokkolan-energiaverkot.html</loc>
+    <lastmod>2026-11-12</lastmod>
+  </url>
+  <url>
+    <loc>https://spotpuls.app/verkkoyhtiot/kotkan-energiaverkot.html</loc>
+    <lastmod>2026-11-12</lastmod>
+  </url>
+  <url>
+    <loc>https://spotpuls.app/verkkoyhtiot/kss-verkko.html</loc>
+    <lastmod>2026-11-12</lastmod>
+  </url>
+  <url>
+    <loc>https://spotpuls.app/verkkoyhtiot/kuopion-sahkoverkko.html</loc>
+    <lastmod>2026-11-12</lastmod>
+  </url>
+  <url>
+    <loc>https://spotpuls.app/verkkoyhtiot/kymenlaakson-sahkoverkko.html</loc>
+    <lastmod>2026-11-12</lastmod>
+  </url>
+  <url>
+    <loc>https://spotpuls.app/verkkoyhtiot/lahti-energia-sahkoverkko.html</loc>
+    <lastmod>2026-11-12</lastmod>
+  </url>
+  <url>
+    <loc>https://spotpuls.app/verkkoyhtiot/lappeenrannan-energiaverkot.html</loc>
+    <lastmod>2026-11-12</lastmod>
+  </url>
+  <url>
+    <loc>https://spotpuls.app/verkkoyhtiot/leppakosken-sahko.html</loc>
+    <lastmod>2026-11-12</lastmod>
+  </url>
+  <url>
+    <loc>https://spotpuls.app/verkkoyhtiot/neve-rovaniemi.html</loc>
+    <lastmod>2026-11-12</lastmod>
+  </url>
+  <url>
+    <loc>https://spotpuls.app/verkkoyhtiot/nurmijarven-sahkoverkko.html</loc>
+    <lastmod>2026-11-12</lastmod>
+  </url>
+  <url>
+    <loc>https://spotpuls.app/verkkoyhtiot/oulun-energia-sahkoverkko.html</loc>
+    <lastmod>2026-11-12</lastmod>
+  </url>
+  <url>
+    <loc>https://spotpuls.app/verkkoyhtiot/oulun-seudun-sahko.html</loc>
+    <lastmod>2026-11-12</lastmod>
+  </url>
+  <url>
+    <loc>https://spotpuls.app/verkkoyhtiot/pks-sahkonsiirto.html</loc>
+    <lastmod>2026-11-12</lastmod>
+  </url>
+  <url>
+    <loc>https://spotpuls.app/verkkoyhtiot/pori-energia-sahkoverkot.html</loc>
+    <lastmod>2026-11-12</lastmod>
+  </url>
+  <url>
+    <loc>https://spotpuls.app/verkkoyhtiot/porvoon-sahkoverkko.html</loc>
+    <lastmod>2026-11-12</lastmod>
+  </url>
+  <url>
+    <loc>https://spotpuls.app/verkkoyhtiot/rauman-energia.html</loc>
+    <lastmod>2026-11-12</lastmod>
+  </url>
+  <url>
+    <loc>https://spotpuls.app/verkkoyhtiot/rovakaira.html</loc>
+    <lastmod>2026-11-12</lastmod>
+  </url>
+  <url>
+    <loc>https://spotpuls.app/verkkoyhtiot/savon-voima-verkko.html</loc>
+    <lastmod>2026-11-12</lastmod>
+  </url>
+  <url>
+    <loc>https://spotpuls.app/verkkoyhtiot/seinajoen-energia.html</loc>
+    <lastmod>2026-11-12</lastmod>
+  </url>
+  <url>
+    <loc>https://spotpuls.app/verkkoyhtiot/tampereen-energia-sahkoverkko.html</loc>
+    <lastmod>2026-11-12</lastmod>
+  </url>
+  <url>
+    <loc>https://spotpuls.app/verkkoyhtiot/tornionlaakson-sahko.html</loc>
+    <lastmod>2026-11-12</lastmod>
+  </url>
+  <url>
+    <loc>https://spotpuls.app/verkkoyhtiot/turku-energia-sahkoverkot.html</loc>
+    <lastmod>2026-11-12</lastmod>
+  </url>
+  <url>
+    <loc>https://spotpuls.app/verkkoyhtiot/vaasan-sahkoverkko.html</loc>
+    <lastmod>2026-11-12</lastmod>
+  </url>
+  <url>
+    <loc>https://spotpuls.app/verkkoyhtiot/vakka-suomen-voima.html</loc>
+    <lastmod>2026-11-12</lastmod>
+  </url>
+  <url>
+    <loc>https://spotpuls.app/verkkoyhtiot/vantaan-energia-sahkoverkot.html</loc>
+    <lastmod>2026-11-12</lastmod>
+  </url>
+  <url>
+    <loc>https://spotpuls.app/paikkakunnat/aanekoski.html</loc>
+    <lastmod>2026-11-12</lastmod>
+  </url>
+  <url>
+    <loc>https://spotpuls.app/paikkakunnat/ahtari.html</loc>
+    <lastmod>2026-11-12</lastmod>
+  </url>
+  <url>
+    <loc>https://spotpuls.app/paikkakunnat/akaa.html</loc>
+    <lastmod>2026-11-12</lastmod>
+  </url>
+  <url>
+    <loc>https://spotpuls.app/paikkakunnat/alavus.html</loc>
+    <lastmod>2026-11-12</lastmod>
+  </url>
+  <url>
+    <loc>https://spotpuls.app/paikkakunnat/asikkala.html</loc>
+    <lastmod>2026-11-12</lastmod>
+  </url>
+  <url>
+    <loc>https://spotpuls.app/paikkakunnat/askola.html</loc>
+    <lastmod>2026-11-12</lastmod>
+  </url>
+  <url>
+    <loc>https://spotpuls.app/paikkakunnat/enontekio.html</loc>
+    <lastmod>2026-11-12</lastmod>
+  </url>
+  <url>
+    <loc>https://spotpuls.app/paikkakunnat/espoo.html</loc>
+    <lastmod>2026-11-12</lastmod>
+  </url>
+  <url>
+    <loc>https://spotpuls.app/paikkakunnat/eura.html</loc>
+    <lastmod>2026-11-12</lastmod>
+  </url>
+  <url>
+    <loc>https://spotpuls.app/paikkakunnat/eurajoki.html</loc>
+    <lastmod>2026-11-12</lastmod>
+  </url>
+  <url>
+    <loc>https://spotpuls.app/paikkakunnat/forssa.html</loc>
+    <lastmod>2026-11-12</lastmod>
+  </url>
+  <url>
+    <loc>https://spotpuls.app/paikkakunnat/haapajarvi.html</loc>
+    <lastmod>2026-11-12</lastmod>
+  </url>
+  <url>
+    <loc>https://spotpuls.app/paikkakunnat/hameenkyro.html</loc>
+    <lastmod>2026-11-12</lastmod>
+  </url>
+  <url>
+    <loc>https://spotpuls.app/paikkakunnat/hameenlinna.html</loc>
+    <lastmod>2026-11-12</lastmod>
+  </url>
+  <url>
+    <loc>https://spotpuls.app/paikkakunnat/hamina.html</loc>
+    <lastmod>2026-11-12</lastmod>
+  </url>
+  <url>
+    <loc>https://spotpuls.app/paikkakunnat/hanko.html</loc>
+    <lastmod>2026-11-12</lastmod>
+  </url>
+  <url>
+    <loc>https://spotpuls.app/paikkakunnat/harjavalta.html</loc>
+    <lastmod>2026-11-12</lastmod>
+  </url>
+  <url>
+    <loc>https://spotpuls.app/paikkakunnat/hattula.html</loc>
+    <lastmod>2026-11-12</lastmod>
+  </url>
+  <url>
+    <loc>https://spotpuls.app/paikkakunnat/hausjarvi.html</loc>
+    <lastmod>2026-11-12</lastmod>
+  </url>
+  <url>
+    <loc>https://spotpuls.app/paikkakunnat/heinola.html</loc>
+    <lastmod>2026-11-12</lastmod>
+  </url>
+  <url>
+    <loc>https://spotpuls.app/paikkakunnat/helsinki.html</loc>
+    <lastmod>2026-11-12</lastmod>
+  </url>
+  <url>
+    <loc>https://spotpuls.app/paikkakunnat/hollola.html</loc>
+    <lastmod>2026-11-12</lastmod>
+  </url>
+  <url>
+    <loc>https://spotpuls.app/paikkakunnat/huittinen.html</loc>
+    <lastmod>2026-11-12</lastmod>
+  </url>
+  <url>
+    <loc>https://spotpuls.app/paikkakunnat/hyvinkaa.html</loc>
+    <lastmod>2026-11-12</lastmod>
+  </url>
+  <url>
+    <loc>https://spotpuls.app/paikkakunnat/ii.html</loc>
+    <lastmod>2026-11-12</lastmod>
+  </url>
+  <url>
+    <loc>https://spotpuls.app/paikkakunnat/iisalmi.html</loc>
+    <lastmod>2026-11-12</lastmod>
+  </url>
+  <url>
+    <loc>https://spotpuls.app/paikkakunnat/ikaalinen.html</loc>
+    <lastmod>2026-11-12</lastmod>
+  </url>
+  <url>
+    <loc>https://spotpuls.app/paikkakunnat/ilmajoki.html</loc>
+    <lastmod>2026-11-12</lastmod>
+  </url>
+  <url>
+    <loc>https://spotpuls.app/paikkakunnat/ilomantsi.html</loc>
+    <lastmod>2026-11-12</lastmod>
+  </url>
+  <url>
+    <loc>https://spotpuls.app/paikkakunnat/imatra.html</loc>
+    <lastmod>2026-11-12</lastmod>
+  </url>
+  <url>
+    <loc>https://spotpuls.app/paikkakunnat/inari.html</loc>
+    <lastmod>2026-11-12</lastmod>
+  </url>
+  <url>
+    <loc>https://spotpuls.app/paikkakunnat/index.html</loc>
+    <lastmod>2026-11-12</lastmod>
+  </url>
+  <url>
+    <loc>https://spotpuls.app/paikkakunnat/inkoo.html</loc>
+    <lastmod>2026-11-12</lastmod>
+  </url>
+  <url>
+    <loc>https://spotpuls.app/paikkakunnat/jamsa.html</loc>
+    <lastmod>2026-11-12</lastmod>
+  </url>
+  <url>
+    <loc>https://spotpuls.app/paikkakunnat/janakkala.html</loc>
+    <lastmod>2026-11-12</lastmod>
+  </url>
+  <url>
+    <loc>https://spotpuls.app/paikkakunnat/jarvenpaa.html</loc>
+    <lastmod>2026-11-12</lastmod>
+  </url>
+  <url>
+    <loc>https://spotpuls.app/paikkakunnat/joensuu.html</loc>
+    <lastmod>2026-11-12</lastmod>
+  </url>
+  <url>
+    <loc>https://spotpuls.app/paikkakunnat/juva.html</loc>
+    <lastmod>2026-11-12</lastmod>
+  </url>
+  <url>
+    <loc>https://spotpuls.app/paikkakunnat/jyvaskyla.html</loc>
+    <lastmod>2026-11-12</lastmod>
+  </url>
+  <url>
+    <loc>https://spotpuls.app/paikkakunnat/kaarina.html</loc>
+    <lastmod>2026-11-12</lastmod>
+  </url>
+  <url>
+    <loc>https://spotpuls.app/paikkakunnat/kajaani.html</loc>
+    <lastmod>2026-11-12</lastmod>
+  </url>
+  <url>
+    <loc>https://spotpuls.app/paikkakunnat/kalajoki.html</loc>
+    <lastmod>2026-11-12</lastmod>
+  </url>
+  <url>
+    <loc>https://spotpuls.app/paikkakunnat/kangasala.html</loc>
+    <lastmod>2026-11-12</lastmod>
+  </url>
+  <url>
+    <loc>https://spotpuls.app/paikkakunnat/kangasniemi.html</loc>
+    <lastmod>2026-11-12</lastmod>
+  </url>
+  <url>
+    <loc>https://spotpuls.app/paikkakunnat/kankaanpaa.html</loc>
+    <lastmod>2026-11-12</lastmod>
+  </url>
+  <url>
+    <loc>https://spotpuls.app/paikkakunnat/karkkila.html</loc>
+    <lastmod>2026-11-12</lastmod>
+  </url>
+  <url>
+    <loc>https://spotpuls.app/paikkakunnat/kauhajoki.html</loc>
+    <lastmod>2026-11-12</lastmod>
+  </url>
+  <url>
+    <loc>https://spotpuls.app/paikkakunnat/kauhava.html</loc>
+    <lastmod>2026-11-12</lastmod>
+  </url>
+  <url>
+    <loc>https://spotpuls.app/paikkakunnat/kauniainen.html</loc>
+    <lastmod>2026-11-12</lastmod>
+  </url>
+  <url>
+    <loc>https://spotpuls.app/paikkakunnat/kemi.html</loc>
+    <lastmod>2026-11-12</lastmod>
+  </url>
+  <url>
+    <loc>https://spotpuls.app/paikkakunnat/kemijarvi.html</loc>
+    <lastmod>2026-11-12</lastmod>
+  </url>
+  <url>
+    <loc>https://spotpuls.app/paikkakunnat/kempele.html</loc>
+    <lastmod>2026-11-12</lastmod>
+  </url>
+  <url>
+    <loc>https://spotpuls.app/paikkakunnat/kerava.html</loc>
+    <lastmod>2026-11-12</lastmod>
+  </url>
+  <url>
+    <loc>https://spotpuls.app/paikkakunnat/keuruu.html</loc>
+    <lastmod>2026-11-12</lastmod>
+  </url>
+  <url>
+    <loc>https://spotpuls.app/paikkakunnat/kirkkonummi.html</loc>
+    <lastmod>2026-11-12</lastmod>
+  </url>
+  <url>
+    <loc>https://spotpuls.app/paikkakunnat/kitee.html</loc>
+    <lastmod>2026-11-12</lastmod>
+  </url>
+  <url>
+    <loc>https://spotpuls.app/paikkakunnat/kittila.html</loc>
+    <lastmod>2026-11-12</lastmod>
+  </url>
+  <url>
+    <loc>https://spotpuls.app/paikkakunnat/kiuruvesi.html</loc>
+    <lastmod>2026-11-12</lastmod>
+  </url>
+  <url>
+    <loc>https://spotpuls.app/paikkakunnat/kokemaki.html</loc>
+    <lastmod>2026-11-12</lastmod>
+  </url>
+  <url>
+    <loc>https://spotpuls.app/paikkakunnat/kokkola.html</loc>
+    <lastmod>2026-11-12</lastmod>
+  </url>
+  <url>
+    <loc>https://spotpuls.app/paikkakunnat/kolari.html</loc>
+    <lastmod>2026-11-12</lastmod>
+  </url>
+  <url>
+    <loc>https://spotpuls.app/paikkakunnat/kontiolahti.html</loc>
+    <lastmod>2026-11-12</lastmod>
+  </url>
+  <url>
+    <loc>https://spotpuls.app/paikkakunnat/kotka.html</loc>
+    <lastmod>2026-11-12</lastmod>
+  </url>
+  <url>
+    <loc>https://spotpuls.app/paikkakunnat/kouvola.html</loc>
+    <lastmod>2026-11-12</lastmod>
+  </url>
+  <url>
+    <loc>https://spotpuls.app/paikkakunnat/kristiinankaupunki.html</loc>
+    <lastmod>2026-11-12</lastmod>
+  </url>
+  <url>
+    <loc>https://spotpuls.app/paikkakunnat/kuhmo.html</loc>
+    <lastmod>2026-11-12</lastmod>
+  </url>
+  <url>
+    <loc>https://spotpuls.app/paikkakunnat/kuopio.html</loc>
+    <lastmod>2026-11-12</lastmod>
+  </url>
+  <url>
+    <loc>https://spotpuls.app/paikkakunnat/kurikka.html</loc>
+    <lastmod>2026-11-12</lastmod>
+  </url>
+  <url>
+    <loc>https://spotpuls.app/paikkakunnat/kuusamo.html</loc>
+    <lastmod>2026-11-12</lastmod>
+  </url>
+  <url>
+    <loc>https://spotpuls.app/paikkakunnat/lahti.html</loc>
+    <lastmod>2026-11-12</lastmod>
+  </url>
+  <url>
+    <loc>https://spotpuls.app/paikkakunnat/laitila.html</loc>
+    <lastmod>2026-11-12</lastmod>
+  </url>
+  <url>
+    <loc>https://spotpuls.app/paikkakunnat/lapinlahti.html</loc>
+    <lastmod>2026-11-12</lastmod>
+  </url>
+  <url>
+    <loc>https://spotpuls.app/paikkakunnat/lappeenranta.html</loc>
+    <lastmod>2026-11-12</lastmod>
+  </url>
+  <url>
+    <loc>https://spotpuls.app/paikkakunnat/lapua.html</loc>
+    <lastmod>2026-11-12</lastmod>
+  </url>
+  <url>
+    <loc>https://spotpuls.app/paikkakunnat/laukaa.html</loc>
+    <lastmod>2026-11-12</lastmod>
+  </url>
+  <url>
+    <loc>https://spotpuls.app/paikkakunnat/lempaala.html</loc>
+    <lastmod>2026-11-12</lastmod>
+  </url>
+  <url>
+    <loc>https://spotpuls.app/paikkakunnat/leppavirta.html</loc>
+    <lastmod>2026-11-12</lastmod>
+  </url>
+  <url>
+    <loc>https://spotpuls.app/paikkakunnat/lieksa.html</loc>
+    <lastmod>2026-11-12</lastmod>
+  </url>
+  <url>
+    <loc>https://spotpuls.app/paikkakunnat/lieto.html</loc>
+    <lastmod>2026-11-12</lastmod>
+  </url>
+  <url>
+    <loc>https://spotpuls.app/paikkakunnat/liminka.html</loc>
+    <lastmod>2026-11-12</lastmod>
+  </url>
+  <url>
+    <loc>https://spotpuls.app/paikkakunnat/liperi.html</loc>
+    <lastmod>2026-11-12</lastmod>
+  </url>
+  <url>
+    <loc>https://spotpuls.app/paikkakunnat/lohja.html</loc>
+    <lastmod>2026-11-12</lastmod>
+  </url>
+  <url>
+    <loc>https://spotpuls.app/paikkakunnat/loimaa.html</loc>
+    <lastmod>2026-11-12</lastmod>
+  </url>
+  <url>
+    <loc>https://spotpuls.app/paikkakunnat/loppi.html</loc>
+    <lastmod>2026-11-12</lastmod>
+  </url>
+  <url>
+    <loc>https://spotpuls.app/paikkakunnat/loviisa.html</loc>
+    <lastmod>2026-11-12</lastmod>
+  </url>
+  <url>
+    <loc>https://spotpuls.app/paikkakunnat/mantsala.html</loc>
+    <lastmod>2026-11-12</lastmod>
+  </url>
+  <url>
+    <loc>https://spotpuls.app/paikkakunnat/mantta-vilppula.html</loc>
+    <lastmod>2026-11-12</lastmod>
+  </url>
+  <url>
+    <loc>https://spotpuls.app/paikkakunnat/mantyharju.html</loc>
+    <lastmod>2026-11-12</lastmod>
+  </url>
+  <url>
+    <loc>https://spotpuls.app/paikkakunnat/masku.html</loc>
+    <lastmod>2026-11-12</lastmod>
+  </url>
+  <url>
+    <loc>https://spotpuls.app/paikkakunnat/mikkeli.html</loc>
+    <lastmod>2026-11-12</lastmod>
+  </url>
+  <url>
+    <loc>https://spotpuls.app/paikkakunnat/muhos.html</loc>
+    <lastmod>2026-11-12</lastmod>
+  </url>
+  <url>
+    <loc>https://spotpuls.app/paikkakunnat/muonio.html</loc>
+    <lastmod>2026-11-12</lastmod>
+  </url>
+  <url>
+    <loc>https://spotpuls.app/paikkakunnat/mustasaari.html</loc>
+    <lastmod>2026-11-12</lastmod>
+  </url>
+  <url>
+    <loc>https://spotpuls.app/paikkakunnat/muurame.html</loc>
+    <lastmod>2026-11-12</lastmod>
+  </url>
+  <url>
+    <loc>https://spotpuls.app/paikkakunnat/mynamaki.html</loc>
+    <lastmod>2026-11-12</lastmod>
+  </url>
+  <url>
+    <loc>https://spotpuls.app/paikkakunnat/naantali.html</loc>
+    <lastmod>2026-11-12</lastmod>
+  </url>
+  <url>
+    <loc>https://spotpuls.app/paikkakunnat/narpio.html</loc>
+    <lastmod>2026-11-12</lastmod>
+  </url>
+  <url>
+    <loc>https://spotpuls.app/paikkakunnat/nivala.html</loc>
+    <lastmod>2026-11-12</lastmod>
+  </url>
+  <url>
+    <loc>https://spotpuls.app/paikkakunnat/nokia.html</loc>
+    <lastmod>2026-11-12</lastmod>
+  </url>
+  <url>
+    <loc>https://spotpuls.app/paikkakunnat/nurmes.html</loc>
+    <lastmod>2026-11-12</lastmod>
+  </url>
+  <url>
+    <loc>https://spotpuls.app/paikkakunnat/nurmijarvi.html</loc>
+    <lastmod>2026-11-12</lastmod>
+  </url>
+  <url>
+    <loc>https://spotpuls.app/paikkakunnat/orimattila.html</loc>
+    <lastmod>2026-11-12</lastmod>
+  </url>
+  <url>
+    <loc>https://spotpuls.app/paikkakunnat/orivesi.html</loc>
+    <lastmod>2026-11-12</lastmod>
+  </url>
+  <url>
+    <loc>https://spotpuls.app/paikkakunnat/oulainen.html</loc>
+    <lastmod>2026-11-12</lastmod>
+  </url>
+  <url>
+    <loc>https://spotpuls.app/paikkakunnat/oulu.html</loc>
+    <lastmod>2026-11-12</lastmod>
+  </url>
+  <url>
+    <loc>https://spotpuls.app/paikkakunnat/outokumpu.html</loc>
+    <lastmod>2026-11-12</lastmod>
+  </url>
+  <url>
+    <loc>https://spotpuls.app/paikkakunnat/paimio.html</loc>
+    <lastmod>2026-11-12</lastmod>
+  </url>
+  <url>
+    <loc>https://spotpuls.app/paikkakunnat/parainen.html</loc>
+    <lastmod>2026-11-12</lastmod>
+  </url>
+  <url>
+    <loc>https://spotpuls.app/paikkakunnat/parikkala.html</loc>
+    <lastmod>2026-11-12</lastmod>
+  </url>
+  <url>
+    <loc>https://spotpuls.app/paikkakunnat/parkano.html</loc>
+    <lastmod>2026-11-12</lastmod>
+  </url>
+  <url>
+    <loc>https://spotpuls.app/paikkakunnat/pedersore.html</loc>
+    <lastmod>2026-11-12</lastmod>
+  </url>
+  <url>
+    <loc>https://spotpuls.app/paikkakunnat/pieksamaki.html</loc>
+    <lastmod>2026-11-12</lastmod>
+  </url>
+  <url>
+    <loc>https://spotpuls.app/paikkakunnat/pietarsaari.html</loc>
+    <lastmod>2026-11-12</lastmod>
+  </url>
+  <url>
+    <loc>https://spotpuls.app/paikkakunnat/pirkkala.html</loc>
+    <lastmod>2026-11-12</lastmod>
+  </url>
+  <url>
+    <loc>https://spotpuls.app/paikkakunnat/pori.html</loc>
+    <lastmod>2026-11-12</lastmod>
+  </url>
+  <url>
+    <loc>https://spotpuls.app/paikkakunnat/pornainen.html</loc>
+    <lastmod>2026-11-12</lastmod>
+  </url>
+  <url>
+    <loc>https://spotpuls.app/paikkakunnat/porvoo.html</loc>
+    <lastmod>2026-11-12</lastmod>
+  </url>
+  <url>
+    <loc>https://spotpuls.app/paikkakunnat/pudasjarvi.html</loc>
+    <lastmod>2026-11-12</lastmod>
+  </url>
+  <url>
+    <loc>https://spotpuls.app/paikkakunnat/pyhtaa.html</loc>
+    <lastmod>2026-11-12</lastmod>
+  </url>
+  <url>
+    <loc>https://spotpuls.app/paikkakunnat/raahe.html</loc>
+    <lastmod>2026-11-12</lastmod>
+  </url>
+  <url>
+    <loc>https://spotpuls.app/paikkakunnat/raasepori.html</loc>
+    <lastmod>2026-11-12</lastmod>
+  </url>
+  <url>
+    <loc>https://spotpuls.app/paikkakunnat/raisio.html</loc>
+    <lastmod>2026-11-12</lastmod>
+  </url>
+  <url>
+    <loc>https://spotpuls.app/paikkakunnat/rauma.html</loc>
+    <lastmod>2026-11-12</lastmod>
+  </url>
+  <url>
+    <loc>https://spotpuls.app/paikkakunnat/riihimaki.html</loc>
+    <lastmod>2026-11-12</lastmod>
+  </url>
+  <url>
+    <loc>https://spotpuls.app/paikkakunnat/rovaniemi.html</loc>
+    <lastmod>2026-11-12</lastmod>
+  </url>
+  <url>
+    <loc>https://spotpuls.app/paikkakunnat/ruokolahti.html</loc>
+    <lastmod>2026-11-12</lastmod>
+  </url>
+  <url>
+    <loc>https://spotpuls.app/paikkakunnat/saarijarvi.html</loc>
+    <lastmod>2026-11-12</lastmod>
+  </url>
+  <url>
+    <loc>https://spotpuls.app/paikkakunnat/salo.html</loc>
+    <lastmod>2026-11-12</lastmod>
+  </url>
+  <url>
+    <loc>https://spotpuls.app/paikkakunnat/sastamala.html</loc>
+    <lastmod>2026-11-12</lastmod>
+  </url>
+  <url>
+    <loc>https://spotpuls.app/paikkakunnat/savonlinna.html</loc>
+    <lastmod>2026-11-12</lastmod>
+  </url>
+  <url>
+    <loc>https://spotpuls.app/paikkakunnat/seinajoki.html</loc>
+    <lastmod>2026-11-12</lastmod>
+  </url>
+  <url>
+    <loc>https://spotpuls.app/paikkakunnat/siilinjarvi.html</loc>
+    <lastmod>2026-11-12</lastmod>
+  </url>
+  <url>
+    <loc>https://spotpuls.app/paikkakunnat/sipoo.html</loc>
+    <lastmod>2026-11-12</lastmod>
+  </url>
+  <url>
+    <loc>https://spotpuls.app/paikkakunnat/siuntio.html</loc>
+    <lastmod>2026-11-12</lastmod>
+  </url>
+  <url>
+    <loc>https://spotpuls.app/paikkakunnat/sodankyla.html</loc>
+    <lastmod>2026-11-12</lastmod>
+  </url>
+  <url>
+    <loc>https://spotpuls.app/paikkakunnat/somero.html</loc>
+    <lastmod>2026-11-12</lastmod>
+  </url>
+  <url>
+    <loc>https://spotpuls.app/paikkakunnat/sotkamo.html</loc>
+    <lastmod>2026-11-12</lastmod>
+  </url>
+  <url>
+    <loc>https://spotpuls.app/paikkakunnat/suomussalmi.html</loc>
+    <lastmod>2026-11-12</lastmod>
+  </url>
+  <url>
+    <loc>https://spotpuls.app/paikkakunnat/suonenjoki.html</loc>
+    <lastmod>2026-11-12</lastmod>
+  </url>
+  <url>
+    <loc>https://spotpuls.app/paikkakunnat/tampere.html</loc>
+    <lastmod>2026-11-12</lastmod>
+  </url>
+  <url>
+    <loc>https://spotpuls.app/paikkakunnat/tornio.html</loc>
+    <lastmod>2026-11-12</lastmod>
+  </url>
+  <url>
+    <loc>https://spotpuls.app/paikkakunnat/turku.html</loc>
+    <lastmod>2026-11-12</lastmod>
+  </url>
+  <url>
+    <loc>https://spotpuls.app/paikkakunnat/tuusula.html</loc>
+    <lastmod>2026-11-12</lastmod>
+  </url>
+  <url>
+    <loc>https://spotpuls.app/paikkakunnat/ulvila.html</loc>
+    <lastmod>2026-11-12</lastmod>
+  </url>
+  <url>
+    <loc>https://spotpuls.app/paikkakunnat/uusikaarlepyy.html</loc>
+    <lastmod>2026-11-12</lastmod>
+  </url>
+  <url>
+    <loc>https://spotpuls.app/paikkakunnat/uusikaupunki.html</loc>
+    <lastmod>2026-11-12</lastmod>
+  </url>
+  <url>
+    <loc>https://spotpuls.app/paikkakunnat/vaasa.html</loc>
+    <lastmod>2026-11-12</lastmod>
+  </url>
+  <url>
+    <loc>https://spotpuls.app/paikkakunnat/valkeakoski.html</loc>
+    <lastmod>2026-11-12</lastmod>
+  </url>
+  <url>
+    <loc>https://spotpuls.app/paikkakunnat/vantaa.html</loc>
+    <lastmod>2026-11-12</lastmod>
+  </url>
+  <url>
+    <loc>https://spotpuls.app/paikkakunnat/varkaus.html</loc>
+    <lastmod>2026-11-12</lastmod>
+  </url>
+  <url>
+    <loc>https://spotpuls.app/paikkakunnat/vihti.html</loc>
+    <lastmod>2026-11-12</lastmod>
+  </url>
+  <url>
+    <loc>https://spotpuls.app/paikkakunnat/viitasaari.html</loc>
+    <lastmod>2026-11-12</lastmod>
+  </url>
+  <url>
+    <loc>https://spotpuls.app/paikkakunnat/virrat.html</loc>
+    <lastmod>2026-11-12</lastmod>
+  </url>
+  <url>
+    <loc>https://spotpuls.app/paikkakunnat/ylivieska.html</loc>
+    <lastmod>2026-11-12</lastmod>
+  </url>
+  <url>
+    <loc>https://spotpuls.app/paikkakunnat/ylojarvi.html</loc>
+    <lastmod>2026-11-12</lastmod>
   </url>
 </urlset>

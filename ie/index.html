@@ -47,6 +47,34 @@
   "@context": "https://schema.org",
   "@graph": [
     {
+      "@type": "Organization",
+      "@id": "https://spotpuls.app/#organization",
+      "name": "Spotpuls",
+      "alternateName": "spotpuls.app",
+      "url": "https://spotpuls.app",
+      "logo": {
+        "@type": "ImageObject",
+        "url": "https://spotpuls.app/apple-touch-icon.png",
+        "width": 180,
+        "height": 180
+      },
+      "sameAs": [
+        "https://spotpuls.app/api-docs/",
+        "https://spotpuls.app/openapi.json",
+        "https://spotpuls.app/llms.txt"
+      ]
+    },
+    {
+      "@type": "WebSite",
+      "@id": "https://spotpuls.app/#website",
+      "url": "https://spotpuls.app/",
+      "name": "Spotpuls",
+      "alternateName": "spotpuls.app",
+      "publisher": {
+        "@id": "https://spotpuls.app/#organization"
+      }
+    },
+    {
       "@type": "WebApplication",
       "@id": "https://spotpuls.app/ie/#app",
       "name": "Spotpuls",
@@ -120,6 +148,27 @@
     <script>
     window.ACTIVE_COUNTRY_LOCALE = {"countryId": "ie", "lang": "en-IE", "hreflang": "en-IE", "path": "/ie/", "languageLabel": "English (IE)", "geoRegion": "IE", "countryName": "Ireland", "defaultZone": "IE-SEM", "zones": ["IE-SEM"], "unit": "c/kWh", "currencyMajor": "€", "subunitsPerMajor": 100, "fxFromEurCents": 1.0, "vatRate": 1.09, "vatPctText": "9 %", "defaultMargin": 1.5, "taxInclVat": 0.9, "defaultPostal": "D01", "defaultCity": "Dublin", "brandSubtitle": "Ireland Single Electricity Market (SEMOpx) hourly spot prices, 7-day Atlantic wind forecast & ESB Networks calculator", "navChart": "Spot Chart", "navTable": "Hourly Table", "navTransfer": "ESB Calculator", "navOptimizer": "Smart Meter Optimizer", "navApi": "Open API", "zoneSelectLabel": "Market Zone", "langSelectLabel": "Country / Language", "chartTitle": "Ireland SEM Spot Electricity Price & 7-Day Forecast (c/kWh)", "hoverHint": "Hover or tap any bar to see the hourly SEMOpx spot price and probable forecast range.", "tierBasisIntro": "Price tier (vs. 30-day average", "tierCheap": "Low", "tierNorm": "Normal", "tierHigh": "Peak", "legendRange": "Forecast band (min–max c/kWh)", "scrollDownText": "Scroll down for hourly table, ESB Networks smart tariff calculator, EV optimizer & Open API", "approxPrefix": "~", "rangePrefix": "Forecast range", "fixedText": "Confirmed SEMOpx price", "probLabel": "Confidence", "predWasLabel": "Model forecast was", "predShortLabel": "Forecast was", "pubShortTpl": "Publ. {date} {time}", "pubFullTpl": "SEMOpx price published: {date} at {time}", "weekdaysShort": ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"], "todayWord": "Today", "tomorrowWord": "Tomorrow", "atClockWord": "at", "sumNowTitle": "CURRENT HOUR SEM PRICE", "sumMinTitle": "CHEAPEST HOUR TODAY", "sumMaxTitle": "HIGHEST HOUR TODAY", "tableHeading": "Hourly Ireland SEM Price & 7-Day Forecast Range", "colTime": "Time (IST/GMT)", "colSpot": "SEM Spot (c/kWh)", "colRange": "Probable Range", "colTotal": "All-in incl. ESB Networks", "colWeather": "Atlantic Wind & Temp", "transferHeading": "ESB Networks Smart Tariff & All-in Price Calculator (Ireland)", "transferLead": "Enter your Eircode / city to combine SEMOpx wholesale spot prices with ESB Networks distribution charges and 9% domestic VAT.", "postalLabel": "Eircode or city", "postalPlaceholder": "D01, T12, H91...", "setBtn": "Apply", "tariffLabel": "ESB Meter Tariff", "tariffGeneral": "24hr Standard", "tariffTime": "Smart Day / Night", "marginLabel": "Supplier Margin (c/kWh)", "vatLabel": "Irish VAT", "vatIncl": "Incl. 9 % VAT", "vatZero": "Excl. VAT (0 %)", "dsoNetworkKicker": "NETWORK OPERATOR", "receiptNowTitle": "ALL-IN PRICE NOW", "receiptSpotRow": "SEMOpx Spot (IE-SEM)", "receiptMarginRow": "Supplier margin", "receiptTaxRow": "PSO & Electricity tax", "receiptTotalRow": "TOTAL INCL. 9 % VAT", "receiptCheapestToday": "Cheapest hour today", "receiptAvgToday": "Today's average (all-in)", "receiptAvgTomorrow": "Tomorrow's average (all-in)", "expectWord": "expected", "optBestWindowTpl": "CHEAPEST {h}-HOUR WINDOW (NEXT 36 H)", "optDurationLabel": "Duration", "optKwLabel": "Power (kW)", "optProbTotalLabel": "Probable all-in price", "optAvgTotalLabel": "Average all-in price", "optTransferTaxLabel": "ESB & PSO", "optConsumptionLabel": "Energy", "optSavedLabel": "Saved vs. peak hours", "apiHeading": "Open Ireland SEM Electricity Price & Forecast API (Spotpuls API)", "apiLead": "Access live Ireland Single Electricity Market (IE-SEM) hourly prices and 7-day Atlantic wind forecasts via JSON or CSV.", "apiCopyBtn": "Copy URL", "apiCopiedBtn": "Copied!", "apiDocsBtn": "API Documentation", "apiEmbedLabel": "Embeddable live Ireland spot price badge", "dsos": [{"id": "esb_ie", "name": "ESB Networks (Republic of Ireland — IE-SEM)", "gen": 8.9, "day": 10.4, "night": 4.8, "zone": "IE-SEM", "postals": ["0", "1", "2", "3", "4", "5", "6", "7", "8", "9"]}]};
     </script>
+    <!-- SPOTPULS_SEO_AI_START -->
+    <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1">
+    <meta property="og:type" content="website">
+    <meta property="og:site_name" content="Spotpuls">
+    <meta property="og:title" content="Spotpuls — Ireland Single Electricity Market (SEMOpx) hourly spot prices, 7-day Atlantic wind forecast &amp; ESB Networks calculator | spotpuls.app">
+    <meta property="og:description" content="Enter your Eircode / city to combine SEMOpx wholesale spot prices with ESB Networks distribution charges and 9% domestic VAT.">
+    <meta property="og:url" content="https://spotpuls.app/ie/">
+    <meta property="og:image" content="https://spotpuls.app/og-image.png">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+    <meta property="og:image:alt" content="Spotpuls — Ireland Single Electricity Market (SEMOpx) hourly spot prices, 7-day Atlantic wind forecast &amp; ESB Networks calculator | spotpuls.app">
+    <meta property="og:locale" content="en_IE">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Spotpuls — Ireland Single Electricity Market (SEMOpx) hourly spot prices, 7-day Atlantic wind forecast &amp; ESB Networks calculator | spotpuls.app">
+    <meta name="twitter:description" content="Enter your Eircode / city to combine SEMOpx wholesale spot prices with ESB Networks distribution charges and 9% domestic VAT.">
+    <meta name="twitter:image" content="https://spotpuls.app/og-image.png">
+    <link rel="alternate" type="text/markdown" href="https://spotpuls.app/llms.txt" title="Spotpuls LLM &amp; AI Agent Reference">
+    <link rel="alternate" type="text/plain" href="https://spotpuls.app/llms-full.txt" title="Spotpuls Full Machine-Readable Knowledge Base">
+    <link rel="alternate" type="application/json" href="https://spotpuls.app/api/v1/prices?zone=IE-SEM&amp;vat=1" title="Spotpuls IE-SEM Live Spot &amp; 7-Day Forecast JSON API">
+    <link rel="service-desc" type="application/vnd.oai.openapi+json" href="https://spotpuls.app/openapi.json">
+    <!-- SPOTPULS_SEO_AI_END -->
 </head>
 <body>
     <header class="site-header">

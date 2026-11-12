@@ -47,6 +47,34 @@
   "@context": "https://schema.org",
   "@graph": [
     {
+      "@type": "Organization",
+      "@id": "https://spotpuls.app/#organization",
+      "name": "Spotpuls",
+      "alternateName": "spotpuls.app",
+      "url": "https://spotpuls.app",
+      "logo": {
+        "@type": "ImageObject",
+        "url": "https://spotpuls.app/apple-touch-icon.png",
+        "width": 180,
+        "height": 180
+      },
+      "sameAs": [
+        "https://spotpuls.app/api-docs/",
+        "https://spotpuls.app/openapi.json",
+        "https://spotpuls.app/llms.txt"
+      ]
+    },
+    {
+      "@type": "WebSite",
+      "@id": "https://spotpuls.app/#website",
+      "url": "https://spotpuls.app/",
+      "name": "Spotpuls",
+      "alternateName": "spotpuls.app",
+      "publisher": {
+        "@id": "https://spotpuls.app/#organization"
+      }
+    },
+    {
       "@type": "WebApplication",
       "@id": "https://spotpuls.app/hr/#app",
       "name": "Spotpuls",
@@ -120,6 +148,27 @@
     <script>
     window.ACTIVE_COUNTRY_LOCALE = {"countryId": "hr", "lang": "hr-HR", "hreflang": "hr", "path": "/hr/", "languageLabel": "Hrvatski (HR)", "geoRegion": "HR", "countryName": "Hrvatska", "defaultZone": "HR", "zones": ["HR"], "unit": "c/kWh", "currencyMajor": "€", "subunitsPerMajor": 100, "fxFromEurCents": 1.0, "vatRate": 1.13, "vatPctText": "13 %", "defaultMargin": 1.1, "taxInclVat": 1.2, "defaultPostal": "10000", "defaultCity": "Zagreb", "brandSubtitle": "Burzovne cijene struje po satima (CROPEX), 7-dnevna prognoza i kalkulator HEP ODS mrežarine", "navChart": "CROPEX graf", "navTable": "Satna tablica", "navTransfer": "HEP mrežarina", "navOptimizer": "Optimizator 36 h", "navApi": "Otvoreni API", "zoneSelectLabel": "Zona cijena", "langSelectLabel": "Država / Jezik", "chartTitle": "Satna burzovna cijena električne energije (CROPEX HR) i 7-dnevna prognoza (c/kWh)", "hoverHint": "Prijeđite mišem ili dodirnite stupac za prikaz cijene i vjerojatnog raspona.", "tierBasisIntro": "Razina cijene (prema prosjeku 30 dana", "tierCheap": "Niska", "tierNorm": "Prosječna", "tierHigh": "Visoka", "legendRange": "Raspon prognoze (min–maks)", "scrollDownText": "Pomaknite dolje: satna tablica, HEP ODS mrežarina (Plavi/Bijeli), punjenje EV i API", "approxPrefix": "oko ", "rangePrefix": "Raspon", "fixedText": "Potvrđena cijena CROPEX", "probLabel": "Vjerojatnost", "predWasLabel": "Prognoza je bila", "predShortLabel": "Prognoza", "pubShortTpl": "Obj. {date} {time}", "pubFullTpl": "Cijena se objavljuje: {date} u {time}", "weekdaysShort": ["Ned", "Pon", "Uto", "Sri", "Čet", "Pet", "Sub"], "todayWord": "Danas", "tomorrowWord": "Sutra", "atClockWord": "u", "sumNowTitle": "CIJENA STRUJE OVAJ SAT", "sumMinTitle": "NAJJEFTINIJI SAT DANAS", "sumMaxTitle": "NAJSKUPLJI SAT DANAS", "tableHeading": "Satne cijene CROPEX i 7-dnevna prognoza", "colTime": "Sat", "colSpot": "Burzovna cijena (c/kWh)", "colRange": "Vjerojatni raspon", "colTotal": "Ukupna cijena s mrežarinom", "colWeather": "Vjetar i temperatura", "transferHeading": "Kalkulator ukupne cijene struje i HEP ODS mrežarine u Hrvatskoj", "transferLead": "Unesite poštanski broj (npr. 10000 Zagreb, 21000 Split, 51000 Rijeka, 31000 Osijek).", "postalLabel": "Poštanski broj ili grad", "postalPlaceholder": "10000, 21000, 51000...", "setBtn": "Odaberi", "tariffLabel": "Tarifni model HEP ODS", "tariffGeneral": "Plavi (Jednotarifni)", "tariffTime": "Bijeli (Viša / Niža tarifa)", "marginLabel": "Marža opskrbljivača (c/kWh)", "vatLabel": "PDV", "vatIncl": "S PDV-om 13 %", "vatZero": "Bez PDV-a (0 %)", "dsoNetworkKicker": "OPERATOR MREŽE", "receiptNowTitle": "UKUPNA CIJENA SADA", "receiptSpotRow": "CROPEX Spot HR", "receiptMarginRow": "Marža opskrbljivača", "receiptTaxRow": "Naknada OIE", "receiptTotalRow": "UKUPNO S PDV-OM", "receiptCheapestToday": "Najpovoljniji sat danas", "receiptAvgToday": "Prosjek danas (ukupno)", "receiptAvgTomorrow": "Prosjek sutra (ukupno)", "expectWord": "očekivano", "optBestWindowTpl": "NAJJEFTINIJI {h}-SATNI PERIOD (SLJEDEĆIH 36 H)", "optDurationLabel": "Trajanje", "optKwLabel": "Snaga (kW)", "optProbTotalLabel": "Vjerojatna ukupna cijena", "optAvgTotalLabel": "Prosječna ukupna cijena", "optTransferTaxLabel": "Mrežarina i naknade", "optConsumptionLabel": "Potrošnja", "optSavedLabel": "Ušteda u odnosu na vršni termin", "apiHeading": "Otvoreni API Cijena CROPEX i 7-Dnevne Prognoze (Spotpuls API)", "apiLead": "Dohvatite satne CROPEX cijene i 7-dnevnu prognozu u JSON ili CSV formatu za Home Assistant.", "apiCopyBtn": "Kopiraj URL", "apiCopiedBtn": "Kopirano!", "apiDocsBtn": "API dokumentacija", "apiEmbedLabel": "Ugradiva oznaka cijene uživo", "dsos": [{"id": "hep_ods", "name": "HEP-Operator distribucijskog sustava (HEP ODS — Hrvatska)", "gen": 4.9, "day": 5.8, "night": 2.9, "zone": "HR", "postals": ["1", "2", "3", "4", "5"]}]};
     </script>
+    <!-- SPOTPULS_SEO_AI_START -->
+    <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1">
+    <meta property="og:type" content="website">
+    <meta property="og:site_name" content="Spotpuls">
+    <meta property="og:title" content="Spotpuls — Burzovne cijene struje po satima (CROPEX), 7-dnevna prognoza i kalkulator HEP ODS mrežarine | spotpuls.app">
+    <meta property="og:description" content="Unesite poštanski broj (npr. 10000 Zagreb, 21000 Split, 51000 Rijeka, 31000 Osijek).">
+    <meta property="og:url" content="https://spotpuls.app/hr/">
+    <meta property="og:image" content="https://spotpuls.app/og-image.png">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+    <meta property="og:image:alt" content="Spotpuls — Burzovne cijene struje po satima (CROPEX), 7-dnevna prognoza i kalkulator HEP ODS mrežarine | spotpuls.app">
+    <meta property="og:locale" content="hr_HR">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Spotpuls — Burzovne cijene struje po satima (CROPEX), 7-dnevna prognoza i kalkulator HEP ODS mrežarine | spotpuls.app">
+    <meta name="twitter:description" content="Unesite poštanski broj (npr. 10000 Zagreb, 21000 Split, 51000 Rijeka, 31000 Osijek).">
+    <meta name="twitter:image" content="https://spotpuls.app/og-image.png">
+    <link rel="alternate" type="text/markdown" href="https://spotpuls.app/llms.txt" title="Spotpuls LLM &amp; AI Agent Reference">
+    <link rel="alternate" type="text/plain" href="https://spotpuls.app/llms-full.txt" title="Spotpuls Full Machine-Readable Knowledge Base">
+    <link rel="alternate" type="application/json" href="https://spotpuls.app/api/v1/prices?zone=HR&amp;vat=1" title="Spotpuls HR Live Spot &amp; 7-Day Forecast JSON API">
+    <link rel="service-desc" type="application/vnd.oai.openapi+json" href="https://spotpuls.app/openapi.json">
+    <!-- SPOTPULS_SEO_AI_END -->
 </head>
 <body>
     <header class="site-header">

@@ -1,18 +1,23 @@
 # Spotpuls (https://spotpuls.app)
-> Open European Day-Ahead Electricity Spot Price Tracker, Self-Learning 7-Day Regional Forecast (40 Bidding Zones), Postal Grid Tariff Calculator & Universal Automation REST API.
+> Open European Day-Ahead Electricity Spot Price Tracker, Self-Learning 7-Day Regional Forecast (40 Bidding Zones), Finnish Postal Grid Tariff Calculator (33 DSOs) & Universal Automation REST API.
+
+- **Full Machine-Readable Knowledge Base**: [https://spotpuls.app/llms-full.txt](https://spotpuls.app/llms-full.txt)
+- **OpenAPI 3.1 Specification**: [https://spotpuls.app/openapi.json](https://spotpuls.app/openapi.json)
+- **Interactive API & Smart-Home Docs**: [https://spotpuls.app/api-docs/](https://spotpuls.app/api-docs/)
+- **Zone Metadata Directory (JSON)**: [https://spotpuls.app/api/v1/zones](https://spotpuls.app/api/v1/zones)
 
 ## Overview
-Spotpuls (`https://spotpuls.app`) provides live hourly day-ahead electricity spot prices together with an empirically calibrated 7-day (168 h) Log-Merit + Hist-GBDT hourly forecast (supporting negative spot prices and conformal probability bands) for all 40 European spot-electricity bidding zones across 28 native languages.
+Spotpuls (`https://spotpuls.app`) provides official hourly day-ahead electricity spot prices together with an empirically calibrated 7-day (168 h) Log-Merit + Hist-GBDT + NLMS hourly forecast (supporting negative spot prices and conformal min–max probability bands) for all 40 European electricity bidding zones across 28 native language editions. In Finland (`FI`), Spotpuls also maps every postal code and municipality to its local Distribution System Operator (DSO / sähköverkkoyhtiö) to compute true socket-level total electricity prices (`spot + margin + transfer + electricity tax 2.83 snt/kWh incl. 25.5% VAT`).
 
 ## Universal Public REST API (Free, No API Key, CORS `*`)
 - **Primary Endpoint**:
   - `GET https://spotpuls.app/api/v1/prices?zone=FI&vat=1&currency=local&window=3&format=json`
 - **Supported Query Parameters**:
-  - `zone`: Any of 40 European bidding zones (`FI`, `SE1`..`SE4`, `NO1`..`NO5`, `DK1`, `DK2`, `EE`, `LV`, `LT`, `DE-LU`, `AT`, `CH`, `NL`, `BE`, `FR`, `GB`, `IE-SEM`, `ES`, `PT`, `IT-North`..`IT-Sardinia`, `PL`, `CZ`, `SK`, `HU`, `RO`, `BG`, `SI`, `HR`, `GR`).
-  - `vat`: `1` (incl. national electricity VAT, default) or `0` (VAT 0 %).
+  - `zone`: Any of 40 European bidding zones (`FI`, `SE1`..`SE4`, `NO1`..`NO5`, `DK1`, `DK2`, `EE`, `LV`, `LT`, `DE-LU`, `AT`, `CH`, `NL`, `BE`, `FR`, `GB`, `IE-SEM`, `ES`, `PT`, `IT-North`..`IT-Sardinia`, `PL`, `CZ`, `SK`, `HU`, `RO`, `BG`, `SI`, `HR`, `GR`, plus aliases `SE`, `NO`, `DK`, `DE`, `UK`, `IE`, `IT`, `EL`).
+  - `vat`: `1` (incl. national residential electricity VAT, default) or `0` (VAT 0 %).
   - `currency`: `local` (native subunit/kWh, e.g. `snt/kWh`, `öre/kWh`, `øre/kWh`, `ct/kWh`, `p/kWh`, `gr/kWh`, `Kč/kWh`, `Ft/kWh`), `eur_cents` (`ct/kWh`), `eur_kwh` (`EUR/kWh`), or `eur_mwh` (`EUR/MWh`).
   - `window`: `1..24` (default `3`) — computes optimal cheapest contiguous N-hour block (`cheapestContiguousWindow`) and N cheapest individual hours (`cheapestHours`) in the next 24h.
-  - `margin` / `transfer`: Optional add-ons to compute `totalPrice` per hour.
+  - `margin` / `transfer`: Optional add-ons in active currency unit to compute `totalPrice` per hour.
   - `threshold`: Optional price threshold returning `belowThresholdNow` boolean.
 - **10 Plug-and-Play Application Output Formats (`format=...` or Clean URL Shortcuts)**:
   - `json` (default): Full JSON with `meta`, `market`, `current`, `summary`, `automation`, and 192-hour `series`.
@@ -25,36 +30,41 @@ Spotpuls (`https://spotpuls.app`) provides live hourly day-ahead electricity spo
   - `prometheus` (`/api/v1/metrics?zone=FI`): Native Prometheus / Grafana / VictoriaMetrics metrics.
   - `plain` (`/api/v1/plain/FI?field=spot` or `field=run_now`): Single plain-text value (`1`/`0` or numeric price) for Apple Shortcuts, Tasker, curl, Loxone, and KNX.
   - `badge` (`/api/v1/badge/FI.svg`) & `widget` (`/api/v1/widget/FI?theme=light`): Live SVG status badge and responsive `<iframe>` 24h mini-chart widget.
-- **Zone Directory**: `https://spotpuls.app/api/v1/zones`
-- **OpenAPI 3.1 Specification**: `https://spotpuls.app/openapi.json`
-- **Developer & Smart-Home Integration Guide**: `https://spotpuls.app/api-docs/`
 
 ## Localized Country & Language Editions (28 Languages)
-- Finland (Suomi): `https://spotpuls.app/`
-- Europe / International (English): `https://spotpuls.app/en/`
-- Sweden (Svenska, SE1–SE4): `https://spotpuls.app/se/`
-- Norway (Norsk, NO1–NO5): `https://spotpuls.app/no/`
-- Denmark (Dansk, DK1–DK2): `https://spotpuls.app/dk/`
-- Estonia (Eesti, EE): `https://spotpuls.app/ee/`
-- Latvia (Latviešu, LV): `https://spotpuls.app/lv/`
-- Lithuania (Lietuvių, LT): `https://spotpuls.app/lt/`
-- Germany (Deutsch, DE-LU): `https://spotpuls.app/de/`
-- Austria (Deutsch, AT): `https://spotpuls.app/at/`
-- Switzerland (Deutsch, CH): `https://spotpuls.app/ch/`
-- Netherlands (Nederlands, NL): `https://spotpuls.app/nl/`
-- Belgium (Nederlands, BE): `https://spotpuls.app/be/`
-- France (Français, FR): `https://spotpuls.app/fr/`
-- United Kingdom (English, GB): `https://spotpuls.app/gb/`
-- Ireland (English, IE-SEM): `https://spotpuls.app/ie/`
-- Spain (Español, ES / PVPC / OMIE): `https://spotpuls.app/es/`
-- Portugal (Português, PT / OMIE): `https://spotpuls.app/pt/`
-- Italy (Italiano, 6 GME zones): `https://spotpuls.app/it/`
-- Poland (Polski, PL / TGE): `https://spotpuls.app/pl/`
-- Czechia (Čeština, CZ / OTE): `https://spotpuls.app/cz/`
-- Slovakia (Slovenčina, SK / OKTE): `https://spotpuls.app/sk/`
-- Hungary (Magyar, HU / HUPX): `https://spotpuls.app/hu/`
-- Romania (Română, RO / OPCOM): `https://spotpuls.app/ro/`
-- Bulgaria (Български, BG / IBEX): `https://spotpuls.app/bg/`
-- Slovenia (Slovenščina, SI / BSP): `https://spotpuls.app/si/`
-- Croatia (Hrvatski, HR / CROPEX): `https://spotpuls.app/hr/`
-- Greece (Ελληνικά, GR / HEnEx): `https://spotpuls.app/gr/`
+- Finland (Suomi, FI): https://spotpuls.app/
+- Europe / International (English): https://spotpuls.app/en/
+- Sweden (Svenska, SE1–SE4): https://spotpuls.app/se/
+- Norway (Norsk, NO1–NO5): https://spotpuls.app/no/
+- Denmark (Dansk, DK1–DK2): https://spotpuls.app/dk/
+- Estonia (Eesti, EE): https://spotpuls.app/ee/
+- Latvia (Latviešu, LV): https://spotpuls.app/lv/
+- Lithuania (Lietuvių, LT): https://spotpuls.app/lt/
+- Germany (Deutsch, DE-LU): https://spotpuls.app/de/
+- Austria (Deutsch, AT): https://spotpuls.app/at/
+- Switzerland (Deutsch, CH): https://spotpuls.app/ch/
+- Netherlands (Nederlands, NL): https://spotpuls.app/nl/
+- Belgium (Nederlands/Français, BE): https://spotpuls.app/be/
+- France (Français, FR): https://spotpuls.app/fr/
+- United Kingdom (English, GB): https://spotpuls.app/gb/
+- Ireland (English, IE-SEM): https://spotpuls.app/ie/
+- Spain (Español, ES / PVPC / OMIE): https://spotpuls.app/es/
+- Portugal (Português, PT / OMIE): https://spotpuls.app/pt/
+- Italy (Italiano, 6 GME zones): https://spotpuls.app/it/
+- Poland (Polski, PL / TGE): https://spotpuls.app/pl/
+- Czechia (Čeština, CZ / OTE): https://spotpuls.app/cz/
+- Slovakia (Slovenčina, SK / OKTE): https://spotpuls.app/sk/
+- Hungary (Magyar, HU / HUPX): https://spotpuls.app/hu/
+- Romania (Română, RO / OPCOM): https://spotpuls.app/ro/
+- Bulgaria (Български, BG / IBEX): https://spotpuls.app/bg/
+- Slovenia (Slovenščina, SI / BSP): https://spotpuls.app/si/
+- Croatia (Hrvatski, HR / CROPEX): https://spotpuls.app/hr/
+- Greece (Ελληνικά, GR / HEnEx): https://spotpuls.app/gr/
+
+## Finnish Grid Tariff & Method Directories
+- All 33 Finnish Electricity Grid Companies (Sähköverkkoyhtiöt 2026): https://spotpuls.app/verkkoyhtiot/index.html
+- All 158 Finnish Municipalities & Postal Codes (Paikkakunnat): https://spotpuls.app/paikkakunnat/index.html
+- 7-Day Forecast Methodology (Wind, Solar & Temperature): https://spotpuls.app/oppaat/porssisahko-ennuste-7-vrk-tuulivoima-ja-lampotila.html
+- Grid Tariff Lookup by Postal Code: https://spotpuls.app/oppaat/sahkon-siirtohinta-postinumerolla-kaikki-verkkoyhtiot.html
+- General vs. Night vs. Seasonal Grid Tariff Comparison: https://spotpuls.app/oppaat/yleissiirto-yosiirto-vai-kausisiirto-vertailu.html
+- EV Charging & Water Heater Spot Optimization: https://spotpuls.app/oppaat/sahkoauton-lataus-ja-lamminvesivaraaja-porssisahkolla.html

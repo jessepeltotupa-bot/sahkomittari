@@ -47,6 +47,34 @@
   "@context": "https://schema.org",
   "@graph": [
     {
+      "@type": "Organization",
+      "@id": "https://spotpuls.app/#organization",
+      "name": "Spotpuls",
+      "alternateName": "spotpuls.app",
+      "url": "https://spotpuls.app",
+      "logo": {
+        "@type": "ImageObject",
+        "url": "https://spotpuls.app/apple-touch-icon.png",
+        "width": 180,
+        "height": 180
+      },
+      "sameAs": [
+        "https://spotpuls.app/api-docs/",
+        "https://spotpuls.app/openapi.json",
+        "https://spotpuls.app/llms.txt"
+      ]
+    },
+    {
+      "@type": "WebSite",
+      "@id": "https://spotpuls.app/#website",
+      "url": "https://spotpuls.app/",
+      "name": "Spotpuls",
+      "alternateName": "spotpuls.app",
+      "publisher": {
+        "@id": "https://spotpuls.app/#organization"
+      }
+    },
+    {
       "@type": "WebApplication",
       "@id": "https://spotpuls.app/ch/#app",
       "name": "Spotpuls",
@@ -120,6 +148,27 @@
     <script>
     window.ACTIVE_COUNTRY_LOCALE = {"countryId": "ch", "lang": "de-CH", "hreflang": "de-CH", "path": "/ch/", "languageLabel": "Deutsch (CH)", "geoRegion": "CH", "countryName": "Schweiz", "defaultZone": "CH", "zones": ["CH"], "unit": "Rp./kWh", "currencyMajor": "CHF", "subunitsPerMajor": 100, "fxFromEurCents": 0.94, "vatRate": 1.081, "vatPctText": "8,1 %", "defaultMargin": 1.2, "taxInclVat": 2.49, "defaultPostal": "8001", "defaultCity": "Zürich", "brandSubtitle": "EPEX Spot-Strompreis Schweiz (Rp./kWh), 7-Tage-Prognose & Netznutzungsrechner", "navChart": "Spot-Grafik", "navTable": "Stundentabelle", "navTransfer": "Netztarif", "navOptimizer": "Laststeuerung", "navApi": "Open API", "zoneSelectLabel": "Marktgebiet", "langSelectLabel": "Land / Sprache", "chartTitle": "Spot-Strompreis Schweiz (CH) & 7-Tage-Prognose (Rp./kWh)", "hoverHint": "Bewegen Sie den Mauszeiger über einen Balken für Preis und Prognoseband.", "tierBasisIntro": "Preisniveau (30-Tage-Mittel", "tierCheap": "Tief", "tierNorm": "Normal", "tierHigh": "Hoch", "legendRange": "Prognoseband (Min–Max)", "scrollDownText": "Nach unten scrollen: Stundentabelle, Schweizer Netznutzungsrechner, Optimierer & API", "approxPrefix": "ca. ", "rangePrefix": "Bandbreite", "fixedText": "Bestätigter Spotpreis", "probLabel": "Wahrscheinlichkeit", "predWasLabel": "Prognose war", "predShortLabel": "Prognose war", "pubShortTpl": "Publ. {date} {time}", "pubFullTpl": "Preispublikation: {date} um {time} Uhr", "weekdaysShort": ["So", "Mo", "Di", "Mi", "Do", "Fr", "Sa"], "todayWord": "Heute", "tomorrowWord": "Morgen", "atClockWord": "", "sumNowTitle": "AKTUELLER STUNDENPREIS", "sumMinTitle": "TIEFSTER PREIS HEUTE", "sumMaxTitle": "HÖCHSTER PREIS HEUTE", "tableHeading": "Stündlicher Spotpreis Schweiz & 7-Tage-Prognose", "colTime": "Uhrzeit", "colSpot": "Spotpreis (Prognose / Fix)", "colRange": "Wahrscheinliches Band", "colTotal": "Gesamtpreis inkl. Netz & Abgaben", "colWeather": "Wind/Alpen & Temperatur", "transferHeading": "Netznutzungsentgelt & dynamischer Strompreis nach PLZ in der Schweiz", "transferLead": "Geben Sie Ihre 4-stellige PLZ ein (z. B. 8001 Zürich, 3011 Bern, 4051 Basel, 1201 Genève).", "postalLabel": "PLZ oder Ort", "postalPlaceholder": "8001, 3011, 4051, 1201...", "setBtn": "Wählen", "tariffLabel": "Netztarif", "tariffGeneral": "Einheitstarif", "tariffTime": "Hoch- / Niedertarif", "marginLabel": "Zuschlag (Rp./kWh)", "vatLabel": "MWST", "vatIncl": "Inkl. 8,1 % MWST", "vatZero": "Exkl. MWST (0 %)", "dsoNetworkKicker": "VERTEILNETZBETREIBER", "receiptNowTitle": "GESAMTPREIS AKTUELL", "receiptSpotRow": "EPEX Spot CH", "receiptMarginRow": "Vertriebszuschlag", "receiptTaxRow": "Netzzuschlag (KEV) & Abgaben", "receiptTotalRow": "TOTAL INKL. MWST", "receiptCheapestToday": "Günstigste Stunde heute", "receiptAvgToday": "Tagesschnitt heute", "receiptAvgTomorrow": "Tagesschnitt morgen", "expectWord": "Erwartung", "optBestWindowTpl": "GÜNSTIGSTES {h}-STUNDEN-FENSTER (NÄCHSTE 36 H)", "optDurationLabel": "Dauer", "optKwLabel": "Leistung (kW)", "optProbTotalLabel": "Wahrscheinlicher Gesamtpreis", "optAvgTotalLabel": "Durchschnittlicher Gesamtpreis", "optTransferTaxLabel": "Netz & Abgaben", "optConsumptionLabel": "Energie", "optSavedLabel": "Ersparnis ggü. Spitzenzeit", "apiHeading": "Offene Schweizer Strompreis- & Prognose-API (Spotpuls API)", "apiLead": "EPEX Spot CH Stundenpreise und 7-Tage-Prognose in Rp./kWh kostenlos als JSON oder CSV.", "apiCopyBtn": "URL kopieren", "apiCopiedBtn": "Kopiert!", "apiDocsBtn": "API-Dokumentation", "apiEmbedLabel": "Einbettbares Preis-Badge", "dsos": [{"id": "ewz_ekz", "name": "ewz / EKZ (Zürich & Ostschweiz — CH)", "gen": 9.8, "day": 11.5, "night": 7.2, "zone": "CH", "postals": ["8", "9"]}, {"id": "bkw_iwb", "name": "BKW / ewb / IWB (Bern, Basel & Mittelland — CH)", "gen": 11.4, "day": 13.2, "night": 8.4, "zone": "CH", "postals": ["2", "3", "4", "5", "6"]}, {"id": "sig_romande", "name": "SIG / Groupe E / Romande Energie (Romandie & Tessin — CH)", "gen": 10.9, "day": 12.6, "night": 8.0, "zone": "CH", "postals": ["1", "7"]}]};
     </script>
+    <!-- SPOTPULS_SEO_AI_START -->
+    <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1">
+    <meta property="og:type" content="website">
+    <meta property="og:site_name" content="Spotpuls">
+    <meta property="og:title" content="Spotpuls — EPEX Spot-Strompreis Schweiz (Rp./kWh), 7-Tage-Prognose &amp; Netznutzungsrechner | spotpuls.app">
+    <meta property="og:description" content="Geben Sie Ihre 4-stellige PLZ ein (z. B. 8001 Zürich, 3011 Bern, 4051 Basel, 1201 Genève).">
+    <meta property="og:url" content="https://spotpuls.app/ch/">
+    <meta property="og:image" content="https://spotpuls.app/og-image.png">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+    <meta property="og:image:alt" content="Spotpuls — EPEX Spot-Strompreis Schweiz (Rp./kWh), 7-Tage-Prognose &amp; Netznutzungsrechner | spotpuls.app">
+    <meta property="og:locale" content="de_CH">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Spotpuls — EPEX Spot-Strompreis Schweiz (Rp./kWh), 7-Tage-Prognose &amp; Netznutzungsrechner | spotpuls.app">
+    <meta name="twitter:description" content="Geben Sie Ihre 4-stellige PLZ ein (z. B. 8001 Zürich, 3011 Bern, 4051 Basel, 1201 Genève).">
+    <meta name="twitter:image" content="https://spotpuls.app/og-image.png">
+    <link rel="alternate" type="text/markdown" href="https://spotpuls.app/llms.txt" title="Spotpuls LLM &amp; AI Agent Reference">
+    <link rel="alternate" type="text/plain" href="https://spotpuls.app/llms-full.txt" title="Spotpuls Full Machine-Readable Knowledge Base">
+    <link rel="alternate" type="application/json" href="https://spotpuls.app/api/v1/prices?zone=CH&amp;vat=1" title="Spotpuls CH Live Spot &amp; 7-Day Forecast JSON API">
+    <link rel="service-desc" type="application/vnd.oai.openapi+json" href="https://spotpuls.app/openapi.json">
+    <!-- SPOTPULS_SEO_AI_END -->
 </head>
 <body>
     <header class="site-header">

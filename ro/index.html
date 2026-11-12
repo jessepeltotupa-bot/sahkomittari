@@ -47,6 +47,34 @@
   "@context": "https://schema.org",
   "@graph": [
     {
+      "@type": "Organization",
+      "@id": "https://spotpuls.app/#organization",
+      "name": "Spotpuls",
+      "alternateName": "spotpuls.app",
+      "url": "https://spotpuls.app",
+      "logo": {
+        "@type": "ImageObject",
+        "url": "https://spotpuls.app/apple-touch-icon.png",
+        "width": 180,
+        "height": 180
+      },
+      "sameAs": [
+        "https://spotpuls.app/api-docs/",
+        "https://spotpuls.app/openapi.json",
+        "https://spotpuls.app/llms.txt"
+      ]
+    },
+    {
+      "@type": "WebSite",
+      "@id": "https://spotpuls.app/#website",
+      "url": "https://spotpuls.app/",
+      "name": "Spotpuls",
+      "alternateName": "spotpuls.app",
+      "publisher": {
+        "@id": "https://spotpuls.app/#organization"
+      }
+    },
+    {
       "@type": "WebApplication",
       "@id": "https://spotpuls.app/ro/#app",
       "name": "Spotpuls",
@@ -120,6 +148,27 @@
     <script>
     window.ACTIVE_COUNTRY_LOCALE = {"countryId": "ro", "lang": "ro-RO", "hreflang": "ro", "path": "/ro/", "languageLabel": "Română (RO)", "geoRegion": "RO", "countryName": "România", "defaultZone": "RO", "zones": ["RO"], "unit": "bani/kWh", "currencyMajor": "lei", "subunitsPerMajor": 100, "fxFromEurCents": 4.98, "vatRate": 1.19, "vatPctText": "19 %", "defaultMargin": 5.0, "taxInclVat": 3.5, "defaultPostal": "010011", "defaultCity": "București", "brandSubtitle": "Prețul energiei electrice pe ore (OPCOM PZU), prognoză pe 7 zile și calculator tarife distribuție", "navChart": "Grafic PZU", "navTable": "Tabel orar", "navTransfer": "Tarif distribuție", "navOptimizer": "Optimizator 36 h", "navApi": "API Deschis", "zoneSelectLabel": "Zonă de preț", "langSelectLabel": "Țară / Limbă", "chartTitle": "Preț spot energie electrică (OPCOM PZU) și prognoză pe 7 zile (bani/kWh)", "hoverHint": "Treceți cursorul peste o bară pentru a vedea prețul orar și intervalul probabil.", "tierBasisIntro": "Nivel preț (față de media pe 30 zile", "tierCheap": "Redus", "tierNorm": "Normal", "tierHigh": "Ridicat", "legendRange": "Interval prognoză (min–max)", "scrollDownText": "Derulați în jos: tabel orar, calculator distribuție (Rețele Electrice / DEER / Delgaz), încărcare EV și API", "approxPrefix": "aprox. ", "rangePrefix": "Interval", "fixedText": "Preț PZU confirmat", "probLabel": "Probabilitate", "predWasLabel": "Prognoza a fost", "predShortLabel": "Prognoză", "pubShortTpl": "Publ. {date} {time}", "pubFullTpl": "Preț OPCOM publicat: {date} la {time}", "weekdaysShort": ["Dum", "Lun", "Mar", "Mie", "Joi", "Vin", "Sâm"], "todayWord": "Azi", "tomorrowWord": "Mâine", "atClockWord": "ora", "sumNowTitle": "PREȚ SPOT ÎN ACEASTĂ ORĂ", "sumMinTitle": "CEA MAI IEFTINĂ ORĂ AZI", "sumMaxTitle": "CEA MAI SCUMPĂ ORĂ AZI", "tableHeading": "Preț orar OPCOM PZU și prognoză pe 7 zile", "colTime": "Interval orar", "colSpot": "Preț PZU (bani/kWh)", "colRange": "Interval probabil", "colTotal": "Preț final cu distribuție", "colWeather": "Vânt Dobrogea & temp.", "transferHeading": "Calculator preț final energie electrică și tarif de distribuție în România", "transferLead": "Introduceți codul poștal (ex. 010011 București, 400001 Cluj-Napoca, 700001 Iași, 300001 Timișoara).", "postalLabel": "Cod poștal sau oraș", "postalPlaceholder": "010011, 400001, 300001...", "setBtn": "Aplică", "tariffLabel": "Tarif rețea", "tariffGeneral": "Monom standard", "tariffTime": "Diferențiat Zi / Noapte", "marginLabel": "Marjă furnizor (bani/kWh)", "vatLabel": "TVA", "vatIncl": "Cu TVA 19 %", "vatZero": "Fără TVA (0 %)", "dsoNetworkKicker": "DISTRIBUITOR", "receiptNowTitle": "PREȚ FINAL ACUM", "receiptSpotRow": "Preț OPCOM PZU RO", "receiptMarginRow": "Marjă furnizor", "receiptTaxRow": "Cogenerare, CV & acciză", "receiptTotalRow": "TOTAL CU TVA", "receiptCheapestToday": "Cea mai ieftină oră azi", "receiptAvgToday": "Media de azi (total)", "receiptAvgTomorrow": "Media de mâine (total)", "expectWord": "estimat", "optBestWindowTpl": "CEL MAI IEFTIN INTERVAL DE {h} ORE (URMĂTOARELE 36 H)", "optDurationLabel": "Durată", "optKwLabel": "Putere (kW)", "optProbTotalLabel": "Preț final probabil", "optAvgTotalLabel": "Preț final mediu", "optTransferTaxLabel": "Rețea și taxe", "optConsumptionLabel": "Consum", "optSavedLabel": "Economie față de vârf", "apiHeading": "API Deschis Prețuri OPCOM PZU și Prognoză 7 Zile (Spotpuls API)", "apiLead": "Preia automat prețurile orare OPCOM România și prognoza pe 7 zile în format JSON sau CSV pentru Home Assistant.", "apiCopyBtn": "Copiază URL", "apiCopiedBtn": "Copiat!", "apiDocsBtn": "Documentație API", "apiEmbedLabel": "Insignă preț live pentru site-ul tău", "dsos": [{"id": "retele_deer", "name": "Rețele Electrice / Distribuție Energie Electrică (DEER) / Delgaz / Distribuție Oltenia (RO)", "gen": 34.5, "day": 39.0, "night": 24.5, "zone": "RO", "postals": ["0", "1", "2", "3", "4", "5", "6", "7", "8", "9"]}]};
     </script>
+    <!-- SPOTPULS_SEO_AI_START -->
+    <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1">
+    <meta property="og:type" content="website">
+    <meta property="og:site_name" content="Spotpuls">
+    <meta property="og:title" content="Spotpuls — Prețul energiei electrice pe ore (OPCOM PZU), prognoză pe 7 zile și calculator tarife distribuție | spotpuls.app">
+    <meta property="og:description" content="Introduceți codul poștal (ex. 010011 București, 400001 Cluj-Napoca, 700001 Iași, 300001 Timișoara).">
+    <meta property="og:url" content="https://spotpuls.app/ro/">
+    <meta property="og:image" content="https://spotpuls.app/og-image.png">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+    <meta property="og:image:alt" content="Spotpuls — Prețul energiei electrice pe ore (OPCOM PZU), prognoză pe 7 zile și calculator tarife distribuție | spotpuls.app">
+    <meta property="og:locale" content="ro_RO">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Spotpuls — Prețul energiei electrice pe ore (OPCOM PZU), prognoză pe 7 zile și calculator tarife distribuție | spotpuls.app">
+    <meta name="twitter:description" content="Introduceți codul poștal (ex. 010011 București, 400001 Cluj-Napoca, 700001 Iași, 300001 Timișoara).">
+    <meta name="twitter:image" content="https://spotpuls.app/og-image.png">
+    <link rel="alternate" type="text/markdown" href="https://spotpuls.app/llms.txt" title="Spotpuls LLM &amp; AI Agent Reference">
+    <link rel="alternate" type="text/plain" href="https://spotpuls.app/llms-full.txt" title="Spotpuls Full Machine-Readable Knowledge Base">
+    <link rel="alternate" type="application/json" href="https://spotpuls.app/api/v1/prices?zone=RO&amp;vat=1" title="Spotpuls RO Live Spot &amp; 7-Day Forecast JSON API">
+    <link rel="service-desc" type="application/vnd.oai.openapi+json" href="https://spotpuls.app/openapi.json">
+    <!-- SPOTPULS_SEO_AI_END -->
 </head>
 <body>
     <header class="site-header">

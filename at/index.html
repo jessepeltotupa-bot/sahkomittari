@@ -47,6 +47,34 @@
   "@context": "https://schema.org",
   "@graph": [
     {
+      "@type": "Organization",
+      "@id": "https://spotpuls.app/#organization",
+      "name": "Spotpuls",
+      "alternateName": "spotpuls.app",
+      "url": "https://spotpuls.app",
+      "logo": {
+        "@type": "ImageObject",
+        "url": "https://spotpuls.app/apple-touch-icon.png",
+        "width": 180,
+        "height": 180
+      },
+      "sameAs": [
+        "https://spotpuls.app/api-docs/",
+        "https://spotpuls.app/openapi.json",
+        "https://spotpuls.app/llms.txt"
+      ]
+    },
+    {
+      "@type": "WebSite",
+      "@id": "https://spotpuls.app/#website",
+      "url": "https://spotpuls.app/",
+      "name": "Spotpuls",
+      "alternateName": "spotpuls.app",
+      "publisher": {
+        "@id": "https://spotpuls.app/#organization"
+      }
+    },
+    {
       "@type": "WebApplication",
       "@id": "https://spotpuls.app/at/#app",
       "name": "Spotpuls",
@@ -120,6 +148,27 @@
     <script>
     window.ACTIVE_COUNTRY_LOCALE = {"countryId": "at", "lang": "de-AT", "hreflang": "de-AT", "path": "/at/", "languageLabel": "Deutsch (AT)", "geoRegion": "AT", "countryName": "Österreich", "defaultZone": "AT", "zones": ["AT"], "unit": "ct/kWh", "currencyMajor": "€", "subunitsPerMajor": 100, "fxFromEurCents": 1.0, "vatRate": 1.2, "vatPctText": "20 %", "defaultMargin": 1.4, "taxInclVat": 2.4, "defaultPostal": "1010", "defaultCity": "Wien", "brandSubtitle": "EPEX/EXAA Spot-Strompreis in Österreich, 7-Tage-Prognose & Netzgebühren-Rechner", "navChart": "Spot-Grafik", "navTable": "Stundentabelle", "navTransfer": "Netzrechner", "navOptimizer": "Ladeoptimierer", "navApi": "Open API", "zoneSelectLabel": "Gebotszone", "langSelectLabel": "Land / Sprache", "chartTitle": "Börsenstrompreis Österreich (AT) & 7-Tage-Prognose (ct/kWh)", "hoverHint": "Fahren Sie über einen Balken, um Stundenpreis und wahrscheinliches Intervall zu sehen.", "tierBasisIntro": "Preisniveau (ggü. 30-Tage-Schnitt", "tierCheap": "Günstig", "tierNorm": "Normal", "tierHigh": "Hoch", "legendRange": "Prognose-Intervall (Min–Max)", "scrollDownText": "Nach unten scrollen: Stundentabelle, Österreich-Netzrechner, Lastoptimierer & Open API", "approxPrefix": "ca. ", "rangePrefix": "Preisintervall", "fixedText": "Bestätigter Spotpreis", "probLabel": "Wahrscheinlichkeit", "predWasLabel": "Modellprognose war", "predShortLabel": "Prognose war", "pubShortTpl": "Veröff. {date} {time}", "pubFullTpl": "Spotpreis wird veröffentlicht: {date} um {time} Uhr", "weekdaysShort": ["So", "Mo", "Di", "Mi", "Do", "Fr", "Sa"], "todayWord": "Heute", "tomorrowWord": "Morgen", "atClockWord": "", "sumNowTitle": "STROMPREIS AKTUELLE STUNDE", "sumMinTitle": "GÜNSTIGSTE STUNDE HEUTE", "sumMaxTitle": "TEUERSTE STUNDE HEUTE", "tableHeading": "Stündlicher Spotpreis Österreich & 7-Tage-Prognose", "colTime": "Uhrzeit", "colSpot": "Spotpreis (Prognose / Fix)", "colRange": "Wahrscheinliches Intervall", "colTotal": "Gesamtpreis inkl. Netz & Abgaben", "colWeather": "Wind & Temperatur", "transferHeading": "Netzentgelte (Systemnutzungsentgelt) & Gesamtstrompreis in Österreich", "transferLead": "Geben Sie Ihre 4-stellige Postleitzahl ein (z. B. 1010 Wien, 8010 Graz, 4020 Linz, 6020 Innsbruck), um Ihren Netzbetreiber zu wählen.", "postalLabel": "PLZ oder Ort", "postalPlaceholder": "1010, 8010, 4020, 6020...", "setBtn": "Wählen", "tariffLabel": "Netztarif", "tariffGeneral": "Standard (Netz 7)", "tariffTime": "Hoch- / Niedertarif", "marginLabel": "Lieferantenaufschlag (ct/kWh)", "vatLabel": "Umsatzsteuer", "vatIncl": "Inkl. 20 % USt.", "vatZero": "Exkl. USt. (0 %)", "dsoNetworkKicker": "NETZBETREIBER", "receiptNowTitle": "GESAMTPREIS AKTUELL", "receiptSpotRow": "Spotpreis AT", "receiptMarginRow": "Lieferantenaufschlag", "receiptTaxRow": "Elektrizitätsabgabe & EAG", "receiptTotalRow": "GESAMTPREIS BRUTTO", "receiptCheapestToday": "Günstigste Stunde heute", "receiptAvgToday": "Tagesschnitt heute", "receiptAvgTomorrow": "Tagesschnitt morgen", "expectWord": "Erwartung", "optBestWindowTpl": "GÜNSTIGSTES {h}-STUNDEN-FENSTER (NÄCHSTE 36 H)", "optDurationLabel": "Dauer", "optKwLabel": "Leistung (kW)", "optProbTotalLabel": "Wahrscheinlicher Gesamtpreis", "optAvgTotalLabel": "Durchschnittlicher Gesamtpreis", "optTransferTaxLabel": "Netz & Abgaben", "optConsumptionLabel": "Verbrauch", "optSavedLabel": "Ersparnis ggü. teuerster Zeit", "apiHeading": "Offene Österreich-Strompreis- & Prognose-API (Spotpuls API)", "apiLead": "EPEX/EXAA Spotpreise Österreich (AT) und 7-Tage-Prognose kostenlos als JSON/CSV für Smart Home & Loxone.", "apiCopyBtn": "URL kopieren", "apiCopiedBtn": "Kopiert!", "apiDocsBtn": "API-Dokumentation", "apiEmbedLabel": "Live-Preis-Badge für Ihre Webseite", "dsos": [{"id": "wiener_netze", "name": "Wiener Netze / Netz NÖ (Wien & Niederösterreich — AT)", "gen": 8.9, "day": 9.8, "night": 6.9, "zone": "AT", "postals": ["1", "2", "3"]}, {"id": "netz_ooe_sbg", "name": "Netz Oberösterreich / Salzburg Netz (AT)", "gen": 9.2, "day": 10.2, "night": 7.2, "zone": "AT", "postals": ["4", "5"]}, {"id": "tiwag_vorarlberg", "name": "TINETZ / Vorarlberger Energienetze (West — AT)", "gen": 8.1, "day": 9.0, "night": 6.4, "zone": "AT", "postals": ["6"]}, {"id": "energiewerk_stmk", "name": "Energienetze Steiermark / Kärnten Netz (Süd — AT)", "gen": 9.6, "day": 10.7, "night": 7.5, "zone": "AT", "postals": ["7", "8", "9"]}]};
     </script>
+    <!-- SPOTPULS_SEO_AI_START -->
+    <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1">
+    <meta property="og:type" content="website">
+    <meta property="og:site_name" content="Spotpuls">
+    <meta property="og:title" content="Spotpuls — EPEX/EXAA Spot-Strompreis in Österreich, 7-Tage-Prognose &amp; Netzgebühren-Rechner | spotpuls.app">
+    <meta property="og:description" content="Geben Sie Ihre 4-stellige Postleitzahl ein (z. B. 1010 Wien, 8010 Graz, 4020 Linz, 6020 Innsbruck), um Ihren Netzbetreiber zu wählen.">
+    <meta property="og:url" content="https://spotpuls.app/at/">
+    <meta property="og:image" content="https://spotpuls.app/og-image.png">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+    <meta property="og:image:alt" content="Spotpuls — EPEX/EXAA Spot-Strompreis in Österreich, 7-Tage-Prognose &amp; Netzgebühren-Rechner | spotpuls.app">
+    <meta property="og:locale" content="de_AT">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Spotpuls — EPEX/EXAA Spot-Strompreis in Österreich, 7-Tage-Prognose &amp; Netzgebühren-Rechner | spotpuls.app">
+    <meta name="twitter:description" content="Geben Sie Ihre 4-stellige Postleitzahl ein (z. B. 1010 Wien, 8010 Graz, 4020 Linz, 6020 Innsbruck), um Ihren Netzbetreiber zu wählen.">
+    <meta name="twitter:image" content="https://spotpuls.app/og-image.png">
+    <link rel="alternate" type="text/markdown" href="https://spotpuls.app/llms.txt" title="Spotpuls LLM &amp; AI Agent Reference">
+    <link rel="alternate" type="text/plain" href="https://spotpuls.app/llms-full.txt" title="Spotpuls Full Machine-Readable Knowledge Base">
+    <link rel="alternate" type="application/json" href="https://spotpuls.app/api/v1/prices?zone=AT&amp;vat=1" title="Spotpuls AT Live Spot &amp; 7-Day Forecast JSON API">
+    <link rel="service-desc" type="application/vnd.oai.openapi+json" href="https://spotpuls.app/openapi.json">
+    <!-- SPOTPULS_SEO_AI_END -->
 </head>
 <body>
     <header class="site-header">

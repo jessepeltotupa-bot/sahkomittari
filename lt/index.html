@@ -47,6 +47,34 @@
   "@context": "https://schema.org",
   "@graph": [
     {
+      "@type": "Organization",
+      "@id": "https://spotpuls.app/#organization",
+      "name": "Spotpuls",
+      "alternateName": "spotpuls.app",
+      "url": "https://spotpuls.app",
+      "logo": {
+        "@type": "ImageObject",
+        "url": "https://spotpuls.app/apple-touch-icon.png",
+        "width": 180,
+        "height": 180
+      },
+      "sameAs": [
+        "https://spotpuls.app/api-docs/",
+        "https://spotpuls.app/openapi.json",
+        "https://spotpuls.app/llms.txt"
+      ]
+    },
+    {
+      "@type": "WebSite",
+      "@id": "https://spotpuls.app/#website",
+      "url": "https://spotpuls.app/",
+      "name": "Spotpuls",
+      "alternateName": "spotpuls.app",
+      "publisher": {
+        "@id": "https://spotpuls.app/#organization"
+      }
+    },
+    {
       "@type": "WebApplication",
       "@id": "https://spotpuls.app/lt/#app",
       "name": "Spotpuls",
@@ -120,6 +148,27 @@
     <script>
     window.ACTIVE_COUNTRY_LOCALE = {"countryId": "lt", "lang": "lt-LT", "hreflang": "lt", "path": "/lt/", "languageLabel": "Lietuvių (LT)", "geoRegion": "LT", "countryName": "Lietuva", "defaultZone": "LT", "zones": ["LT"], "unit": "ct/kWh", "currencyMajor": "€", "subunitsPerMajor": 100, "fxFromEurCents": 1.0, "vatRate": 1.21, "vatPctText": "21 %", "defaultMargin": 0.45, "taxInclVat": 0.65, "defaultPostal": "01100", "defaultCity": "Vilnius (LT)", "brandSubtitle": "Elektros biržos kaina valandomis, 7 dienų prognozė ir ESO skaičiuoklė pagal pašto kodą", "navChart": "Biržos grafikas", "navTable": "Valandų lentelė", "navTransfer": "ESO skaičiuoklė", "navOptimizer": "Planavimas", "navApi": "Atviras API", "zoneSelectLabel": "Kainų zona", "langSelectLabel": "Šalis / Kalba", "chartTitle": "Elektros biržos valandinė kaina ir 7 dienų prognozė (ct/kWh)", "hoverHint": "Užveskite pelę ant stulpelio, kad matytumėte kainą ir tikėtiną kainos intervalą.", "tierBasisIntro": "Kainų lygis (pagal 30 d. vidutinę kainą", "tierCheap": "Žema kaina", "tierNorm": "Vidutinė", "tierHigh": "Aukšta kaina", "legendRange": "Prognozės kainos intervalas (min–max)", "scrollDownText": "Slinkite žemyn: valandinė lentelė, ESO persiuntimo skaičiuoklė, apkrovos planavimas ir API", "approxPrefix": "apie ", "rangePrefix": "Kainos intervalas", "fixedText": "Paskelbta fiksuota kaina", "probLabel": "Tikimybė", "predWasLabel": "Programos prognozė buvo", "predShortLabel": "Prognozė buvo", "pubShortTpl": "Skelb. {date} {time}", "pubFullTpl": "Kaina skelbiama: {date} {time} val.", "weekdaysShort": ["Sk", "Pr", "An", "Tr", "Kt", "Pn", "Št"], "todayWord": "Šiandien", "tomorrowWord": "Rytoj", "atClockWord": "val.", "sumNowTitle": "DABARTINĖS VALANDOS KAINA", "sumMinTitle": "DIENOS MAŽIAUSIA KAINA", "sumMaxTitle": "DIENOS DIDŽIAUSIA KAINA", "tableHeading": "Valandinė kainos prognozė ir tikėtinas kainos intervalas", "colTime": "Laikas", "colSpot": "Biržos kaina (prognozė / kaina)", "colRange": "Tikėtinas kainos intervalas", "colTotal": "Galutinė kaina su ESO", "colWeather": "Vėjas ir temperatūra", "transferHeading": "ESO persiuntimo tarifų ir galutinės elektros kainos skaičiuoklė", "transferLead": "Įveskite savo 5 skaitmenų pašto kodą (pvz., 01100 Vilnius, 44248 Kaunas, 91246 Klaipėda) galutinei elektros kainai apskaičiuoti.", "postalLabel": "Pašto kodas arba miestas", "postalPlaceholder": "01100, 44248, 91246...", "setBtn": "Nustatyti", "tariffLabel": "ESO planas", "tariffGeneral": "Standartinis (1 zona)", "tariffTime": "Dviejų zonų (Diena / Naktis)", "marginLabel": "Tiekėjo marža (ct/kWh)", "vatLabel": "PVM tarifas", "vatIncl": "Su PVM 21 %", "vatZero": "Be PVM (0 %)", "dsoNetworkKicker": "SKIRSTYMO OPERATORIUS", "receiptNowTitle": "GALUTINĖ KAINA DABAR", "receiptSpotRow": "Biržos kaina (Nord Pool LT)", "receiptMarginRow": "Tiekėjo marža", "receiptTaxRow": "Akcizas ir VIAP", "receiptTotalRow": "IŠ VISO SU PVM", "receiptCheapestToday": "Pigiausia valanda šiandien", "receiptAvgToday": "Šiandienos vidutinė kaina", "receiptAvgTomorrow": "Rytojaus vidutinė kaina", "expectWord": "tikėtina", "optBestWindowTpl": "PIGIAUSIAS {h} VAL. LANGAS (ARTIMIAUSIOS 36 VAL.)", "optDurationLabel": "Trukmė", "optKwLabel": "Galia (kW)", "optProbTotalLabel": "Tikėtina galutinė kaina", "optAvgTotalLabel": "Vidutinė galutinė kaina", "optTransferTaxLabel": "Persiuntimas ir mokesčiai", "optConsumptionLabel": "Suvartojimas", "optSavedLabel": "Sutaupoma palyginti su brangiausiu laiku", "apiHeading": "Atviras Elektros Kainų ir Prognozės API (Spotpuls API)", "apiLead": "Gaukite Nord Pool LT valandines kainas ir 7 dienų prognozę JSON arba CSV formatu išmaniems namams ir sistemoms.", "apiCopyBtn": "Kopijuoti URL", "apiCopiedBtn": "Nukopijuota!", "apiDocsBtn": "API dokumentacija", "apiEmbedLabel": "Įterpiamas kainos ženklelis svetainei", "dsos": [{"id": "eso_lt", "name": "AB „Energijos skirstymo operatorius“ (ESO)", "gen": 5.32, "day": 6.41, "night": 3.75, "zone": "LT", "postals": ["0", "1", "2", "3", "4", "5", "6", "7", "8", "9"]}]};
     </script>
+    <!-- SPOTPULS_SEO_AI_START -->
+    <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1">
+    <meta property="og:type" content="website">
+    <meta property="og:site_name" content="Spotpuls">
+    <meta property="og:title" content="Spotpuls — Elektros biržos kaina valandomis, 7 dienų prognozė ir ESO skaičiuoklė pagal pašto kodą | spotpuls.app">
+    <meta property="og:description" content="Įveskite savo 5 skaitmenų pašto kodą (pvz., 01100 Vilnius, 44248 Kaunas, 91246 Klaipėda) galutinei elektros kainai apskaičiuoti.">
+    <meta property="og:url" content="https://spotpuls.app/lt/">
+    <meta property="og:image" content="https://spotpuls.app/og-image.png">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+    <meta property="og:image:alt" content="Spotpuls — Elektros biržos kaina valandomis, 7 dienų prognozė ir ESO skaičiuoklė pagal pašto kodą | spotpuls.app">
+    <meta property="og:locale" content="lt_LT">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Spotpuls — Elektros biržos kaina valandomis, 7 dienų prognozė ir ESO skaičiuoklė pagal pašto kodą | spotpuls.app">
+    <meta name="twitter:description" content="Įveskite savo 5 skaitmenų pašto kodą (pvz., 01100 Vilnius, 44248 Kaunas, 91246 Klaipėda) galutinei elektros kainai apskaičiuoti.">
+    <meta name="twitter:image" content="https://spotpuls.app/og-image.png">
+    <link rel="alternate" type="text/markdown" href="https://spotpuls.app/llms.txt" title="Spotpuls LLM &amp; AI Agent Reference">
+    <link rel="alternate" type="text/plain" href="https://spotpuls.app/llms-full.txt" title="Spotpuls Full Machine-Readable Knowledge Base">
+    <link rel="alternate" type="application/json" href="https://spotpuls.app/api/v1/prices?zone=LT&amp;vat=1" title="Spotpuls LT Live Spot &amp; 7-Day Forecast JSON API">
+    <link rel="service-desc" type="application/vnd.oai.openapi+json" href="https://spotpuls.app/openapi.json">
+    <!-- SPOTPULS_SEO_AI_END -->
 </head>
 <body>
     <header class="site-header">

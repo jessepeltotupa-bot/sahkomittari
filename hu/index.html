@@ -47,6 +47,34 @@
   "@context": "https://schema.org",
   "@graph": [
     {
+      "@type": "Organization",
+      "@id": "https://spotpuls.app/#organization",
+      "name": "Spotpuls",
+      "alternateName": "spotpuls.app",
+      "url": "https://spotpuls.app",
+      "logo": {
+        "@type": "ImageObject",
+        "url": "https://spotpuls.app/apple-touch-icon.png",
+        "width": 180,
+        "height": 180
+      },
+      "sameAs": [
+        "https://spotpuls.app/api-docs/",
+        "https://spotpuls.app/openapi.json",
+        "https://spotpuls.app/llms.txt"
+      ]
+    },
+    {
+      "@type": "WebSite",
+      "@id": "https://spotpuls.app/#website",
+      "url": "https://spotpuls.app/",
+      "name": "Spotpuls",
+      "alternateName": "spotpuls.app",
+      "publisher": {
+        "@id": "https://spotpuls.app/#organization"
+      }
+    },
+    {
       "@type": "WebApplication",
       "@id": "https://spotpuls.app/hu/#app",
       "name": "Spotpuls",
@@ -120,6 +148,27 @@
     <script>
     window.ACTIVE_COUNTRY_LOCALE = {"countryId": "hu", "lang": "hu-HU", "hreflang": "hu", "path": "/hu/", "languageLabel": "Magyar (HU)", "geoRegion": "HU", "countryName": "Magyarország", "defaultZone": "HU", "zones": ["HU"], "unit": "Ft/kWh", "currencyMajor": "Ft", "subunitsPerMajor": 1, "fxFromEurCents": 4.08, "vatRate": 1.27, "vatPctText": "27 %", "defaultMargin": 4.5, "taxInclVat": 1.6, "defaultPostal": "1051", "defaultCity": "Budapest", "brandSubtitle": "Órás tőzsdei áramárak (HUPX DAM), 7 napos napelemes/szeles előrejelzés és rendszerhasználati kalkulátor", "navChart": "HUPX grafikon", "navTable": "Órás táblázat", "navTransfer": "Hálózati díj", "navOptimizer": "Fogyasztásütemező", "navApi": "Nyílt API", "zoneSelectLabel": "Árzóna", "langSelectLabel": "Ország / Nyelv", "chartTitle": "HUPX órás tőzsdei áramár és 7 napos előrejelzés (Ft/kWh)", "hoverHint": "Vigye az egeret egy oszlop fölé az órás ár és a valószínű ársáv megtekintéséhez.", "tierBasisIntro": "Árszint (30 napos átlag alapján", "tierCheap": "Alacsony", "tierNorm": "Átlagos", "tierHigh": "Magas", "legendRange": "Előrejelzési sáv (min–max)", "scrollDownText": "Görgessen le: órás táblázat, RHD kalkulátor (ELMŰ/E.ON/MVM), töltésoptimalizáló és API", "approxPrefix": "kb. ", "rangePrefix": "Ársáv", "fixedText": "Hivatalos HUPX ár", "probLabel": "Valószínűség", "predWasLabel": "Előrejelzés volt", "predShortLabel": "Előrejelzés", "pubShortTpl": "Közzé: {date} {time}", "pubFullTpl": "HUPX ár közzététele: {date} {time}", "weekdaysShort": ["V", "H", "K", "Sze", "Cs", "P", "Szo"], "todayWord": "Ma", "tomorrowWord": "Holnap", "atClockWord": "", "sumNowTitle": "AKTUÁLIS ÓRÁS ÁRAMÁR", "sumMinTitle": "MAI LEGALACSONYABB ÁR", "sumMaxTitle": "MAI LEGMAGASABB ÁR", "tableHeading": "Órás HUPX áramár és 7 napos előrejelzés", "colTime": "Idősáv", "colSpot": "HUPX ár (Ft/kWh)", "colRange": "Valószínű ársáv", "colTotal": "Teljes ár hálózati díjjal", "colWeather": "Szél és hőmérséklet", "transferHeading": "Rendszerhasználati díj (RHD) és teljes áramár kalkulátor irányítószám alapján", "transferLead": "Adja meg irányítószámát (pl. 1051 Budapest, 4024 Debrecen, 6720 Szeged, 9021 Győr) az elosztó kiválasztásához.", "postalLabel": "Irányítószám vagy város", "postalPlaceholder": "1051, 4024, 6720...", "setBtn": "Beállítás", "tariffLabel": "Hálózati tarifa", "tariffGeneral": "A1 (Általános)", "tariffTime": "A2 (Csúcs / Völgyidőszak)", "marginLabel": "Kereskedői árrés (Ft/kWh)", "vatLabel": "ÁFA kulcs", "vatIncl": "Bruttó (27 % ÁFA)", "vatZero": "Nettó (0 % ÁFA)", "dsoNetworkKicker": "ELOSZTÓHÁLÓZAT", "receiptNowTitle": "TELJES ÁR MOST", "receiptSpotRow": "HUPX DAM ár", "receiptMarginRow": "Kereskedői árrés", "receiptTaxRow": "Energiaadó", "receiptTotalRow": "ÖSSZESEN BRUTTÓ", "receiptCheapestToday": "Mai legolcsóbb óra", "receiptAvgToday": "Mai átlagár (teljes)", "receiptAvgTomorrow": "Holnapi átlagár (teljes)", "expectWord": "várható", "optBestWindowTpl": "LEGOLCSÓBB {h} ÓRÁS IDŐABLAK (KÖVETKEZŐ 36 ÓRA)", "optDurationLabel": "Időtartam", "optKwLabel": "Teljesítmény (kW)", "optProbTotalLabel": "Valószínű teljes ár", "optAvgTotalLabel": "Átlagos teljes ár", "optTransferTaxLabel": "Hálózat és adó", "optConsumptionLabel": "Fogyasztás", "optSavedLabel": "Megtakarítás a csúcsidőhöz képest", "apiHeading": "Nyílt HUPX Áramár és 7 Napos Előrejelzés API (Spotpuls API)", "apiLead": "Kérje le az órás HUPX árakat és a 7 napos előrejelzést JSON vagy CSV formátumban Home Assistant és okosotthon rendszerekhez.", "apiCopyBtn": "URL másolása", "apiCopiedBtn": "Másolva!", "apiDocsBtn": "API dokumentáció", "apiEmbedLabel": "Beágyazható élő árcímke weboldalra", "dsos": [{"id": "eon_elmu", "name": "E.ON / ELMŰ Hálózati Kft. & MVM Démász / Émász (Magyarország — HU)", "gen": 23.4, "day": 27.5, "night": 16.8, "zone": "HU", "postals": ["1", "2", "3", "4", "5", "6", "7", "8", "9"]}]};
     </script>
+    <!-- SPOTPULS_SEO_AI_START -->
+    <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1">
+    <meta property="og:type" content="website">
+    <meta property="og:site_name" content="Spotpuls">
+    <meta property="og:title" content="Spotpuls — Órás tőzsdei áramárak (HUPX DAM), 7 napos napelemes/szeles előrejelzés és rendszerhasználati kalkulátor | spotpuls.app">
+    <meta property="og:description" content="Adja meg irányítószámát (pl. 1051 Budapest, 4024 Debrecen, 6720 Szeged, 9021 Győr) az elosztó kiválasztásához.">
+    <meta property="og:url" content="https://spotpuls.app/hu/">
+    <meta property="og:image" content="https://spotpuls.app/og-image.png">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+    <meta property="og:image:alt" content="Spotpuls — Órás tőzsdei áramárak (HUPX DAM), 7 napos napelemes/szeles előrejelzés és rendszerhasználati kalkulátor | spotpuls.app">
+    <meta property="og:locale" content="hu_HU">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Spotpuls — Órás tőzsdei áramárak (HUPX DAM), 7 napos napelemes/szeles előrejelzés és rendszerhasználati kalkulátor | spotpuls.app">
+    <meta name="twitter:description" content="Adja meg irányítószámát (pl. 1051 Budapest, 4024 Debrecen, 6720 Szeged, 9021 Győr) az elosztó kiválasztásához.">
+    <meta name="twitter:image" content="https://spotpuls.app/og-image.png">
+    <link rel="alternate" type="text/markdown" href="https://spotpuls.app/llms.txt" title="Spotpuls LLM &amp; AI Agent Reference">
+    <link rel="alternate" type="text/plain" href="https://spotpuls.app/llms-full.txt" title="Spotpuls Full Machine-Readable Knowledge Base">
+    <link rel="alternate" type="application/json" href="https://spotpuls.app/api/v1/prices?zone=HU&amp;vat=1" title="Spotpuls HU Live Spot &amp; 7-Day Forecast JSON API">
+    <link rel="service-desc" type="application/vnd.oai.openapi+json" href="https://spotpuls.app/openapi.json">
+    <!-- SPOTPULS_SEO_AI_END -->
 </head>
 <body>
     <header class="site-header">

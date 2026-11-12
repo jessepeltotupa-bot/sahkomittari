@@ -47,6 +47,34 @@
   "@context": "https://schema.org",
   "@graph": [
     {
+      "@type": "Organization",
+      "@id": "https://spotpuls.app/#organization",
+      "name": "Spotpuls",
+      "alternateName": "spotpuls.app",
+      "url": "https://spotpuls.app",
+      "logo": {
+        "@type": "ImageObject",
+        "url": "https://spotpuls.app/apple-touch-icon.png",
+        "width": 180,
+        "height": 180
+      },
+      "sameAs": [
+        "https://spotpuls.app/api-docs/",
+        "https://spotpuls.app/openapi.json",
+        "https://spotpuls.app/llms.txt"
+      ]
+    },
+    {
+      "@type": "WebSite",
+      "@id": "https://spotpuls.app/#website",
+      "url": "https://spotpuls.app/",
+      "name": "Spotpuls",
+      "alternateName": "spotpuls.app",
+      "publisher": {
+        "@id": "https://spotpuls.app/#organization"
+      }
+    },
+    {
       "@type": "WebApplication",
       "@id": "https://spotpuls.app/ee/#app",
       "name": "Spotpuls",
@@ -120,6 +148,27 @@
     <script>
     window.ACTIVE_COUNTRY_LOCALE = {"countryId": "ee", "lang": "et-EE", "hreflang": "et", "path": "/ee/", "languageLabel": "Eesti (EE)", "geoRegion": "EE", "countryName": "Eesti", "defaultZone": "EE", "zones": ["EE"], "unit": "senti/kWh", "currencyMajor": "€", "subunitsPerMajor": 100, "fxFromEurCents": 1.0, "vatRate": 1.22, "vatPctText": "22 %", "defaultMargin": 0.45, "taxInclVat": 1.56, "defaultPostal": "10111", "defaultCity": "Tallinn (EE)", "brandSubtitle": "Börsielektri hind tundide kaupa, 7 päeva prognoos ja võrgutasu kalkulaator postiindeksiga", "navChart": "Börsigraafik", "navTable": "Tunnitabel", "navTransfer": "Võrgutasu", "navOptimizer": "Ajastamine", "navApi": "Avatud API", "zoneSelectLabel": "Hinnapiirkond", "langSelectLabel": "Riik / Keel", "chartTitle": "Börsielektri tunnihind ja 7 päeva prognoos (senti/kWh)", "hoverHint": "Liiguta kursor tulba kohale või puuduta tulpa, et näha hinda ja tõenäolist hinnavahemikku.", "tierBasisIntro": "Hinnatase (30 p keskmise hinna alusel", "tierCheap": "Soodne", "tierNorm": "Tavapärane", "tierHigh": "Kõrge", "legendRange": "Prognoosi hinnavahemik (min–max)", "scrollDownText": "Keri alla: tunnitabel, võrgutasu kalkulaator, tarbimise ajastamine ja avatud API", "approxPrefix": "u ", "rangePrefix": "Hinnavahemik", "fixedText": "Avaldatud fikseeritud hind", "probLabel": "Tõenäosus", "predWasLabel": "Programmi prognoos oli", "predShortLabel": "Prognoos oli", "pubShortTpl": "Avald. {date} kl {time}", "pubFullTpl": "Hind avaldatakse: {date} kl {time}", "weekdaysShort": ["P", "E", "T", "K", "N", "R", "L"], "todayWord": "Täna", "tomorrowWord": "Homme", "atClockWord": "kl", "sumNowTitle": "HETKE TUNNIHIND PRAEGU", "sumMinTitle": "PÄEVA SOODSAIM HIND", "sumMaxTitle": "PÄEVA KALLEIM HIND", "tableHeading": "Tunnipõhine hinnaprognoos ja tõenäoline hinnavahemik", "colTime": "Kellaaeg", "colSpot": "Börsihind (prognoos / hind)", "colRange": "Tõenäoline hinnavahemik", "colTotal": "Koguhind koos võrgutasuga", "colWeather": "Tuul ja temperatuur", "transferHeading": "Võrgutasu ja elektri koguhinna kalkulaator Eestis", "transferLead": "Sisesta oma 5-kohaline postiindeks (nt 10111 Tallinn, 51003 Tartu, 80010 Pärnu, 20308 Narva), et leida võrguettevõtja.", "postalLabel": "Postiindeks või linn", "postalPlaceholder": "10111, 51003, 80010...", "setBtn": "Vali", "tariffLabel": "Võrgupakett", "tariffGeneral": "Võrk 1 (Põhitariif)", "tariffTime": "Võrk 2 / 4 (Päev / Öö)", "marginLabel": "Müüja marginaal (senti/kWh)", "vatLabel": "Käibemaks", "vatIncl": "Koos KM-ga 22 %", "vatZero": "Ilma KM-ta (0 %)", "dsoNetworkKicker": "JAOTUSVÕRK", "receiptNowTitle": "KOGUHIND PRAEGU", "receiptSpotRow": "Börsihind (Nord Pool EE)", "receiptMarginRow": "Müüja marginaal", "receiptTaxRow": "Aktsiis ja taastuvenergia tasu", "receiptTotalRow": "KOGUHIND KOKKU", "receiptCheapestToday": "Tänane soodsaim tund", "receiptAvgToday": "Tänane keskmine koguhind", "receiptAvgTomorrow": "Homne keskmine koguhind", "expectWord": "ootus", "optBestWindowTpl": "SOODSAIM {h}-TUNNINE AKEN (JÄRGMISED 36 H)", "optDurationLabel": "Kestus", "optKwLabel": "Võimsus (kW)", "optProbTotalLabel": "Tõenäoline koguhind", "optAvgTotalLabel": "Keskmine koguhind", "optTransferTaxLabel": "Võrk ja maksud", "optConsumptionLabel": "Tarbimine", "optSavedLabel": "Sääst võrreldes kalleima ajaga", "apiHeading": "Avatud Elektrihinna ja Prognoosi API (Spotpuls API)", "apiLead": "Päri reaalajas Nord Pool EE börsihindu ja 7 päeva prognoosi JSON- või CSV-vormingus targa kodu ja rakenduste jaoks.", "apiCopyBtn": "Kopeeri URL", "apiCopiedBtn": "Kopeeritud!", "apiDocsBtn": "API dokumentatsioon", "apiEmbedLabel": "Manustatav reaalajas hinnamärk veebilehele", "dsos": [{"id": "elektrilevi", "name": "Elektrilevi OÜ (Võrk 1 / Võrk 2)", "gen": 5.38, "day": 6.25, "night": 3.62, "zone": "EE", "postals": ["1", "3", "4", "5", "6", "7", "8", "9"]}, {"id": "vkg", "name": "VKG Elektrivõrgud OÜ (Ida-Virumaa)", "gen": 4.92, "day": 5.75, "night": 3.4, "zone": "EE", "postals": ["2"]}]};
     </script>
+    <!-- SPOTPULS_SEO_AI_START -->
+    <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1">
+    <meta property="og:type" content="website">
+    <meta property="og:site_name" content="Spotpuls">
+    <meta property="og:title" content="Spotpuls — Börsielektri hind tundide kaupa, 7 päeva prognoos ja võrgutasu kalkulaator postiindeksiga | spotpuls.app">
+    <meta property="og:description" content="Sisesta oma 5-kohaline postiindeks (nt 10111 Tallinn, 51003 Tartu, 80010 Pärnu, 20308 Narva), et leida võrguettevõtja.">
+    <meta property="og:url" content="https://spotpuls.app/ee/">
+    <meta property="og:image" content="https://spotpuls.app/og-image.png">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+    <meta property="og:image:alt" content="Spotpuls — Börsielektri hind tundide kaupa, 7 päeva prognoos ja võrgutasu kalkulaator postiindeksiga | spotpuls.app">
+    <meta property="og:locale" content="et_EE">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Spotpuls — Börsielektri hind tundide kaupa, 7 päeva prognoos ja võrgutasu kalkulaator postiindeksiga | spotpuls.app">
+    <meta name="twitter:description" content="Sisesta oma 5-kohaline postiindeks (nt 10111 Tallinn, 51003 Tartu, 80010 Pärnu, 20308 Narva), et leida võrguettevõtja.">
+    <meta name="twitter:image" content="https://spotpuls.app/og-image.png">
+    <link rel="alternate" type="text/markdown" href="https://spotpuls.app/llms.txt" title="Spotpuls LLM &amp; AI Agent Reference">
+    <link rel="alternate" type="text/plain" href="https://spotpuls.app/llms-full.txt" title="Spotpuls Full Machine-Readable Knowledge Base">
+    <link rel="alternate" type="application/json" href="https://spotpuls.app/api/v1/prices?zone=EE&amp;vat=1" title="Spotpuls EE Live Spot &amp; 7-Day Forecast JSON API">
+    <link rel="service-desc" type="application/vnd.oai.openapi+json" href="https://spotpuls.app/openapi.json">
+    <!-- SPOTPULS_SEO_AI_END -->
 </head>
 <body>
     <header class="site-header">

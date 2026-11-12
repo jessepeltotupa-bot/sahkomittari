@@ -2610,47 +2610,71 @@
         `;
     }
 
+    function getViewportWidth() {
+        if (typeof window === 'undefined') return 1280;
+        const docW = (typeof document !== 'undefined' && document.documentElement && document.documentElement.clientWidth) || 0;
+        const winW = window.innerWidth || 0;
+        return (docW > 0 && winW > 0) ? Math.min(docW, winW) : (docW || winW || 1280);
+    }
+
+    function isMobileViewport() {
+        return getViewportWidth() <= 768;
+    }
+
     // Tarkka vektoripohjainen SVG-mittarikaavio (Pelkkä pörssisähkön spot-hinta + Todennäköinen vaihteluväli)
     function buildSvgChart(enrichedItems, isWeekView) {
-        const isMobile = typeof window !== 'undefined' && window.innerWidth <= 768;
+        const isMobile = isMobileViewport();
         const chartBox = typeof document !== 'undefined' ? document.getElementById('price-chart') : null;
         let innerBoxW = 0;
-        if (chartBox && chartBox.clientWidth > 120 && typeof window !== 'undefined' && window.getComputedStyle) {
-            const cs = window.getComputedStyle(chartBox);
-            const padH = (parseFloat(cs.paddingLeft) || 0) + (parseFloat(cs.paddingRight) || 0);
-            innerBoxW = chartBox.clientWidth - padH;
+        if (chartBox && typeof window !== 'undefined' && window.getComputedStyle) {
+            const rectW = chartBox.getBoundingClientRect ? chartBox.getBoundingClientRect().width : chartBox.clientWidth;
+            if (rectW > 120) {
+                const cs = window.getComputedStyle(chartBox);
+                const padH = (parseFloat(cs.paddingLeft) || 0) + (parseFloat(cs.paddingRight) || 0);
+                innerBoxW = rectW - padH;
+            }
         }
         const vh = (typeof window !== 'undefined' && window.innerHeight) ? window.innerHeight : 900;
         const W = isMobile
-            ? (innerBoxW > 200 ? Math.round(innerBoxW) : 360)
-            : (innerBoxW > 480 ? Math.round(innerBoxW) : 1180);
+            ? (innerBoxW > 180 ? Math.round(innerBoxW) : Math.max(260, getViewportWidth() - 52))
+            : (innerBoxW > 420 ? Math.round(innerBoxW) : 1180);
         const H = isMobile
-            ? Math.max(280, Math.min(500, Math.round(vh - 225)))
-            : Math.max(290, Math.min(550, Math.round(vh - 285)));
-        const padL = isMobile ? 30 : 48;
-        const padR = isMobile ? 6 : 14;
-        const padT = 14;
-        const padB = isMobile ? 22 : 26;
-        const plotW = W - padL - padR;
-        const plotH = H - padT - padB;
+            ? Math.max(255, Math.min(335, Math.round(vh - 330)))
+            : Math.max(300, Math.min(520, Math.round(vh - 295)));
 
         const n = Math.max(1, enrichedItems.length);
-        const vals = enrichedItems.map(x => x.slot.isForecast ? x.br.maxSpotCents : x.br.spotCents);
-        const rawPeak = Math.max(...vals, 0);
+        const highVals = enrichedItems.map(x => x.slot.isForecast ? x.br.maxSpotCents : x.br.spotCents);
+        const lowVals = enrichedItems.map(x => x.slot.isForecast ? x.br.minSpotCents : x.br.spotCents);
+        const rawPeak = Math.max(...highVals, 0);
+        const rawLow = Math.min(...lowVals, 0);
         const targetTop = Math.max(4 * FX_SCALE, rawPeak * 1.08);
-        const roughStep = targetTop / 5;
+        const targetSpan = targetTop + (rawLow < 0 ? Math.abs(rawLow) * 1.08 : 0);
+        const roughStep = targetSpan / 5;
         const mag = Math.pow(10, Math.floor(Math.log10(Math.max(0.1, roughStep))));
         const residual = roughStep / mag;
         const niceUnit = residual <= 1 ? 1 : (residual <= 2 ? 2 : (residual <= 3 ? 3 : (residual <= 5 ? 5 : 10)));
         const tickStep = Math.max(1, Math.round(niceUnit * mag));
-        const steps = Math.max(4, Math.min(6, Math.ceil(targetTop / tickStep)));
-        const maxPrice = tickStep * steps;
+        const posSteps = Math.max(rawLow < 0 ? 2 : 4, Math.min(6, Math.ceil(targetTop / tickStep)));
+        const negSteps = rawLow < 0 ? Math.max(1, Math.min(3, Math.ceil((Math.abs(rawLow) * 1.08) / tickStep))) : 0;
+        const maxPrice = tickStep * posSteps;
+        const minPrice = -tickStep * negSteps;
+        const priceSpan = Math.max(1, maxPrice - minPrice);
         const { cheapThresh, highThresh } = getDynamicPriceThresholds();
 
-        const yForPrice = (c) => padT + plotH - Math.max(0, Math.min(1, c / maxPrice)) * plotH;
+        const maxYChars = Math.max(String(Math.round(maxPrice)).length, String(Math.round(minPrice)).length);
+        const padL = isMobile ? Math.max(30, maxYChars * 8 + 14) : Math.max(58, (maxYChars + UNIT_SHORT.length + 1) * 8 + 14);
+        const padR = isMobile ? 8 : 16;
+        const padT = 16;
+        const padB = isMobile ? 34 : 36;
+        const plotW = Math.max(120, W - padL - padR);
+        const plotH = Math.max(120, H - padT - padB);
+
+        const yForPrice = (c) => padT + plotH - Math.max(0, Math.min(1, (c - minPrice) / priceSpan)) * plotH;
+        const yZero = yForPrice(0);
+        const yAxisBottom = padT + plotH;
         const colW = plotW / n;
 
-        let svg = `<svg class="responsive-price-svg" viewBox="0 0 ${W} ${H}" preserveAspectRatio="xMidYMid meet" width="100%" height="${H}" xmlns="http://www.w3.org/2000/svg" style="display:block; font-family:'IBM Plex Mono', monospace;">`;
+        let svg = `<svg class="responsive-price-svg" viewBox="0 0 ${W} ${H}" preserveAspectRatio="xMidYMid meet" width="100%" height="${H}" xmlns="http://www.w3.org/2000/svg" style="display:block; width:100%; height:${H}px; font-family:'IBM Plex Mono', monospace;">`;
         svg += `
             <defs>
                 <pattern id="forecastHatchCheap" width="6" height="6" patternTransform="rotate(45 0 0)" patternUnits="userSpaceOnUse">
@@ -2669,12 +2693,15 @@
         `;
 
         // Vaakasuorat hintaviivat (vasen akseli: snt/kWh)
-        for (let s = 0; s <= steps; s++) {
-            const pVal = (maxPrice / steps) * s;
+        const totalSteps = posSteps + negSteps;
+        for (let s = 0; s <= totalSteps; s++) {
+            const pVal = minPrice + tickStep * s;
             const y = yForPrice(pVal);
+            const isZeroLine = Math.abs(pVal) < 1e-6;
+            const isBottomAxis = s === 0;
             const yLabel = isMobile ? `${Math.round(pVal)}` : `${Math.round(pVal)} ${UNIT_SHORT}`;
-            svg += `<line x1="${padL}" y1="${y.toFixed(1)}" x2="${W - padR}" y2="${y.toFixed(1)}" stroke="${s === 0 ? '#111210' : '#c5c7bd'}" stroke-width="${s === 0 ? '1.5' : '1'}" stroke-dasharray="${s === 0 ? 'none' : '2,2'}" />`;
-            svg += `<text x="${padL - (isMobile ? 5 : 8)}" y="${(y + 4).toFixed(1)}" text-anchor="end" font-size="${isMobile ? '10.5' : '11'}" font-weight="700" fill="#111210">${yLabel}</text>`;
+            svg += `<line x1="${padL}" y1="${y.toFixed(1)}" x2="${W - padR}" y2="${y.toFixed(1)}" stroke="${(isZeroLine || isBottomAxis) ? '#111210' : '#c5c7bd'}" stroke-width="${isZeroLine ? '1.6' : (isBottomAxis ? '1.4' : '1')}" stroke-dasharray="${(isZeroLine || isBottomAxis) ? 'none' : '2,2'}" />`;
+            svg += `<text x="${padL - (isMobile ? 6 : 8)}" y="${(y + 4.5).toFixed(1)}" text-anchor="end" font-size="${isMobile ? '12.5' : '13'}" font-weight="700" fill="#111210">${yLabel}</text>`;
         }
 
         const nowMsExact = Date.now();
@@ -2689,8 +2716,9 @@
             const barX = x0 + (colW - barW) / 2;
 
             const spotVal = xObj.br.spotCents;
-            const yTopSpot = yForPrice(spotVal);
-            const yBottom = padT + plotH;
+            const ySpot = yForPrice(spotVal);
+            const barTopY = spotVal >= 0 ? ySpot : yZero;
+            const hSpot = Math.max(2.0, Math.abs(yZero - ySpot));
             const isCurrentHour = xObj.slot.epochMs === nowHourMs;
 
             let spotFill = spotVal < cheapThresh ? '#009e3d' : (spotVal < highThresh ? '#0038ff' : '#ff3b00');
@@ -2719,12 +2747,11 @@
             svg += `<rect class="svg-slot-hl" data-hl-idx="${i}" x="${x0.toFixed(1)}" y="${padT}" width="${colW.toFixed(1)}" height="${plotH}" fill="#ffd000" fill-opacity="0" stroke="#111210" stroke-width="0" stroke-dasharray="3,2" pointer-events="none" />`;
 
             // Spot-pylväs (kuluvan tunnin palkki korostettuna)
-            const hSpot = Math.max(2.0, yBottom - yTopSpot);
             if (isCurrentHour) {
-                svg += `<rect x="${(barX - 2.5).toFixed(1)}" y="${(yTopSpot - 2.5).toFixed(1)}" width="${(barW + 5).toFixed(1)}" height="${(hSpot + 2.5).toFixed(1)}" fill="none" stroke="#ffd000" stroke-width="3.2" pointer-events="none" />`;
+                svg += `<rect x="${(barX - 2.5).toFixed(1)}" y="${(barTopY - 2.5).toFixed(1)}" width="${(barW + 5).toFixed(1)}" height="${(hSpot + 5).toFixed(1)}" fill="none" stroke="#ffd000" stroke-width="3.2" pointer-events="none" />`;
             }
-            svg += `<rect class="svg-bar-rect${isCurrentHour ? ' is-current-bar' : ''}" data-bar-idx="${i}" x="${barX.toFixed(1)}" y="${yTopSpot.toFixed(1)}" width="${barW.toFixed(1)}" height="${hSpot.toFixed(1)}" fill="${spotFill}" stroke="#111210" stroke-width="${isCurrentHour ? '2.4' : (isWeekView ? '0.6' : '1.2')}" />`;
-            svg += `<rect class="svg-bar-hl" data-bar-hl-idx="${i}" x="${(barX - 2.2).toFixed(1)}" y="${(yTopSpot - 2.2).toFixed(1)}" width="${(barW + 4.4).toFixed(1)}" height="${(hSpot + 2.2).toFixed(1)}" fill="none" stroke="#ff3b00" stroke-width="2.5" opacity="0" pointer-events="none" />`;
+            svg += `<rect class="svg-bar-rect${isCurrentHour ? ' is-current-bar' : ''}" data-bar-idx="${i}" x="${barX.toFixed(1)}" y="${barTopY.toFixed(1)}" width="${barW.toFixed(1)}" height="${hSpot.toFixed(1)}" fill="${spotFill}" stroke="#111210" stroke-width="${isCurrentHour ? '2.4' : (isWeekView ? '0.6' : '1.2')}" />`;
+            svg += `<rect class="svg-bar-hl" data-bar-hl-idx="${i}" x="${(barX - 2.2).toFixed(1)}" y="${(barTopY - 2.2).toFixed(1)}" width="${(barW + 4.4).toFixed(1)}" height="${(hSpot + 4.4).toFixed(1)}" fill="none" stroke="#ff3b00" stroke-width="2.5" opacity="0" pointer-events="none" />`;
 
             if (isCurrentHour) {
                 const minuteFrac = Math.max(0.08, Math.min(0.92, (nowMsExact - nowHourMs) / 3600000));
@@ -2732,8 +2759,8 @@
                 const nowXNum = parseFloat(nowX);
                 currentHourCursorSvg = `
                     <g pointer-events="none">
-                        <line x1="${nowX}" y1="${padT - 4}" x2="${nowX}" y2="${yBottom}" stroke="#ffffff" stroke-width="3.4" stroke-dasharray="5,4" />
-                        <line x1="${nowX}" y1="${padT - 4}" x2="${nowX}" y2="${yBottom}" stroke="#111210" stroke-width="2.0" stroke-dasharray="5,4" />
+                        <line x1="${nowX}" y1="${padT - 4}" x2="${nowX}" y2="${yAxisBottom}" stroke="#ffffff" stroke-width="3.4" stroke-dasharray="5,4" />
+                        <line x1="${nowX}" y1="${padT - 4}" x2="${nowX}" y2="${yAxisBottom}" stroke="#111210" stroke-width="2.0" stroke-dasharray="5,4" />
                         <polygon points="${(nowXNum - 5).toFixed(1)},${padT - 10} ${(nowXNum + 5).toFixed(1)},${padT - 10} ${nowX},${padT - 2}" fill="#111210" stroke="#ffd000" stroke-width="1.2" />
                     </g>
                 `;
@@ -2756,17 +2783,21 @@
                 }
             }
 
-            // Aikaleimat ala-akselille
+            // Aikaleimat ala-akselille (selkeät suuremmat tuntinumerot + asteikkoviivat)
             if (isWeekView) {
                 if (xObj.slot.hour === 0) {
-                    svg += `<line x1="${x0.toFixed(1)}" y1="${padT}" x2="${x0.toFixed(1)}" y2="${padT + plotH}" stroke="#111210" stroke-width="1" stroke-dasharray="3,3" />`;
-                    svg += `<text x="${(x0 + 3).toFixed(1)}" y="${H - (isMobile ? 5 : 8)}" font-size="${isMobile ? '9.5' : '11'}" font-weight="700" fill="#111210">${xObj.slot.dayShort || ''}</text>`;
+                    svg += `<line x1="${x0.toFixed(1)}" y1="${padT}" x2="${x0.toFixed(1)}" y2="${yAxisBottom}" stroke="#111210" stroke-width="1" stroke-dasharray="3,3" />`;
+                    svg += `<text x="${(x0 + 3).toFixed(1)}" y="${H - (isMobile ? 8 : 9)}" font-size="${isMobile ? '12.5' : '13.5'}" font-weight="700" fill="#111210">${xObj.slot.dayShort || ''}</text>`;
                 }
             } else {
-                const showHourTick = isMobile ? (i % 2 === 0) : (i % 2 === 0 || n <= 24);
+                const cx = x0 + colW / 2;
+                const showAllHours = colW >= 21.5 && n <= 25;
+                const showHourTick = showAllHours ? true : (i % 2 === 0);
+                const tickLen = showHourTick ? 5.5 : 3;
+                svg += `<line x1="${cx.toFixed(1)}" y1="${yAxisBottom.toFixed(1)}" x2="${cx.toFixed(1)}" y2="${(yAxisBottom + tickLen).toFixed(1)}" stroke="#111210" stroke-width="${showHourTick ? '1.6' : '1'}" />`;
                 if (showHourTick) {
-                    const cx = x0 + colW / 2;
-                    svg += `<text x="${cx.toFixed(1)}" y="${H - (isMobile ? 5 : 8)}" text-anchor="middle" font-size="${isMobile ? '10' : '11'}" font-weight="700" fill="#111210">${String(xObj.slot.hour).padStart(2, '0')}</text>`;
+                    const hourFontPx = isMobile ? '14' : (W >= 960 ? '14.5' : '13.5');
+                    svg += `<text x="${cx.toFixed(1)}" y="${H - 8}" text-anchor="middle" font-size="${hourFontPx}" font-weight="700" fill="#111210">${String(xObj.slot.hour).padStart(2, '0')}</text>`;
                 }
             }
 
@@ -2963,7 +2994,7 @@
 
         function showFloatingTooltipAt(xObj, clientX, clientY) {
             if (!floatingTooltip || !xObj) return;
-            const isMobileView = typeof window !== 'undefined' && window.innerWidth <= 768;
+            const isMobileView = isMobileViewport();
             const dayPrefix = xObj.slot.dayShort ? `${xObj.slot.dayShort} ` : '';
             const timeRange = `${String(xObj.slot.hour).padStart(2, '0')}:00–${String((xObj.slot.hour + 1) % 24).padStart(2, '0')}:00`;
             const probPct = xObj.slot.probabilityPct !== undefined ? xObj.slot.probabilityPct : (xObj.slot.isForecast ? 82 : 100);
@@ -2992,7 +3023,7 @@
                 floatingTooltip.dataset.activeEpoch = String(xObj.slot.epochMs);
                 floatingTooltip.classList.add('visible');
                 const chartRect = chartContainer.getBoundingClientRect();
-                const vw = window.innerWidth || 360;
+                const vw = getViewportWidth() || 360;
                 const boxW = floatingTooltip.offsetWidth || Math.min(300, vw - 48);
                 const leftPx = Math.max(8, Math.min(vw - boxW - 8, Math.round(chartRect.left + (chartRect.width - boxW) / 2)));
                 const topPx = Math.max(6, Math.round(chartRect.top + 6));
@@ -3093,7 +3124,7 @@
 
         chartContainer.querySelectorAll('.svg-hover-slot').forEach(rect => {
             const scheduleTooltipOnStill = function (evt) {
-                if (window.innerWidth <= 768) return;
+                if (isMobileViewport()) return;
                 const i = parseInt(this.getAttribute('data-slot-idx'), 10);
                 const item = activeItems[i];
                 if (!item) return;
@@ -3123,7 +3154,7 @@
             rect.addEventListener('mouseenter', scheduleTooltipOnStill);
             rect.addEventListener('mousemove', scheduleTooltipOnStill);
             rect.addEventListener('mouseleave', function () {
-                if (window.innerWidth <= 768) return;
+                if (isMobileViewport()) return;
                 if (hoverDwellTimer) {
                     clearTimeout(hoverDwellTimer);
                     hoverDwellTimer = null;
@@ -3139,7 +3170,7 @@
                 const item = activeItems[i];
                 if (item) {
                     updateReadout(item);
-                    if (window.innerWidth <= 768 && floatingTooltip && floatingTooltip.classList.contains('visible') && floatingTooltip.dataset.activeEpoch === String(item.slot.epochMs)) {
+                    if (isMobileViewport() && floatingTooltip && floatingTooltip.classList.contains('visible') && floatingTooltip.dataset.activeEpoch === String(item.slot.epochMs)) {
                         floatingTooltip.classList.remove('visible');
                         floatingTooltip.dataset.activeEpoch = '';
                         clearChartSlotHighlight();
@@ -3198,7 +3229,7 @@
                 hoverDwellTimer = null;
             }
             if (floatingTooltip) floatingTooltip.classList.remove('visible');
-            if (window.innerWidth > 768) clearChartSlotHighlight();
+            if (!isMobileViewport()) clearChartSlotHighlight();
         });
 
         // Tuntikohtainen hintataulukko ja 30 vrk liukuvan keskiarvon mukaiset hintarajat
@@ -3968,13 +3999,13 @@
         updateOpenApiPanel();
         loadSpotAndForecastData();
 
-        let lastIsMobile = window.innerWidth <= 768;
-        let lastResizeW = window.innerWidth || 0;
+        let lastIsMobile = isMobileViewport();
+        let lastResizeW = getViewportWidth() || 0;
         let lastResizeH = window.innerHeight || 0;
         let resizeDebounceTimer = null;
         window.addEventListener('resize', function () {
-            const nowIsMobile = window.innerWidth <= 768;
-            const curW = window.innerWidth || 0;
+            const nowIsMobile = isMobileViewport();
+            const curW = getViewportWidth() || 0;
             const curH = window.innerHeight || 0;
             const modeChanged = nowIsMobile !== lastIsMobile;
             const widthChanged = Math.abs(curW - lastResizeW) > 14;

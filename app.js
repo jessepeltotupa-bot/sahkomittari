@@ -2639,8 +2639,8 @@
             ? (innerBoxW > 180 ? Math.round(innerBoxW) : Math.max(260, getViewportWidth() - 52))
             : (innerBoxW > 420 ? Math.round(innerBoxW) : 1180);
         const H = isMobile
-            ? Math.max(255, Math.min(335, Math.round(vh - 330)))
-            : Math.max(300, Math.min(520, Math.round(vh - 295)));
+            ? Math.max(400, Math.min(480, Math.round(vh * 0.56)))
+            : Math.max(320, Math.min(520, Math.round(vh - 295)));
 
         const n = Math.max(1, enrichedItems.length);
         const highVals = enrichedItems.map(x => x.slot.isForecast ? x.br.maxSpotCents : x.br.spotCents);
@@ -2649,22 +2649,38 @@
         const rawLow = Math.min(...lowVals, 0);
         const targetTop = Math.max(4 * FX_SCALE, rawPeak * 1.08);
         const targetSpan = targetTop + (rawLow < 0 ? Math.abs(rawLow) * 1.08 : 0);
-        const roughStep = targetSpan / 5;
+        const maxDesiredSteps = H >= 340 ? 8 : 6;
+        const roughStep = targetSpan / (H >= 340 ? 6.8 : 5.2);
         const mag = Math.pow(10, Math.floor(Math.log10(Math.max(0.1, roughStep))));
         const residual = roughStep / mag;
-        const niceUnit = residual <= 1 ? 1 : (residual <= 2 ? 2 : (residual <= 3 ? 3 : (residual <= 5 ? 5 : 10)));
-        const tickStep = Math.max(1, Math.round(niceUnit * mag));
-        const posSteps = Math.max(rawLow < 0 ? 2 : 4, Math.min(6, Math.ceil(targetTop / tickStep)));
-        const negSteps = rawLow < 0 ? Math.max(1, Math.min(3, Math.ceil((Math.abs(rawLow) * 1.08) / tickStep))) : 0;
+        let niceUnit;
+        if (residual <= 1.15) niceUnit = 1;
+        else if (residual <= 2.15) niceUnit = 2;
+        else if (residual <= 2.6 && mag >= 10) niceUnit = 2.5;
+        else if (residual <= 5.2) niceUnit = 5;
+        else niceUnit = 10;
+        let tickStep = Math.max(1, Math.round(niceUnit * mag));
+        let posSteps = Math.max(rawLow < 0 ? 2 : 4, Math.ceil(targetTop / tickStep));
+        let negSteps = rawLow < 0 ? Math.max(1, Math.ceil((Math.abs(rawLow) * 1.08) / tickStep)) : 0;
+        while (posSteps + negSteps > maxDesiredSteps) {
+            if (tickStep === 1) tickStep = 2;
+            else if (tickStep === 2) tickStep = 5;
+            else if (tickStep === 5) tickStep = 10;
+            else tickStep = tickStep * 2;
+            posSteps = Math.max(rawLow < 0 ? 2 : 4, Math.ceil(targetTop / tickStep));
+            negSteps = rawLow < 0 ? Math.max(1, Math.ceil((Math.abs(rawLow) * 1.08) / tickStep)) : 0;
+        }
         const maxPrice = tickStep * posSteps;
         const minPrice = -tickStep * negSteps;
         const priceSpan = Math.max(1, maxPrice - minPrice);
         const { cheapThresh, highThresh } = getDynamicPriceThresholds();
 
         const maxYChars = Math.max(String(Math.round(maxPrice)).length, String(Math.round(minPrice)).length);
-        const padL = isMobile ? Math.max(30, maxYChars * 8 + 14) : Math.max(58, (maxYChars + UNIT_SHORT.length + 1) * 8 + 14);
+        const padL = isMobile
+            ? Math.max(40, maxYChars * 9 + 20)
+            : Math.max(66, (maxYChars + UNIT_SHORT.length + 1) * 8.5 + 18);
         const padR = isMobile ? 8 : 16;
-        const padT = 16;
+        const padT = isMobile ? 28 : 22;
         const padB = isMobile ? 34 : 36;
         const plotW = Math.max(120, W - padL - padR);
         const plotH = Math.max(120, H - padT - padB);
@@ -2692,8 +2708,21 @@
             </defs>
         `;
 
-        // Vaakasuorat hintaviivat (vasen akseli: snt/kWh)
+        // Vasen mittariasteikko: sävytetty asteikkokisko, yksikkötunniste, pystyakseli ja asteikkoviivat
+        svg += `<rect x="0" y="0" width="${padL}" height="${yAxisBottom}" fill="#f1f2ec" />`;
+        if (isMobile) {
+            svg += `<text x="4" y="14" text-anchor="start" font-size="10.5" font-weight="700" fill="#383a34">${UNIT_LABEL}</text>`;
+        }
+
         const totalSteps = posSteps + negSteps;
+        if (totalSteps <= 6) {
+            for (let s = 0; s < totalSteps; s++) {
+                const midVal = minPrice + tickStep * (s + 0.5);
+                const yMid = yForPrice(midVal);
+                svg += `<line x1="${padL}" y1="${yMid.toFixed(1)}" x2="${W - padR}" y2="${yMid.toFixed(1)}" stroke="#ebece5" stroke-width="1" />`;
+                svg += `<line x1="${(padL - 3.2).toFixed(1)}" y1="${yMid.toFixed(1)}" x2="${padL}" y2="${yMid.toFixed(1)}" stroke="#686b62" stroke-width="1.1" />`;
+            }
+        }
         for (let s = 0; s <= totalSteps; s++) {
             const pVal = minPrice + tickStep * s;
             const y = yForPrice(pVal);
@@ -2701,12 +2730,17 @@
             const isBottomAxis = s === 0;
             const yLabel = isMobile ? `${Math.round(pVal)}` : `${Math.round(pVal)} ${UNIT_SHORT}`;
             svg += `<line x1="${padL}" y1="${y.toFixed(1)}" x2="${W - padR}" y2="${y.toFixed(1)}" stroke="${(isZeroLine || isBottomAxis) ? '#111210' : '#c5c7bd'}" stroke-width="${isZeroLine ? '1.6' : (isBottomAxis ? '1.4' : '1')}" stroke-dasharray="${(isZeroLine || isBottomAxis) ? 'none' : '2,2'}" />`;
-            svg += `<text x="${padL - (isMobile ? 6 : 8)}" y="${(y + 4.5).toFixed(1)}" text-anchor="end" font-size="${isMobile ? '12.5' : '13'}" font-weight="700" fill="#111210">${yLabel}</text>`;
+            svg += `<line x1="${(padL - 5.5).toFixed(1)}" y1="${y.toFixed(1)}" x2="${padL}" y2="${y.toFixed(1)}" stroke="#111210" stroke-width="1.6" />`;
+            svg += `<text x="${padL - 8}" y="${(y + 4.8).toFixed(1)}" text-anchor="end" font-size="14" font-weight="700" fill="#111210">${yLabel}</text>`;
         }
+        svg += `<line x1="${padL}" y1="${padT}" x2="${padL}" y2="${yAxisBottom}" stroke="#111210" stroke-width="1.6" />`;
 
         const nowMsExact = Date.now();
         const nowHourMs = Math.floor(nowMsExact / 3600000) * 3600000;
         let currentHourCursorSvg = '';
+        let currentHourFrameSvg = '';
+        let activeBarFramesSvg = '';
+        let hoverHitSlotsSvg = '';
 
         // Pylväät (pelkkä pörssisähkön spot-hinta + ennusteen todennäköinen vaihteluväli)
         for (let i = 0; i < n; i++) {
@@ -2728,8 +2762,7 @@
                     : (spotVal < highThresh ? 'url(#forecastHatchNorm)' : 'url(#forecastHatchHigh)');
             }
 
-            // Ennustetunnin todennäköinen vaihteluväli-varjostus (min-max) kapeampana keskipalkkina,
-            // jotta varsinainen odotusarvopylväs (spotVal) erottuu aina pääpalkkina
+            // Ennustetunnin todennäköinen vaihteluväli-varjostus (min-max) kapeampana keskipalkkina
             if (xObj.slot.isForecast) {
                 const minChartVal = xObj.br.minSpotCents;
                 const maxChartVal = xObj.br.maxSpotCents;
@@ -2746,22 +2779,39 @@
             // Aktiivisen/osoitetun tunnin pystysuora korostuspalkki
             svg += `<rect class="svg-slot-hl" data-hl-idx="${i}" x="${x0.toFixed(1)}" y="${padT}" width="${colW.toFixed(1)}" height="${plotH}" fill="#ffd000" fill-opacity="0" stroke="#111210" stroke-width="0" stroke-dasharray="3,2" pointer-events="none" />`;
 
-            // Spot-pylväs (kuluvan tunnin palkki korostettuna)
-            if (isCurrentHour) {
-                svg += `<rect x="${(barX - 2.5).toFixed(1)}" y="${(barTopY - 2.5).toFixed(1)}" width="${(barW + 5).toFixed(1)}" height="${(hSpot + 5).toFixed(1)}" fill="none" stroke="#ffd000" stroke-width="3.2" pointer-events="none" />`;
-            }
-            svg += `<rect class="svg-bar-rect${isCurrentHour ? ' is-current-bar' : ''}" data-bar-idx="${i}" x="${barX.toFixed(1)}" y="${barTopY.toFixed(1)}" width="${barW.toFixed(1)}" height="${hSpot.toFixed(1)}" fill="${spotFill}" stroke="#111210" stroke-width="${isCurrentHour ? '2.4' : (isWeekView ? '0.6' : '1.2')}" />`;
-            svg += `<rect class="svg-bar-hl" data-bar-hl-idx="${i}" x="${(barX - 2.2).toFixed(1)}" y="${(barTopY - 2.2).toFixed(1)}" width="${(barW + 4.4).toFixed(1)}" height="${(hSpot + 4.4).toFixed(1)}" fill="none" stroke="#ff3b00" stroke-width="2.5" opacity="0" pointer-events="none" />`;
+            // Varsinainen spot-pylväs
+            svg += `<rect class="svg-bar-rect${isCurrentHour ? ' is-current-bar' : ''}" data-bar-idx="${i}" x="${barX.toFixed(1)}" y="${barTopY.toFixed(1)}" width="${barW.toFixed(1)}" height="${hSpot.toFixed(1)}" fill="${spotFill}" stroke="#111210" stroke-width="${isWeekView ? '0.6' : '1.1'}" />`;
+
+            // Siro, koko pylvään täydeltä 360° kiertävä kehys piirretään kaikkien pylväiden päälle silmukan jälkeen,
+            // jottei seuraavan tunnin pylväs peitä oikeaa reunaa
+            const frameInset = isWeekView ? 0.5 : 0.8;
+            const fx = (barX - frameInset).toFixed(1);
+            const fy = (barTopY - frameInset).toFixed(1);
+            const fw = (barW + frameInset * 2).toFixed(1);
+            const fh = (hSpot + frameInset * 2).toFixed(1);
+
+            activeBarFramesSvg += `
+                <g class="svg-bar-hl" data-bar-hl-idx="${i}" opacity="0" pointer-events="none">
+                    <rect x="${fx}" y="${fy}" width="${fw}" height="${fh}" fill="none" stroke="#111210" stroke-width="${isMobile ? '2.8' : '3.2'}" />
+                    <rect x="${fx}" y="${fy}" width="${fw}" height="${fh}" fill="none" stroke="#ff3b00" stroke-width="${isMobile ? '1.6' : '1.9'}" />
+                </g>
+            `;
 
             if (isCurrentHour) {
-                const minuteFrac = Math.max(0.08, Math.min(0.92, (nowMsExact - nowHourMs) / 3600000));
+                currentHourFrameSvg = `
+                    <g class="svg-current-hour-frame" pointer-events="none">
+                        <rect x="${fx}" y="${fy}" width="${fw}" height="${fh}" fill="none" stroke="#111210" stroke-width="${isMobile ? '2.8' : '3.2'}" />
+                        <rect x="${fx}" y="${fy}" width="${fw}" height="${fh}" fill="none" stroke="#ffd000" stroke-width="${isMobile ? '1.5' : '1.8'}" />
+                    </g>
+                `;
+                const minuteFrac = Math.max(0.12, Math.min(0.88, (nowMsExact - nowHourMs) / 3600000));
                 const nowX = (barX + barW * minuteFrac).toFixed(1);
                 const nowXNum = parseFloat(nowX);
+                const lineEndY = Math.max(padT, barTopY - 3).toFixed(1);
                 currentHourCursorSvg = `
                     <g pointer-events="none">
-                        <line x1="${nowX}" y1="${padT - 4}" x2="${nowX}" y2="${yAxisBottom}" stroke="#ffffff" stroke-width="3.4" stroke-dasharray="5,4" />
-                        <line x1="${nowX}" y1="${padT - 4}" x2="${nowX}" y2="${yAxisBottom}" stroke="#111210" stroke-width="2.0" stroke-dasharray="5,4" />
-                        <polygon points="${(nowXNum - 5).toFixed(1)},${padT - 10} ${(nowXNum + 5).toFixed(1)},${padT - 10} ${nowX},${padT - 2}" fill="#111210" stroke="#ffd000" stroke-width="1.2" />
+                        ${parseFloat(lineEndY) > padT + 2 ? `<line x1="${nowX}" y1="${padT}" x2="${nowX}" y2="${lineEndY}" stroke="#ffffff" stroke-width="2.6" stroke-dasharray="4,3" /><line x1="${nowX}" y1="${padT}" x2="${nowX}" y2="${lineEndY}" stroke="#111210" stroke-width="1.4" stroke-dasharray="4,3" />` : ''}
+                        <polygon points="${(nowXNum - 4.5).toFixed(1)},${padT - 9} ${(nowXNum + 4.5).toFixed(1)},${padT - 9} ${nowX},${padT - 1.5}" fill="#111210" stroke="#ffd000" stroke-width="1.2" />
                     </g>
                 `;
             }
@@ -2801,11 +2851,14 @@
                 }
             }
 
-            // Näkymätön hover-alue tarkkaa lukemaa ja kelluvaa vaihteluväli-tooltipia varten
-            svg += `<rect class="svg-hover-slot" data-slot-idx="${i}" data-x-pct="${(((x0 + colW / 2) / W) * 100).toFixed(2)}" x="${x0.toFixed(1)}" y="${padT}" width="${colW.toFixed(1)}" height="${plotH}" fill="transparent" style="cursor:crosshair;" />`;
+            // Näkymätön kosketus-/hover-alue tarkkaa lukemaa varten
+            hoverHitSlotsSvg += `<rect class="svg-hover-slot" data-slot-idx="${i}" data-x-pct="${(((x0 + colW / 2) / W) * 100).toFixed(2)}" x="${x0.toFixed(1)}" y="${padT}" width="${colW.toFixed(1)}" height="${plotH}" fill="transparent" style="cursor:crosshair;" />`;
         }
 
+        svg += currentHourFrameSvg;
+        svg += activeBarFramesSvg;
         svg += currentHourCursorSvg;
+        svg += hoverHitSlotsSvg;
 
         svg += `</svg>`;
         return svg;
@@ -2967,70 +3020,84 @@
             `;
         }
 
-        function updateReadout(xObj) {
-            if (!xObj) return;
+        function updateReadout(xObj, isPinned = false) {
+            if (!xObj || !readoutEl) return;
             const dayPrefix = xObj.slot.dayShort ? `${xObj.slot.dayShort} ` : '';
             const timeRange = `${String(xObj.slot.hour).padStart(2, '0')}:00–${String((xObj.slot.hour + 1) % 24).padStart(2, '0')}:00`;
             const probPct = xObj.slot.probabilityPct !== undefined ? xObj.slot.probabilityPct : (xObj.slot.isForecast ? 82 : 100);
 
-            if (readoutEl) {
+            if (isMobileViewport()) {
+                readoutEl.classList.toggle('is-pinned', Boolean(isPinned));
+                readoutEl.dataset.pinnedEpoch = isPinned ? String(xObj.slot.epochMs) : '';
+                const resetBtnHtml = isPinned
+                    ? `<button type="button" class="readout-m-reset" aria-label="Palauta kuluva tunti">×</button>`
+                    : '';
                 if (xObj.slot.isForecast) {
-                    const pubInfo = getPricePublishTimeText(xObj.slot.dateKey, false);
+                    const pubShort = getPricePublishTimeText(xObj.slot.dateKey, true);
                     readoutEl.innerHTML = `
-                        <span><strong>${dayPrefix}${timeRange}</strong></span>
-                        <span><strong>${APPROX_PREFIX}${formatNum(xObj.br.spotCents, 2)} ${UNIT_LABEL}</strong></span>
-                        <span>${RANGE_LABEL}: <strong style="text-decoration:underline;">${formatNum(xObj.br.minSpotCents, 2)} – ${formatNum(xObj.br.maxSpotCents, 2)} ${UNIT_LABEL}</strong> (${PROB_LABEL} <strong>${probPct} %</strong>)</span>
-                        <span><strong>${pubInfo}</strong></span>
+                        <div class="readout-m-row1">
+                            <span class="readout-m-time">${dayPrefix}${timeRange}</span>
+                            <span class="readout-m-right">
+                                <span class="readout-m-price">${APPROX_PREFIX}${formatNum(xObj.br.spotCents, 2)} ${UNIT_LABEL}</span>
+                                ${resetBtnHtml}
+                            </span>
+                        </div>
+                        <div class="readout-m-row2">${RANGE_LABEL}: <strong>${formatNum(xObj.br.minSpotCents, 2)}–${formatNum(xObj.br.maxSpotCents, 2)} ${UNIT_SHORT}</strong> (${probPct} %) · ${pubShort}</div>
                     `;
                 } else {
                     readoutEl.innerHTML = `
-                        <span><strong>${dayPrefix}${timeRange}</strong></span>
-                        <span><strong>${formatNum(xObj.br.spotCents, 2)} ${UNIT_LABEL}</strong> (${FIXED_LABEL})</span>
-                        <span>${PRED_WAS_LABEL}: <strong>${formatNum(xObj.br.predictedSpotCents, 2)} ${UNIT_LABEL}</strong> (${formatNum(xObj.br.predictedMinSpotCents, 2)}–${formatNum(xObj.br.predictedMaxSpotCents, 2)} ${UNIT_SHORT})</span>
+                        <div class="readout-m-row1">
+                            <span class="readout-m-time">${dayPrefix}${timeRange}</span>
+                            <span class="readout-m-right">
+                                <span class="readout-m-price">${formatNum(xObj.br.spotCents, 2)} ${UNIT_LABEL}</span>
+                                ${resetBtnHtml}
+                            </span>
+                        </div>
+                        <div class="readout-m-row2">${FIXED_LABEL} · ${PRED_SHORT_LABEL}: <strong>${formatNum(xObj.br.predictedSpotCents, 2)} ${UNIT_SHORT}</strong> (${formatNum(xObj.br.predictedMinSpotCents, 2)}–${formatNum(xObj.br.predictedMaxSpotCents, 2)})</div>
                     `;
                 }
+                const resetBtn = readoutEl.querySelector('.readout-m-reset');
+                if (resetBtn) {
+                    resetBtn.onclick = function (ev) {
+                        ev.stopPropagation();
+                        clearChartSlotHighlight();
+                        updateReadout(defaultReadoutItem, false);
+                    };
+                }
+                return;
+            }
+
+            readoutEl.classList.remove('is-pinned');
+            readoutEl.dataset.pinnedEpoch = '';
+            if (xObj.slot.isForecast) {
+                const pubInfo = getPricePublishTimeText(xObj.slot.dateKey, false);
+                readoutEl.innerHTML = `
+                    <span><strong>${dayPrefix}${timeRange}</strong></span>
+                    <span><strong>${APPROX_PREFIX}${formatNum(xObj.br.spotCents, 2)} ${UNIT_LABEL}</strong></span>
+                    <span>${RANGE_LABEL}: <strong style="text-decoration:underline;">${formatNum(xObj.br.minSpotCents, 2)} – ${formatNum(xObj.br.maxSpotCents, 2)} ${UNIT_LABEL}</strong> (${PROB_LABEL} <strong>${probPct} %</strong>)</span>
+                    <span><strong>${pubInfo}</strong></span>
+                `;
+            } else {
+                readoutEl.innerHTML = `
+                    <span><strong>${dayPrefix}${timeRange}</strong></span>
+                    <span><strong>${formatNum(xObj.br.spotCents, 2)} ${UNIT_LABEL}</strong> (${FIXED_LABEL})</span>
+                    <span>${PRED_WAS_LABEL}: <strong>${formatNum(xObj.br.predictedSpotCents, 2)} ${UNIT_LABEL}</strong> (${formatNum(xObj.br.predictedMinSpotCents, 2)}–${formatNum(xObj.br.predictedMaxSpotCents, 2)} ${UNIT_SHORT})</span>
+                `;
             }
         }
 
         function showFloatingTooltipAt(xObj, clientX, clientY) {
             if (!floatingTooltip || !xObj) return;
-            const isMobileView = isMobileViewport();
+            if (isMobileViewport()) {
+                // Mobiilissa tunnin tiedot näytetään suoraan kaavion yläpuolisessa kiinteässä lukemapaneelissa,
+                // jotta kelluva laatikko ei koskaan peitä kaavion hintahuippuja
+                floatingTooltip.classList.remove('visible');
+                floatingTooltip.dataset.activeEpoch = '';
+                return;
+            }
             const dayPrefix = xObj.slot.dayShort ? `${xObj.slot.dayShort} ` : '';
             const timeRange = `${String(xObj.slot.hour).padStart(2, '0')}:00–${String((xObj.slot.hour + 1) % 24).padStart(2, '0')}:00`;
             const probPct = xObj.slot.probabilityPct !== undefined ? xObj.slot.probabilityPct : (xObj.slot.isForecast ? 82 : 100);
-
-            if (isMobileView) {
-                const pubShort = getPricePublishTimeText(xObj.slot.dateKey, true);
-                if (xObj.slot.isForecast) {
-                    floatingTooltip.innerHTML = `
-                        <div class="mobile-tt-row1">
-                            <span class="mobile-tt-time">${dayPrefix}${timeRange}</span>
-                            <span class="mobile-tt-price">${APPROX_PREFIX}${formatNum(xObj.br.spotCents, 2)} ${UNIT_LABEL}</span>
-                            <span class="mobile-tt-close">×</span>
-                        </div>
-                        <div class="mobile-tt-row2">${RANGE_LABEL}: <strong>${formatNum(xObj.br.minSpotCents, 2)}–${formatNum(xObj.br.maxSpotCents, 2)} ${UNIT_SHORT}</strong> (${probPct} %) · ${pubShort}</div>
-                    `;
-                } else {
-                    floatingTooltip.innerHTML = `
-                        <div class="mobile-tt-row1">
-                            <span class="mobile-tt-time">${dayPrefix}${timeRange}</span>
-                            <span class="mobile-tt-price">${formatNum(xObj.br.spotCents, 2)} ${UNIT_LABEL}</span>
-                            <span class="mobile-tt-close">×</span>
-                        </div>
-                        <div class="mobile-tt-row2">${PRED_SHORT_LABEL}: <strong>${formatNum(xObj.br.predictedSpotCents, 2)} ${UNIT_SHORT}</strong> (${formatNum(xObj.br.predictedMinSpotCents, 2)}–${formatNum(xObj.br.predictedMaxSpotCents, 2)}) · 100 %</div>
-                    `;
-                }
-                floatingTooltip.dataset.activeEpoch = String(xObj.slot.epochMs);
-                floatingTooltip.classList.add('visible');
-                const chartRect = chartContainer.getBoundingClientRect();
-                const vw = getViewportWidth() || 360;
-                const boxW = floatingTooltip.offsetWidth || Math.min(300, vw - 48);
-                const leftPx = Math.max(8, Math.min(vw - boxW - 8, Math.round(chartRect.left + (chartRect.width - boxW) / 2)));
-                const topPx = Math.max(6, Math.round(chartRect.top + 6));
-                floatingTooltip.style.left = `${leftPx}px`;
-                floatingTooltip.style.top = `${topPx}px`;
-                return;
-            }
 
             if (xObj.slot.isForecast) {
                 const pubInfo = getPricePublishTimeText(xObj.slot.dateKey, false);
@@ -3092,7 +3159,7 @@
             const slotHl = chartContainer.querySelector(`.svg-slot-hl[data-hl-idx="${idx}"]`);
             if (slotHl) {
                 slotHl.classList.add('is-active');
-                slotHl.setAttribute('fill-opacity', '0.24');
+                slotHl.setAttribute('fill-opacity', '0.22');
                 slotHl.setAttribute('stroke-width', '1');
             }
             const barEl = chartContainer.querySelector(`.svg-bar-rect[data-bar-idx="${idx}"]`);
@@ -3107,6 +3174,7 @@
         }
 
         if (floatingTooltip) {
+            floatingTooltip.classList.remove('visible');
             floatingTooltip.onclick = function () {
                 this.classList.remove('visible');
                 this.dataset.activeEpoch = '';
@@ -3116,7 +3184,7 @@
 
         const nowHourMs = Math.floor(Date.now() / 3600000) * 3600000;
         const defaultReadoutItem = activeItems.find(x => x.slot.epochMs === nowHourMs) || activeItems[0];
-        updateReadout(defaultReadoutItem);
+        updateReadout(defaultReadoutItem, false);
 
         let hoverDwellTimer = null;
         let lastMouseX = 0;
@@ -3129,7 +3197,7 @@
                 const item = activeItems[i];
                 if (!item) return;
 
-                updateReadout(item);
+                updateReadout(item, false);
                 highlightChartSlot(i);
 
                 if (evt && typeof evt.clientX === 'number') {
@@ -3168,17 +3236,22 @@
                 }
                 const i = parseInt(this.getAttribute('data-slot-idx'), 10);
                 const item = activeItems[i];
-                if (item) {
-                    updateReadout(item);
-                    if (isMobileViewport() && floatingTooltip && floatingTooltip.classList.contains('visible') && floatingTooltip.dataset.activeEpoch === String(item.slot.epochMs)) {
-                        floatingTooltip.classList.remove('visible');
-                        floatingTooltip.dataset.activeEpoch = '';
+                if (!item) return;
+
+                if (isMobileViewport()) {
+                    if (readoutEl && readoutEl.dataset.pinnedEpoch === String(item.slot.epochMs)) {
                         clearChartSlotHighlight();
+                        updateReadout(defaultReadoutItem, false);
                         return;
                     }
                     highlightChartSlot(i);
-                    showFloatingTooltipAt(item, evt.clientX || lastMouseX, evt.clientY || lastMouseY);
+                    updateReadout(item, true);
+                    return;
                 }
+
+                updateReadout(item, false);
+                highlightChartSlot(i);
+                showFloatingTooltipAt(item, evt.clientX || lastMouseX, evt.clientY || lastMouseY);
             });
         });
 

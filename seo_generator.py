@@ -387,7 +387,7 @@ def build_index_page() -> str:
     <link rel="icon" type="image/x-icon" href="favicon.ico">
     <link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon.png">
     <link rel="manifest" href="site.webmanifest">
-    <link rel="stylesheet" href="styles.css?v=41">
+    <link rel="stylesheet" href="styles.css?v=42">
     <script type="application/ld+json">
 {json.dumps(full_schema, ensure_ascii=False, indent=2)}
     </script>
@@ -449,7 +449,7 @@ def build_index_page() -> str:
     <script src="dso_data.js"></script>
     <script src="ml_weights.js"></script>
     <script src="nordpool_models.js"></script>
-    <script src="app.js?v=41"></script>
+    <script src="app.js?v=42"></script>
 </body>
 </html>
 """
@@ -491,7 +491,7 @@ def build_dso_page(comp: dict) -> str:
     <link rel="icon" type="image/x-icon" href="../favicon.ico">
     <link rel="apple-touch-icon" sizes="180x180" href="../apple-touch-icon.png">
     <link rel="manifest" href="../site.webmanifest">
-    <link rel="stylesheet" href="../styles.css?v=41">
+    <link rel="stylesheet" href="../styles.css?v=42">
 </head>
 <body data-preset-dso="{comp['id']}" data-preset-postal="{sample_postal}" data-preset-city="{html.escape(sample_city)}">
 {render_header("../")}
@@ -573,7 +573,7 @@ def build_dso_page(comp: dict) -> str:
     <script src="../dso_data.js"></script>
     <script src="../ml_weights.js"></script>
     <script src="../nordpool_models.js"></script>
-    <script src="../app.js?v=41"></script>
+    <script src="../app.js?v=42"></script>
 </body>
 </html>
 """
@@ -611,7 +611,7 @@ def build_municipality_page(m: dict) -> str:
     <link rel="icon" type="image/x-icon" href="../favicon.ico">
     <link rel="apple-touch-icon" sizes="180x180" href="../apple-touch-icon.png">
     <link rel="manifest" href="../site.webmanifest">
-    <link rel="stylesheet" href="../styles.css?v=41">
+    <link rel="stylesheet" href="../styles.css?v=42">
 </head>
 <body data-preset-dso="{comp['id']}" data-preset-postal="{m['postal']}" data-preset-city="{html.escape(m['name'])}">
 {render_header("../")}
@@ -624,7 +624,7 @@ def build_municipality_page(m: dict) -> str:
     <script src="../dso_data.js"></script>
     <script src="../ml_weights.js"></script>
     <script src="../nordpool_models.js"></script>
-    <script src="../app.js?v=41"></script>
+    <script src="../app.js?v=42"></script>
 </body>
 </html>
 """
@@ -645,7 +645,7 @@ def build_directory_page(title: str, lead: str, cards_html: str, canonical_path:
     <link rel="icon" type="image/x-icon" href="../favicon.ico">
     <link rel="apple-touch-icon" sizes="180x180" href="../apple-touch-icon.png">
     <link rel="manifest" href="../site.webmanifest">
-    <link rel="stylesheet" href="../styles.css?v=41">
+    <link rel="stylesheet" href="../styles.css?v=42">
 </head>
 <body>
 {render_header("../")}
@@ -683,7 +683,7 @@ def build_guide_page(slug: str, title: str, meta_desc: str, body_html: str) -> s
     <link rel="icon" type="image/x-icon" href="../favicon.ico">
     <link rel="apple-touch-icon" sizes="180x180" href="../apple-touch-icon.png">
     <link rel="manifest" href="../site.webmanifest">
-    <link rel="stylesheet" href="../styles.css?v=41">
+    <link rel="stylesheet" href="../styles.css?v=42">
 </head>
 <body>
 {render_header("../")}

@@ -1946,3 +1946,47 @@ a:hover {
         font-size: 10.5px;
     }
 }
+
+
+/* Aluevaihdon latausilmoitus kaavion paikalla */
+.chart-loading-state {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    width: 100%;
+    background: #ffffff;
+    font-family: var(--mono);
+    font-weight: 700;
+    color: var(--ink-secondary);
+}
+
+.chart-loading-bar {
+    width: min(220px, 60%);
+    height: 6px;
+    background: #e2e4dc;
+    border: 1px solid var(--ink);
+    position: relative;
+    overflow: hidden;
+}
+
+.chart-loading-bar::after {
+    content: "";
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    width: 40%;
+    background: var(--signal-orange);
+    animation: chart-loading-slide 0.9s linear infinite;
+}
+
+@keyframes chart-loading-slide {
+    from { left: -40%; }
+    to { left: 100%; }
+}
+
+.svg-chart-container.is-refreshing {
+    opacity: 0.6;
+    transition: opacity 0.15s ease;
+}

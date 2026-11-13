@@ -1222,6 +1222,55 @@
         return fromZoneLogVat0(zp, shift);
     }
 
+    // Verkkopyyntö aikarajalla: yksittäinen hidas ulkoinen rajapinta ei saa jumittaa koko aluevaihtoa
+    function fetchWithTimeout(url, options, timeoutMs) {
+        const ctrl = typeof AbortController !== 'undefined' ? new AbortController() : null;
+        const timer = ctrl ? setTimeout(() => ctrl.abort(), timeoutMs) : null;
+        const opts = Object.assign({}, options || {}, ctrl ? { signal: ctrl.signal } : {});
+        return fetch(url, opts).then(
+            resp => { if (timer) clearTimeout(timer); return resp; },
+            () => { if (timer) clearTimeout(timer); return null; }
+        );
+    }
+
+    // Säädata muuttuu hitaasti: välimuistissa 30 min per alue, jolloin alueen vaihto takaisin on välitön
+    const weatherMemCache = new Map();
+    const WEATHER_TTL_MS = 30 * 60 * 1000;
+    function fetchWeatherCached(cacheKey, url, timeoutMs) {
+        const hit = weatherMemCache.get(cacheKey);
+        if (hit && Date.now() - hit.t < WEATHER_TTL_MS) {
+            return Promise.resolve(new Response(hit.text, { status: 200, headers: { 'Content-Type': 'application/json' } }));
+        }
+        return fetchWithTimeout(url, undefined, timeoutMs).then(async resp => {
+            if (resp && resp.ok) {
+                try {
+                    const text = await resp.clone().text();
+                    weatherMemCache.set(cacheKey, { t: Date.now(), text });
+                } catch (_) {}
+            }
+            return resp;
+        });
+    }
+
+    // Aluekohtainen markkinadata lyhyessä muistivälimuistissa (5 min)
+    const marketMemCache = new Map();
+    const MARKET_TTL_MS = 5 * 60 * 1000;
+    function fetchMarketCached(cacheKey, url, timeoutMs) {
+        const hit = marketMemCache.get(cacheKey);
+        if (hit && Date.now() - hit.t < MARKET_TTL_MS) {
+            return Promise.resolve(new Response(hit.text, { status: 200, headers: { 'Content-Type': 'application/json' } }));
+        }
+        return fetchWithTimeout(url, { cache: 'no-store' }, timeoutMs).then(async resp => {
+            if (resp && resp.ok) {
+                try {
+                    const text = await resp.clone().text();
+                    marketMemCache.set(cacheKey, { t: Date.now(), text });
+                } catch (_) {}
+            }
+            return resp;
+        });
+    }
+
     async function fetchRegionalZoneWithOnlineML(zoneCode) {
         const now = new Date();
         const zcfg = getActiveZoneConfig();
@@ -1243,28 +1292,28 @@
         const lons = coords.map(c => c.lon).join(',');
         const weatherUrl = `https://api.open-meteo.com/v1/forecast?latitude=${lats}&longitude=${lons}&hourly=temperature_2m,wind_speed_100m,shortwave_radiation,surface_pressure&wind_speed_unit=ms&past_days=14&forecast_days=8&timezone=UTC`;
 
-        const apiUrl = `/api/v1/prices?zone=${encodeURIComponent(zoneCode)}&vat=0&currency=eur_cents&_t=${minuteCacheBust}`;
+        const apiUrl = `/api/v1/prices?zone=${encodeURIComponent(zoneCode)}&vat=0&currency=eur_cents&_t=${Math.floor(Date.now() / 300000)}`;
 
         let directMarketPromise = Promise.resolve(null);
         if (NORDIC_BALTIC_SPOT_ZONES.has(zoneCode)) {
-            directMarketPromise = fetch(`https://api.spot-hinta.fi/TodayAndDayForward?region=${encodeURIComponent(zoneCode)}&_t=${minuteCacheBust}`, { cache: 'no-store' }).catch(() => null);
+            directMarketPromise = fetchMarketCached(`sh_${zoneCode}`, `https://api.spot-hinta.fi/TodayAndDayForward?region=${encodeURIComponent(zoneCode)}&_t=${minuteCacheBust}`, 5000);
         } else if (zoneCode === 'DE-LU' || zoneCode === 'AT') {
             const host = zoneCode === 'AT' ? 'api.awattar.at' : 'api.awattar.de';
             const sMs = Date.now() - 8 * 86400000;
             const eMs = Date.now() + 2 * 86400000;
-            directMarketPromise = fetch(`https://${host}/v1/marketdata?start=${sMs}&end=${eMs}`, { cache: 'no-store' }).catch(() => null);
+            directMarketPromise = fetchMarketCached(`aw_${zoneCode}`, `https://${host}/v1/marketdata?start=${sMs}&end=${eMs}`, 5000);
         } else if (zoneCode === 'ES' || zoneCode === 'PT') {
             const sIso = new Date(Date.now() - 3 * 86400000).toISOString().slice(0, 16);
             const eIso = new Date(Date.now() + 2 * 86400000).toISOString().slice(0, 16);
-            directMarketPromise = fetch(`https://apidatos.ree.es/es/datos/mercados/precios-mercados-tiempo-real?start_date=${sIso}&end_date=${eIso}&time_trunc=hour`, { cache: 'no-store' }).catch(() => null);
+            directMarketPromise = fetchMarketCached(`ree_${zoneCode}`, `https://apidatos.ree.es/es/datos/mercados/precios-mercados-tiempo-real?start_date=${sIso}&end_date=${eIso}&time_trunc=hour`, 5000);
         } else if (zoneCode === 'GB') {
-            directMarketPromise = fetch('https://api.octopus.energy/v1/products/AGILE-24-10-01/electricity-tariffs/E-1R-AGILE-24-10-01-C/standard-unit-rates/?page_size=240', { cache: 'no-store' }).catch(() => null);
+            directMarketPromise = fetchMarketCached('octopus_gb', 'https://api.octopus.energy/v1/products/AGILE-24-10-01/electricity-tariffs/E-1R-AGILE-24-10-01-C/standard-unit-rates/?page_size=240', 5000);
         }
 
         const [apiResp, directResp, weatherResp] = await Promise.all([
-            fetch(apiUrl, { cache: 'no-store' }).catch(() => null),
+            fetchMarketCached(`api_${zoneCode}`, apiUrl, 7000),
             directMarketPromise,
-            fetch(weatherUrl).catch(() => null)
+            fetchWeatherCached(`wx_${zoneCode}`, weatherUrl, 6000)
         ]);
 
         const officialVat0Map = new Map();
@@ -2320,24 +2369,51 @@
         renderAll();
     }
 
+    let loadSeq = 0;
     async function loadSpotAndForecastData() {
-        const fastCacheKey = `${storagePrefix}fast_z_${state.activeZone || 'FI'}_v5`;
+        const mySeq = ++loadSeq;
+        const zoneAtStart = state.activeZone || 'FI';
+        const fastCacheKey = `${storagePrefix}fast_z_${zoneAtStart}_v5`;
+        let renderedFromCache = false;
         try {
             const rawFast = localStorage.getItem(fastCacheKey);
             if (rawFast) {
                 const cachedData = JSON.parse(rawFast);
                 if (cachedData && Array.isArray(cachedData.series) && cachedData.series.length > 24) {
                     applySeriesDataAndRender(cachedData);
+                    renderedFromCache = true;
                 }
             }
         } catch (_) {}
 
-        const data = await fetchClientSideWithOnlineML();
-        data.rolling30dMeanInclVat = state.rolling30dMeanInclVat;
+        const chartBoxEl = document.getElementById('price-chart');
+        if (!renderedFromCache) {
+            // Ei välimuistia: tyhjennetään edellisen alueen kaavio heti ja näytetään latausilmoitus
+            if (chartBoxEl) {
+                const h = Math.max(255, chartBoxEl.getBoundingClientRect().height || 0);
+                chartBoxEl.innerHTML = `<div class="chart-loading-state" style="min-height:${Math.round(h)}px;"><span class="chart-loading-bar"></span><span class="chart-loading-text">${zoneAtStart} · ${'\u2026'}</span></div>`;
+            }
+            const stripEl = document.getElementById('first-screen-summary-strip');
+            if (stripEl) stripEl.style.opacity = '0.45';
+        } else if (chartBoxEl) {
+            chartBoxEl.classList.add('is-refreshing');
+        }
+
         try {
-            localStorage.setItem(fastCacheKey, JSON.stringify(data));
-        } catch (_) {}
-        applySeriesDataAndRender(data);
+            const data = await fetchClientSideWithOnlineML();
+            if (mySeq !== loadSeq || (state.activeZone || 'FI') !== zoneAtStart) return;
+            data.rolling30dMeanInclVat = state.rolling30dMeanInclVat;
+            try {
+                localStorage.setItem(fastCacheKey, JSON.stringify(data));
+            } catch (_) {}
+            applySeriesDataAndRender(data);
+        } finally {
+            if (mySeq === loadSeq) {
+                if (chartBoxEl) chartBoxEl.classList.remove('is-refreshing');
+                const stripEl2 = document.getElementById('first-screen-summary-strip');
+                if (stripEl2) stripEl2.style.opacity = '';
+            }
+        }
     }
 
     function renderTelemetryAndDsoPanel() {

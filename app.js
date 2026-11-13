@@ -2698,7 +2698,7 @@
     }
 
     // Tarkka vektoripohjainen SVG-mittarikaavio (Pelkkä pörssisähkön spot-hinta + Todennäköinen vaihteluväli)
-    function buildSvgChart(enrichedItems, isWeekView) {
+    function buildSvgChart(enrichedItems, isWeekView, scaleItems) {
         const isMobile = isMobileViewport();
         const chartBox = typeof document !== 'undefined' ? document.getElementById('price-chart') : null;
         let innerBoxW = 0;
@@ -2719,8 +2719,10 @@
             : Math.max(320, Math.min(520, Math.round(vh - 295)));
 
         const n = Math.max(1, enrichedItems.length);
-        const highVals = enrichedItems.map(x => x.slot.isForecast ? x.br.maxSpotCents : x.br.spotCents);
-        const lowVals = enrichedItems.map(x => x.slot.isForecast ? x.br.minSpotCents : x.br.spotCents);
+        // Y-akselin asteikko lasketaan koko 7 vrk:n datasta, jotta kaikki päivät näkyvät samassa mittakaavassa
+        const scaleSrc = (Array.isArray(scaleItems) && scaleItems.length > 0) ? scaleItems : enrichedItems;
+        const highVals = scaleSrc.map(x => x.slot.isForecast ? x.br.maxSpotCents : x.br.spotCents);
+        const lowVals = scaleSrc.map(x => x.slot.isForecast ? x.br.minSpotCents : x.br.spotCents);
         const rawPeak = Math.max(...highVals, 0);
         const rawLow = Math.min(...lowVals, 0);
         const targetTop = Math.max(4 * FX_SCALE, rawPeak * 1.08);
@@ -3037,7 +3039,8 @@
             activeItems = dayObj.items.map(s => ({ slot: { ...s, dayShort: dayObj.shortLabel, dayFullLabel: dayObj.label }, br: calculateHourBreakdown(s) }));
         }
 
-        chartContainer.innerHTML = buildSvgChart(activeItems, isWeekView);
+        const allWeekItems = state.daysList.flatMap(d => d.items.map(it => ({ slot: it, br: calculateHourBreakdown(it) })));
+        chartContainer.innerHTML = buildSvgChart(activeItems, isWeekView, allWeekItems);
 
         // Täytetään kaavion alapuolella oleva koosterivi: Kuluvan tunnin hinta, Päivän halvin hinta ja Päivän kallein hinta
         const summaryStripEl = document.getElementById('first-screen-summary-strip');

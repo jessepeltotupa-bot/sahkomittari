@@ -5807,14 +5807,25 @@
       "predicted": 2.401,
       "actual": 5.402,
       "error": 3.001
-    }
-  ],
-  "pendingPredictions": {
-    "1794610800000": {
+    },
+    {
       "epochMs": 1794610800000,
       "dateKey": "2026-11-14",
       "hour": 1,
-      "predicted": 3.466
+      "isFreeDay": true,
+      "windMw": 5103,
+      "tempC": 1.8,
+      "predicted": 3.466,
+      "actual": 2.887,
+      "error": -0.579
+    }
+  ],
+  "pendingPredictions": {
+    "1794697200000": {
+      "epochMs": 1794697200000,
+      "dateKey": "2026-11-15",
+      "hour": 1,
+      "predicted": 1.109
     }
   },
   "weekdayResidualEma": [
@@ -5845,7 +5856,7 @@
   ],
   "weekendResidualEma": [
     1.183,
-    0.894,
+    0.687,
     0.966,
     0.895,
     0.731,
@@ -5883,6 +5894,6 @@
     "0_1": 3.88,
     "1_1": 0.43,
     "2_1": -0.615,
-    "3_1": -0.191
+    "3_1": -0.238
   }
 }

@@ -264,7 +264,7 @@ def build_country_page(cid: str, loc: dict) -> str:
     <script src="/dso_data.js"></script>
     <script src="/ml_weights.js"></script>
     <script src="/nordpool_models.js"></script>
-    <script src="/app.js?v=44"></script>
+    <script src="/app.js?v=45"></script>
 </body>
 </html>
 """

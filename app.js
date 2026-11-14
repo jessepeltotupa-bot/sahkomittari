@@ -3956,10 +3956,21 @@
         if (langSelect) {
             langSelect.addEventListener('change', function () {
                 if (this.value) {
+                    try { localStorage.setItem('ps_lang_pref', this.value); } catch (_) {}
                     window.location.href = this.value;
                 }
             });
         }
+
+        // Muistetaan myös alatunnisteen kielilinkistä tehty valinta, jottei automaattinen kielivalinta ylikirjoita sitä
+        document.addEventListener('click', function (ev) {
+            const a = ev.target && ev.target.closest ? ev.target.closest('.site-footer a[href^="/"]') : null;
+            if (!a) return;
+            const href = a.getAttribute('href') || '';
+            if (/^\/([a-z]{2}\/)?$/.test(href)) {
+                try { localStorage.setItem('ps_lang_pref', href); } catch (_) {}
+            }
+        });
 
         document.querySelectorAll('[data-copy-target]').forEach(btn => {
             btn.addEventListener('click', function () {

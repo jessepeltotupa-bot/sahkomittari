@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Spotpuls — Spotové ceny elektřiny po hodinách (OTE CZ), 7denní předpověď a kalkulačka distribuce (ČEZ, EG.D, PREdistribuce) | spotpuls.app</title>
-    <meta name="description" content="Zadejte PSČ (např. 11000 Praha, 60200 Brno, 70200 Ostrava) pro výběr distributora (PREdistribuce, ČEZ Distribuce, EG.D).">
+    <meta name="description" content="Spotové ceny elektřiny nyní, dnes a zítra a samoučící se 7denní předpověď pro Česko (OTE). Kalkulačka distribuce podle PSČ a bezplatné otevřené API.">
     <meta name="geo.region" content="CZ">
     <meta name="content-language" content="cs-CZ">
     <link rel="canonical" href="https://spotpuls.app/cz/" />
@@ -80,7 +80,7 @@
       "name": "Spotpuls",
       "alternateName": "spotpuls.app",
       "url": "https://spotpuls.app/cz/",
-      "description": "Spotové ceny elektřiny po hodinách (OTE CZ), 7denní předpověď a kalkulačka distribuce (ČEZ, EG.D, PREdistribuce)",
+      "description": "Spotové ceny elektřiny nyní, dnes a zítra a samoučící se 7denní předpověď pro Česko (OTE). Kalkulačka distribuce podle PSČ a bezplatné otevřené API.",
       "applicationCategory": "UtilitiesApplication",
       "operatingSystem": "Web",
       "inLanguage": "cs-CZ",
@@ -99,8 +99,8 @@
     {
       "@type": "Dataset",
       "@id": "https://spotpuls.app/cz/#dataset",
-      "name": "Spotpuls Česko (CZ) Day-Ahead Spot Electricity Prices & 7-Day Hourly Forecast",
-      "description": "Získejte hodinové spotové ceny OTE CZ a 7denní předpověď ve formátu JSON nebo CSV pro Home Assistant a Loxone.",
+      "name": "Spotpuls — Spotové ceny elektřiny po hodinách (OTE CZ), 7denní předpověď a kalkulačka distribuce (ČEZ, EG.D, PREdistribuce)",
+      "description": "Spotové ceny elektřiny nyní, dnes a zítra a samoučící se 7denní předpověď pro Česko (OTE). Kalkulačka distribuce podle PSČ a bezplatné otevřené API.",
       "url": "https://spotpuls.app/cz/",
       "inLanguage": "cs-CZ",
       "isAccessibleForFree": true,
@@ -132,7 +132,7 @@
       "@type": "WebAPI",
       "@id": "https://spotpuls.app/api/v1/prices#webapi",
       "name": "Spotpuls Open Electricity Spot & 7-Day Forecast API",
-      "description": "Free CORS-enabled REST API for European day-ahead electricity spot prices and self-learning 7-day regional hourly forecasts across 40 bidding zones.",
+      "description": "Spotové ceny elektřiny nyní, dnes a zítra a samoučící se 7denní předpověď pro Česko (OTE). Kalkulačka distribuce podle PSČ a bezplatné otevřené API.",
       "url": "https://spotpuls.app/api/v1/prices",
       "documentation": "https://spotpuls.app/api-docs/",
       "termsOfService": "https://spotpuls.app/api-docs/",
@@ -140,7 +140,8 @@
         "@type": "Organization",
         "name": "Spotpuls",
         "url": "https://spotpuls.app"
-      }
+      },
+      "inLanguage": "en"
     }
   ]
 }
@@ -153,7 +154,7 @@
     <meta property="og:type" content="website">
     <meta property="og:site_name" content="Spotpuls">
     <meta property="og:title" content="Spotpuls — Spotové ceny elektřiny po hodinách (OTE CZ), 7denní předpověď a kalkulačka distribuce (ČEZ, EG.D, PREdistribuce) | spotpuls.app">
-    <meta property="og:description" content="Zadejte PSČ (např. 11000 Praha, 60200 Brno, 70200 Ostrava) pro výběr distributora (PREdistribuce, ČEZ Distribuce, EG.D).">
+    <meta property="og:description" content="Spotové ceny elektřiny nyní, dnes a zítra a samoučící se 7denní předpověď pro Česko (OTE). Kalkulačka distribuce podle PSČ a bezplatné otevřené API.">
     <meta property="og:url" content="https://spotpuls.app/cz/">
     <meta property="og:image" content="https://spotpuls.app/og-image.png">
     <meta property="og:image:width" content="1200">
@@ -162,7 +163,7 @@
     <meta property="og:locale" content="cs_CZ">
     <meta name="twitter:card" content="summary_large_image">
     <meta name="twitter:title" content="Spotpuls — Spotové ceny elektřiny po hodinách (OTE CZ), 7denní předpověď a kalkulačka distribuce (ČEZ, EG.D, PREdistribuce) | spotpuls.app">
-    <meta name="twitter:description" content="Zadejte PSČ (např. 11000 Praha, 60200 Brno, 70200 Ostrava) pro výběr distributora (PREdistribuce, ČEZ Distribuce, EG.D).">
+    <meta name="twitter:description" content="Spotové ceny elektřiny nyní, dnes a zítra a samoučící se 7denní předpověď pro Česko (OTE). Kalkulačka distribuce podle PSČ a bezplatné otevřené API.">
     <meta name="twitter:image" content="https://spotpuls.app/og-image.png">
     <link rel="alternate" type="text/markdown" href="https://spotpuls.app/llms.txt" title="Spotpuls LLM &amp; AI Agent Reference">
     <link rel="alternate" type="text/plain" href="https://spotpuls.app/llms-full.txt" title="Spotpuls Full Machine-Readable Knowledge Base">
@@ -423,6 +424,6 @@
     <script src="/dso_data.js"></script>
     <script src="/ml_weights.js"></script>
     <script src="/nordpool_models.js"></script>
-    <script src="/app.js?v=44"></script>
+    <script src="/app.js?v=45"></script>
 </body>
 </html>

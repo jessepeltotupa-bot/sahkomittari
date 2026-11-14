@@ -3,8 +3,40 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script>
+    /* Kielen automaattivalinta: ohjaa vain etusivun ensikäynnillä käyttäjän selainkielen mukaan (ei hakukonebotteja, ei käyttäjän aiemmin valitsemaa kieltä) */
+    (function () {
+        try {
+            var p = location.pathname;
+            if (p !== '/' && p !== '/index.html') return;
+            if (navigator.webdriver || /bot|crawl|spider|slurp|lighthouse|headless|pagespeed|facebookexternalhit|preview|inspect/i.test(navigator.userAgent || '')) return;
+            var pref = null;
+            try { pref = localStorage.getItem('ps_lang_pref'); } catch (e) {}
+            if (pref) {
+                if (pref !== '/' && pref.charAt(0) === '/' && pref.length < 8) location.replace(pref + location.search + location.hash);
+                return;
+            }
+            var MAP = {
+                'fi': '/', 'en': '/en/', 'en-gb': '/gb/', 'en-ie': '/ie/', 'sv': '/se/', 'nb': '/no/', 'nn': '/no/', 'no': '/no/',
+                'da': '/dk/', 'et': '/ee/', 'lv': '/lv/', 'lt': '/lt/', 'de': '/de/', 'de-at': '/at/', 'de-ch': '/ch/', 'de-li': '/ch/',
+                'nl': '/nl/', 'nl-be': '/be/', 'fr-be': '/be/', 'fr': '/fr/', 'es': '/es/', 'pt': '/pt/', 'it': '/it/', 'pl': '/pl/',
+                'cs': '/cz/', 'sk': '/sk/', 'hu': '/hu/', 'ro': '/ro/', 'bg': '/bg/', 'sl': '/si/', 'hr': '/hr/', 'el': '/gr/'
+            };
+            var langs = (navigator.languages && navigator.languages.length) ? navigator.languages : [navigator.language || 'en'];
+            var target = null;
+            for (var i = 0; i < langs.length && target === null; i++) {
+                var l = String(langs[i] || '').toLowerCase();
+                var t = MAP[l];
+                if (t === undefined) t = MAP[l.split('-')[0]];
+                if (t !== undefined) target = t;
+            }
+            if (target === null) target = '/en/';
+            if (target !== '/') location.replace(target + location.search + location.hash);
+        } catch (e) {}
+    })();
+    </script>
     <title>Spotpuls — Pörssisähkö nyt, 7 vrk Ennuste, Siirtohintalaskuri &amp; Avoin API | spotpuls.app</title>
-    <meta name="description" content="Spotpuls (spotpuls.app): Tarkista pörssisähkön spot-hinta tänään, huomenna ja itseoppiva 7 vrk hintaennuste 40 Euroopan hinta-alueella, paikallinen siirtohinta postinumerolla sekä ilmainen avoin REST API.">
+    <meta name="description" content="Pörssisähkön hinta nyt, tänään ja huomenna sekä itseoppiva 7 vrk ennuste 40 Euroopan hinta-alueelle. Siirtohintalaskuri postinumerolla ja ilmainen avoin API.">
     <meta name="geo.region" content="FI">
     <meta name="content-language" content="fi-FI">
     <link rel="canonical" href="https://spotpuls.app/" />
@@ -80,7 +112,7 @@
       "name": "Spotpuls",
       "alternateName": "spotpuls.app",
       "url": "https://spotpuls.app/",
-      "description": "Pörssisähkön spot-hinta, alueellinen 7 vrk ennuste ja siirtohinta postinumerolla",
+      "description": "Pörssisähkön hinta nyt, tänään ja huomenna sekä itseoppiva 7 vrk ennuste 40 Euroopan hinta-alueelle. Siirtohintalaskuri postinumerolla ja ilmainen avoin API.",
       "applicationCategory": "UtilitiesApplication",
       "operatingSystem": "Web",
       "inLanguage": "fi-FI",
@@ -99,8 +131,8 @@
     {
       "@type": "Dataset",
       "@id": "https://spotpuls.app/#dataset",
-      "name": "Spotpuls Suomi (FI) Day-Ahead Spot Electricity Prices & 7-Day Hourly Forecast",
-      "description": "Hae reaaliaikaiset tuntihinnat ja oppiva 7 vrk aluekohtainen ennuste suoraan kotiautomaatioon (Home Assistant), sovelluksiin tai taulukkolaskentaan maksuttomalla JSON/CSV-rajapinnalla.",
+      "name": "Spotpuls — Pörssisähkö nyt, 7 vrk Ennuste, Siirtohintalaskuri & Avoin API",
+      "description": "Pörssisähkön hinta nyt, tänään ja huomenna sekä itseoppiva 7 vrk ennuste 40 Euroopan hinta-alueelle. Siirtohintalaskuri postinumerolla ja ilmainen avoin API.",
       "url": "https://spotpuls.app/",
       "inLanguage": "fi-FI",
       "isAccessibleForFree": true,
@@ -132,7 +164,7 @@
       "@type": "WebAPI",
       "@id": "https://spotpuls.app/api/v1/prices#webapi",
       "name": "Spotpuls Open Electricity Spot & 7-Day Forecast API",
-      "description": "Free CORS-enabled REST API for European day-ahead electricity spot prices and self-learning 7-day regional hourly forecasts across 40 bidding zones.",
+      "description": "Pörssisähkön hinta nyt, tänään ja huomenna sekä itseoppiva 7 vrk ennuste 40 Euroopan hinta-alueelle. Siirtohintalaskuri postinumerolla ja ilmainen avoin API.",
       "url": "https://spotpuls.app/api/v1/prices",
       "documentation": "https://spotpuls.app/api-docs/",
       "termsOfService": "https://spotpuls.app/api-docs/",
@@ -140,7 +172,8 @@
         "@type": "Organization",
         "name": "Spotpuls",
         "url": "https://spotpuls.app"
-      }
+      },
+      "inLanguage": "en"
     },
     {
       "@type": "FAQPage",
@@ -179,7 +212,7 @@
     <meta property="og:type" content="website">
     <meta property="og:site_name" content="Spotpuls">
     <meta property="og:title" content="Spotpuls — Pörssisähkö nyt, 7 vrk Ennuste, Siirtohintalaskuri &amp; Avoin API | spotpuls.app">
-    <meta property="og:description" content="Spotpuls (spotpuls.app): Tarkista pörssisähkön spot-hinta tänään, huomenna ja itseoppiva 7 vrk hintaennuste 40 Euroopan hinta-alueella, paikallinen siirtohinta postinumerolla sekä ilmainen avoin REST API.">
+    <meta property="og:description" content="Pörssisähkön hinta nyt, tänään ja huomenna sekä itseoppiva 7 vrk ennuste 40 Euroopan hinta-alueelle. Siirtohintalaskuri postinumerolla ja ilmainen avoin API.">
     <meta property="og:url" content="https://spotpuls.app/">
     <meta property="og:image" content="https://spotpuls.app/og-image.png">
     <meta property="og:image:width" content="1200">
@@ -188,7 +221,7 @@
     <meta property="og:locale" content="fi_FI">
     <meta name="twitter:card" content="summary_large_image">
     <meta name="twitter:title" content="Spotpuls — Pörssisähkö nyt, 7 vrk Ennuste, Siirtohintalaskuri &amp; Avoin API | spotpuls.app">
-    <meta name="twitter:description" content="Spotpuls (spotpuls.app): Tarkista pörssisähkön spot-hinta tänään, huomenna ja itseoppiva 7 vrk hintaennuste 40 Euroopan hinta-alueella, paikallinen siirtohinta postinumerolla sekä ilmainen avoin REST API.">
+    <meta name="twitter:description" content="Pörssisähkön hinta nyt, tänään ja huomenna sekä itseoppiva 7 vrk ennuste 40 Euroopan hinta-alueelle. Siirtohintalaskuri postinumerolla ja ilmainen avoin API.">
     <meta name="twitter:image" content="https://spotpuls.app/og-image.png">
     <link rel="alternate" type="text/markdown" href="https://spotpuls.app/llms.txt" title="Spotpuls LLM &amp; AI Agent Reference">
     <link rel="alternate" type="text/plain" href="https://spotpuls.app/llms-full.txt" title="Spotpuls Full Machine-Readable Knowledge Base">
@@ -815,6 +848,6 @@
     <script src="dso_data.js"></script>
     <script src="ml_weights.js"></script>
     <script src="nordpool_models.js"></script>
-    <script src="app.js?v=44"></script>
+    <script src="app.js?v=45"></script>
 </body>
 </html>

@@ -449,7 +449,7 @@ def build_index_page() -> str:
     <script src="dso_data.js"></script>
     <script src="ml_weights.js"></script>
     <script src="nordpool_models.js"></script>
-    <script src="app.js?v=44"></script>
+    <script src="app.js?v=45"></script>
 </body>
 </html>
 """
@@ -573,7 +573,7 @@ def build_dso_page(comp: dict) -> str:
     <script src="../dso_data.js"></script>
     <script src="../ml_weights.js"></script>
     <script src="../nordpool_models.js"></script>
-    <script src="../app.js?v=44"></script>
+    <script src="../app.js?v=45"></script>
 </body>
 </html>
 """
@@ -624,7 +624,7 @@ def build_municipality_page(m: dict) -> str:
     <script src="../dso_data.js"></script>
     <script src="../ml_weights.js"></script>
     <script src="../nordpool_models.js"></script>
-    <script src="../app.js?v=44"></script>
+    <script src="../app.js?v=45"></script>
 </body>
 </html>
 """
